@@ -4,19 +4,19 @@
 
 ### Create virtual environment
 
-```virtualenv env```
+`* ``virtualenv env```
 
 ### Activate virtual environment
 
-```source env/bin/activate```
+* ```source env/bin/activate```
 
 ### Deactivate
 
-```deactivate```
+* ```deactivate```
 
 ## Install requirements in virtualenv
 
-```pip install -r requirements.txt```
+* ```pip install -r requirements.txt```
 
 ## Add SECRET KEY
 
