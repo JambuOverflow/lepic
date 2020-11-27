@@ -230,4 +230,4 @@ media/
 *.pyc
 *.db
 *.pid
-secrets.py
+lepic_secrets.py
