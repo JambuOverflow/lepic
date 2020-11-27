@@ -17,7 +17,7 @@
 
 ## Add SECRET KEY
 
-* Put [```secrets.py```](https://github.com/JambuOverflow/secrets/blob/master/secrets.py) in ```./back_end/secrets.py```
+* Put [```lepic_secrets.py```](https://github.com/JambuOverflow/secrets/blob/master/secrets.py) in ```./back_end/lepic_secrets.py```
 
 ### When you want to leave virtualenv
 
