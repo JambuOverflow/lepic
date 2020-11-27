@@ -22,3 +22,11 @@
 ### When you want to leave virtualenv
 
 * ```deactivate```
+
+## API DOCUMENTATION
+
+* Run ```python3 manage.py runserver```
+
+* create_user: ```<localhost>/api/create_user```
+
+* Update user: ```<localhost>/api/update_user/<user_id>```
