@@ -4,7 +4,7 @@
 
 ### Create virtual environment
 
-`* ``virtualenv env```
+* ```virtualenv env```
 
 ### Activate virtual environment
 
