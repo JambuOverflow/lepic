@@ -31,6 +31,6 @@ class School(models.Model):
     flag_private = models.BooleanField()
 
 class Class(models.Model):
-    fk_prof = models.ForeignKey(User, on_delete=models.CASCADE)
-    fk_school = models.ForeignKey(School, on_delete=CASCADE)
+    professor = models.ForeignKey(User, on_delete=models.CASCADE)
+    school = models.ForeignKey(School, on_delete=CASCADE)
     grade = models.IntegerField(max_length=1)
