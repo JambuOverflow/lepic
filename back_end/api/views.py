@@ -223,3 +223,31 @@ def create_text(request, class_id):
             return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["PUT"])
+def update_text(request, text_id):
+    payload = json.loads(request.body)
+    user = User.objects.get(id=payload["id"])
+
+    if check_role(payload["role"]):
+        try:
+            text_item = Text.objects.filter(writer=user, id=text_id)
+            text_item.update(**payload)
+            text = Text.objects.get(id=text_id)
+            serializer = TextSerializer(text)
+            return JsonResponse({'text': serializer.data}, safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        except Exception:
+            return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["GET"])
+def get_texts(request):
+    user = request.user.id
+    texts = Text.objects.filter(writer=user)
+    serializer = TextSerializer(texts, many=True)
+    return JsonResponse({'texts': serializer.data}, safe=False, status=status.HTTP_200_OK)
