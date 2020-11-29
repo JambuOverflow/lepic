@@ -1,6 +1,6 @@
 import json
 from rest_framework import status, serializers
-from .serializers import ClassSerializer, UserSerializer, ProfileSerializer
+from .serializers import ClassSerializer, UserSerializer, ProfileSerializer, TextSerializer
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
@@ -196,5 +196,30 @@ def delete_class(request, class_id):
             return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
         except Exception:
             return JsonResponse({'error': 'Something went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def create_text(request, class_id):
+    payload = json.loads(request.body)
+
+    if check_role(payload["role"]):
+        try:
+            user = User.objects.get(id=payload["id"])
+            _class = Class.objects.get(id=class_id)
+            text = Text.objects.create(
+                writer = user,
+                _class = _class,
+                text = payload["text"]
+            )
+            text_serializer = TextSerializer(text)
+            return JsonResponse({'Text': text_serializer.data}, safe=False, status=status.HTTP_200_OK)
+            
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

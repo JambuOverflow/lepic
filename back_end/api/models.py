@@ -1,3 +1,4 @@
+from _typeshed import WriteableBuffer
 from django.db import models
 from django.core.validators import validate_email
 from django.contrib.auth.models import User
@@ -24,11 +25,11 @@ class Profile(models.Model):
 
 
 class School(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=100)
     city = models.CharField(max_length=30)
     neighbourhood = models.CharField(max_length=30)
     state = models.CharField(max_length=2)
-    zip_code = models.IntegerField(max_length=8)
+    zip_code = models.IntegerField()
     flag_private = models.BooleanField()
 
 
@@ -36,3 +37,8 @@ class Class(models.Model):
     tutor = models.ForeignKey(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=CASCADE)
     grade = models.IntegerField(max_length=1)
+
+class Text(models.Model):
+    body = models.CharField(max_length=1000)
+    _class = models.ForeignKey(Class, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
