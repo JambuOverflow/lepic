@@ -1,4 +1,3 @@
-from _typeshed import WriteableBuffer
 from django.db import models
 from django.core.validators import validate_email
 from django.contrib.auth.models import User
@@ -36,10 +35,10 @@ class School(models.Model):
 class Class(models.Model):
     tutor = models.ForeignKey(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=CASCADE)
-    grade = models.IntegerField(max_length=1)
+    grade = models.IntegerField()
+
 
 class Text(models.Model):
     body = models.CharField(max_length=1000)
     _class = models.ForeignKey(Class, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
-    grade = models.IntegerField()
