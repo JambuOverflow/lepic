@@ -1,0 +1,27 @@
+jobs:
+    include:
+      - language: python
+        python:
+        - "3.6"
+        - "3.7"
+        - "3.8"
+        install: 
+        - pip install -r back_end/requirements.txt
+        script:
+        - pytest
+      
+      - language: dart
+        dist: xenial
+        addons:
+            apt:
+                packages:
+                    - lib32stdc++6
+        install:
+            - git clone https://github.com/flutter/flutter.git -b stable
+            - ./flutter/bin/flutter doctor
+        script:
+            - cd mobile/
+            - ../flutter/bin/flutter test
+        cache:
+            directories:
+            - $HOME/.pub-cache
