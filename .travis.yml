@@ -19,7 +19,7 @@ jobs:
             - git clone https://github.com/flutter/flutter.git -b stable
             - ./flutter/bin/flutter doctor
         script:
-            - ./mobile/flutter/bin/flutter test
+            - ./flutter/bin/flutter mobile/test
         cache:
             directories:
             - $HOME/.pub-cache
