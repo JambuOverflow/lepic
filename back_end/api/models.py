@@ -28,11 +28,11 @@ class School(models.Model):
     city = models.CharField(max_length=30)
     neighbourhood = models.CharField(max_length=30)
     state = models.CharField(max_length=2)
-    zip_code = models.IntegerField(max_length=8)
+    zip_code = models.IntegerField()
     flag_private = models.BooleanField()
 
 
 class Class(models.Model):
     tutor = models.ForeignKey(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=CASCADE)
-    grade = models.IntegerField(max_length=1)
+    grade = models.IntegerField()
