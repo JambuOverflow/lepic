@@ -42,3 +42,4 @@ class Text(models.Model):
     body = models.CharField(max_length=1000)
     _class = models.ForeignKey(Class, on_delete=models.CASCADE)
     writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    grade = models.IntegerField()
