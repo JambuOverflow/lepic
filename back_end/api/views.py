@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from rest_framework.decorators import api_view
 from .models import *
 
+
 @api_view(["GET"])
 def get_users(request):
     users = User.objects.all()
@@ -48,7 +49,7 @@ def create_user(request):
         validate_email(email)
     except ValidationError:
         return JsonResponse({'error': "Invalid E-mail"}, safe=False, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST)
 
     try:
         user = User.objects.create_user(
@@ -83,6 +84,7 @@ def create_user(request):
         localhost:8000/api/update_user/1```
     
     """
+
 
 @api_view(["PUT"])
 def update_user(request, profile_id):
@@ -119,25 +121,26 @@ def update_user(request, profile_id):
         return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
+
 def check_role(role):
     """
-    Checks if the user is a professor or a support professional.
+    Checks if the user is a professor or support professional.
     """
-    return role in [0,1]
+    return role in [0, 1]
+
 
 @api_view(["POST"])
 def create_class(request):
     payload = json.loads(request.body)
-    user_id = request.user.id
 
     if check_role(payload["role"]):
         try:
             user = User.objects.get(id=payload["id"])
             _class = Class.objects.create(
-                professor = user_id,
+                tutor=user,
                 # school = payload["school"],
-                grade = payload["grade"]
+                grade=payload["grade"]
             )
             class_serializer = ClassSerializer(_class)
             return JsonResponse({'class': class_serializer.data}, safe=False, status=status.HTTP_200_OK)
@@ -150,12 +153,14 @@ def create_class(request):
     else:
         return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(["GET"])
 def get_classes(request):
     user = request.user.id
     classes = Class.objects.filter(professor=user)
     serializer = ClassSerializer(classes, many=True)
     return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
+
 
 @api_view(["PUT"])
 def update_class(request, class_id):
@@ -164,7 +169,7 @@ def update_class(request, class_id):
 
     if check_role(payload["role"]):
         try:
-            class_item = Class.objects.filter(professor=user, id=class_id)
+            class_item = Class.objects.filter(tutor=user, id=class_id)
             class_item.update(**payload)
             _class = Class.objects.get(id=class_id)
             serializer = ClassSerializer(_class)
@@ -176,6 +181,7 @@ def update_class(request, class_id):
     else:
         return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 @api_view(["DELETE"])
 def delete_class(request, class_id):
     user = request.user.id
@@ -183,7 +189,7 @@ def delete_class(request, class_id):
 
     if check_role(payload["role"]):
         try:
-            _class = Class.objects.get(professor=user, id=class_id)
+            _class = Class.objects.get(tutor=user, id=class_id)
             _class.delete()
             return JsonResponse(status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist as e:

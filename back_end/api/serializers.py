@@ -14,12 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password']
 
+
 class SchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = School
         fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 'flag_private']
 
+
 class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
-        fields = ['id', 'professor', 'school', 'grade']
+        fields = ['id', 'tutor', 'school', 'grade']

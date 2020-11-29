@@ -22,6 +22,7 @@ class Profile(models.Model):
             "role": self.role
             }
 
+
 class School(models.Model):
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=30)
@@ -30,7 +31,8 @@ class School(models.Model):
     zip_code = models.IntegerField(max_length=8)
     flag_private = models.BooleanField()
 
+
 class Class(models.Model):
-    professor = models.ForeignKey(User, on_delete=models.CASCADE)
+    tutor = models.ForeignKey(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=CASCADE)
     grade = models.IntegerField(max_length=1)
