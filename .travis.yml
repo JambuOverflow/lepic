@@ -1,0 +1,14 @@
+jobs:
+    include:
+      - language: python
+        python:
+        - "3.6"
+        - "3.7"
+        - "3.8"
+        - pip install -r back_end/requirements.txt
+        script:
+        - pytest
+    include:
+    - language: dart
+    dart:
+    - stable
