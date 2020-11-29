@@ -17,7 +17,7 @@ jobs:
                     - lib32stdc++6
         install:
             - git clone https://github.com/flutter/flutter.git -b stable
-            - ./mobile/flutter/bin/flutter doctor
+            - ./flutter/bin/flutter doctor
         script:
             - ./mobile/flutter/bin/flutter test
         cache:
