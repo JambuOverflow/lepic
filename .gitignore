@@ -122,6 +122,8 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 
 ##Django/Python##
+migrations/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
