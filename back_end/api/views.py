@@ -1,6 +1,11 @@
 import json
-from .serializers import UserSerializer, ProfileSerializer
+from rest_framework import status, serializers
+from .serializers import ClassSerializer, UserSerializer, ProfileSerializer, TextSerializer
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from .models import *
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
@@ -10,8 +15,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-from .models import Profile
 from .enum_roles import Roles
 
 
@@ -55,7 +58,7 @@ def create_user(request):
         validate_email(email)
     except ValidationError:
         return JsonResponse({'error': "Invalid E-mail"}, safe=False, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                            status=status.HTTP_400_BAD_REQUEST)
 
     
     try:
@@ -94,6 +97,8 @@ def create_user(request):
         to a human-readable role inside the Enum Roles ['TEACHER', 'PROFESSIONAL'
         and 'RESEARCHER']
     """
+
+
 @api_view(["PUT"])
 def update_user(request, profile_id):
     payload = json.loads(request.body)
@@ -131,6 +136,139 @@ def update_user(request, profile_id):
         return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+def check_role(role):
+    """
+    Checks if the user is a professor or support professional.
+    """
+    return role in [0, 1]
+
+
+@api_view(["POST"])
+def create_class(request):
+    payload = json.loads(request.body)
+
+    if check_role(payload["role"]):
+        try:
+            user = User.objects.get(id=payload["id_tutor"])
+            _class = Class.objects.create(
+                tutor=user,
+                # school=payload["school"],
+                grade=payload["grade"]
+            )
+            class_serializer = ClassSerializer(_class)
+            return JsonResponse({'class': class_serializer.data}, safe=False, status=status.HTTP_201_CREATED)
+            
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["GET"])
+def get_classes(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        classes = Class.objects.filter(tutor=user)
+        serializer = ClassSerializer(classes, many=True)
+        return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist as e:
+        return JsonResponse({'error': 'User has no associated classes.'}, safe=False, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["PUT"])
+def update_class(request, class_id):
+    user = request.user.id
+    payload = json.loads(request.body)
+
+    if check_role(payload["role"]):
+        try:
+            class_item = Class.objects.filter(tutor=user, id=class_id)
+            class_item.update(**payload)
+            _class = Class.objects.get(id=class_id)
+            serializer = ClassSerializer(_class)
+            return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        except Exception:
+            return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["DELETE"])
+def delete_class(request, class_id):
+    user = request.user.id
+    payload = json.loads(request.body)
+
+    if check_role(payload["role"]):
+        try:
+            _class = Class.objects.get(tutor=user, id=class_id)
+            _class.delete()
+            return JsonResponse(status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        except Exception:
+            return JsonResponse({'error': 'Something went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def create_text(request, class_id):
+    payload = json.loads(request.body)
+
+    if check_role(payload["role"]):
+        try:
+            user = User.objects.get(id=payload["id"])
+            _class = Class.objects.get(id=class_id)
+            text = Text.objects.create(
+                writer = user,
+                _class = _class,
+                text = payload["text"]
+            )
+            text_serializer = TextSerializer(text)
+            return JsonResponse({'Text': text_serializer.data}, safe=False, status=status.HTTP_200_OK)
+            
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["PUT"])
+def update_text(request, text_id):
+    payload = json.loads(request.body)
+    user = User.objects.get(id=payload["id"])
+
+    if check_role(payload["role"]):
+        try:
+            text_item = Text.objects.filter(writer=user, id=text_id)
+            text_item.update(**payload)
+            text = Text.objects.get(id=text_id)
+            serializer = TextSerializer(text)
+            return JsonResponse({'text': serializer.data}, safe=False, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist as e:
+            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
+        except Exception:
+            return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["GET"])
+def get_texts(request):
+    user = request.user.id
+    texts = Text.objects.filter(writer=user)
+    serializer = TextSerializer(texts, many=True)
+    return JsonResponse({'texts': serializer.data}, safe=False, status=status.HTTP_200_OK)
+
+  
 class LepicUser(APIView):
     
     def get_object(self, primary_key):
@@ -144,3 +282,5 @@ class LepicUser(APIView):
         user_serializer = UserSerializer(user_dictionary.get("user"))
         profile_serializer = ProfileSerializer(user_dictionary.get("profile"))
         return Response({'user': {**user_serializer.data, **profile_serializer.data}})
+
+      

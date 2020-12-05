@@ -15,15 +15,26 @@ class Profile(models.Model):
     def __str__(self):
         return f"Role: {self.role}"
 
+
 class School(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=100)
     city = models.CharField(max_length=30)
     neighbourhood = models.CharField(max_length=30)
     state = models.CharField(max_length=2)
-    zip_code = models.IntegerField(max_length=8)
+    zip_code = models.IntegerField()
     flag_private = models.BooleanField()
 
+
 class Class(models.Model):
-    fk_prof = models.ForeignKey(User, on_delete=models.CASCADE)
-    fk_school = models.ForeignKey(School, on_delete=CASCADE)
-    grade = models.IntegerField(max_length=1)
+    tutor = models.ForeignKey(User, on_delete=models.CASCADE)
+    # school = models.ForeignKey(School, on_delete=CASCADE)
+    grade = models.IntegerField()
+
+    def __str__(self):
+        return f'Tutor: {self.tutor} Grade: {self.grade}'
+
+
+class Text(models.Model):
+    body = models.CharField(max_length=1000)
+    _class = models.ForeignKey(Class, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
