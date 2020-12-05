@@ -130,20 +130,23 @@ def check_role(role):
     return role in [0, 1]
 
 
+
+Class ClassViewSet():
+
 @api_view(["POST"])
 def create_class(request):
     payload = json.loads(request.body)
 
     if check_role(payload["role"]):
         try:
-            user = User.objects.get(id=payload["id"])
+            user = User.objects.get(id=payload["id_tutor"])
             _class = Class.objects.create(
                 tutor=user,
-                # school = payload["school"],
+                # school=payload["school"],
                 grade=payload["grade"]
             )
             class_serializer = ClassSerializer(_class)
-            return JsonResponse({'class': class_serializer.data}, safe=False, status=status.HTTP_200_OK)
+            return JsonResponse({'class': class_serializer.data}, safe=False, status=status.HTTP_201_CREATED)
             
         except ObjectDoesNotExist as e:
             return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
@@ -155,11 +158,14 @@ def create_class(request):
 
 
 @api_view(["GET"])
-def get_classes(request):
-    user = request.user.id
-    classes = Class.objects.filter(professor=user)
-    serializer = ClassSerializer(classes, many=True)
-    return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
+def get_classes(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        classes = Class.objects.filter(tutor=user)
+        serializer = ClassSerializer(classes, many=True)
+        return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist as e:
+        return JsonResponse({'error': 'User has no associated classes.'}, safe=False, status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(["PUT"])
