@@ -5,8 +5,17 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from rest_framework.decorators import api_view
 from .models import *
+from django.shortcuts import render
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
+from django.core.validators import validate_email
+from .enum_roles import Roles
 
 
 @api_view(["GET"])
@@ -51,6 +60,7 @@ def create_user(request):
         return JsonResponse({'error': "Invalid E-mail"}, safe=False, 
                             status=status.HTTP_400_BAD_REQUEST)
 
+    
     try:
         user = User.objects.create_user(
             first_name = payload['first_name'],
@@ -62,7 +72,7 @@ def create_user(request):
 
         profile = Profile.objects.create(
             owner=user,
-            role=payload['role'],
+            role=Roles(payload['role']).name,
         )
 
         user_serializer = UserSerializer(user)
@@ -83,6 +93,9 @@ def create_user(request):
         -d '{"first_name":"testuserded", "role":0, "password":"343"}' 
         localhost:8000/api/update_user/1```
     
+    ### The api receives a integer number from the form and changes it
+        to a human-readable role inside the Enum Roles ['TEACHER', 'PROFESSIONAL'
+        and 'RESEARCHER']
     """
 
 
@@ -103,7 +116,7 @@ def update_user(request, profile_id):
         profile_item = Profile.objects.filter(id=profile_id)
         user_item = User.objects.filter(id=profile.owner.id)
         if 'role' in payload.keys():
-            profile_item.update(role=payload['role'])
+            profile_item.update(role=Roles(payload['role']).name)
             payload.pop('role')
         if 'password' in payload.keys():
             user = User.objects.get(id=profile.owner.id)
@@ -129,9 +142,6 @@ def check_role(role):
     """
     return role in [0, 1]
 
-
-
-Class ClassViewSet():
 
 @api_view(["POST"])
 def create_class(request):
@@ -257,3 +267,20 @@ def get_texts(request):
     texts = Text.objects.filter(writer=user)
     serializer = TextSerializer(texts, many=True)
     return JsonResponse({'texts': serializer.data}, safe=False, status=status.HTTP_200_OK)
+
+  
+class LepicUser(APIView):
+    
+    def get_object(self, primary_key):
+        try:
+            return {"user" : User.objects.get(pk=primary_key), "profile" : Profile.objects.get(pk=primary_key)}
+        except ObjectDoesNotExist:
+            raise Http404
+
+    def get(self, request, primary_key, format=None):
+        user_dictionary = self.get_object(primary_key)
+        user_serializer = UserSerializer(user_dictionary.get("user"))
+        profile_serializer = ProfileSerializer(user_dictionary.get("profile"))
+        return Response({'user': {**user_serializer.data, **profile_serializer.data}})
+
+      

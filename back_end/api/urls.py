@@ -9,4 +9,5 @@ urlpatterns = [
   path('getclasses/<int:user_id>', views.get_classes),
   path('updateclass/<int:class_id>', views.update_class),
   path('deleteclass/<int:class_id>', views.delete_class),
+  path('test/<int:primary_key>', views.LepicUser.as_view())
 ]

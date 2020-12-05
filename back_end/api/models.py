@@ -10,17 +10,10 @@ from django.dispatch import receiver
 class Profile(models.Model):
     owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
-    ROLES = (
-        (0, 'teacher'),
-        (1, 'professional'),
-        (2, 'researcher'),
-    )
-    role = models.SmallIntegerField(choices=ROLES, default=0)
+    role = models.CharField(max_length=50, default=0)
 
     def __str__(self):
-        return {
-            "role": self.role
-            }
+        return f"Role: {self.role}"
 
 
 class School(models.Model):
