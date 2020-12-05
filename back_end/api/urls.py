@@ -1,13 +1,18 @@
 from django.urls import include, path
 from . import views
+from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
   path('create_user', views.create_user),
   path('get_users', views.get_users),
   path('update_user/<int:profile_id>', views.update_user),
-  path('createclass', views.create_class),
-  path('getclasses/<int:user_id>', views.get_classes),
-  path('updateclass/<int:class_id>', views.update_class),
-  path('deleteclass/<int:class_id>', views.delete_class),
-  path('test/<int:primary_key>', views.LepicUser.as_view())
+  path('test/<int:primary_key>', views.LepicUser.as_view()),
+  path('classes/', views.ClassCreate.as_view()),
+  path('classes/<int:pk>/', views.ClassDetail.as_view()),
+  path('tutor/<int:pk_tutor>/classes', views.ListTutorClasses.as_view()),
+  path('texts/', views.TextCreate.as_view()),
+  path('texts/<int:pk>', views.TextDetail.as_view()),
+  path('tutor/<int:pk_tutor>/texts', views.ListTutorTexts.as_view())
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

@@ -9,15 +9,11 @@ class TestCRUDClass:
     def test_create_class(self):
         new_class = {
             "grade": 3,
-            "id_tutor": 5,
-            "tutor_role": 0
+            "tutor": 5,
         }
         factory = APIRequestFactory()
-        request = factory.post('/api/createclass', new_class, format='json')
-        response = create_class(request)
-        assert response.status_code == 201
+        response = factory.post('/api/classes', new_class, format='json')
+        assert response.status_code == 200
 
 
-    def test_get_classes(self):
-        user_id = 5
 

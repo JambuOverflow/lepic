@@ -30,4 +30,4 @@ class ClassSerializer(serializers.ModelSerializer):
 class TextSerializer(serializers.ModelSerializer):
     class Meta:
         model = Text
-        fields = ['body', '_class', 'writer']
+        fields = ['body', '_class']

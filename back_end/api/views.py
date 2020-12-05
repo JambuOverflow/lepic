@@ -5,8 +5,9 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import *
+from .models import Text, Class, Profile
 from django.shortcuts import render
+from rest_framework import generics, mixins
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -216,31 +217,6 @@ def delete_class(request, class_id):
         return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(["POST"])
-def create_text(request, class_id):
-    payload = json.loads(request.body)
-
-    if check_role(payload["role"]):
-        try:
-            user = User.objects.get(id=payload["id"])
-            _class = Class.objects.get(id=class_id)
-            text = Text.objects.create(
-                writer = user,
-                _class = _class,
-                text = payload["text"]
-            )
-            text_serializer = TextSerializer(text)
-            return JsonResponse({'Text': text_serializer.data}, safe=False, status=status.HTTP_200_OK)
-            
-        except ObjectDoesNotExist as e:
-            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
-        
-        except Exception as e:
-            return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 @api_view(["PUT"])
 def update_text(request, text_id):
     payload = json.loads(request.body)
@@ -268,7 +244,68 @@ def get_texts(request):
     serializer = TextSerializer(texts, many=True)
     return JsonResponse({'texts': serializer.data}, safe=False, status=status.HTTP_200_OK)
 
-  
+
+class TextCreate(generics.ListCreateAPIView):
+    """
+    Create a new text and list all.
+    """
+    queryset = Text.objects.all()
+    serializer_class = TextSerializer
+
+
+class TextDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a text instance.
+    """
+    queryset = Text.objects.all()
+    serializer_class = TextSerializer
+
+
+class ListTutorTexts(generics.ListAPIView):
+    """
+    List a tutors texts.
+    """
+    queryset = 'tutor'
+
+    def get(self, request, pk_tutor):
+        classes = Class.objects.filter(tutor=pk_tutor)
+        texts = Text.objects.filter(_class=classes)
+        serializer = TextSerializer(texts, many=True)
+        if texts:
+            return Response(serializer.data)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class ClassCreate(generics.CreateAPIView):
+    """
+    Create a new class.
+    """
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer
+
+
+class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a class instance.
+    """
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer()
+
+
+class ListTutorClasses(generics.ListAPIView):
+    """
+    List a tutors classes.
+    """
+    queryset = 'tutor'
+
+    def get(self, request, pk_tutor):
+        classes = Class.objects.filter(tutor=pk_tutor)
+        serializer = ClassSerializer(classes, many=True)
+        if classes:
+            return Response(serializer.data)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 class LepicUser(APIView):
     
     def get_object(self, primary_key):
