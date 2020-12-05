@@ -4,7 +4,7 @@ Supporting the assessment and management of reading fluency.
 
 **Warning:** This is `develop` branch README and should not be merged to `master`.
 
-[![Coverage Status](https://coveralls.io/repos/github/JambuOverflow/lepic/badge.svg?branch=master)](https://fcoveralls.io/github/JambuOverflow/lepic?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/JambuOverflow/lepic/badge.svg?branch=master)](https://fcoveralls.io/github/JambuOverflow/lepic?branch=develop)
 
 [![Build Status](https://travis-ci.com/JambuOverflow/lepic.svg?branch=develop)](https://travis-ci.com/JambuOverflow/lepic)
 
