@@ -5,5 +5,5 @@ urlpatterns = [
   path('create_user', views.create_user),
   path('get_users', views.get_users),
   path('update_user/<int:profile_id>', views.update_user),
-
+  path('test/<int:primary_key>', views.LepicUser.as_view())
 ]
