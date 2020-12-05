@@ -24,7 +24,7 @@ jobs:
             - cd mobile/
             - ../flutter/bin/flutter test test/
         after_success:
-            - coveralls-lcov coverage/lcov.info
+            - coveralls-lcov ./coverage/lcov.info
         cache:
             directories:
             - $HOME/.pub-cache
