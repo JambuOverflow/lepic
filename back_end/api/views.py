@@ -3,6 +3,9 @@ from .serializers import UserSerializer, ProfileSerializer
 from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -126,3 +129,18 @@ def update_user(request, profile_id):
         return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class LepicUser(APIView):
+    
+    def get_object(self, primary_key):
+        try:
+            return {"user" : User.objects.get(pk=primary_key), "profile" : Profile.objects.get(pk=primary_key)}
+        except ObjectDoesNotExist:
+            raise Http404
+
+    def get(self, request, primary_key, format=None):
+        user_dictionary = self.get_object(primary_key)
+        user_serializer = UserSerializer(user_dictionary.get("user"))
+        profile_serializer = ProfileSerializer(user_dictionary.get("profile"))
+        return Response({'user': {**user_serializer.data, **profile_serializer.data}})
