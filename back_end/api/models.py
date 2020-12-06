@@ -36,5 +36,6 @@ class Class(models.Model):
 
 
 class Text(models.Model):
+    title = models.CharField(max_length=50)
     body = models.CharField(max_length=1000)
     _class = models.ForeignKey(Class, on_delete=models.CASCADE)
