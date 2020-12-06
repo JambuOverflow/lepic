@@ -269,14 +269,14 @@ class ListTutorTexts(generics.ListAPIView):
 
     def get(self, request, pk_tutor):
         classes = Class.objects.filter(tutor=pk_tutor)
-        texts = Text.objects.filter(_class=classes)
+        texts = Text.objects.filter(_class__in=classes)
         serializer = TextSerializer(texts, many=True)
         if texts:
             return Response(serializer.data)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class ClassCreate(generics.CreateAPIView):
+class ClassCreate(generics.ListCreateAPIView):
     """
     Create a new class.
     """

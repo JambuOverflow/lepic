@@ -9,10 +9,10 @@ urlpatterns = [
   path('test/<int:primary_key>', views.LepicUser.as_view()),
   path('classes/', views.ClassCreate.as_view()),
   path('classes/<int:pk>/', views.ClassDetail.as_view()),
-  path('tutor/<int:pk_tutor>/classes', views.ListTutorClasses.as_view()),
   path('texts/', views.TextCreate.as_view()),
   path('texts/<int:pk>', views.TextDetail.as_view()),
-  path('tutor/<int:pk_tutor>/texts', views.ListTutorTexts.as_view())
+  path('tutor/<int:pk_tutor>/texts', views.ListTutorTexts.as_view()),
+  path('tutor/<int:pk_tutor>/classes', views.ListTutorClasses.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
