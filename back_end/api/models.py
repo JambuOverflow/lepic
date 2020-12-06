@@ -29,9 +29,10 @@ class Class(models.Model):
     tutor = models.ForeignKey(User, on_delete=models.CASCADE)
     # school = models.ForeignKey(School, on_delete=CASCADE)
     grade = models.IntegerField()
+    title = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'Tutor: {self.tutor} Grade: {self.grade}'
+        return self.title
 
 
 class Text(models.Model):
