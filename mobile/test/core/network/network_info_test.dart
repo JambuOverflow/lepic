@@ -22,7 +22,7 @@ void main() {
       when(mockDataConnectionChecker.hasConnection)
           .thenAnswer((_) async => tHasConnectionFuture);
 
-      final result = await networkInfo.isConnected;
+      final result = networkInfo.isConnected;
 
       verify(mockDataConnectionChecker.hasConnection);
       expect(result, tHasConnectionFuture);
