@@ -1,20 +1,20 @@
 from django.db import models
 from django.core.validators import validate_email
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import CharField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-class Profile(models.Model):
-    owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+class User(AbstractUser):
+    USER_ROLE_CHOICES = (
+        (1, 'teacher'),
+        (2, 'support professional'),
+        (3, 'researcher'),
+    )
 
-    role = models.CharField(max_length=50, default=0)
-
-    def __str__(self):
-        return f"Role: {self.role}"
-
+    user_role = models.PositiveSmallIntegerField(choices=USER_ROLE_CHOICES)
 
 class School(models.Model):
     name = models.CharField(max_length=100)

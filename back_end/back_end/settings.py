@@ -28,6 +28,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
 ]
+
+AUTH_USER_MODEL = 'api.User'
 
 REST_FRAMEWORK = {
     'TEST_REQUEST_RENDERER_CLASSES': [
