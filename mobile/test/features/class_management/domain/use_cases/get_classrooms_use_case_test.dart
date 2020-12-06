@@ -25,8 +25,8 @@ void main() {
     password: '123',
   );
 
-  final tClassroom1 = Classroom(tutor: tUser, grade: 1, name: "A");
-  final tClassroom2 = Classroom(tutor: tUser, grade: 1, name: "B");
+  final tClassroom1 = Classroom(tutor: tUser, grade: 1, name: "A", id: 1);
+  final tClassroom2 = Classroom(tutor: tUser, grade: 1, name: "B", id: 2);
 
   final List<Classroom> tTwoClassrooms = [tClassroom1, tClassroom2];
   final List<Classroom> tEmptyClassrooms = [];

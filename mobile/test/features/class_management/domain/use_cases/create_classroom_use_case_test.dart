@@ -31,17 +31,16 @@ void main() {
     tutor: tUser,
     grade: 1,
     name: "A",
+    id: 1,
   );
-
-  final tResponse = http.Response('Nice', 201);
 
   test('should return a correct response when creating a classroom', () async {
     when(mockClassroomRepository.createClassroom(tClassroom))
-        .thenAnswer((_) async => Right(tResponse));
+        .thenAnswer((_) async => Right(tClassroom));
 
     final result = await useCase(ClassroomParams(classroom: tClassroom));
 
-    expect(result, Right(tResponse));
+    expect(result, Right(tClassroom));
     verify(mockClassroomRepository.createClassroom(tClassroom));
     verifyNoMoreInteractions(mockClassroomRepository);
   });

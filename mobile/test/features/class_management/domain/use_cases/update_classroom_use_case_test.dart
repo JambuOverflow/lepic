@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
@@ -31,17 +30,16 @@ void main() {
     tutor: tUser,
     grade: 1,
     name: "A",
+    id: 1,
   );
-
-  final tResponse = http.Response('', 200);
 
   test('should return a correct response when updating a classroom', () async {
     when(mockClassroomRepository.updateClassroom(tClassroom))
-        .thenAnswer((_) async => Right(tResponse));
+        .thenAnswer((_) async => Right(tClassroom));
 
     final result = await useCase(ClassroomParams(classroom: tClassroom));
 
-    expect(result, Right(tResponse));
+    expect(result, Right(tClassroom));
     verify(mockClassroomRepository.updateClassroom(tClassroom));
     verifyNoMoreInteractions(mockClassroomRepository);
   });
