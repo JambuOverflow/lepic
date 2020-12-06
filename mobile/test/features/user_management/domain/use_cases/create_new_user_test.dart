@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/repositories/user_repository.dart';
 import 'package:mobile/features/user_management/domain/use_cases/create_new_user.dart';
@@ -24,13 +25,14 @@ void main() {
     password: '123',
   );
 
-  test('should send new user to the repository', () async {
+  test('should send new user to the repository with successful response',
+      () async {
     when(mockUserRepository.createUser(tUser))
-        .thenAnswer((_) async => Right(tUser));
+        .thenAnswer((_) async => Right(Response()));
 
     final result = await useCase(Params(user: tUser));
 
-    expect(result, Right(tUser));
+    expect(result, Right(Response()));
     verify(mockUserRepository.createUser(tUser));
     verifyNoMoreInteractions(mockUserRepository);
   });

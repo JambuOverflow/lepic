@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
 
 import '../entities/user.dart';
@@ -13,7 +14,7 @@ class CreateNewUser implements UseCase<void, Params> {
   CreateNewUser({@required this.repository});
 
   @override
-  Future<Either<Failure, void>> call(Params params) async =>
+  Future<Either<Failure, Response>> call(Params params) async =>
       await repository.createUser(params.user);
 }
 
