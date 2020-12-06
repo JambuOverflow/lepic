@@ -3,11 +3,10 @@ from .models import Class, User, School, Text
 
 
 class UserSerializer(serializers.ModelSerializer):
-    classes = serializers.PrimaryKeyRelatedField(many=True, queryset=Class.objects.all())
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'user_role', 'classes']
+        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'user_role']
 
 
 class SchoolSerializer(serializers.ModelSerializer):
