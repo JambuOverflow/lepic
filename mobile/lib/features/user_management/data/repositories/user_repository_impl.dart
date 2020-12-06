@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
-import '../../../../core/network/response.dart';
+import 'package:http/http.dart' as http;
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../data_sources/user_local_data_source.dart';
@@ -22,7 +22,7 @@ class UserRepositoryImpl implements UserRepository {
   });
 
   @override
-  Future<Either<Failure, Response>> createUser(User user) async {
+  Future<Either<Failure, http.Response>> createUser(User user) async {
     if (await networkInfo.isConnected) {
       final response = await remoteDataSource.createUser(user);
       await localDataSource.cacheUser(user);
@@ -34,7 +34,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, Response>> updateUser(User user) {
+  Future<Either<Failure, http.Response>> updateUser(User user) {
     throw UnimplementedError();
   }
 

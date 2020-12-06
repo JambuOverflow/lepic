@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/core/network/response.dart';
+import 'package:http/http.dart' as http;
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
@@ -33,7 +33,7 @@ void main() {
     name: "A",
   );
 
-  final tResponse = Response(message: "Nice");
+  final tResponse = http.Response('', 200);
 
   test('should return a correct response when updating a classroom', () async {
     when(mockClassroomRepository.updateClassroom(tClassroom))

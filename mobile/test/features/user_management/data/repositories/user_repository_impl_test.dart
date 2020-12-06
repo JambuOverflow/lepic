@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/network_info.dart';
-import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'package:mobile/features/user_management/data/repositories/user_repository_impl.dart';
@@ -88,10 +88,10 @@ void main() {
     });
 
     group('device is online', () {
-      Response response;
+      http.Response response;
 
       setUp(() {
-        response = Response(message: 'Created user successfully');
+        response = http.Response('Created user successfully', 200);
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
       });
 

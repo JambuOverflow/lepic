@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/class_management/domain/use_cases/delete_classroom_use_case.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
+import 'package:http/http.dart' as http;
 
 class MockClassroomRepository extends Mock implements ClassroomRepository {}
 
@@ -33,7 +33,7 @@ void main() {
     name: "A",
   );
 
-  final tResponse = Response(message: "Nice");
+  final tResponse = http.Response("Nice", 204);
 
   test('should return a correct response when deleting a classroom', () async {
     when(mockClassroomRepository.deleteClassroom(tClassroom))
