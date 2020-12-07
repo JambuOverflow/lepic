@@ -7,12 +7,12 @@ import '../../../../core/use_cases/use_case.dart';
 import '../repositories/user_repository.dart';
 import 'user_params.dart';
 
-class CreateNewUser implements UseCase<Response, UserParams> {
+class UpdateUser extends UseCase<Response, UserParams> {
   final UserRepository repository;
 
-  CreateNewUser({@required this.repository});
+  UpdateUser({@required this.repository});
 
   @override
-  Future<Either<Failure, Response>> call(UserParams params) async =>
-      await repository.createUser(params.user);
+  Future<Either<Failure, Response>> call(params) async =>
+      await repository.updateUser(params.user);
 }
