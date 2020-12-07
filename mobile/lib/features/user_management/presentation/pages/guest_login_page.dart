@@ -19,7 +19,7 @@ class GuestLoginPage extends StatelessWidget {
             SizedBox(height: 80),
             LoginInput(text: 'Name'),
             SizedBox(height: 20),
-            // TODO: Refactor and Update Dropdown value after selection
+            // Refactor and Update Dropdown value after selection
             DropdownButton(
               value: '-',
               icon: Icon(Icons.arrow_drop_down),
@@ -39,13 +39,15 @@ class GuestLoginPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             RaisedButton(
-              child: Text('Guest Login'),
+              child: Text('Login'),
               onPressed: () {},
             ),
             SizedBox(height: 20),
             RaisedButton(
               child: Text('Cancel'),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
             ),
           ],
         ),

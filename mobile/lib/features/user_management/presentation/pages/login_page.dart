@@ -21,17 +21,26 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 20),
             LoginInput(text: 'Password'),
             SizedBox(height: 20),
+            RaisedButton(
+              child: Text('Login'),
+              onPressed: () {},
+            ),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RaisedButton(
                   child: Text('Guest Login'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/guest');
+                  },
                 ),
                 SizedBox(width: 10),
                 RaisedButton(
                   child: Text('Sign Up'),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signup');
+                  },
                 ),
               ],
             ),
