@@ -4,6 +4,7 @@ import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/repositories/user_repository.dart';
 import 'package:mobile/features/user_management/domain/use_cases/create_new_user.dart';
+import 'package:mobile/features/user_management/domain/use_cases/user_params.dart';
 import 'package:mockito/mockito.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
@@ -30,7 +31,7 @@ void main() {
     when(mockUserRepository.createUser(tUser))
         .thenAnswer((_) async => Right(Response()));
 
-    final result = await useCase(Params(user: tUser));
+    final result = await useCase(UserParams(user: tUser));
 
     expect(result, Right(Response()));
     verify(mockUserRepository.createUser(tUser));
