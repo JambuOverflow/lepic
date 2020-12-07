@@ -1,22 +1,18 @@
 import json
 from rest_framework import status, serializers
-from .serializers import ClassSerializer, UserSerializer, ProfileSerializer, TextSerializer
-from django.http import JsonResponse
-from django.contrib.auth.models import User
+from .serializers import ClassSerializer, UserSerializer, TextSerializer
+from django.http import JsonResponse, Http404
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import Text, Class, Profile
+from .models import Text, Class, User
 from django.shortcuts import render
-from rest_framework import generics, mixins
-from rest_framework import status
+from rest_framework import generics, mixins, status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
-from django.contrib.auth.models import User
-from django.core.validators import validate_email
-from .enum_roles import Roles
+from .permissions import IsOwnerOrReadOnly
+
 
 
 @api_view(["GET"])
@@ -144,110 +140,19 @@ def check_role(role):
     return role in [0, 1]
 
 
-@api_view(["POST"])
-def create_class(request):
-    payload = json.loads(request.body)
-
-    if check_role(payload["role"]):
-        try:
-            user = User.objects.get(id=payload["id_tutor"])
-            _class = Class.objects.create(
-                tutor=user,
-                # school=payload["school"],
-                grade=payload["grade"]
-            )
-            class_serializer = ClassSerializer(_class)
-            return JsonResponse({'class': class_serializer.data}, safe=False, status=status.HTTP_201_CREATED)
-            
-        except ObjectDoesNotExist as e:
-            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
-        
-        except Exception as e:
-            return JsonResponse({'error': f'Something terrible went wrong: {str(e)}'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
-@api_view(["GET"])
-def get_classes(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        classes = Class.objects.filter(tutor=user)
-        serializer = ClassSerializer(classes, many=True)
-        return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
-    except ObjectDoesNotExist as e:
-        return JsonResponse({'error': 'User has no associated classes.'}, safe=False, status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(["PUT"])
-def update_class(request, class_id):
-    user = request.user.id
-    payload = json.loads(request.body)
-
-    if check_role(payload["role"]):
-        try:
-            class_item = Class.objects.filter(tutor=user, id=class_id)
-            class_item.update(**payload)
-            _class = Class.objects.get(id=class_id)
-            serializer = ClassSerializer(_class)
-            return JsonResponse({'classes': serializer.data}, safe=False, status=status.HTTP_200_OK)
-        except ObjectDoesNotExist as e:
-            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(["DELETE"])
-def delete_class(request, class_id):
-    user = request.user.id
-    payload = json.loads(request.body)
-
-    if check_role(payload["role"]):
-        try:
-            _class = Class.objects.get(tutor=user, id=class_id)
-            _class.delete()
-            return JsonResponse(status=status.HTTP_204_NO_CONTENT)
-        except ObjectDoesNotExist as e:
-            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return JsonResponse({'error': 'Something went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(["PUT"])
-def update_text(request, text_id):
-    payload = json.loads(request.body)
-    user = User.objects.get(id=payload["id"])
-
-    if check_role(payload["role"]):
-        try:
-            text_item = Text.objects.filter(writer=user, id=text_id)
-            text_item.update(**payload)
-            text = Text.objects.get(id=text_id)
-            serializer = TextSerializer(text)
-            return JsonResponse({'text': serializer.data}, safe=False, status=status.HTTP_200_OK)
-        except ObjectDoesNotExist as e:
-            return JsonResponse({'error': str(e)}, safe=False, status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return JsonResponse({'error': 'Something terrible went wrong'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        return JsonResponse({'error': 'Permission denied'}, safe=False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(["GET"])
-def get_texts(request):
-    user = request.user.id
-    texts = Text.objects.filter(writer=user)
-    serializer = TextSerializer(texts, many=True)
-    return JsonResponse({'texts': serializer.data}, safe=False, status=status.HTTP_200_OK)
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class TextCreate(generics.ListCreateAPIView):
     """
-    Create a new text and list all.
+    Creates a new text.
     """
     queryset = Text.objects.all()
     serializer_class = TextSerializer
@@ -265,7 +170,8 @@ class ListTutorTexts(generics.ListAPIView):
     """
     List a tutors texts.
     """
-    queryset = 'tutor'
+    queryset = ''
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, pk_tutor):
         classes = Class.objects.filter(tutor=pk_tutor)
@@ -282,6 +188,11 @@ class ClassCreate(generics.ListCreateAPIView):
     """
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+    def perform_create(self, serializer):
+        serializer.save(tutor=self.request.user)
 
 
 class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -290,6 +201,8 @@ class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Class.objects.all()
     serializer_class = ClassSerializer()
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly]
 
 
 class ListTutorClasses(generics.ListAPIView):
@@ -297,6 +210,8 @@ class ListTutorClasses(generics.ListAPIView):
     List a tutors classes.
     """
     queryset = 'tutor'
+    permission_classes = [permissions.IsAuthenticated]
+
 
     def get(self, request, pk_tutor):
         classes = Class.objects.filter(tutor=pk_tutor)
@@ -307,7 +222,6 @@ class ListTutorClasses(generics.ListAPIView):
 
 
 class LepicUser(APIView):
-    
     def get_object(self, primary_key):
         try:
             return {"user" : User.objects.get(pk=primary_key), "profile" : Profile.objects.get(pk=primary_key)}
@@ -319,5 +233,3 @@ class LepicUser(APIView):
         user_serializer = UserSerializer(user_dictionary.get("user"))
         profile_serializer = ProfileSerializer(user_dictionary.get("profile"))
         return Response({'user': {**user_serializer.data, **profile_serializer.data}})
-
-      
