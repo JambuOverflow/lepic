@@ -3,10 +3,14 @@ from .models import Class, User, School, Text
 
 
 class UserSerializer(serializers.ModelSerializer):
+    #classes = serializers.PrimaryKeyRelatedField(many=True, queryset=Class.objects.all())
 
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'user_role']
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
 
 class SchoolSerializer(serializers.ModelSerializer):
@@ -16,6 +20,8 @@ class SchoolSerializer(serializers.ModelSerializer):
 
 
 class ClassSerializer(serializers.ModelSerializer):
+    tutor = serializers.ReadOnlyField(source='tutor.username')
+    
     class Meta:
         model = Class
         fields = ['id', 'title', 'tutor', 'grade']
