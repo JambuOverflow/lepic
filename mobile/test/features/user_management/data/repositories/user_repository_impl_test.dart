@@ -114,6 +114,15 @@ void main() {
         verify(mockRemoteDataSource.createUser(tUser));
         verify(mockLocalDataSource.cacheUser(tUser));
       });
+
+      test('should return server failure when call is unsuccessful', () async {
+        when(mockRemoteDataSource.createUser(tUser))
+            .thenThrow(ServerException());
+
+        final result = await repository.createUser(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
     });
 
     runTestsOffline(() {
@@ -121,6 +130,58 @@ void main() {
         when(mockRemoteDataSource.createUser(tUser)).thenThrow(ServerFailure());
 
         final result = await repository.createUser(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
+    });
+  });
+
+  group('updateUser', () {
+    test('should test if device is online', () async {
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+
+      repository.updateUser(tUser);
+      verify(mockNetworkInfo.isConnected);
+    });
+
+    runTestsOnline(() {
+      Response response;
+
+      test('should send updated user with successful response', () async {
+        when(mockRemoteDataSource.updateUser(tUser))
+            .thenAnswer((_) async => response);
+
+        final result = await repository.updateUser(tUser);
+
+        verify(mockRemoteDataSource.updateUser(tUser));
+        expect(result, Right(response));
+      });
+
+      test('should cache user when call is successful', () async {
+        when(mockRemoteDataSource.updateUser(tUser))
+            .thenAnswer((_) async => response);
+
+        await repository.updateUser(tUser);
+
+        verify(mockRemoteDataSource.updateUser(tUser));
+        verify(mockLocalDataSource.cacheUser(tUser));
+      });
+
+      test('should return server failure when call is unsuccessful', () async {
+        when(mockRemoteDataSource.updateUser(tUser))
+            .thenThrow(ServerException());
+
+        final result = await repository.updateUser(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
+    });
+
+    runTestsOffline(() {
+      test('should throw server failure', () async {
+        when(mockRemoteDataSource.updateUser(tUser)).thenThrow(ServerFailure());
+
+        final result = await repository.updateUser(tUser);
 
         expect(result, Left(ServerFailure()));
       });
