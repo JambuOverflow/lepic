@@ -43,6 +43,26 @@ void main() {
     );
   });
 
+  void runTestsOnline(Function body) {
+    group('device is online', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      });
+
+      body();
+    });
+  }
+
+  void runTestsOffline(Function body) {
+    group('device is offline', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      body();
+    });
+  }
+
   group('getStoredUser', () {
     test('should check if the device is online', () async {
       when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
@@ -51,11 +71,7 @@ void main() {
       verify(mockNetworkInfo.isConnected);
     });
 
-    group('device is offline', () {
-      setUp(() {
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-      });
-
+    runTestsOffline(() {
       test('should get User from local cache when there is cached data',
           () async {
         when(mockLocalDataSource.getStoredUser())
@@ -87,13 +103,8 @@ void main() {
       verify(mockNetworkInfo.isConnected);
     });
 
-    group('device is online', () {
+    runTestsOnline(() {
       Response response;
-
-      setUp(() {
-        response = Response(message: 'Created user successfully');
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      });
 
       test('should send new User with successful response', () async {
         when(mockRemoteDataSource.createUser(tUser))
@@ -116,11 +127,7 @@ void main() {
       });
     });
 
-    group('device is offline', () {
-      setUp(() {
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-      });
-
+    runTestsOffline(() {
       test('should throw server failure', () async {
         when(mockRemoteDataSource.createUser(tUser)).thenThrow(ServerFailure());
 
