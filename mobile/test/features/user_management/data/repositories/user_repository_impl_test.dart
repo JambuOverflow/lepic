@@ -64,34 +64,23 @@ void main() {
   }
 
   group('getStoredUser', () {
-    test('should check if the device is online', () async {
-      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+    test('should get User from local cache when there is cached data',
+        () async {
+      when(mockLocalDataSource.getStoredUser()).thenAnswer((_) async => tUser);
 
-      repository.getStoredUser();
-      verify(mockNetworkInfo.isConnected);
+      final result = await repository.getStoredUser();
+
+      verify(mockLocalDataSource.getStoredUser());
+      expect(result, Right(tUser));
     });
 
-    runTestsOffline(() {
-      test('should get User from local cache when there is cached data',
-          () async {
-        when(mockLocalDataSource.getStoredUser())
-            .thenAnswer((_) async => tUser);
+    test('should throw cache failure when there is not cached data', () async {
+      when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
 
-        final result = await repository.getStoredUser();
+      final result = await repository.getStoredUser();
 
-        verify(mockLocalDataSource.getStoredUser());
-        expect(result, Right(tUser));
-      });
-
-      test('should throw cache failure when there is not cached data',
-          () async {
-        when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
-
-        final result = await repository.getStoredUser();
-
-        verify(mockLocalDataSource.getStoredUser());
-        expect(result, Left(CacheFailure()));
-      });
+      verify(mockLocalDataSource.getStoredUser());
+      expect(result, Left(CacheFailure()));
     });
   });
 

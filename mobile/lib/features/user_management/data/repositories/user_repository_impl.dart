@@ -40,11 +40,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Either<Failure, User>> getStoredUser() async {
-    if (await networkInfo.isConnected) {
-      //throw UnimplementedError();
-    } else {
-      return await _tryGetLocalUser();
-    }
+    return await _tryGetLocalUser();
   }
 
   Future<Either<Failure, User>> _tryGetLocalUser() async {
