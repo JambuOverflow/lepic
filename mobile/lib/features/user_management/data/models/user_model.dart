@@ -1,38 +1,36 @@
-import 'package:flutter/foundation.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:moor/moor.dart';
 
-class UserModel extends User {
-  UserModel({
-    @required String firstName,
-    @required String lastName,
-    @required String email,
-    @required Role role,
-    @required String password,
-  }) : super(
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          role: role,
-          password: password,
-        );
-
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      email: json['email'],
-      role: Role.values[json['role']],
-      password: json['password'],
-    );
+class UserSerializer extends ValueSerializer {
+  @override
+  T fromJson<T>(json) {
+    if (T == Role)
+      return Role.values[json] as T;
+    else if (json == 'set to null')
+      return null;
+    else
+      return json as T;
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      "first_name": firstName,
-      "last_name": lastName,
-      "email": email,
-      "role": role.index,
-      "password": password
-    };
+  @override
+  toJson<T>(T value) {
+    if (T == Role)
+      return (value as Role).index;
+    else if (value == null)
+      return 'set to null';
+    else
+      return value;
   }
+}
+
+class UserModels extends Table {
+  @JsonKey('local_id')
+  IntColumn get localId => integer().autoIncrement()();
+  @JsonKey('first_name')
+  TextColumn get firstName => text()();
+  @JsonKey('last_name')
+  TextColumn get lastName => text()();
+  TextColumn get email => text()();
+  IntColumn get role => intEnum<Role>()();
+  TextColumn get password => text()();
 }

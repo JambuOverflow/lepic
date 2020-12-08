@@ -23,7 +23,7 @@ jobs:
         script:
             - cd mobile/
             - ../flutter/bin/flutter test --coverage test/
-        after_success:
+        after_success:            
             - coveralls-lcov ./coverage/lcov.info
         cache:
             directories:
