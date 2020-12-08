@@ -3,7 +3,7 @@ from .models import Class, User, School, Text
 
 
 class UserSerializer(serializers.ModelSerializer):
-    #classes = serializers.PrimaryKeyRelatedField(many=True, queryset=Class.objects.all())
+    password = serializers.CharField(required=False)
 
     class Meta:
         model = User
