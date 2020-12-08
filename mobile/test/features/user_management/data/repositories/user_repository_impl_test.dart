@@ -43,39 +43,44 @@ void main() {
     );
   });
 
-  group('getStoredUser', () {
-    test('should check if the device is online', () async {
-      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+  void runTestsOnline(Function body) {
+    group('device is online', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      });
 
-      repository.getStoredUser();
-      verify(mockNetworkInfo.isConnected);
+      body();
     });
+  }
 
+  void runTestsOffline(Function body) {
     group('device is offline', () {
       setUp(() {
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
       });
 
-      test('should get User from local cache when there is cached data',
-          () async {
-        when(mockLocalDataSource.getStoredUser())
-            .thenAnswer((_) async => tUser);
+      body();
+    });
+  }
 
-        final result = await repository.getStoredUser();
+  group('getStoredUser', () {
+    test('should get User from local cache when there is cached data',
+        () async {
+      when(mockLocalDataSource.getStoredUser()).thenAnswer((_) async => tUser);
 
-        verify(mockLocalDataSource.getStoredUser());
-        expect(result, Right(tUser));
-      });
+      final result = await repository.getStoredUser();
 
-      test('should throw cache failure when there is not cached data',
-          () async {
-        when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
+      verify(mockLocalDataSource.getStoredUser());
+      expect(result, Right(tUser));
+    });
 
-        final result = await repository.getStoredUser();
+    test('should throw cache failure when there is not cached data', () async {
+      when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
 
-        verify(mockLocalDataSource.getStoredUser());
-        expect(result, Left(CacheFailure()));
-      });
+      final result = await repository.getStoredUser();
+
+      verify(mockLocalDataSource.getStoredUser());
+      expect(result, Left(CacheFailure()));
     });
   });
 
@@ -87,13 +92,8 @@ void main() {
       verify(mockNetworkInfo.isConnected);
     });
 
-    group('device is online', () {
+    runTestsOnline(() {
       http.Response response;
-
-      setUp(() {
-        response = http.Response('Created user successfully', 200);
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-      });
 
       test('should send new User with successful response', () async {
         when(mockRemoteDataSource.createUser(tUser))
@@ -114,17 +114,74 @@ void main() {
         verify(mockRemoteDataSource.createUser(tUser));
         verify(mockLocalDataSource.cacheUser(tUser));
       });
+
+      test('should return server failure when call is unsuccessful', () async {
+        when(mockRemoteDataSource.createUser(tUser))
+            .thenThrow(ServerException());
+
+        final result = await repository.createUser(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
     });
 
-    group('device is offline', () {
-      setUp(() {
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-      });
-
+    runTestsOffline(() {
       test('should throw server failure', () async {
         when(mockRemoteDataSource.createUser(tUser)).thenThrow(ServerFailure());
 
         final result = await repository.createUser(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
+    });
+  });
+
+  group('updateUser', () {
+    test('should test if device is online', () async {
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+
+      repository.updateUser(tUser);
+      verify(mockNetworkInfo.isConnected);
+    });
+
+    runTestsOnline(() {
+      http.Response response;
+
+      test('should send updated user with successful response', () async {
+        when(mockRemoteDataSource.updateUser(tUser))
+            .thenAnswer((_) async => response);
+
+        final result = await repository.updateUser(tUser);
+
+        verify(mockRemoteDataSource.updateUser(tUser));
+        expect(result, Right(response));
+      });
+
+      test('should cache user when call is successful', () async {
+        when(mockRemoteDataSource.updateUser(tUser))
+            .thenAnswer((_) async => response);
+
+        await repository.updateUser(tUser);
+
+        verify(mockRemoteDataSource.updateUser(tUser));
+        verify(mockLocalDataSource.cacheUser(tUser));
+      });
+
+      test('should return server failure when call is unsuccessful', () async {
+        when(mockRemoteDataSource.updateUser(tUser))
+            .thenThrow(ServerException());
+
+        final result = await repository.updateUser(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
+    });
+
+    runTestsOffline(() {
+      test('should throw server failure', () async {
+        when(mockRemoteDataSource.updateUser(tUser)).thenThrow(ServerFailure());
+
+        final result = await repository.updateUser(tUser);
 
         expect(result, Left(ServerFailure()));
       });

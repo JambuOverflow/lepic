@@ -1,23 +1,24 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:moor/moor.dart';
 
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
+  moorRuntimeOptions.defaultSerializer = UserSerializer();
+
   final tUserModel = UserModel(
+    localId: 1,
     firstName: 'ab',
     lastName: 'c',
     email: 'abc@g.com',
     role: Role.teacher,
     password: 'x1y2',
   );
-
-  test('should be a subclass of User entity', () async {
-    expect(tUserModel, isA<User>());
-  });
 
   group('fromJson', () {
     test('should return a valid model', () async {
@@ -34,6 +35,7 @@ void main() {
       final result = tUserModel.toJson();
 
       final expectedMap = {
+        "local_id": 1,
         "first_name": "ab",
         "last_name": "c",
         "email": "abc@g.com",

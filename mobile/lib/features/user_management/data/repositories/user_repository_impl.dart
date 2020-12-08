@@ -24,26 +24,46 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, http.Response>> createUser(User user) async {
     if (await networkInfo.isConnected) {
-      final response = await remoteDataSource.createUser(user);
-      await localDataSource.cacheUser(user);
-
-      return Right(response);
+      return await _tryCreateUserAndCacheIt(user);
     } else {
       return Left(ServerFailure());
     }
   }
 
   @override
-  Future<Either<Failure, http.Response>> updateUser(User user) {
-    throw UnimplementedError();
+  Future<Either<Failure, http.Response>> updateUser(User user) async {
+    if (await networkInfo.isConnected) {
+      return await _tryUpdateUserAndCacheIt(user);
+    } else {
+      return Left(ServerFailure());
+    }
   }
 
   @override
   Future<Either<Failure, User>> getStoredUser() async {
-    if (await networkInfo.isConnected) {
-      //throw UnimplementedError();
-    } else {
-      return await _tryGetLocalUser();
+    return await _tryGetLocalUser();
+  }
+
+  Future<Either<Failure, http.Response>> _tryUpdateUserAndCacheIt(
+      User user) async {
+    try {
+      final updatedUser = await remoteDataSource.updateUser(user);
+      await localDataSource.cacheUser(user);
+      return Right(updatedUser);
+    } on ServerException {
+      return Left(ServerFailure());
+    }
+  }
+
+  Future<Either<Failure, http.Response>> _tryCreateUserAndCacheIt(
+      User user) async {
+    try {
+      final response = await remoteDataSource.createUser(user);
+      await localDataSource.cacheUser(user);
+
+      return Right(response);
+    } on ServerException {
+      return Left(ServerFailure());
     }
   }
 

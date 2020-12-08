@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+// Don't change the order!
 enum Role { teacher, support, researcher }
 
 class User extends Equatable {
