@@ -1,54 +1,36 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/user_management/data/models/user_model.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:moor/moor.dart';
 
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
-  final tUser = UserModel(
-    firstName: 'v',
-    lastName: 'c',
-    email: 'v@g.com',
-    role: Role.teacher,
-    password: '123',
-  );
+  final tClassModel =
+      ClassroomModel(grade: 1, localId: 2, name: "A", tutorId: 3);
 
-  final tClassroomModel =
-      ClassroomModel(tutor: tUser, grade: 1, name: 'A', id: 1);
-
-  test('should be a subclass of Classroom entity', () async {
-    expect(tClassroomModel, isA<Classroom>());
-  });
-
-  group('fromJson', () {
-    test('should return a valid ClassroomModel', () async {
+  group("from json", () {
+    test("should return a valid Classroom model", () async {
       final Map<String, dynamic> jsonMap = json.decode(fixture('classroom'));
 
       final result = ClassroomModel.fromJson(jsonMap);
 
-      expect(result, tClassroomModel);
+      expect(result, tClassModel);
     });
   });
 
   group('toJson', () {
-    test('should return a JSON map with proper data', () async {
-      final result = tClassroomModel.toJson();
+    test('should return a Classroom JSON map with proper data', () async {
+      final result = tClassModel.toJson();
 
       final expectedMap = {
-        "tutor": {
-          "first_name": "v",
-          "last_name": "c",
-          "email": "v@g.com",
-          "role": 0,
-          "password": "123"
-        },
+        "local_id": 2,
         "grade": 1,
         "name": "A",
-        "id": 1
+        "tutor_id": 3,
       };
 
       expect(result, expectedMap);

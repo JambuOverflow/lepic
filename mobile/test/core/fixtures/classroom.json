@@ -1,12 +1,6 @@
 {
-    "tutor": {
-        "first_name": "v",
-        "last_name": "c",
-        "email": "v@g.com",
-        "role": 0,
-        "password": "123"
-    },
+    "local_id": 2,
     "grade": 1,
     "name": "A",
-    "id": 1
+    "tutor_id": 3
 }

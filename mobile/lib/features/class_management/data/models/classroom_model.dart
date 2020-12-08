@@ -1,19 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/user_management/data/models/user_model.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:moor/moor.dart';
 
+class ClassroomModels extends Table {
+  @JsonKey("local_id")
+  IntColumn get localId => integer().autoIncrement()();
+  IntColumn get grade => integer()();
+  TextColumn get name => text()();
+  @JsonKey("tutor_id")
+  IntColumn get tutorId =>
+      integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
+}
+/*
 class ClassroomModel extends Classroom {
   ClassroomModel({
-    @required UserModel tutor,
+    @required User tutor,
     @required int grade,
     @required String name,
     @required int id,
   }) : super(grade: grade, tutor: tutor, name: name, id: id);
 
   factory ClassroomModel.fromJson(Map<String, dynamic> json) {
-    final tutor = UserModel.fromJson(json['tutor']);
+    final tutor = (UserModel.fromJson(json['tutor']) as User);
 
     return ClassroomModel(
       tutor: tutor,
@@ -32,12 +38,4 @@ class ClassroomModel extends Classroom {
     };
   }
 }
-
-/*
-return Classroommodel(
-  tutor: ){
-
-  },
-  grade: 2,
-  name: 'lixo'
 */

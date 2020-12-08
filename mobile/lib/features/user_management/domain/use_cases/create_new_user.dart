@@ -13,6 +13,6 @@ class CreateNewUser implements UseCase<http.Response, UserParams> {
   CreateNewUser({@required this.repository});
 
   @override
-  Future<Either<Failure, http.Response>> call(Params params) async =>
+  Future<Either<Failure, http.Response>> call(UserParams params) async =>
       await repository.createUser(params.user);
 }
