@@ -24,6 +24,8 @@ jobs:
             - cd mobile/
             - ../flutter/bin/flutter test --coverage test/
         after_success:
+            - flutter packages pub global activate remove_from_coverage
+            - remove_from_coverage -f ./coverage/lcov.info -r '.g.dart$'
             - coveralls-lcov ./coverage/lcov.info
         cache:
             directories:
