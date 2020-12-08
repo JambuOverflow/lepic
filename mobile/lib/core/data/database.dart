@@ -22,6 +22,14 @@ LazyDatabase _openConnection() {
 class Database extends _$Database {
   Database() : super(_openConnection());
 
+  Future<UserModel> get activeUser => select(userModels).getSingle();
+  Future<void> createOrUpdateUser(UserModel model) async {
+    if (await activeUser == null)
+      into(userModels).insert(model);
+    else
+      update(userModels).replace(model);
+  }
+
   @override
   int get schemaVersion => 1;
 }
