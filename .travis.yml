@@ -23,8 +23,6 @@ jobs:
         script:
             - cd mobile/
             - ../flutter/bin/flutter test --coverage test/
-            - ../flutter/bin/flutter packages pub global activate remove_from_coverage
-            - ../flutter/bin/flutter remove_from_coverage -f ./coverage/lcov.info -r '.g.dart$'
         after_success:            
             - coveralls-lcov ./coverage/lcov.info
         cache:
