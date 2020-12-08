@@ -19,13 +19,13 @@ jobs:
         install:
             - git clone https://github.com/flutter/flutter.git -b stable
             - ./flutter/bin/flutter doctor
+            - ./flutter/bin/flutter packages pub global activate remove_from_coverage
             - gem install coveralls-lcov
         script:
             - cd mobile/
             - ../flutter/bin/flutter test --coverage test/
-        after_success:
-            - flutter packages pub global activate remove_from_coverage
-            - remove_from_coverage -f ./coverage/lcov.info -r '.g.dart$'
+            - ../flutter/bin/flutter remove_from_coverage -f ./coverage/lcov.info -r '.g.dart$'
+        after_success:            
             - coveralls-lcov ./coverage/lcov.info
         cache:
             directories:
