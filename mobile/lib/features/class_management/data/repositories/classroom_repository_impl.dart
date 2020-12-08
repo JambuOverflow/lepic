@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/network/network_info.dart';
-import 'package:mobile/features/class_management/data/data_sources/classroom_remote_data_source.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -13,46 +12,24 @@ import '../data_sources/classroom_local_data_source.dart';
 
 class ClassroomRepositoryImpl implements ClassroomRepository {
   final ClassroomLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
-  final ClassroomRemoteDataSource remoteDataSource;
 
   ClassroomRepositoryImpl({
-    @required this.remoteDataSource,
     @required this.localDataSource,
-    @required this.networkInfo,
   });
 
   @override
   Future<Either<Failure, Classroom>> createClassroom(
       Classroom classroom) async {
-    if (await networkInfo.isConnected) {
-      return await _trySendClassroomAndCacheIt(classroom);
-    } else {
-      return await _tryCacheClassroom(classroom);
-    }
+    return await _tryCacheClassroom(classroom);
   }
 
   @override
   Future<Either<Failure, http.Response>> deleteClassroom(
       Classroom classroom) async {
-    if (await networkInfo.isConnected) {
-      return await _tryDeleteRemoteClassroom(classroom);
-    }
-  }
-
-  Future<Either<Failure, Classroom>> _trySendClassroomAndCacheIt(
-      Classroom classroom) async {
     try {
-      final remoteClassroom =
-          await remoteDataSource.sendNewClassroom(classroom);
-      try {
-        await localDataSource.cacheClassroom(classroom);
-        return Right(remoteClassroom);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
-    } on ServerException {
-      return Left(ServerFailure());
+      await localDataSource.deleteClassroomFromCache(classroom);
+    } on CacheException {
+      return Left(CacheFailure());
     }
   }
 
@@ -66,26 +43,17 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     }
   }
 
-  Future<Either<Failure, http.Response>> _tryDeleteRemoteClassroom(
-      Classroom classroom) async {
+  @override
+  Future<Either<Failure, List<Classroom>>> getClassrooms(User user) async {
     try {
-      await localDataSource.deleteClassroomFromCache(classroom);
-      final response = await remoteDataSource.deleteClassroom(classroom);
-      return Right(response);
-    } on ServerException {
-      return Left(ServerFailure());
+      await localDataSource.getClassrooms(user);
+    } on CacheException {
+      return Left(CacheFailure());
     }
   }
 
   @override
-  Future<Either<Failure, List<Classroom>>> getClassrooms(User user) {
-    // TODO: implement getClassrooms
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either<Failure, Classroom>> updateClassroom(Classroom classroom) {
-    // TODO: implement updateClassroom
-    throw UnimplementedError();
+  Future<Either<Failure, Classroom>> updateClassroom(Classroom classroom) async {
+    return await _tryCacheClassroom(classroom);
   }
 }
