@@ -11,11 +11,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsOwner
+from django.contrib.auth.hashers import make_password
 
 
 
-@api_view(["GET"])
+'''@api_view(["GET"])
 def get_users(request):
     users = User.objects.all()
     profiles = Profile.objects.all()
@@ -137,7 +138,7 @@ def check_role(role):
     """
     Checks if the user is a professor or support professional.
     """
-    return role in [0, 1]
+    return role in [0, 1]'''
 
 
 class UserList(generics.ListCreateAPIView):
@@ -145,9 +146,17 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
 
-class UserDetail(generics.RetrieveAPIView):
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def perform_update(self, serializer):
+        if('password' in self.request.data):
+            password = make_password(self.request.data['password'])
+            serializer.save(password=password)
+        else:
+            serializer.save()
 
 
 class TextCreate(generics.ListCreateAPIView):
@@ -221,7 +230,7 @@ class ListTutorClasses(generics.ListAPIView):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-class LepicUser(APIView):
+'''class LepicUser(APIView):
     def get_object(self, primary_key):
         try:
             return {"user" : User.objects.get(pk=primary_key), "profile" : Profile.objects.get(pk=primary_key)}
@@ -232,4 +241,4 @@ class LepicUser(APIView):
         user_dictionary = self.get_object(primary_key)
         user_serializer = UserSerializer(user_dictionary.get("user"))
         profile_serializer = ProfileSerializer(user_dictionary.get("profile"))
-        return Response({'user': {**user_serializer.data, **profile_serializer.data}})
+        return Response({'user': {**user_serializer.data, **profile_serializer.data}})'''
