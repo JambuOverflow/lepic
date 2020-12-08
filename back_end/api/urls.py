@@ -10,9 +10,9 @@ urlpatterns = [
   path('texts/<int:pk>', views.TextDetail.as_view()),
   path('tutor/<int:pk_tutor>/texts', views.ListTutorTexts.as_view()),
   path('tutor/<int:pk_tutor>/classes', views.ListTutorClasses.as_view()),
-  path('users/', views.UserList.as_view()),
-  path('users/<int:pk>/', views.UserDetail.as_view()),
-  path('token-auth/', obtain_auth_token),
+  path('users/', views.UserList.as_view(), name='list-and-create-users'),
+  path('users/<int:pk>/', views.UserDetail.as_view(), name='update-delete-users'),
+  path('token-auth/', obtain_auth_token, name='get-user-token'),
 ] 
 
 urlpatterns = format_suffix_patterns(urlpatterns)
