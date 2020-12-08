@@ -9,6 +9,8 @@ import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
+  moorRuntimeOptions.defaultSerializer = UserSerializer();
+
   final tUserModel = UserModel(
     localId: 1,
     firstName: 'ab',
