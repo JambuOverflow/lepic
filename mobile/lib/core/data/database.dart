@@ -23,11 +23,13 @@ class Database extends _$Database {
   Database() : super(_openConnection());
 
   Future<UserModel> get activeUser => select(userModels).getSingle();
-  Future<void> createOrUpdateUser(UserModel model) async {
-    if (await activeUser == null)
-      into(userModels).insert(model);
-    else
-      update(userModels).replace(model);
+
+  Future<bool> updateUser(UserModel model) async {
+    return update(userModels).replace(model);
+  }
+
+  Future<int> insertUser(UserModel model) async {
+    return into(userModels).insert(model);
   }
 
   @override
