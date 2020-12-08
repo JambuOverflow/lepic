@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/network_info.dart';
@@ -23,6 +24,7 @@ void main() {
   MockNetworkInfo mockNetworkInfo;
 
   User tUser;
+  UserModel tUserModel;
 
   setUp(() {
     mockRemoteDataSource = MockRemoteDataSource();
@@ -35,6 +37,16 @@ void main() {
     );
 
     tUser = User(
+      localId: 1,
+      firstName: 'v',
+      lastName: 'c',
+      email: 'v@g.com',
+      role: Role.teacher,
+      password: '123',
+    );
+
+    tUserModel = UserModel(
+      localId: 1,
       firstName: 'v',
       lastName: 'c',
       email: 'v@g.com',
@@ -66,12 +78,13 @@ void main() {
   group('getStoredUser', () {
     test('should get User from local cache when there is cached data',
         () async {
-      when(mockLocalDataSource.getStoredUser()).thenAnswer((_) async => tUser);
+      when(mockLocalDataSource.getStoredUser())
+          .thenAnswer((_) async => tUserModel);
 
       final result = await repository.getStoredUser();
 
       verify(mockLocalDataSource.getStoredUser());
-      expect(result, Right(tUser));
+      expect(result, Right<Failure, User>(tUser));
     });
 
     test('should throw cache failure when there is not cached data', () async {
@@ -96,27 +109,27 @@ void main() {
       Response response;
 
       test('should send new User with successful response', () async {
-        when(mockRemoteDataSource.createUser(tUser))
+        when(mockRemoteDataSource.createUser(tUserModel))
             .thenAnswer((_) async => response);
 
         final result = await repository.createUser(tUser);
 
-        verify(mockRemoteDataSource.createUser(tUser));
+        verify(mockRemoteDataSource.createUser(tUserModel));
         expect(result, Right(response));
       });
 
       test('should cache user when call is successful', () async {
-        when(mockRemoteDataSource.createUser(tUser))
+        when(mockRemoteDataSource.createUser(tUserModel))
             .thenAnswer((_) async => response);
 
         await repository.createUser(tUser);
 
-        verify(mockRemoteDataSource.createUser(tUser));
-        verify(mockLocalDataSource.cacheUser(tUser));
+        verify(mockRemoteDataSource.createUser(tUserModel));
+        verify(mockLocalDataSource.cacheUser(tUserModel));
       });
 
       test('should return server failure when call is unsuccessful', () async {
-        when(mockRemoteDataSource.createUser(tUser))
+        when(mockRemoteDataSource.createUser(tUserModel))
             .thenThrow(ServerException());
 
         final result = await repository.createUser(tUser);
@@ -127,7 +140,8 @@ void main() {
 
     runTestsOffline(() {
       test('should throw server failure', () async {
-        when(mockRemoteDataSource.createUser(tUser)).thenThrow(ServerFailure());
+        when(mockRemoteDataSource.createUser(tUserModel))
+            .thenThrow(ServerFailure());
 
         final result = await repository.createUser(tUser);
 
@@ -148,27 +162,27 @@ void main() {
       Response response;
 
       test('should send updated user with successful response', () async {
-        when(mockRemoteDataSource.updateUser(tUser))
+        when(mockRemoteDataSource.updateUser(tUserModel))
             .thenAnswer((_) async => response);
 
         final result = await repository.updateUser(tUser);
 
-        verify(mockRemoteDataSource.updateUser(tUser));
+        verify(mockRemoteDataSource.updateUser(tUserModel));
         expect(result, Right(response));
       });
 
       test('should cache user when call is successful', () async {
-        when(mockRemoteDataSource.updateUser(tUser))
+        when(mockRemoteDataSource.updateUser(tUserModel))
             .thenAnswer((_) async => response);
 
         await repository.updateUser(tUser);
 
-        verify(mockRemoteDataSource.updateUser(tUser));
-        verify(mockLocalDataSource.cacheUser(tUser));
+        verify(mockRemoteDataSource.updateUser(tUserModel));
+        verify(mockLocalDataSource.cacheUser(tUserModel));
       });
 
       test('should return server failure when call is unsuccessful', () async {
-        when(mockRemoteDataSource.updateUser(tUser))
+        when(mockRemoteDataSource.updateUser(tUserModel))
             .thenThrow(ServerException());
 
         final result = await repository.updateUser(tUser);
@@ -179,7 +193,8 @@ void main() {
 
     runTestsOffline(() {
       test('should throw server failure', () async {
-        when(mockRemoteDataSource.updateUser(tUser)).thenThrow(ServerFailure());
+        when(mockRemoteDataSource.updateUser(tUserModel))
+            .thenThrow(ServerFailure());
 
         final result = await repository.updateUser(tUser);
 

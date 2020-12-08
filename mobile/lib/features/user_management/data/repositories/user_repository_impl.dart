@@ -9,6 +9,7 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../data_sources/user_local_data_source.dart';
 import '../data_sources/user_remote_data_source.dart';
+import 'package:mobile/core/data/database.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDataSource remoteDataSource;
@@ -46,8 +47,8 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(User user) async {
     try {
-      final updatedUser = await remoteDataSource.updateUser(user);
-      await localDataSource.cacheUser(user);
+      final updatedUser = await remoteDataSource.updateUser(_toModel(user));
+      await localDataSource.cacheUser(_toModel(user));
       return Right(updatedUser);
     } on ServerException {
       return Left(ServerFailure());
@@ -56,8 +57,8 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, Response>> _tryCreateUserAndCacheIt(User user) async {
     try {
-      final response = await remoteDataSource.createUser(user);
-      await localDataSource.cacheUser(user);
+      final response = await remoteDataSource.createUser(_toModel(user));
+      await localDataSource.cacheUser(_toModel(user));
 
       return Right(response);
     } on ServerException {
@@ -68,9 +69,33 @@ class UserRepositoryImpl implements UserRepository {
   Future<Either<Failure, User>> _tryGetLocalUser() async {
     try {
       final localUser = await localDataSource.getStoredUser();
-      return Right(localUser);
+      User user = _toEntity(localUser);
+
+      return Right(user);
     } on CacheException {
       return Left(CacheFailure());
     }
+  }
+
+  User _toEntity(UserModel model) {
+    return User(
+      localId: model.localId,
+      firstName: model.firstName,
+      lastName: model.lastName,
+      email: model.email,
+      password: model.password,
+      role: model.role,
+    );
+  }
+
+  UserModel _toModel(User entity) {
+    return UserModel(
+      localId: entity.localId,
+      firstName: entity.firstName,
+      lastName: entity.lastName,
+      email: entity.email,
+      password: entity.password,
+      role: entity.role,
+    );
   }
 }
