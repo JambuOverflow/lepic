@@ -9,9 +9,7 @@ import 'package:mobile/features/class_management/data/repositories/classroom_rep
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
-import 'package:collection/collection.dart';
 
 class MockClassroomLocalDataSource extends Mock
     implements ClassroomLocalDataSource {}
@@ -41,7 +39,6 @@ void main() {
 
   final tClassroomsModels = [tClassroomModel, tClassroomModel];
   final tClassrooms = [tClassroom, tClassroom];
-  final correctResponseDeleted = http.Response("Deleted", 204);
 
   setUp(() {
     mockLocalDataSource = MockClassroomLocalDataSource();
