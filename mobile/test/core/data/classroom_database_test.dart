@@ -64,13 +64,13 @@ void main() {
     await database.into(database.userModels).insert(tUserCompanion);
   }
 
+  tearDown(() async {
+    await closeDatabase(database);
+  });
+
   group("insertClassroom", () {
     setUp(() async {
       await connectDatabase();
-    });
-
-    tearDown(() async {
-      await closeDatabase(database);
     });
 
     test("should return the pk of a valid classroom when inserted", () async {
@@ -91,10 +91,6 @@ void main() {
       await database.insertClassroom(tValidClassCompanion);
     });
 
-    tearDown(() async {
-      await closeDatabase(database);
-    });
-
     test(
         "should return 1 indicating that a row was deleted when the input is a valid pk",
         () async {
@@ -113,10 +109,6 @@ void main() {
   group("getClassrooms", () {
     setUp(() async {
       await connectDatabase();
-    });
-
-    tearDown(() async {
-      await closeDatabase(database);
     });
 
     test("should return an empty list of classrooms", () async {
@@ -144,10 +136,6 @@ void main() {
     setUp(() async {
       await connectDatabase();
       await database.insertClassroom(tValidClassCompanion);
-    });
-
-    tearDown(() async {
-      await closeDatabase(database);
     });
 
     test("should return true when updating a valid classroom", () async {
