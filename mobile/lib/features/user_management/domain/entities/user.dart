@@ -19,7 +19,7 @@ class User extends Equatable {
     @required this.email,
     @required this.role,
     @required this.password,
-    @required this.id,
+    this.id,
   });
 
   @override
