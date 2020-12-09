@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 
@@ -11,6 +12,9 @@ void main() {
       ClassroomModel(grade: 1, localId: 2, name: "A", tutorId: 3);
 
   final tClassEntity = Classroom(grade: 1, id: 2, name: "A", tutorId: 3);
+
+  final tClassCompanion = ClassroomModelsCompanion(grade: Value(1), name: Value("A"),
+  tutorId: Value(3));
 
   group("from json", () {
     test("should return a valid Classroom model", () async {
@@ -50,6 +54,14 @@ void main() {
       final result = classroomEntityToModel(tClassEntity);
 
       expect(result, tClassModel);
+    });
+  });
+
+  group('modelToCompanion', () {
+    test('should return a Classroom companion with proper data', () async {
+      final result = classroomModelToCompanion(tClassModel);
+
+      expect(result, tClassCompanion);
     });
   });
 }
