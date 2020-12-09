@@ -1,52 +1,131 @@
 import pytest
-from rest_framework.test import APIRequestFactory
+from api.models import User
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient, APITestCase
 
-class TestCrudUser:
-
-    @pytest.mark.django_db
-    def test_get_users(self):
-        rest_request_factory = APIRequestFactory()
-        request = rest_request_factory.get('/api/get_users/')
-        response = get_users(request)
-        assert response.status_code == 200
+# Create your tests here.
 
 
-    @pytest.mark.django_db
+class TestCrudUser(APITestCase):
+
+    def test_list_users(self):
+        self.client.credentials()
+        url = reverse('list-and-create-users')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([], response.data)
+
     def test_create_user(self):
-        new_user = {
-            "first_name": "Renan",
-            "last_name": "Cunha",
-            "email": "renan@ufpa.br",
-            "username" : "renancunha",
-            "password" : "cunharenan",
-            "role": 0
+        self.client.credentials()
+        url = reverse('list-and-create-users')
+        data = {
+            "first_name": "Arthur",
+            "last_name": "Takeshi",
+            "email": "takeshi@ufpa.br",
+            "username" : "arthur",
+            "password" : "arthur",
+            "user_role": 3
         }
-        rest_request_factory = APIRequestFactory()
-        request = rest_request_factory.post('/api/create_user/', new_user, format='json')
-        response = create_user(request)
-        assert response.status_code == 201
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.get().username, 'arthur')
+        self.assertEqual(User.objects.get().password == 'arthur', False)
 
-    @pytest.mark.django_db
-    def test_update_user(self):
-        rest_request_factory = APIRequestFactory()
-        new_user = {
+    def test_get_token(self):
+        self.client.credentials()
+        url = reverse('list-and-create-users')
+        data = {
+            "first_name": "Arthur",
+            "last_name": "Takeshi",
+            "email": "takeshi@ufpa.br",
+            "username" : "arthur",
+            "password" : "arthur",
+            "user_role": 3
+        }
+        response = self.client.post(url, data, format='json')
+        url = reverse('get-user-token')
+        data = {
+            "username": "arthur",
+            "password": "arthur"
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('token' in response.data, True)
+
+    def test_update_user_put(self):
+        self.client.credentials()
+        url = reverse('list-and-create-users')
+        data = {
+            "first_name": "Arthur",
+            "last_name": "Takeshi",
+            "email": "takeshi@ufpa.br",
+            "username" : "arthur",
+            "password" : "arthur",
+            "user_role": 3
+        }
+        response = self.client.post(url, data, format='json')
+        old_username = response.data['username']
+        old_password = response.data['password']
+
+        url = reverse('get-user-token')
+        data = {
+            "username": "arthur",
+            "password": "arthur"
+        }
+        response = self.client.post(url, data, format='json')
+        token = response.data['token']
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        url = reverse('update-delete-users', args=[1])
+        data = {
             "first_name": "Renan",
             "last_name": "Cunha",
             "email": "renan@ufpa.br",
-            "username" : "renancunha",
-            "password" : "cunharenan",
-            "role": 0
+            "username" : "renan",
+            "password" : "renan",
+            "user_role": 1
         }
-        request_create = rest_request_factory.post('/api/create_user/', new_user, format='json')
-        create_user(request_create)
-        updated_user = {
-            "first_name": "Vitor",
-            "last_name": "Cantinho",
-            "email": "vitor@ufpa.br",
-            "username" : "renancunha",
-            "password" : "cunharenan",
-            "role": 2
+        response = self.client.put(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.get().username == old_username, False)
+        self.assertEqual(User.objects.get().password == old_password, False)
+
+    def test_update_user_patch(self):
+        self.client.credentials()
+        url = reverse('list-and-create-users')
+        data = {
+            "first_name": "Arthur",
+            "last_name": "Takeshi",
+            "email": "takeshi@ufpa.br",
+            "username" : "arthur",
+            "password" : "arthur",
+            "user_role": 3
         }
-        request_update = rest_request_factory.put('/api/update_user/1', updated_user, format='json')
-        response_update = update_user(request_update, 1)
-        assert response_update.status_code == 200
+        response = self.client.post(url, data, format='json')
+        old_username = response.data['username']
+        old_password = response.data['password']
+
+        url = reverse('get-user-token')
+        data = {
+            "username": "arthur",
+            "password": "arthur"
+        }
+        response = self.client.post(url, data, format='json')
+        token = response.data['token']
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        url = reverse('update-delete-users', args=[1])
+        data = {
+            "username" : "renan",
+            "password" : "renan",
+            "user_role": 1
+        }
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.objects.get().username == old_username, False)
+        self.assertEqual(User.objects.get().password == old_password, False)
