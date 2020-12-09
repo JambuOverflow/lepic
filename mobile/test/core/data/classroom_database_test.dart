@@ -155,7 +155,7 @@ void main() {
       expect(done, true);
     });
 
-    test("should return false when updating an ivalid classroom", () async {
+    test("should return false when updating an invalid classroom", () async {
       final done = await database.updateClassroom(tInvalidUpdateClassModel);
       expect(done, false);
     });
