@@ -5,17 +5,17 @@ import 'package:flutter/foundation.dart';
 import '../../../user_management/domain/entities/user.dart';
 
 class Classroom extends Equatable {
-  final User tutor;
+  final int tutorId;
   final int id;
   final int grade;
   final String name;
 
   Classroom(
-      {@required this.tutor,
+      {@required this.tutorId,
       @required this.grade,
       @required this.name,
       @required this.id});
 
   @override
-  List<Object> get props => [tutor, grade, name, id];
+  List<Object> get props => [tutorId, grade, name, id];
 }
