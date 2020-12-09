@@ -145,6 +145,6 @@ void main() {
   });
 }
 
-Future closeDatabase(Database database) async {
+void closeDatabase(Database database) async {
   await database.close();
 }
