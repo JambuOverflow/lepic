@@ -38,7 +38,8 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   Future<ClassroomModel> cacheNewClassroom(
       ClassroomModel classroomModel) async {
     try {
-      final classCompanion = classroomModelToCompanion(classroomModel);
+      bool nullToAbsent = true;
+      final classCompanion = classroomModel.toCompanion(nullToAbsent);
       final classPk = await this.database.insertClassroom(classCompanion);
       return ClassroomModel(
           grade: classroomModel.grade,
@@ -53,10 +54,8 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   @override
   Future<void> deleteClassroomFromCache(ClassroomModel classroomModel) async {
     var pk = classroomModel.localId;
-    print("netrou");
     try {
       var done = await this.database.deleteClassroom(pk);
-      print(done);
       if (done != 1) {
         throw SqliteException(787, "The table don't have this entry");
       }
@@ -66,14 +65,24 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   }
 
   @override
-  Future<List<ClassroomModel>> getClassroomsFromCache(UserModel userModel) {
-    // TODO: implement getClassrooms
-    throw UnimplementedError();
+  Future<List<ClassroomModel>> getClassroomsFromCache(
+      UserModel userModel) async {
+    final tutorId = userModel.localId;
+    try {
+      return await this.database.getClassrooms(tutorId);
+    } on SqliteException {
+      throw CacheException();
+    }
   }
 
   @override
-  Future<ClassroomModel> updateCachedClassroom(ClassroomModel classroomModel) {
-    // TODO: implement updateCachedClassroom
-    throw UnimplementedError();
+  Future<ClassroomModel> updateCachedClassroom(
+      ClassroomModel classroomModel) async {
+    bool updated = await this.database.updateClassroom(classroomModel);
+    if (updated) {
+      return classroomModel;
+    } else {
+      throw CacheException();
+    }
   }
 }
