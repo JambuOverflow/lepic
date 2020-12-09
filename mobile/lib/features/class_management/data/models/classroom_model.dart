@@ -27,3 +27,10 @@ ClassroomModel classroomEntityToModel(Classroom entity) {
       name: entity.name,
       tutorId: entity.tutorId);
 }
+
+ClassroomModelsCompanion classroomModelToCompanion(ClassroomModel model) {
+  return ClassroomModelsCompanion(
+      tutorId: Value(model.tutorId),
+      grade: Value(model.grade),
+      name: Value(model.name));
+}
