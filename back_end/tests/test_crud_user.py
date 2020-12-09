@@ -1,4 +1,3 @@
-import pytest
 from api.models import User
 from django.urls import reverse
 from rest_framework import status
