@@ -1,21 +1,49 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:matcher/matcher.dart';
 
-Future<void> main() {
-  final tValidPk = 1;
+void main() {
+  final tValidClassroomPk1 = 1;
+  final tValidClassroomPk2 = 2;
+  final tInvalidClassroomPk = 2;
+  final tValidUserPk = 1;
+  final tInvalidUserPk = 2;
+  final grade = 1;
+  final name = "A";
+  final updateName = "B";
+
   final tValidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(1), name: Value("A"), tutorId: Value(1));
+      grade: Value(grade), name: Value(name), tutorId: Value(tValidUserPk));
 
   final tInvalidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(1), name: Value("A"), tutorId: Value(2));
+      grade: Value(grade), name: Value(name), tutorId: Value(tInvalidUserPk));
+
+  final tValidClassModel1 = ClassroomModel(
+      grade: grade,
+      name: name,
+      tutorId: tValidUserPk,
+      localId: tValidClassroomPk1);
+
+  final tValidClassModel2 = ClassroomModel(
+      grade: grade,
+      name: name,
+      tutorId: tValidUserPk,
+      localId: tValidClassroomPk2);
+
+  final tValidUpdateClassModel = ClassroomModel(
+      grade: grade,
+      name: updateName,
+      tutorId: tValidUserPk,
+      localId: tValidClassroomPk1);
+
+  final tInvalidUpdateClassModel = ClassroomModel(
+      localId: tInvalidClassroomPk,
+      grade: grade,
+      name: updateName,
+      tutorId: tValidUserPk);
 
   final tUserCompanion = UserModelsCompanion(
     firstName: Value("cana"),
@@ -28,31 +56,112 @@ Future<void> main() {
   Database database;
   VmDatabase vmDatabase;
 
-  setUp(() async {
+  Future connectDatabase() async {
     vmDatabase = VmDatabase.memory(setup: (db) {
       db.execute('PRAGMA foreign_keys = ON');
     });
     database = Database(vmDatabase);
-    database.into(database.userModels).insert(tUserCompanion);
+    await database.into(database.userModels).insert(tUserCompanion);
+  }
+
+  group("insertClassroom", () {
+    setUp(() async {
+      await connectDatabase();
+    });
+
+    tearDown(() async {
+      await closeDatabase(database);
+    });
+
+    test("should return the pk of a valid classroom when inserted", () async {
+      final pk = await database.insertClassroom(tValidClassCompanion);
+
+      expect(pk, tValidClassroomPk1);
+    });
+
+    test("should return a SQLite error", () async {
+      expect(() => database.insertClassroom(tInvalidClassCompanion),
+          throwsA(TypeMatcher<SqliteException>()));
+    });
   });
 
-  test("should return the pk of a valid classroom when inserted", () async {
-    final pk = await database
-        .into(database.classroomModels)
-        .insert(tValidClassCompanion);
+  group("deleteClassroom", () {
+    setUp(() async {
+      await connectDatabase();
+      await database.insertClassroom(tValidClassCompanion);
+    });
 
-    expect(pk, tValidPk);
+    tearDown(() async {
+      await closeDatabase(database);
+    });
+
+    test(
+        "should return 1 indicating that a row was deleted when the input is a valid pk",
+        () async {
+      final deleted = await database.deleteClassroom(tValidClassroomPk1);
+      expect(deleted, 1);
+    });
+
+    test(
+        "should return 0 indicating that no rows were deleted when the input is an invalid pk",
+        () async {
+      final deleted = await database.deleteClassroom(tInvalidClassroomPk);
+      expect(deleted, 0);
+    });
   });
 
-  test("should return a SQLite error", () async {
-    expect(
-        () => database
-            .into(database.classroomModels)
-            .insert(tInvalidClassCompanion),
-        throwsA(TypeMatcher<SqliteException>()));
+  group("getClassrooms", () {
+    setUp(() async {
+      await connectDatabase();
+    });
+
+    tearDown(() async {
+      await closeDatabase(database);
+    });
+
+    test("should return an empty list of classrooms", () async {
+      final classrooms = await database.getClassrooms(tValidUserPk);
+      expect(classrooms, []);
+    });
+
+    test("should return a list with one classroom", () async {
+      await database.insertClassroom(tValidClassCompanion);
+
+      final classrooms = await database.getClassrooms(tValidUserPk);
+      expect(classrooms, [tValidClassModel1]);
+    });
+
+    test("should return a list with two classrooms", () async {
+      await database.insertClassroom(tValidClassCompanion);
+      await database.insertClassroom(tValidClassCompanion);
+
+      final classrooms = await database.getClassrooms(tValidUserPk);
+      expect(classrooms, [tValidClassModel1, tValidClassModel2]);
+    });
   });
 
-  tearDown(() async {
-    await database.close();
+  group("getClassrooms", () {
+    setUp(() async {
+      await connectDatabase();
+      await database.insertClassroom(tValidClassCompanion);
+    });
+
+    tearDown(() async {
+      await closeDatabase(database);
+    });
+
+    test("should return true when updating a valid classroom", () async {
+      final done = await database.updateClassroom(tValidUpdateClassModel);
+      expect(done, true);
+    });
+
+    test("should return false when updating an ivalid classroom", () async {
+      final done = await database.updateClassroom(tInvalidUpdateClassModel);
+      expect(done, false);
+    });
   });
+}
+
+Future closeDatabase(Database database) async {
+  await database.close();
 }

@@ -25,6 +25,25 @@ LazyDatabase openConnection() {
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
 
+  Future<int> insertClassroom(ClassroomModelsCompanion modelCompanion) async {
+    /// returns the pk of the added entry
+    return into(classroomModels).insert(modelCompanion);
+  }
+
+  Future<int> deleteClassroom(int id) async {
+    ///Returns the number of deleted rows
+    return (delete(classroomModels)..where((t) => t.localId.equals(id))).go();
+  }
+
+  Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
+    return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId)))
+        .get();
+  }
+
+  Future<bool> updateClassroom(ClassroomModel entry) async {
+    return update(classroomModels).replace(entry);
+  }
+
   @override
   int get schemaVersion => 2;
 }
