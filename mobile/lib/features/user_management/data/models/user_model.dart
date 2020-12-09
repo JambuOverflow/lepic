@@ -1,3 +1,4 @@
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/moor.dart';
 
@@ -33,4 +34,14 @@ class UserModels extends Table {
   TextColumn get email => text()();
   IntColumn get role => intEnum<Role>()();
   TextColumn get password => text()();
+}
+
+UserModel userEntityToModel(User entity) {
+  return UserModel(
+      localId: entity.id,
+      firstName: entity.firstName,
+      lastName: entity.lastName,
+      email: entity.email,
+      role: entity.role,
+      password: entity.password);
 }
