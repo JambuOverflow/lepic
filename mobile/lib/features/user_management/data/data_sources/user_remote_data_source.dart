@@ -16,6 +16,12 @@ abstract class UserRemoteDataSource {
   ///
   /// Throws a [ServerException] for all error codes.
   Future<Response> updateUser(UserModel user, String token);
+
+  /// Calls the http://localhost:8080/api/token-auth endpoint
+  /// with a token for authentication.
+  ///
+  /// Throws a [ServerException] for all error codes.
+  Future<Response> login(UserModel user);
 }
 
 const API_URL = 'http://127.0.0.1:8000/api/';
@@ -57,5 +63,11 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return SuccessfulResponse();
     else
       return UnsuccessfulResponse(message: response.body);
+  }
+
+  @override
+  Future<Response> login(UserModel user) {
+    // TODO: implement login
+    throw UnimplementedError();
   }
 }
