@@ -29,11 +29,11 @@ void main() {
   test('should send new user to the repository with successful response',
       () async {
     when(mockUserRepository.createUser(tUser))
-        .thenAnswer((_) async => Right(Response()));
+        .thenAnswer((_) async => Right(SuccessfulResponse()));
 
     final result = await useCase(UserParams(user: tUser));
 
-    expect(result, Right(Response()));
+    expect(result, Right(SuccessfulResponse()));
     verify(mockUserRepository.createUser(tUser));
     verifyNoMoreInteractions(mockUserRepository);
   });
