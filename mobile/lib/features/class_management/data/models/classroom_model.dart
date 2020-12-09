@@ -28,9 +28,3 @@ ClassroomModel classroomEntityToModel(Classroom entity) {
       tutorId: entity.tutorId);
 }
 
-ClassroomModelsCompanion classroomModelToCompanion(ClassroomModel model) {
-  return ClassroomModelsCompanion(
-      tutorId: Value(model.tutorId),
-      grade: Value(model.grade),
-      name: Value(model.name));
-}

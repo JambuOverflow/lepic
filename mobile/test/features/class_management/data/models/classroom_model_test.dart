@@ -57,11 +57,4 @@ void main() {
     });
   });
 
-  group('modelToCompanion', () {
-    test('should return a Classroom companion with proper data', () async {
-      final result = classroomModelToCompanion(tClassModel);
-
-      expect(result, tClassCompanion);
-    });
-  });
 }

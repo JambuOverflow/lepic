@@ -8,7 +8,7 @@ import 'package:dartz/dartz.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:http/http.dart' as http;
+
 
 import '../data_sources/classroom_local_data_source.dart';
 
