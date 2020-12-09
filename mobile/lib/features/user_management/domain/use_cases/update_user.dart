@@ -14,5 +14,5 @@ class UpdateUser extends UseCase<Response, UserParams> {
 
   @override
   Future<Either<Failure, Response>> call(params) async =>
-      await repository.updateUser(params.user);
+      await repository.updateUser(params.user, params.token);
 }

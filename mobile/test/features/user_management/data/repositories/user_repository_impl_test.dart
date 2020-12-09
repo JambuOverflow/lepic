@@ -151,10 +151,12 @@ void main() {
   });
 
   group('updateUser', () {
+    final String token = 'test';
+
     test('should test if device is online', () async {
       when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
 
-      repository.updateUser(tUser);
+      repository.updateUser(tUser, token);
       verify(mockNetworkInfo.isConnected);
     });
 
@@ -162,30 +164,30 @@ void main() {
       Response response;
 
       test('should send updated user with successful response', () async {
-        when(mockRemoteDataSource.updateUser(tUserModel))
+        when(mockRemoteDataSource.updateUser(tUserModel, token))
             .thenAnswer((_) async => response);
 
-        final result = await repository.updateUser(tUser);
+        final result = await repository.updateUser(tUser, token);
 
-        verify(mockRemoteDataSource.updateUser(tUserModel));
+        verify(mockRemoteDataSource.updateUser(tUserModel, token));
         expect(result, Right(response));
       });
 
       test('should cache user when call is successful', () async {
-        when(mockRemoteDataSource.updateUser(tUserModel))
+        when(mockRemoteDataSource.updateUser(tUserModel, token))
             .thenAnswer((_) async => response);
 
-        await repository.updateUser(tUser);
+        await repository.updateUser(tUser, token);
 
-        verify(mockRemoteDataSource.updateUser(tUserModel));
+        verify(mockRemoteDataSource.updateUser(tUserModel, token));
         verify(mockLocalDataSource.cacheUser(tUserModel));
       });
 
       test('should return server failure when call is unsuccessful', () async {
-        when(mockRemoteDataSource.updateUser(tUserModel))
+        when(mockRemoteDataSource.updateUser(tUserModel, token))
             .thenThrow(ServerException());
 
-        final result = await repository.updateUser(tUser);
+        final result = await repository.updateUser(tUser, token);
 
         expect(result, Left(ServerFailure()));
       });
@@ -193,10 +195,10 @@ void main() {
 
     runTestsOffline(() {
       test('should throw server failure', () async {
-        when(mockRemoteDataSource.updateUser(tUserModel))
+        when(mockRemoteDataSource.updateUser(tUserModel, token))
             .thenThrow(ServerFailure());
 
-        final result = await repository.updateUser(tUser);
+        final result = await repository.updateUser(tUser, token);
 
         expect(result, Left(ServerFailure()));
       });

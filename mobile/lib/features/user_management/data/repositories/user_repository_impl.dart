@@ -32,9 +32,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, Response>> updateUser(User user) async {
+  Future<Either<Failure, Response>> updateUser(User user, String token) async {
     if (await networkInfo.isConnected) {
-      return await _tryUpdateUserAndCacheIt(user);
+      return await _tryUpdateUserAndCacheIt(user, token);
     } else {
       return Left(ServerFailure());
     }
@@ -45,9 +45,9 @@ class UserRepositoryImpl implements UserRepository {
     return await _tryGetLocalUser();
   }
 
-  Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(User user) async {
+  Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(User user, String token) async {
     try {
-      final updatedUser = await remoteDataSource.updateUser(_toModel(user));
+      final updatedUser = await remoteDataSource.updateUser(_toModel(user), token);
       await localDataSource.cacheUser(_toModel(user));
       return Right(updatedUser);
     } on ServerException {
