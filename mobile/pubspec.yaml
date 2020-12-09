@@ -32,6 +32,7 @@ dependencies:
 
   # Connectivity
   data_connection_checker: ^0.3.4
+  http: ^0.12.2
 
   # Path Utils
   path_provider: ^1.6.24
