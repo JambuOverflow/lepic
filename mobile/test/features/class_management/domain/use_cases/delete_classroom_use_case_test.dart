@@ -28,21 +28,16 @@ void main() {
   );
 
   final tClassroom = Classroom(
-    tutor: tUser,
+    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,
   );
 
-  final tResponse = http.Response("Nice", 204);
+  test('should return nothing when deleting a classroom', () async {
 
-  test('should return a correct response when deleting a classroom', () async {
-    when(mockClassroomRepository.deleteClassroom(tClassroom))
-        .thenAnswer((_) async => Right(tResponse));
+    await useCase(ClassroomParams(classroom: tClassroom));
 
-    final result = await useCase(ClassroomParams(classroom: tClassroom));
-
-    expect(result, Right(tResponse));
     verify(mockClassroomRepository.deleteClassroom(tClassroom));
     verifyNoMoreInteractions(mockClassroomRepository);
   });

@@ -6,12 +6,12 @@ import '../../../../core/use_cases/use_case.dart';
 import '../repositories/classroom_repository.dart';
 import 'classroom_params.dart';
 
-class DeleteClassroom implements UseCase<http.Response, ClassroomParams> {
+class DeleteClassroom implements UseCase<void, ClassroomParams> {
   final ClassroomRepository repository;
 
   DeleteClassroom({@required this.repository});
 
   @override
-  Future<Either<Failure, http.Response>> call(ClassroomParams params) =>
+  Future<Either<Failure, void>> call(ClassroomParams params) =>
       repository.deleteClassroom(params.classroom);
 }
