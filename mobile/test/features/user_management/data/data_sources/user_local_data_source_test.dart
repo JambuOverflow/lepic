@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
@@ -7,9 +8,12 @@ import 'package:mockito/mockito.dart';
 
 class MockDatabase extends Mock implements Database {}
 
+class MockSecureStorage extends Mock implements FlutterSecureStorage {}
+
 void main() {
   UserLocalDataSourceImpl dataSource;
   MockDatabase mockDatabase;
+  MockSecureStorage mockSecureStorage;
 
   UserModel tUserModel = UserModel(
     localId: 1,
@@ -22,7 +26,11 @@ void main() {
 
   setUp(() {
     mockDatabase = MockDatabase();
-    dataSource = UserLocalDataSourceImpl(database: mockDatabase);
+    mockSecureStorage = MockSecureStorage();
+    dataSource = UserLocalDataSourceImpl(
+      database: mockDatabase,
+      secureStorage: mockSecureStorage,
+    );
   });
 
   group('getStoredUser', () {
@@ -66,6 +74,17 @@ void main() {
 
       verify(mockDatabase.updateUser(tUserModel));
       expect(result, tUserModel.localId);
+    });
+  });
+
+  group('storeTokenSecurely', () {
+    test('should store token in the secure storage', () async {
+      when(mockSecureStorage.write(key: 'token', value: 'secret'))
+          .thenReturn(null);
+
+      await dataSource.storeTokenSecurely('secret');
+      
+      verify(mockSecureStorage.write(key: 'token', value: 'secret'));
     });
   });
 }

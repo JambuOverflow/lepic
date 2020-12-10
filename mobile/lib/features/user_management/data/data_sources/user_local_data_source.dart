@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 
@@ -8,12 +10,18 @@ abstract class UserLocalDataSource {
   Future<UserModel> getStoredUser();
 
   Future<void> cacheUser(UserModel user);
+
+  Future<void> storeTokenSecurely(String token);
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
   final Database database;
+  final FlutterSecureStorage secureStorage;
 
-  UserLocalDataSourceImpl({this.database});
+  UserLocalDataSourceImpl({
+    @required this.database,
+    @required this.secureStorage,
+  });
 
   @override
   Future<int> cacheUser(UserModel user) {
@@ -33,5 +41,10 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       return model;
     else
       throw CacheException();
+  }
+
+  @override
+  Future<void> storeTokenSecurely(String token) async {
+    return await secureStorage.write(key: 'token', value: token);
   }
 }
