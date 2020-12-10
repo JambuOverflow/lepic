@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/exceptions.dart';
 
@@ -40,9 +42,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       body: jsonUser,
     );
 
-    if (response.statusCode == 201)
+    if (response.statusCode == 201) {
       return SuccessfulResponse();
-    else
+    } else
       return UnsuccessfulResponse(
         message: response.body,
         statusCode: response.statusCode,
@@ -66,8 +68,32 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   }
 
   @override
-  Future<Response> login(UserModel user) {
-    // TODO: implement login
-    throw UnimplementedError();
+  Future<Response> login(UserModel user) async {
+    final http.Response response = await client.post(
+      API_URL + 'token-auth/',
+      body: jsonEncode({
+        "user_name": user.email,
+        "password": user.password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final token = _extractTokenFromResponse(response);
+      return TokenResponse(token: token);
+    } else {
+      return UnsuccessfulResponse(
+        message: response.body,
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
+  String _extractTokenFromResponse(http.Response response) {
+    try {
+      final token = jsonDecode(response.body)['token'];
+      return token;
+    } on Exception {
+      throw ServerException(message: "Can't retrieve token from response");
+    }
   }
 }

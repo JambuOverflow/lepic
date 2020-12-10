@@ -45,9 +45,26 @@ class UserRepositoryImpl implements UserRepository {
     return await _tryGetLocalUser();
   }
 
-  Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(User user, String token) async {
+  @override
+  Future<Either<Failure, Response>> login(User user) async {
+    if (await networkInfo.isConnected) {
+      final response = await remoteDataSource.login(_toModel(user));
+
+      if (response is TokenResponse) {
+        await localDataSource.storeTokenSecurely(response.token);
+        return Right(response);
+      } else
+        return Left(ServerFailure());
+    } else {
+      return Left(ServerFailure());
+    }
+  }
+
+  Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(
+      User user, String token) async {
     try {
-      final updatedUser = await remoteDataSource.updateUser(_toModel(user), token);
+      final updatedUser =
+          await remoteDataSource.updateUser(_toModel(user), token);
       await localDataSource.cacheUser(_toModel(user));
       return Right(updatedUser);
     } on ServerException {
