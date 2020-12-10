@@ -12,6 +12,12 @@ class SuccessfulResponse extends Response {
   SuccessfulResponse({this.message});
 }
 
+class TokenResponse extends SuccessfulResponse {
+  final String token;
+
+  TokenResponse({@required this.token});
+}
+
 class UnsuccessfulResponse extends Response {
   final String message;
   final int statusCode;
