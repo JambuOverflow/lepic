@@ -45,6 +45,7 @@ dependencies:
   moor: ^3.4.0
   sqlite3_flutter_libs:
   path:
+  flutter_secure_storage: ^3.3.5
 
 dev_dependencies:
   flutter_test:
