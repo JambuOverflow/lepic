@@ -4,9 +4,6 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APITestCase
 
-# Create your tests here.
-
-
 class TestCrudUser(APITestCase):
 
     def test_list_users(self):
@@ -128,3 +125,35 @@ class TestCrudUser(APITestCase):
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.objects.get().username == old_username, False)
         self.assertEqual(User.objects.get().password == old_password, False)
+
+    def test_delete_user(self):
+        self.client.credentials()
+        url = reverse('list-and-create-users')
+        data = {
+            "first_name": "Arthur",
+            "last_name": "Takeshi",
+            "email": "takeshi@ufpa.br",
+            "username" : "arthur",
+            "password" : "arthur",
+            "user_role": 3
+        }
+        response = self.client.post(url, data, format='json')
+        response_get_users = self.client.get(url)
+
+        url = reverse('get-user-token')
+        data = {
+            "username": "arthur",
+            "password": "arthur"
+        }
+        response = self.client.post(url, data, format='json')
+        token = response.data['token']
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        url = reverse('update-delete-users', args=[1])
+        response = self.client.delete(url, data, format='json')
+
+        self.assertEqual(User.objects.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response_get_users.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_get_users.data == response.data, False)
+        
