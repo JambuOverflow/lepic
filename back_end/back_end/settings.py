@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import lepic_secrets
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = lepic_secrets.SECRET_KEY
+
+try:
+    SECRET_KEY = lepic_secrets.SECRET_KEY
+except:
+    with open(Path(__file__).absolute().parent.parent / 'test_secret.txt') as test_secret:
+        SECRET_KEY = test_secret.read()
 
 DEBUG = "on"
 
