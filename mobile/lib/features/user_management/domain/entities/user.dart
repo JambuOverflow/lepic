@@ -13,7 +13,7 @@ class User extends Equatable {
   final String password;
 
   User({
-    @required this.localId,
+    this.localId,
     @required this.firstName,
     @required this.lastName,
     @required this.email,
