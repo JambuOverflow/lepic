@@ -682,6 +682,302 @@ class $ClassroomModelsTable extends ClassroomModels
   }
 }
 
+class StudentModel extends DataClass implements Insertable<StudentModel> {
+  final int localId;
+  final String firstName;
+  final String lastName;
+  final int classroomId;
+  StudentModel(
+      {@required this.localId,
+      @required this.firstName,
+      @required this.lastName,
+      @required this.classroomId});
+  factory StudentModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return StudentModel(
+      localId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      firstName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}first_name']),
+      lastName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_name']),
+      classroomId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}classroom_id']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int>(localId);
+    }
+    if (!nullToAbsent || firstName != null) {
+      map['first_name'] = Variable<String>(firstName);
+    }
+    if (!nullToAbsent || lastName != null) {
+      map['last_name'] = Variable<String>(lastName);
+    }
+    if (!nullToAbsent || classroomId != null) {
+      map['classroom_id'] = Variable<int>(classroomId);
+    }
+    return map;
+  }
+
+  StudentModelsCompanion toCompanion(bool nullToAbsent) {
+    return StudentModelsCompanion(
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
+      firstName: firstName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(firstName),
+      lastName: lastName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastName),
+      classroomId: classroomId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(classroomId),
+    );
+  }
+
+  factory StudentModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return StudentModel(
+      localId: serializer.fromJson<int>(json['local_id']),
+      firstName: serializer.fromJson<String>(json['first_name']),
+      lastName: serializer.fromJson<String>(json['last_name']),
+      classroomId: serializer.fromJson<int>(json['classroom_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'local_id': serializer.toJson<int>(localId),
+      'first_name': serializer.toJson<String>(firstName),
+      'last_name': serializer.toJson<String>(lastName),
+      'classroom_id': serializer.toJson<int>(classroomId),
+    };
+  }
+
+  StudentModel copyWith(
+          {int localId, String firstName, String lastName, int classroomId}) =>
+      StudentModel(
+        localId: localId ?? this.localId,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        classroomId: classroomId ?? this.classroomId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('StudentModel(')
+          ..write('localId: $localId, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('classroomId: $classroomId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
+      $mrjc(
+          firstName.hashCode, $mrjc(lastName.hashCode, classroomId.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is StudentModel &&
+          other.localId == this.localId &&
+          other.firstName == this.firstName &&
+          other.lastName == this.lastName &&
+          other.classroomId == this.classroomId);
+}
+
+class StudentModelsCompanion extends UpdateCompanion<StudentModel> {
+  final Value<int> localId;
+  final Value<String> firstName;
+  final Value<String> lastName;
+  final Value<int> classroomId;
+  const StudentModelsCompanion({
+    this.localId = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.classroomId = const Value.absent(),
+  });
+  StudentModelsCompanion.insert({
+    this.localId = const Value.absent(),
+    @required String firstName,
+    @required String lastName,
+    @required int classroomId,
+  })  : firstName = Value(firstName),
+        lastName = Value(lastName),
+        classroomId = Value(classroomId);
+  static Insertable<StudentModel> custom({
+    Expression<int> localId,
+    Expression<String> firstName,
+    Expression<String> lastName,
+    Expression<int> classroomId,
+  }) {
+    return RawValuesInsertable({
+      if (localId != null) 'local_id': localId,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (classroomId != null) 'classroom_id': classroomId,
+    });
+  }
+
+  StudentModelsCompanion copyWith(
+      {Value<int> localId,
+      Value<String> firstName,
+      Value<String> lastName,
+      Value<int> classroomId}) {
+    return StudentModelsCompanion(
+      localId: localId ?? this.localId,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      classroomId: classroomId ?? this.classroomId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localId.present) {
+      map['local_id'] = Variable<int>(localId.value);
+    }
+    if (firstName.present) {
+      map['first_name'] = Variable<String>(firstName.value);
+    }
+    if (lastName.present) {
+      map['last_name'] = Variable<String>(lastName.value);
+    }
+    if (classroomId.present) {
+      map['classroom_id'] = Variable<int>(classroomId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StudentModelsCompanion(')
+          ..write('localId: $localId, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('classroomId: $classroomId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StudentModelsTable extends StudentModels
+    with TableInfo<$StudentModelsTable, StudentModel> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $StudentModelsTable(this._db, [this._alias]);
+  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
+  GeneratedIntColumn _localId;
+  @override
+  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
+  GeneratedIntColumn _constructLocalId() {
+    return GeneratedIntColumn('local_id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _firstNameMeta = const VerificationMeta('firstName');
+  GeneratedTextColumn _firstName;
+  @override
+  GeneratedTextColumn get firstName => _firstName ??= _constructFirstName();
+  GeneratedTextColumn _constructFirstName() {
+    return GeneratedTextColumn(
+      'first_name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _lastNameMeta = const VerificationMeta('lastName');
+  GeneratedTextColumn _lastName;
+  @override
+  GeneratedTextColumn get lastName => _lastName ??= _constructLastName();
+  GeneratedTextColumn _constructLastName() {
+    return GeneratedTextColumn(
+      'last_name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _classroomIdMeta =
+      const VerificationMeta('classroomId');
+  GeneratedIntColumn _classroomId;
+  @override
+  GeneratedIntColumn get classroomId =>
+      _classroomId ??= _constructClassroomId();
+  GeneratedIntColumn _constructClassroomId() {
+    return GeneratedIntColumn('classroom_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES classroom_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [localId, firstName, lastName, classroomId];
+  @override
+  $StudentModelsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'student_models';
+  @override
+  final String actualTableName = 'student_models';
+  @override
+  VerificationContext validateIntegrity(Insertable<StudentModel> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_id')) {
+      context.handle(_localIdMeta,
+          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
+    }
+    if (data.containsKey('first_name')) {
+      context.handle(_firstNameMeta,
+          firstName.isAcceptableOrUnknown(data['first_name'], _firstNameMeta));
+    } else if (isInserting) {
+      context.missing(_firstNameMeta);
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(_lastNameMeta,
+          lastName.isAcceptableOrUnknown(data['last_name'], _lastNameMeta));
+    } else if (isInserting) {
+      context.missing(_lastNameMeta);
+    }
+    if (data.containsKey('classroom_id')) {
+      context.handle(
+          _classroomIdMeta,
+          classroomId.isAcceptableOrUnknown(
+              data['classroom_id'], _classroomIdMeta));
+    } else if (isInserting) {
+      context.missing(_classroomIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localId};
+  @override
+  StudentModel map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return StudentModel.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $StudentModelsTable createAlias(String alias) {
+    return $StudentModelsTable(_db, alias);
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserModelsTable _userModels;
@@ -689,9 +985,12 @@ abstract class _$Database extends GeneratedDatabase {
   $ClassroomModelsTable _classroomModels;
   $ClassroomModelsTable get classroomModels =>
       _classroomModels ??= $ClassroomModelsTable(this);
+  $StudentModelsTable _studentModels;
+  $StudentModelsTable get studentModels =>
+      _studentModels ??= $StudentModelsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [userModels, classroomModels];
+      [userModels, classroomModels, studentModels];
 }

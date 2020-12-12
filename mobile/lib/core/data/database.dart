@@ -1,4 +1,5 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
+import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
@@ -21,7 +22,7 @@ LazyDatabase openConnection() {
   });
 }
 
-@UseMoor(tables: [UserModels, ClassroomModels])
+@UseMoor(tables: [UserModels, ClassroomModels, StudentModels])
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
 
@@ -34,7 +35,7 @@ class Database extends _$Database {
   Future<int> deleteClassroom(int id) async {
     return (delete(classroomModels)..where((t) => t.localId.equals(id))).go();
   }
-  
+
   ///Returns a list of classroomModels, and an empty list with the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
     return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId)))
