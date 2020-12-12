@@ -7,10 +7,10 @@ import '../../../../core/use_cases/use_case.dart';
 import '../repositories/user_repository.dart';
 import 'user_params.dart';
 
-class Login implements UseCase<Response, UserParams> {
+class LoginCase implements UseCase<Response, UserParams> {
   final UserRepository repository;
 
-  Login({@required this.repository});
+  LoginCase({@required this.repository});
 
   @override
   Future<Either<Failure, Response>> call(UserParams params) async =>

@@ -10,12 +10,12 @@ import 'package:mockito/mockito.dart';
 class MockUserRepository extends Mock implements UserRepository {}
 
 void main() {
-  CreateNewUser useCase;
+  CreateNewUserCase useCase;
   MockUserRepository mockUserRepository;
 
   setUp(() {
     mockUserRepository = MockUserRepository();
-    useCase = CreateNewUser(repository: mockUserRepository);
+    useCase = CreateNewUserCase(repository: mockUserRepository);
   });
 
   final tUser = User(
