@@ -4,6 +4,7 @@ import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/create_new_user.dart';
+import 'package:mobile/features/user_management/domain/use_cases/update_user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/user_params.dart';
 import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:mockito/mockito.dart';
@@ -13,31 +14,44 @@ class MockCreateNewUserCase extends Mock implements CreateNewUserCase {}
 
 class MockLoginCase extends Mock implements LoginCase {}
 
+class MockUpdateUserCase extends Mock implements UpdateUserCase {}
+
 void main() {
   UserBloc bloc;
   MockCreateNewUserCase mockCreateNewUser;
   MockLoginCase mockLoginCase;
+  MockUpdateUserCase mockUpdateUserCase;
 
   setUp(() {
     mockCreateNewUser = MockCreateNewUserCase();
     mockLoginCase = MockLoginCase();
+    mockUpdateUserCase = MockUpdateUserCase();
     bloc = UserBloc(
       createNewUser: mockCreateNewUser,
       login: mockLoginCase,
+      updateUser: mockUpdateUserCase,
     );
   });
+
+  final tUser = User(
+    firstName: 'v',
+    lastName: 'c',
+    email: 'v@g.com',
+    role: Role.teacher,
+    password: '123',
+  );
+
+  final String tFirstName = 'v';
+  final String tLastName = 'c';
+  final String tEmail = 'vc@g.com';
+  final Role tRole = Role.support;
+  final String tPassword = '123';
 
   test('initial state should be NotLoggedIn', () {
     expect(bloc.state, NotLoggedIn());
   });
 
   group('CreateNewUser', () {
-    final String tFirstName = 'v';
-    final String tLastName = 'c';
-    final String tEmail = 'vc@g.com';
-    final Role tRole = Role.support;
-    final String tPassword = '123';
-
     test('''should emit [CreatingUser, UserCreated] when user 
     creation is successful''', () {
       when(mockCreateNewUser(any))
@@ -80,16 +94,7 @@ void main() {
   });
 
   group('Logging', () {
-    final tUser = User(
-      firstName: 'v',
-      lastName: 'c',
-      email: 'v@g.com',
-      role: Role.teacher,
-      password: '123',
-    );
-
     test('should emit [Logging, LoggedIn] when login is successful', () async {
-      // Arrange
       when(mockLoginCase(UserParams(user: tUser)))
           .thenAnswer((_) async => Right(SuccessfulResponse()));
 
@@ -100,7 +105,6 @@ void main() {
     });
 
     test('should emit [Logging, Error] when login is unsuccessful', () async {
-      // Arrange
       when(mockLoginCase(UserParams(user: tUser)))
           .thenAnswer((_) async => Left(ServerFailure()));
 
@@ -108,6 +112,31 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(LoggingUserEvent(tUser.email, tUser.password));
+    });
+  });
+
+  group('updateUser', () {
+    test('''should emit [UpdatingUser, UserUpdated] when update 
+    is successful''', () async {
+      when(mockUpdateUserCase(any)).thenAnswer(
+        (_) async => Right(SuccessfulResponse()),
+      );
+
+      final expected = [UpdatingUser(), UserUpdated()];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateUserEvent(user: tUser));
+    });
+
+    test('''should emit [UpdatingUser, Error] when user creation 
+    is unsuccessful''', () {
+      when(mockUpdateUserCase(any))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [UpdatingUser(), Error(message: 'oh noes')];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateUserEvent(user: tUser));
     });
   });
 }

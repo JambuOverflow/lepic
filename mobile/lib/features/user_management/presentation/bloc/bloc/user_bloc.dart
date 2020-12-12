@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
+import 'package:mobile/features/user_management/domain/use_cases/update_user.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/network/response.dart';
@@ -16,8 +17,10 @@ part 'user_state.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
   final CreateNewUserCase createNewUser;
   final LoginCase login;
+  final UpdateUserCase updateUser;
 
   UserBloc({
+    @required this.updateUser,
     @required this.login,
     @required this.createNewUser,
   }) : super(NotLoggedIn());
@@ -26,11 +29,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> mapEventToState(
     UserEvent event,
   ) async* {
-    if (event is CreateNewUserEvent) {
+    if (event is CreateNewUserEvent)
       yield* _createUserStates(event);
-    } else if (event is LoggingUserEvent) {
+    else if (event is LoggingUserEvent)
       yield* _loggingStates(event);
-    }
+    else if (event is UpdateUserEvent) yield* _updateStates(event);
+  }
+
+  Stream<UserState> _updateStates(UpdateUserEvent event) async* {
+    yield UpdatingUser();
+
+    final failureOrResponse = await updateUser(UserParams(user: event.user));
+
+    yield failureOrResponse.fold(
+      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (response) => UserUpdated(),
+    );
   }
 
   Stream<UserState> _loggingStates(LoggingUserEvent event) async* {

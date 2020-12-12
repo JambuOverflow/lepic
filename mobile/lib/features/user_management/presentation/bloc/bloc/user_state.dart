@@ -21,6 +21,10 @@ class UserCreated extends UserState {
   UserCreated({@required this.response});
 }
 
+class UpdatingUser extends UserState {}
+
+class UserUpdated extends UserState {}
+
 class Error extends UserState {
   final String message;
 

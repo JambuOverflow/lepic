@@ -23,6 +23,12 @@ class CreateNewUserEvent extends UserEvent {
   );
 }
 
+class UpdateUserEvent extends UserEvent {
+  final User user;
+
+  UpdateUserEvent({@required this.user});
+}
+
 class LoggingUserEvent extends UserEvent {
   final String email;
   final String password;
