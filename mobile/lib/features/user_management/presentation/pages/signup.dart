@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/role_dropdown_button.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -84,24 +85,8 @@ class _SignupState extends State<Signup> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(16.0),
-              child: DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                hint: Text("Select role"),
-                value: roleSelected,
-                onChanged: (newValue) {
-                  setState(() {
-                    roleSelected = newValue;
-                  });
-                },
-                items: roles.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              )),
-            ),
+                padding: const EdgeInsets.all(16.0),
+                child: RoleDropdownButton()),
             Container(
               height: 80,
               padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
@@ -117,9 +102,7 @@ class _SignupState extends State<Signup> {
                       ' ' +
                       lastnameController.text);
                   print("email: " + emailController.text);
-                  print("password: " +
-                      passwordController
-                          .text); //só falta checar se as senhas batem uma com a outra
+                  print("password: " + passwordController.text);
                   print("role: " + roleSelected);
                   Navigator.pop(context);
                 },

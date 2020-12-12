@@ -17,13 +17,7 @@ class _LoginState extends State<Login> {
         child: ListView(
           children: <Widget>[
             Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(8.0),
-              child: Image.asset('images/lepic_logo.png'),
-            ),
-            Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Lepic',
                   style: TextStyle(fontSize: 20),
@@ -61,7 +55,7 @@ class _LoginState extends State<Login> {
                   print(nameController.text);
                   print(passwordController.text);
                   Navigator.of(context).pushNamed(
-                    '/second',
+                    '/home',
                   );
                 },
               ),
@@ -77,7 +71,7 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   print("opening guest screen");
                   Navigator.of(context).pushNamed(
-                    '/fourth',
+                    '/guest',
                   );
                 },
               ),
@@ -92,7 +86,7 @@ class _LoginState extends State<Login> {
                   onPressed: () {
                     print("Opening signup screen...");
                     Navigator.of(context).pushNamed(
-                      '/third',
+                      '/signup',
                     );
                   },
                 ))

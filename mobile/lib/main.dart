@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moor/moor.dart';
 
-import 'features/user_management/presentation/pages/pages.dart';
 import 'features/user_management/data/models/user_model.dart';
-import 'features/user_management/presentation/pages/login_page.dart';
-
+import 'features/user_management/presentation/route_generator.dart';
 
 void main() {
   // This setting overrides the default serializer to our custom one
@@ -17,14 +15,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Lepic',
-      home: LoginPage(),
-      // Routes are temporary for testing pages, replace it by bloc
-      routes: {
-        '/guest': (context) => GuestLoginPage(),
-        '/signup': (context) => SignupPage(),
-        '/home': (context) => HomePage(),
-      },
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Colors.blue[900],
+        accentColor: Colors.blueAccent[700],
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue[900],
+          textTheme: ButtonTextTheme.primary,
+        ),
+      ),
+      initialRoute: '/login',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

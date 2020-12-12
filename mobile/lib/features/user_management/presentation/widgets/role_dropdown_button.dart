@@ -10,6 +10,7 @@ class RoleDropdownButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButton<Role>(
+      hint: Text("Select role"),
       value: Role.teacher,
       icon: Icon(Icons.arrow_drop_down),
       iconSize: 24,
@@ -18,7 +19,7 @@ class RoleDropdownButton extends StatelessWidget {
       onChanged: (Role newValue) {
         newValue = newValue;
       },
-      items: <Role>[Role.teacher, Role.researcher, Role.support ]
+      items: <Role>[Role.teacher, Role.researcher, Role.support]
           .map<DropdownMenuItem<Role>>((Role value) {
         return DropdownMenuItem<Role>(
           value: value,
