@@ -46,7 +46,6 @@ class TestCRUDClass(APITestCase):
         self.class_data = {
             "title": "TurmaA",
             "grade": 3,
-            "tutor": 5
         }
         response = self.client.post(self.class_url, self.class_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
