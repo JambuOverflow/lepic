@@ -27,7 +27,7 @@ void main() {
   );
 
   final tClassroom = Classroom(
-    tutor: tUser,
+    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,

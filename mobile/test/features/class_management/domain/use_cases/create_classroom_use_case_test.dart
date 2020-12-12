@@ -6,7 +6,6 @@ import 'package:mobile/features/class_management/domain/use_cases/classroom_para
 import 'package:mobile/features/class_management/domain/use_cases/create_classroom_use_case.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
-import 'package:http/http.dart' as http;
 
 class MockClassroomRepository extends Mock implements ClassroomRepository {}
 
@@ -28,7 +27,7 @@ void main() {
   );
 
   final tClassroom = Classroom(
-    tutor: tUser,
+    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,

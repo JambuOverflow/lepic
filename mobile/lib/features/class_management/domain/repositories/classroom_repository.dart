@@ -8,6 +8,5 @@ abstract class ClassroomRepository {
   Future<Either<Failure, Classroom>> createClassroom(Classroom classroom);
   Future<Either<Failure, Classroom>> updateClassroom(Classroom classroom);
   Future<Either<Failure, List<Classroom>>> getClassrooms(User user);
-  Future<Either<Failure, http.Response>> deleteClassroom(Classroom classroom);
-  //Future<Either<Failure, http.Response>> synchronize();
+  Future<Either<Failure, void>> deleteClassroom(Classroom classroom);
 }

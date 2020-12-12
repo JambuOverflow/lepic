@@ -20,6 +20,14 @@ void main() {
     password: 'x1y2',
   );
 
+  final tUserEntity = User(
+      id: 1,
+      firstName: 'ab',
+      lastName: 'c',
+      email: 'abc@g.com',
+      role: Role.teacher,
+      password: 'x1y2');
+
   group('fromJson', () {
     test('should return a valid model', () async {
       final Map<String, dynamic> jsonMap = json.decode(fixture('user'));
@@ -44,6 +52,14 @@ void main() {
       };
 
       expect(result, expectedMap);
+    });
+  });
+
+  group('entityToModel', () {
+    test('should return a Model map with proper data', () async {
+      final result = userEntityToModel(tUserEntity);
+
+      expect(result, tUserModel);
     });
   });
 }

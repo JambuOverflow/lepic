@@ -1,12 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/core/network/network_info.dart';
+import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
+import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:http/http.dart' as http;
+
 
 import '../data_sources/classroom_local_data_source.dart';
 
@@ -24,10 +26,14 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   }
 
   @override
-  Future<Either<Failure, http.Response>> deleteClassroom(
-      Classroom classroom) async {
+  Future<Either<Failure, void>> deleteClassroom(Classroom classroom) async {
+    return await _tryDeleteClassroom(classroom);
+  }
+
+  Future<Either<Failure, void>> _tryDeleteClassroom(Classroom classroom) async {
     try {
-      await localDataSource.deleteClassroomFromCache(classroom);
+      var model = classroomEntityToModel(classroom);
+      await localDataSource.deleteClassroomFromCache(model);
     } on CacheException {
       return Left(CacheFailure());
     }
@@ -36,7 +42,9 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   Future<Either<Failure, Classroom>> _tryCacheClassroom(
       Classroom classroom) async {
     try {
-      var localClassroom = await localDataSource.cacheClassroom(classroom);
+      var model = classroomEntityToModel(classroom);
+      var localModel = await localDataSource.cacheNewClassroom(model);
+      var localClassroom = classroomModelToEntity(localModel);
       return Right(localClassroom);
     } on CacheException {
       return Left(CacheFailure());
@@ -45,15 +53,38 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
 
   @override
   Future<Either<Failure, List<Classroom>>> getClassrooms(User user) async {
+    return await _tryGetClassrooms(user);
+  }
+
+  Future<Either<Failure, List<Classroom>>> _tryGetClassrooms(User user) async {
     try {
-      await localDataSource.getClassrooms(user);
+      var userModel = userEntityToModel(user);
+      var listClassroomModel =
+          await localDataSource.getClassroomsFromCache(userModel);
+      var listClassroomEntity = [
+        for (var model in listClassroomModel) classroomModelToEntity(model)
+      ];
+      return Right(listClassroomEntity);
     } on CacheException {
       return Left(CacheFailure());
     }
   }
 
   @override
-  Future<Either<Failure, Classroom>> updateClassroom(Classroom classroom) async {
-    return await _tryCacheClassroom(classroom);
+  Future<Either<Failure, Classroom>> updateClassroom(
+      Classroom classroom) async {
+    return await _tryUpdateClassroom(classroom);
+  }
+
+  Future<Either<Failure, Classroom>> _tryUpdateClassroom(
+      Classroom classroom) async {
+    try {
+      var model = classroomEntityToModel(classroom);
+      var localModel = await localDataSource.updateCachedClassroom(model);
+      var localClassroom = classroomModelToEntity(localModel);
+      return Right(localClassroom);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 }
