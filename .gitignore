@@ -139,7 +139,10 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+
+# this folder is essential to flutter projects
+# lib/
+
 lib64/
 parts/
 sdist/
