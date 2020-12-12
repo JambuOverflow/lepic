@@ -72,7 +72,7 @@ class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class TextList(generics.ListCreateAPIView):
     """
-    List texts of authenticated user or create a new class.
+    List texts of authenticated user or create a new text.
     """
 
     serializer_class = TextSerializer
