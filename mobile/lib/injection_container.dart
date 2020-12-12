@@ -16,7 +16,13 @@ import 'core/network/network_info.dart';
 final getIt = GetIt.instance;
 
 void init() {
-  getIt.registerFactory(() => UserBloc(createNewUser: getIt()));
+  getIt.registerFactory(
+    () => UserBloc(
+      createNewUser: getIt(),
+      login: getIt(),
+      updateUser: getIt(),
+    ),
+  );
 
   getIt.registerLazySingleton(() => CreateNewUserCase(repository: getIt()));
   getIt.registerLazySingleton(() => LoginCase(repository: getIt()));
