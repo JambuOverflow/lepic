@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lepic_screen_test/screens/drawer_overlay.dart';
+import 'package:mobile/features/user_management/presentation/widgets/role_dropdown_button.dart';
+import '../widgets/drawer_overlay.dart';
 
 class UpdateUser extends StatefulWidget {
   @override
@@ -14,15 +15,8 @@ class _UpdateUserStatefulWidgetState extends State<UpdateUser> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  final List<String> roles = [
-    "Teacher",
-    "Pedagogist",
-    "Speech therapist",
-    "Psychopedagogist",
-    "Researcher"
-  ];
-
   String roleSelected = "Teacher";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,22 +82,7 @@ class _UpdateUserStatefulWidgetState extends State<UpdateUser> {
             ),
             Container(
               padding: const EdgeInsets.all(16.0),
-              child: DropdownButtonHideUnderline(
-                  child: DropdownButton(
-                hint: Text("Current role"),
-                value: roleSelected,
-                onChanged: (newValue) {
-                  setState(() {
-                    roleSelected = newValue;
-                  });
-                },
-                items: roles.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              )),
+              child: RoleDropdownButton(),
             ),
             Container(
               height: 80,

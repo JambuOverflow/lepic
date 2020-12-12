@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lepic_screen_test/screens/drawer_overlay.dart';
+import '../widgets/drawer_overlay.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -46,7 +46,7 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                 print(
                     "Text was created but is not on this user story, returned home");
                 Navigator.of(context).pushNamed(
-                  '/second',
+                  '/home',
                 );
               },
             ),
