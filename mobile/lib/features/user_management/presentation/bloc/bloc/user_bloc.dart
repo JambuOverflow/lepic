@@ -39,7 +39,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> _updateStates(UpdateUserEvent event) async* {
     yield UpdatingUser();
 
-    final failureOrResponse = await updateUser(UserParams(user: event.user));
+    final user = _createUserEntityFromEvent(event);
+
+    final failureOrResponse = await updateUser(UserParams(user: user));
 
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
@@ -66,13 +68,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> _createUserStates(CreateNewUserEvent event) async* {
     yield CreatingUser();
 
-    final user = User(
-      firstName: event.firstName,
-      lastName: event.lastName,
-      email: event.lastName,
-      role: event.role,
-      password: event.password,
-    );
+    final user = _createUserEntityFromEvent(event);
 
     final failureOrResponse = await createNewUser(UserParams(user: user));
 
@@ -80,6 +76,20 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       (failure) => Error(message: _mapFailureToMessage(failure)),
       (response) => UserCreated(response: response),
     );
+  }
+
+  User _createUserEntityFromEvent(UserEvent event) {
+    if (event is _UserManagementEvent) {
+      return User(
+        firstName: event.firstName,
+        lastName: event.lastName,
+        email: event.email,
+        role: event.role,
+        password: event.password,
+      );
+    }
+
+    throw Exception('Cannot create user from event');
   }
 
   String _mapFailureToMessage(Failure failure) {

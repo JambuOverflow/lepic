@@ -7,14 +7,14 @@ abstract class UserEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CreateNewUserEvent extends UserEvent {
+class _UserManagementEvent extends UserEvent {
   final String firstName;
   final String lastName;
   final String email;
   final Role role;
   final String password;
 
-  CreateNewUserEvent(
+  _UserManagementEvent(
     this.firstName,
     this.lastName,
     this.email,
@@ -23,10 +23,24 @@ class CreateNewUserEvent extends UserEvent {
   );
 }
 
-class UpdateUserEvent extends UserEvent {
-  final User user;
+class CreateNewUserEvent extends _UserManagementEvent {
+  CreateNewUserEvent(
+    String firstName,
+    String lastName,
+    String email,
+    Role role,
+    String password,
+  ) : super(firstName, lastName, email, role, password);
+}
 
-  UpdateUserEvent({@required this.user});
+class UpdateUserEvent extends _UserManagementEvent {
+  UpdateUserEvent(
+    String firstName,
+    String lastName,
+    String email,
+    Role role,
+    String password,
+  ) : super(firstName, lastName, email, role, password);
 }
 
 class LoggingUserEvent extends UserEvent {

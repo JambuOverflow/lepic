@@ -125,7 +125,13 @@ void main() {
       final expected = [UpdatingUser(), UserUpdated()];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateUserEvent(user: tUser));
+      bloc.add(UpdateUserEvent(
+        tFirstName,
+        tLastName,
+        tEmail,
+        tRole,
+        tPassword,
+      ));
     });
 
     test('''should emit [UpdatingUser, Error] when user creation 
@@ -136,7 +142,13 @@ void main() {
       final expected = [UpdatingUser(), Error(message: 'oh noes')];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateUserEvent(user: tUser));
+      bloc.add(UpdateUserEvent(
+        tFirstName,
+        tLastName,
+        tEmail,
+        tRole,
+        tPassword,
+      ));
     });
   });
 }
