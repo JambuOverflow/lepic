@@ -27,22 +27,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     UserEvent event,
   ) async* {
     if (event is CreateNewUserEvent) {
-      _createUserStates(event);
+      yield* _createUserStates(event);
     } else if (event is LoggingUserEvent) {
-      _loggingStates(event);
+      yield* _loggingStates(event);
     }
   }
 
   Stream<UserState> _loggingStates(LoggingUserEvent event) async* {
     yield Logging();
-    
+
     final user = User(
       password: event.password,
       email: event.email,
     );
-    
+
     final failureOrResponse = await login(UserParams(user: user));
-    
+
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
       (response) => LoggedIn(),
@@ -51,7 +51,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Stream<UserState> _createUserStates(CreateNewUserEvent event) async* {
     yield CreatingUser();
-    
+
     final user = User(
       firstName: event.firstName,
       lastName: event.lastName,
@@ -59,9 +59,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       role: event.role,
       password: event.password,
     );
-    
+
     final failureOrResponse = await createNewUser(UserParams(user: user));
-    
+
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
       (response) => UserCreated(response: response),
