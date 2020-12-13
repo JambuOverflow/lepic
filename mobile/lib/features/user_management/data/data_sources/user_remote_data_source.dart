@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
@@ -42,6 +43,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final http.Response response = await client.post(
       API_URL + 'users/',
       body: json.encode(jsonUser),
+      headers: {HttpHeaders.contentTypeHeader: "application/json"},
     );
 
     if (response.statusCode == 201) {
@@ -59,7 +61,10 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     final http.Response response = await client.patch(
       API_URL + 'users/' + user.localId.toString(),
-      headers: {"authorization": "Token " + token},
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+        "authorization": "Token " + token
+      },
       body: jsonUser,
     );
 
