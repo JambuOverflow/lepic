@@ -101,3 +101,26 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 }
+
+User _createUserEntityFromEvent(UserEvent event) {
+  if (event is _UserManagementEvent) {
+    return User(
+      firstName: event.firstName,
+      lastName: event.lastName,
+      email: event.email,
+      role: event.role,
+      password: event.password,
+    );
+  }
+
+  throw Exception('Cannot create user from event');
+}
+
+String _mapFailureToMessage(Failure failure) {
+  switch (failure.runtimeType) {
+    case ServerFailure:
+      return 'Could not reach server';
+    default:
+      return 'Unexpected Error';
+  }
+}

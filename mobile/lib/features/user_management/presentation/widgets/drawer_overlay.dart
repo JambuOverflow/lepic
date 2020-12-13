@@ -12,13 +12,34 @@ class DrawerOverlay extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
-            child: Text(
-              //'Drawer Header'
-              '(Photo or Logo/Name/Role/ID)',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
+            child: Column(
+              children: [
+                Image.asset('images/JambuOverflow.jpg'),
+                Text(
+                  //'Drawer Header'
+                  '(Name)',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+                Text(
+                  //'Drawer Header'
+                  '(Role)',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+                Text(
+                  //'Drawer Header'
+                  '(ID)',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(

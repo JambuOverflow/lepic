@@ -68,7 +68,6 @@ class _GuestState extends State<Guest> {
                   print("guest added");
                   print("name: " + nameController.text);
                   print("role: $roleSelected");
-                  //Navigator.pop(context);
                   Navigator.of(context).pushNamed(
                     '/home',
                   );

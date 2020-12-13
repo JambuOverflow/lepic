@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,8 +11,10 @@ class _LoginState extends State<Login> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  UserBloc _userBloc;
   @override
   Widget build(BuildContext context) {
+    _userBloc = BlocProvider.of<UserBloc>(context);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(8.0),
@@ -43,23 +47,29 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            Container(
-              height: 80,
-              padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-              child: RaisedButton(
-                child: Text(
-                  'Login',
-                  style: TextStyle(fontSize: 16),
+            BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+              return Container(
+                height: 80,
+                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                child: RaisedButton(
+                  child: Text(
+                    'Login',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () {
+                    print(nameController.text);
+                    print(passwordController.text);
+                    _userBloc.add(LoggingUserEvent(
+                      nameController.text,
+                      passwordController.text,
+                    ));
+                    Navigator.of(context).pushNamed(
+                      '/home',
+                    );
+                  },
                 ),
-                onPressed: () {
-                  print(nameController.text);
-                  print(passwordController.text);
-                  Navigator.of(context).pushNamed(
-                    '/home',
-                  );
-                },
-              ),
-            ),
+              );
+            }),
             Container(
               height: 80,
               padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),

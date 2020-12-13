@@ -122,7 +122,10 @@ void main() {
         (_) async => Right(SuccessfulResponse()),
       );
 
-      final expected = [UpdatingUser(), UserUpdated()];
+      final expected = [
+        UpdatingUser(),
+        UserUpdated()
+      ]; //não achei o getter pra updating user(acho que é esse que tá faltando)
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateUserEvent(
