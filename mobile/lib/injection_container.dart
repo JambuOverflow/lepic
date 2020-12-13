@@ -1,3 +1,4 @@
+import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/user_management/domain/use_cases/get_stored_user.dart';
@@ -13,9 +14,9 @@ import 'features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'core/network/network_info.dart';
 
-final getIt = GetIt.instance;
+void setUpLocator() {
+  final getIt = GetIt.instance;
 
-void init() {
   getIt.registerFactory(
     () => UserBloc(
       createNewUser: getIt(),
@@ -48,4 +49,5 @@ void init() {
   getIt.registerLazySingleton(() => Database());
   getIt.registerLazySingleton(() => FlutterSecureStorage());
   getIt.registerLazySingleton(() => http.Client());
+  getIt.registerLazySingleton(() => DataConnectionChecker());
 }
