@@ -1,3 +1,4 @@
+from api.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token

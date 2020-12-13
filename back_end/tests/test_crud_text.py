@@ -7,7 +7,7 @@ class TestCRUDText(APITestCase):
 
     def test_create_text_without_authorization(self):
         self.client = APIClient()
-        self.url = reverse('/api/texts/')
+        self.url = reverse('create-text')
         self.data = {
             "title": "Trecho de O Alquimista",
             "body": "Lorem ipsum lorem",
@@ -16,23 +16,31 @@ class TestCRUDText(APITestCase):
         response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
     def test_create_text_with_authorization(self):
         #Create a user
-        self.url = reverse('/api/texts/')
+        self.url = reverse('list-and-create-users')
+        self.data = {
+            "first_name": "Gugu",
+            "last_name": "Liberato",
+            "email": "gugu@sbt.com",
+            "username" : "gugu",
+            "password" : "771225eu",
+            "user_role": 1
+        }
+        response = self.client.post(self.url, self.data, format='json')
         
-        #Get token
-        self.token_url = reverse('/api/token-auth/')
+        #Get token and auth
+        self.token_url = reverse('get-user-token')
         self.auth_data = {
             "username": "gugu",
             "password": "771225eu"
         }
-        response = self.client.get(self.token_url, self.auth_data, format='json')
+        response = self.client.post(self.token_url, self.auth_data, format='json')
         token = response.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         
-        #Try auth
-        self.class_url = reverse('/api/token-auth/')
+        #Create text
+        self.class_url = reverse('create-text')
         self.class_data = {
             "title": "Trecho de O Alquimista",
             "body": "Lorem ipsum lorem",
@@ -44,21 +52,34 @@ class TestCRUDText(APITestCase):
 
     def test_get_texts_without_authorization(self):
         self.client = APIClient()
-        self.url = reverse('/api/texts/')
+        self.url = reverse('create-text')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
     def test_get_texts_with_authorization(self):
+        self.url = reverse('list-and-create-users')
+        self.data = {
+            "first_name": "Gugu",
+            "last_name": "Liberato",
+            "email": "gugu@sbt.com",
+            "username" : "gugu",
+            "password" : "771225eu",
+            "user_role": 1
+        }
+        response = self.client.post(self.url, self.data, format='json')
+
         self.client = APIClient()
-        self.token_url = reverse('/api/texts/')
+        self.token_url = reverse('get-user-token')
         self.auth_data = {
             "username": "gugu",
             "password": "771225eu"
         }
-        response = self.client.get(self.token_url, self.auth_data, format='json')
+        response = self.client.post(self.token_url, self.auth_data, format='json')
         token = response.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        response = self.client.get(self.url)
+
+        self.text_url = reverse('create-text')
+        response = self.client.get(self.text_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
