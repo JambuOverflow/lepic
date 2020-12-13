@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 enum Role { teacher, support, researcher }
 
 class User extends Equatable {
+  final int localId;
   final String firstName;
   final String lastName;
   final String email;
@@ -14,6 +15,7 @@ class User extends Equatable {
   final int id;
 
   User({
+    this.localId,
     @required this.firstName,
     @required this.lastName,
     @required this.email,

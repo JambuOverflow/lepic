@@ -25,6 +25,20 @@ LazyDatabase openConnection() {
 @UseMoor(tables: [UserModels, ClassroomModels, StudentModels])
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
+  Database.customExecutor(QueryExecutor executor) : super(executor);
+
+  Future<UserModel> get activeUser => select(userModels).getSingle();
+  Future<UserModel> userById(int id) {
+    return (select(userModels)..where((t) => t.localId.equals(id))).getSingle();
+  }
+
+  Future<bool> updateUser(UserModel model) async {
+    return update(userModels).replace(model);
+  }
+
+  Future<int> insertUser(UserModel model) async {
+    return into(userModels).insert(model);
+  }
 
   /// returns the pk of the added entry
   Future<int> insertClassroom(ClassroomModelsCompanion modelCompanion) async {
