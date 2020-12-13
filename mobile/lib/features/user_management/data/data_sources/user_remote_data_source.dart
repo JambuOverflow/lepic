@@ -63,9 +63,9 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       API_URL + 'users/' + user.localId.toString(),
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
-        "authorization": "Token " + token
+        HttpHeaders.authorizationHeader: "Token " + token,
       },
-      body: jsonUser,
+      body: json.encode(jsonUser),
     );
 
     if (response.statusCode == 200)
@@ -79,9 +79,12 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     final http.Response response = await client.post(
       API_URL + 'token-auth/',
       body: jsonEncode({
-        "user_name": user.email,
+        "username": user.email,
         "password": user.password,
       }),
+      headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      },
     );
 
     if (response.statusCode == 200) {
