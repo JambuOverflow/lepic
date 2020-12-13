@@ -11,7 +11,6 @@ class User(AbstractUser):
 
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES)
     email = models.EmailField(('email address'), unique=True)
-    local_id = models.PositiveIntegerField()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
