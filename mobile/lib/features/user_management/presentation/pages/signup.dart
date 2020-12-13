@@ -131,10 +131,4 @@ class _SignupState extends State<Signup> {
       ),
     );
   }
-
-  void submitFirstName(BuildContext context, String firstname) {
-    //passar o valor (só um esboço)
-    //final userBloc = BlocProvider.of<UserBloc>(context);
-    //userBloc.add(SendFirstName(firstname));//aí teria que criar a função que passa o dado pro banco
-  }
 }
