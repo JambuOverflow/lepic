@@ -79,7 +79,7 @@ void main() {
 
       final expected = [
         CreatingUser(),
-        Error(message: 'oh noes'),
+        Error(message: 'Not able to create an user'),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -142,7 +142,10 @@ void main() {
       when(mockUpdateUserCase(any))
           .thenAnswer((_) async => Left(ServerFailure()));
 
-      final expected = [UpdatingUser(), Error(message: 'oh noes')];
+      final expected = [
+        UpdatingUser(),
+        Error(message: 'Not able to create/update a user')
+      ];
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateUserEvent(

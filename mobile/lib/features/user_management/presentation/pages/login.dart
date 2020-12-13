@@ -47,29 +47,36 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-              return Container(
-                height: 80,
-                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-                child: RaisedButton(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(fontSize: 16),
+            BlocListener<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is LoggedIn) {
+                  Navigator.of(context).pushNamed(
+                    '/home',
+                  );
+                }
+              },
+              child:
+                  BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+                return Container(
+                  height: 80,
+                  padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                  child: RaisedButton(
+                    child: Text(
+                      'Login',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    onPressed: () {
+                      print(nameController.text);
+                      print(passwordController.text);
+                      _userBloc.add(LoggingUserEvent(
+                        nameController.text,
+                        passwordController.text,
+                      ));
+                    },
                   ),
-                  onPressed: () {
-                    print(nameController.text);
-                    print(passwordController.text);
-                    _userBloc.add(LoggingUserEvent(
-                      nameController.text,
-                      passwordController.text,
-                    ));
-                    Navigator.of(context).pushNamed(
-                      '/home',
-                    );
-                  },
-                ),
-              );
-            }),
+                );
+              }),
+            ),
             Container(
               height: 80,
               padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
@@ -105,4 +112,8 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+  /*void submitLogin(BuildContext context, String name, String password){
+    final
+    _userBloc
+  }*/
 }
