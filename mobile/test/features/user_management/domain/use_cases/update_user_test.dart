@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/repositories/user_repository.dart';
-import 'package:mobile/features/user_management/domain/use_cases/update_user.dart';
+import 'package:mobile/features/user_management/domain/use_cases/update_user_use_case.dart';
 import 'package:mobile/features/user_management/domain/use_cases/user_params.dart';
 import 'package:mockito/mockito.dart';
 

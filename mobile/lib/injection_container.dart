@@ -1,15 +1,15 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/user_management/domain/use_cases/get_stored_user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
-import 'package:mobile/features/user_management/domain/use_cases/update_user.dart';
 import 'core/data/database.dart';
 import 'features/user_management/data/data_sources/user_local_data_source.dart';
 import 'features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'features/user_management/data/repositories/user_repository_impl.dart';
 import 'features/user_management/domain/repositories/user_repository.dart';
-import 'features/user_management/domain/use_cases/create_new_user.dart';
+import 'features/user_management/domain/use_cases/create_user_use_case.dart';
+import 'features/user_management/domain/use_cases/get_stored_user_use_case.dart';
+import 'features/user_management/domain/use_cases/update_user_use_case.dart';
 import 'features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'core/network/network_info.dart';
@@ -46,7 +46,7 @@ void setUpLocator() {
   );
 
   getIt.registerLazySingleton<NetworkInfo>(() => NetworkInfo(getIt()));
-  getIt.registerLazySingleton(() => Database());
+  getIt.registerLazySingleton(() => Database(openConnection()));
   getIt.registerLazySingleton(() => FlutterSecureStorage());
   getIt.registerLazySingleton(() => http.Client());
   getIt.registerLazySingleton(() => DataConnectionChecker());

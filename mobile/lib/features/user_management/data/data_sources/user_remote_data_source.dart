@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/exceptions.dart';
@@ -13,6 +14,7 @@ abstract class UserRemoteDataSource {
   ///
   /// Throws a [ServerException] for all error codes.
   Future<Response> createUser(UserModel user);
+
 
   /// Calls the http://localhost:8080/api/update-user endpoint.
   ///
@@ -96,4 +98,5 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       throw ServerException(message: "Can't retrieve token from response");
     }
   }
+
 }

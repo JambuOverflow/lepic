@@ -109,6 +109,8 @@ Finally, just focus on making clear the reasons why you made the change in the f
 
 > If we don't use meaningful commit messages, this will be the area to explain what is the purpose and accomplishment of your code.
 
+* Always link only one issue to your pull request [link](https://docs.github.com/pt/free-pro-team@latest/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
+
 
 ### Folder Structure
 

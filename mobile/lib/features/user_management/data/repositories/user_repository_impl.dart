@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/network/response.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
-import '../../../../core/network/response.dart';
+import 'package:http/http.dart' as http;
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../data_sources/user_local_data_source.dart';
@@ -33,6 +34,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Either<Failure, Response>> updateUser(User user, String token) async {
+
     if (await networkInfo.isConnected) {
       return await _tryUpdateUserAndCacheIt(user, token);
     } else {
@@ -62,6 +64,7 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(
       User user, String token) async {
+
     try {
       final updatedUser =
           await remoteDataSource.updateUser(_toModel(user), token);
@@ -72,7 +75,8 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  Future<Either<Failure, Response>> _tryCreateUserAndCacheIt(User user) async {
+  Future<Either<Failure, Response>> _tryCreateUserAndCacheIt(
+      User user) async {
     try {
       final response = await remoteDataSource.createUser(_toModel(user));
       await localDataSource.cacheUser(_toModel(user));

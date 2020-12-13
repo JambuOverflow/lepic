@@ -8,7 +8,7 @@ jobs:
         install: 
         - pip install -r back_end/requirements.txt
         script:
-        - pytest
+        - pytest back_end/
       
       - language: dart
         dist: xenial

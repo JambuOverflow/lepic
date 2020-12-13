@@ -2,13 +2,13 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mobile/features/user_management/domain/use_cases/create_user_use_case.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
-import 'package:mobile/features/user_management/domain/use_cases/update_user.dart';
+import 'package:mobile/features/user_management/domain/use_cases/update_user_use_case.dart';
 
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/network/response.dart';
 import '../../../domain/entities/user.dart';
-import '../../../domain/use_cases/create_new_user.dart';
 import '../../../domain/use_cases/user_params.dart';
 
 part 'user_event.dart';

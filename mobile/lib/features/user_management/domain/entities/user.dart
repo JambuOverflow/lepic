@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 // Don't change the order!
@@ -11,6 +12,7 @@ class User extends Equatable {
   final String email;
   final Role role;
   final String password;
+  final int id;
 
   User({
     this.localId,
@@ -19,8 +21,9 @@ class User extends Equatable {
     @required this.email,
     @required this.role,
     @required this.password,
+    this.id,
   });
 
   @override
-  List<Object> get props => [firstName, lastName, email, role, password];
+  List<Object> get props => [firstName, lastName, email, role, password, id];
 }

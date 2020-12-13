@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
