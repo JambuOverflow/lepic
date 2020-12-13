@@ -51,6 +51,7 @@ void main() {
       firstName: 'v',
       lastName: 'c',
       email: 'v@g.com',
+      username: 'v@g.com',
       role: Role.teacher,
       password: '123',
     );

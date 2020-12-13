@@ -49,6 +49,7 @@ void main() {
     firstName: Value("cana"),
     lastName: Value("varro"),
     email: Value("dede@.com"),
+    username: Value("dede@.com"),
     role: Value(Role.teacher),
     password: Value("1234"),
   );
@@ -106,7 +107,6 @@ void main() {
   });
 
   group("getClassrooms", () {
-
     test("should return an empty list of classrooms", () async {
       final classrooms = await database.getClassrooms(tValidUserPk);
       expect(classrooms, []);

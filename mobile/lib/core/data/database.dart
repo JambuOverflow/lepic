@@ -8,6 +8,8 @@ import 'package:path/path.dart' as p;
 import 'package:moor/moor.dart';
 import 'dart:io';
 
+import '../../main.dart';
+
 part 'database.g.dart';
 
 LazyDatabase openConnection() {
@@ -18,6 +20,7 @@ LazyDatabase openConnection() {
     final db = VmDatabase(file, setup: (db) {
       db.execute('PRAGMA foreign_keys = ON');
     });
+    if (IS_IN_DEVELOPMENT) await file.delete();
     return db;
   });
 }
@@ -62,5 +65,5 @@ class Database extends _$Database {
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 }
