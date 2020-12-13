@@ -15,7 +15,6 @@ abstract class UserRemoteDataSource {
   /// Throws a [ServerException] for all error codes.
   Future<Response> createUser(UserModel user);
 
-
   /// Calls the http://localhost:8080/api/update-user endpoint.
   ///
   /// Throws a [ServerException] for all error codes.
@@ -28,7 +27,8 @@ abstract class UserRemoteDataSource {
   Future<Response> login(UserModel user);
 }
 
-const API_URL = 'http://127.0.0.1:8000/api/';
+/// Localhost - 10.0.2.2 is the address on an android emulator
+const API_URL = 'http://10.0.2.2:8000/api/';
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   final http.Client client;
@@ -41,7 +41,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     final http.Response response = await client.post(
       API_URL + 'users/',
-      body: jsonUser,
+      body: json.encode(jsonUser),
     );
 
     if (response.statusCode == 201) {
@@ -98,5 +98,4 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       throw ServerException(message: "Can't retrieve token from response");
     }
   }
-
 }
