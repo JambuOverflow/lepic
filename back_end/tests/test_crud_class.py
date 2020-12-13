@@ -60,7 +60,7 @@ class TestCRUDClass(APITestCase):
 
     def test_get_classes_with_authorization(self):
         self.client = APIClient()
-        self.token_url = reverse('/api/token-auth/')
+        self.token_url = reverse('access-token')
         self.auth_data = {
             "username": "gugu",
             "password": "771225eu"

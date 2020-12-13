@@ -30,7 +30,7 @@ class TestCRUDText(APITestCase):
         response = self.client.post(self.url, self.data, format='json')
         
         #Get token and auth
-        self.token_url = reverse('get-user-token')
+        self.token_url = reverse('access-token')
         self.auth_data = {
             "username": "gugu",
             "password": "771225eu"
@@ -70,7 +70,7 @@ class TestCRUDText(APITestCase):
         response = self.client.post(self.url, self.data, format='json')
 
         self.client = APIClient()
-        self.token_url = reverse('get-user-token')
+        self.token_url = reverse('access-token')
         self.auth_data = {
             "username": "gugu",
             "password": "771225eu"
