@@ -14,7 +14,7 @@ class DrawerOverlay extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Image.asset('images/JambuOverflow.jpg'),
+                //Image.asset('assets/images/JambuOverflow.jpg'),
                 Text(
                   //'Drawer Header'
                   '(Name)',
