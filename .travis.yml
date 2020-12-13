@@ -8,6 +8,8 @@ jobs:
         install: 
         - pip install -r back_end/requirements.txt
         script:
+        - python back_end/manage.py makemigrations api
+        - python back_end/manage.py migrate
         - pytest back_end/
       
       - language: dart
