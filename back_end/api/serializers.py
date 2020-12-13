@@ -3,11 +3,12 @@ from .models import Class, User, School, Text
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(required=False)
+    password = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'user_role']
+        fields = ['id', 'local_id', 'first_name', 'last_name', 'username',
+                  'email', 'password', 'role']
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
