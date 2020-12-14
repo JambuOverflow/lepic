@@ -29,7 +29,7 @@ abstract class UserRemoteDataSource {
 }
 
 /// Localhost - 10.0.2.2 is the address on an android emulator
-const API_URL = 'http://10.0.2.2:8000/api/';
+const API_URL = 'https://lepic-django.herokuapp.com/api/';
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   final http.Client client;
