@@ -40,61 +40,73 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<Response> createUser(UserModel user) async {
     final jsonUser = user.toJson();
 
-    final http.Response response = await client.post(
-      API_URL + 'users/',
-      body: json.encode(jsonUser),
-      headers: {HttpHeaders.contentTypeHeader: "application/json"},
-    );
-
-    if (response.statusCode == 201) {
-      return SuccessfulResponse();
-    } else
-      return UnsuccessfulResponse(
-        message: response.body,
-        statusCode: response.statusCode,
+    try {
+      final http.Response response = await client.post(
+        API_URL + 'users/',
+        body: json.encode(jsonUser),
+        headers: {HttpHeaders.contentTypeHeader: "application/json"},
       );
+
+      if (response.statusCode == 201) {
+        return SuccessfulResponse();
+      } else
+        return UnsuccessfulResponse(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+    } on Exception {
+      throw ServerException();
+    }
   }
 
   @override
   Future<Response> updateUser(UserModel user, String token) async {
     final jsonUser = user.toJson();
 
-    final http.Response response = await client.patch(
-      API_URL + 'users/' + user.localId.toString(),
-      headers: {
-        HttpHeaders.contentTypeHeader: "application/json",
-        HttpHeaders.authorizationHeader: "Token " + token,
-      },
-      body: json.encode(jsonUser),
-    );
+    try {
+      final http.Response response = await client.patch(
+        API_URL + 'users/' + user.localId.toString(),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Token " + token,
+        },
+        body: json.encode(jsonUser),
+      );
 
-    if (response.statusCode == 200)
-      return SuccessfulResponse();
-    else
-      return UnsuccessfulResponse(message: response.body);
+      if (response.statusCode == 200)
+        return SuccessfulResponse();
+      else
+        return UnsuccessfulResponse(message: response.body);
+    } on Exception {
+      throw ServerException();
+    }
   }
 
   @override
   Future<Response> login(UserModel user) async {
-    final http.Response response = await client.post(
-      API_URL + 'token-auth/',
-      body: jsonEncode({
-        "username": user.email,
-        "password": user.password,
-      }),
-      headers: {
-        HttpHeaders.contentTypeHeader: "application/json",
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final token = _extractTokenFromResponse(response);
-      return TokenResponse(token: token);
-    } else {
-      return UnsuccessfulResponse(
-        message: response.body,
-        statusCode: response.statusCode,
+    try {
+      final http.Response response = await client.post(
+        API_URL + 'token-auth/',
+        body: jsonEncode({
+          "username": user.email,
+          "password": user.password,
+        }),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
       );
+
+      if (response.statusCode == 200) {
+        final token = _extractTokenFromResponse(response);
+        return TokenResponse(token: token);
+      } else {
+        return UnsuccessfulResponse(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+      }
+    } on Exception {
+      throw ServerException();
     }
   }
 
