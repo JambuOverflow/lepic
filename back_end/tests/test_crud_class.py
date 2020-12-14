@@ -64,41 +64,27 @@ class ClassReadTestCase(APITestCase):
     class_url = reverse('create-classes')
     user_url = reverse('list-and-create-users')
     token_url = reverse('access-token')
+    client = APIClient()
 
     def setUp(self):
-        self.title = "TurmaA"
-        self.grade = 3
-
-        self.first_name = "Arthur"
-        self.last_name = "Takeshi"
-        self.email = "takeshi@ufpa.br"
-        self.username = "arthur"
-        self.password = "123456"
-        self.user_role = 1
-        
-        self.user_data = {
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "email": self.email,
-            "username": self.username,
-            "password": self.password,
-            "user_role": self.user_role
+        self.class_data = {
+            "title":"TurmaA",
+            "grade":3
         }
 
-        self.class_data = {
-            "title": self.title,
-            "grade": self.grade,
-            "tutor": self.tutor
+        self.user_data = {
+            "username":"gugu",
+            "password":"123456eu"
         }
 
 
     def test_get_classes_without_token(self):
         response = self.client.get(self.class_url)
-        self.assertEqual(self.response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
     def test_get_classes_with_token(self):
-        response = self.client.get(self.token_url, {"username": self.username, "password": self.password}, format='json')
+        response = self.client.get(self.token_url, self.user_data, format='json')
         token = response.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.get(self.class_url)
