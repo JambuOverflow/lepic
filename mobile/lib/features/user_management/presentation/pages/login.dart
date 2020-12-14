@@ -50,8 +50,15 @@ class _LoginState extends State<Login> {
             BlocListener<UserBloc, UserState>(
               listener: (context, state) {
                 if (state is LoggedIn) {
+                  print('logged in');
                   Navigator.of(context).pushNamed(
                     '/home',
+                  );
+                } else if (state is Error) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
                   );
                 }
               },

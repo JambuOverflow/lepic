@@ -43,8 +43,6 @@ class _SignupState extends State<Signup> {
             padding: EdgeInsets.all(8.0),
             child: TextField(
               controller: firstnameController,
-              //tirar o controller e botar essa linha aqui
-              //onSubmitted: (value) => submitFirstName(context,value),
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'First Name',
@@ -95,38 +93,51 @@ class _SignupState extends State<Signup> {
           ),
           Container(
               padding: const EdgeInsets.all(16.0), child: RoleDropdownButton()),
-          BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-            return Container(
-              height: 80,
-              padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-              child: RaisedButton(
-                child: Text(
-                  'Create user',
-                  style: TextStyle(fontSize: 16),
+          BlocListener<UserBloc, UserState>(
+            listener: (context, state) {
+              if (state is UserCreated) {
+                print("user added");
+                Navigator.pop(context);
+              } else if (state is Error) {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                  ),
+                );
+              }
+            },
+            child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+              return Container(
+                height: 80,
+                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                child: RaisedButton(
+                  child: Text(
+                    'Create user',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  onPressed: () {
+                    print("adding user");
+                    print("name: " +
+                        firstnameController.text +
+                        ' ' +
+                        lastnameController.text);
+                    print("email: " + emailController.text);
+                    print("password: " + passwordController.text);
+                    print("role: " + roleSelected.toString());
+                    _userBloc.add(
+                      CreateNewUserEvent(
+                        firstnameController.text,
+                        lastnameController.text,
+                        emailController.text,
+                        roleSelected,
+                        passwordController.text,
+                      ),
+                    );
+                  },
                 ),
-                onPressed: () {
-                  print("user added");
-                  print("name: " +
-                      firstnameController.text +
-                      ' ' +
-                      lastnameController.text);
-                  print("email: " + emailController.text);
-                  print("password: " + passwordController.text);
-                  print("role: " + roleSelected.toString());
-                  Navigator.pop(context);
-                  _userBloc.add(
-                    CreateNewUserEvent(
-                      firstnameController.text,
-                      lastnameController.text,
-                      emailController.text,
-                      roleSelected,
-                      passwordController.text,
-                    ),
-                  );
-                },
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ]),
       ),
     );
