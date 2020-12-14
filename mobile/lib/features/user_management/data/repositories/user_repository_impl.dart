@@ -49,6 +49,14 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, Response>> login(User user) async {
     if (await networkInfo.isConnected) {
+      return await _tryLoginUser(user);
+    } else {
+      return Left(ServerFailure());
+    }
+  }
+
+  Future<Either<Failure, Response>> _tryLoginUser(User user) async {
+    try {
       final response = await remoteDataSource.login(_toModel(user));
 
       if (response is TokenResponse) {
@@ -56,7 +64,7 @@ class UserRepositoryImpl implements UserRepository {
         return Right(response);
       } else
         return Left(ServerFailure());
-    } else {
+    } on ServerException {
       return Left(ServerFailure());
     }
   }

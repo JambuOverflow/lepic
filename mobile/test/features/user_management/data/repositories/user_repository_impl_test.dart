@@ -249,6 +249,16 @@ void main() {
         verify(mockLocalDataSource.storeTokenSecurely(any));
       });
 
+      test('should return server failure when call returns exception',
+          () async {
+        when(mockRemoteDataSource.login(tUserModel))
+            .thenThrow(ServerException());
+
+        final result = await repository.login(tUser);
+
+        expect(result, Left(ServerFailure()));
+      });
+
       test('should return server failure when call is unsuccessful', () async {
         when(mockRemoteDataSource.login(tUserModel))
             .thenAnswer((_) async => UnsuccessfulResponse(message: 'on noes'));
