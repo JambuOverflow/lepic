@@ -71,7 +71,6 @@ class ClassReadTestCase(APITestCase):
     def setUp(self):
         self.title = "TurmaA"
         self.grade = 3
-        self.tutor = 5
 
         self.first_name = "Arthur"
         self.last_name = "Takeshi"
@@ -98,7 +97,7 @@ class ClassReadTestCase(APITestCase):
 
     def test_get_classes_without_token(self):
         response = self.client.get(self.class_url)
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(self.response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
     def test_get_classes_with_token(self):
