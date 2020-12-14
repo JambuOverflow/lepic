@@ -121,6 +121,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
