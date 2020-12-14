@@ -50,6 +50,7 @@ class _LoginState extends State<Login> {
             BlocListener<UserBloc, UserState>(
               listener: (context, state) {
                 if (state is LoggedIn) {
+                  print('logged in');
                   Navigator.of(context).pushNamed(
                     '/home',
                   );

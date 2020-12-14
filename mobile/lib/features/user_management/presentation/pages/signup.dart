@@ -96,6 +96,7 @@ class _SignupState extends State<Signup> {
           BlocListener<UserBloc, UserState>(
             listener: (context, state) {
               if (state is UserCreated) {
+                print("user added");
                 Navigator.pop(context);
               } else if (state is Error) {
                 Scaffold.of(context).showSnackBar(
@@ -115,7 +116,7 @@ class _SignupState extends State<Signup> {
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
-                    print("user added");
+                    print("adding user");
                     print("name: " +
                         firstnameController.text +
                         ' ' +
