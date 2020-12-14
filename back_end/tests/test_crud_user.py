@@ -1,8 +1,9 @@
-from api.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APITestCase
+from api.models import User
+
 
 class TestCrudUser(APITestCase):
 
@@ -20,14 +21,14 @@ class TestCrudUser(APITestCase):
             "first_name": "Arthur",
             "last_name": "Takeshi",
             "email": "takeshi@ufpa.br",
-            "username" : "arthur",
-            "password" : "arthur",
-            "user_role": 3
+            "username": "takeshi@ufpa.br",
+            "password": "arthur",
+            "role": 2
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.get().username, 'arthur')
+        self.assertEqual(User.objects.get().username, 'takeshi@ufpa.br')
         self.assertEqual(User.objects.get().password == 'arthur', False)
 
     def test_get_token(self):
@@ -37,14 +38,14 @@ class TestCrudUser(APITestCase):
             "first_name": "Arthur",
             "last_name": "Takeshi",
             "email": "takeshi@ufpa.br",
-            "username" : "arthur",
-            "password" : "arthur",
-            "user_role": 3
+            "username": "takeshi@ufpa.br",
+            "password": "arthur",
+            "role": 2
         }
         response = self.client.post(url, data, format='json')
         url = reverse('get-user-token')
         data = {
-            "username": "arthur",
+            "username": "takeshi@ufpa.br",
             "password": "arthur"
         }
         response = self.client.post(url, data, format='json')
@@ -58,9 +59,9 @@ class TestCrudUser(APITestCase):
             "first_name": "Arthur",
             "last_name": "Takeshi",
             "email": "takeshi@ufpa.br",
-            "username" : "arthur",
-            "password" : "arthur",
-            "user_role": 3
+            "username": "takeshi@ufpa.br",
+            "password": "arthur",
+            "role": 2
         }
         response = self.client.post(url, data, format='json')
         old_username = response.data['username']
@@ -68,7 +69,7 @@ class TestCrudUser(APITestCase):
 
         url = reverse('get-user-token')
         data = {
-            "username": "arthur",
+            "username": "takeshi@ufpa.br",
             "password": "arthur"
         }
         response = self.client.post(url, data, format='json')
@@ -80,9 +81,9 @@ class TestCrudUser(APITestCase):
             "first_name": "Renan",
             "last_name": "Cunha",
             "email": "renan@ufpa.br",
-            "username" : "renan",
-            "password" : "renan",
-            "user_role": 1
+            "username": "renan@ufpa.br",
+            "password": "renan",
+            "role": 1
         }
         response = self.client.put(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -97,9 +98,9 @@ class TestCrudUser(APITestCase):
             "first_name": "Arthur",
             "last_name": "Takeshi",
             "email": "takeshi@ufpa.br",
-            "username" : "arthur",
-            "password" : "arthur",
-            "user_role": 3
+            "username": "takeshi@ufpa.br",
+            "password": "arthur",
+            "role": 1
         }
         response = self.client.post(url, data, format='json')
         old_username = response.data['username']
@@ -107,7 +108,7 @@ class TestCrudUser(APITestCase):
 
         url = reverse('get-user-token')
         data = {
-            "username": "arthur",
+            "username": "takeshi@ufpa.br",
             "password": "arthur"
         }
         response = self.client.post(url, data, format='json')
@@ -116,9 +117,9 @@ class TestCrudUser(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         url = reverse('update-delete-users', args=[1])
         data = {
-            "username" : "renan",
-            "password" : "renan",
-            "user_role": 1
+            "username": "renan@ufpa.br",
+            "password": "renan",
+            "role": 1
         }
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -133,16 +134,16 @@ class TestCrudUser(APITestCase):
             "first_name": "Arthur",
             "last_name": "Takeshi",
             "email": "takeshi@ufpa.br",
-            "username" : "arthur",
-            "password" : "arthur",
-            "user_role": 3
+            "username": "takeshi@ufpa.br",
+            "password": "arthur",
+            "role": 2
         }
         response = self.client.post(url, data, format='json')
         response_get_users = self.client.get(url)
 
         url = reverse('get-user-token')
         data = {
-            "username": "arthur",
+            "username": "takeshi@ufpa.br",
             "password": "arthur"
         }
         response = self.client.post(url, data, format='json')
