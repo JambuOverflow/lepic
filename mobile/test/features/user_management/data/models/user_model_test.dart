@@ -16,6 +16,7 @@ void main() {
     firstName: 'ab',
     lastName: 'c',
     email: 'abc@g.com',
+    username: 'abc@g.com',
     role: Role.teacher,
     password: 'x1y2',
   );
@@ -47,6 +48,7 @@ void main() {
         "first_name": "ab",
         "last_name": "c",
         "email": "abc@g.com",
+        "username": "abc@g.com",
         "role": 0,
         "password": "x1y2"
       };

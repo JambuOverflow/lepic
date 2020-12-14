@@ -34,7 +34,6 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<Either<Failure, Response>> updateUser(User user, String token) async {
-
     if (await networkInfo.isConnected) {
       return await _tryUpdateUserAndCacheIt(user, token);
     } else {
@@ -64,7 +63,6 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(
       User user, String token) async {
-
     try {
       final updatedUser =
           await remoteDataSource.updateUser(_toModel(user), token);
@@ -75,8 +73,7 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  Future<Either<Failure, Response>> _tryCreateUserAndCacheIt(
-      User user) async {
+  Future<Either<Failure, Response>> _tryCreateUserAndCacheIt(User user) async {
     try {
       final response = await remoteDataSource.createUser(_toModel(user));
       await localDataSource.cacheUser(_toModel(user));
@@ -116,6 +113,7 @@ class UserRepositoryImpl implements UserRepository {
       lastName: entity.lastName,
       email: entity.email,
       password: entity.password,
+      username: entity.email,
       role: entity.role,
     );
   }

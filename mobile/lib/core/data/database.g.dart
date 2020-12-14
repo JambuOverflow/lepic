@@ -12,6 +12,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   final String firstName;
   final String lastName;
   final String email;
+  final String username;
   final Role role;
   final String password;
   UserModel(
@@ -19,6 +20,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
       @required this.firstName,
       @required this.lastName,
       @required this.email,
+      @required this.username,
       @required this.role,
       @required this.password});
   factory UserModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -35,6 +37,8 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           .mapFromDatabaseResponse(data['${effectivePrefix}last_name']),
       email:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
+      username: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}username']),
       role: $UserModelsTable.$converter0.mapToDart(
           intType.mapFromDatabaseResponse(data['${effectivePrefix}role'])),
       password: stringType
@@ -55,6 +59,9 @@ class UserModel extends DataClass implements Insertable<UserModel> {
     }
     if (!nullToAbsent || email != null) {
       map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || username != null) {
+      map['username'] = Variable<String>(username);
     }
     if (!nullToAbsent || role != null) {
       final converter = $UserModelsTable.$converter0;
@@ -79,6 +86,9 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           : Value(lastName),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
+      username: username == null && nullToAbsent
+          ? const Value.absent()
+          : Value(username),
       role: role == null && nullToAbsent ? const Value.absent() : Value(role),
       password: password == null && nullToAbsent
           ? const Value.absent()
@@ -94,6 +104,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
       firstName: serializer.fromJson<String>(json['first_name']),
       lastName: serializer.fromJson<String>(json['last_name']),
       email: serializer.fromJson<String>(json['email']),
+      username: serializer.fromJson<String>(json['username']),
       role: serializer.fromJson<Role>(json['role']),
       password: serializer.fromJson<String>(json['password']),
     );
@@ -106,6 +117,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
       'first_name': serializer.toJson<String>(firstName),
       'last_name': serializer.toJson<String>(lastName),
       'email': serializer.toJson<String>(email),
+      'username': serializer.toJson<String>(username),
       'role': serializer.toJson<Role>(role),
       'password': serializer.toJson<String>(password),
     };
@@ -116,6 +128,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           String firstName,
           String lastName,
           String email,
+          String username,
           Role role,
           String password}) =>
       UserModel(
@@ -123,6 +136,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         email: email ?? this.email,
+        username: username ?? this.username,
         role: role ?? this.role,
         password: password ?? this.password,
       );
@@ -133,6 +147,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
           ..write('email: $email, ')
+          ..write('username: $username, ')
           ..write('role: $role, ')
           ..write('password: $password')
           ..write(')'))
@@ -147,7 +162,9 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           $mrjc(
               lastName.hashCode,
               $mrjc(
-                  email.hashCode, $mrjc(role.hashCode, password.hashCode))))));
+                  email.hashCode,
+                  $mrjc(username.hashCode,
+                      $mrjc(role.hashCode, password.hashCode)))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -156,6 +173,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           other.firstName == this.firstName &&
           other.lastName == this.lastName &&
           other.email == this.email &&
+          other.username == this.username &&
           other.role == this.role &&
           other.password == this.password);
 }
@@ -165,6 +183,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
   final Value<String> firstName;
   final Value<String> lastName;
   final Value<String> email;
+  final Value<String> username;
   final Value<Role> role;
   final Value<String> password;
   const UserModelsCompanion({
@@ -172,6 +191,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
     this.firstName = const Value.absent(),
     this.lastName = const Value.absent(),
     this.email = const Value.absent(),
+    this.username = const Value.absent(),
     this.role = const Value.absent(),
     this.password = const Value.absent(),
   });
@@ -180,11 +200,13 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
     @required String firstName,
     @required String lastName,
     @required String email,
+    @required String username,
     @required Role role,
     @required String password,
   })  : firstName = Value(firstName),
         lastName = Value(lastName),
         email = Value(email),
+        username = Value(username),
         role = Value(role),
         password = Value(password);
   static Insertable<UserModel> custom({
@@ -192,6 +214,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
     Expression<String> firstName,
     Expression<String> lastName,
     Expression<String> email,
+    Expression<String> username,
     Expression<int> role,
     Expression<String> password,
   }) {
@@ -200,6 +223,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
       if (firstName != null) 'first_name': firstName,
       if (lastName != null) 'last_name': lastName,
       if (email != null) 'email': email,
+      if (username != null) 'username': username,
       if (role != null) 'role': role,
       if (password != null) 'password': password,
     });
@@ -210,6 +234,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
       Value<String> firstName,
       Value<String> lastName,
       Value<String> email,
+      Value<String> username,
       Value<Role> role,
       Value<String> password}) {
     return UserModelsCompanion(
@@ -217,6 +242,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
+      username: username ?? this.username,
       role: role ?? this.role,
       password: password ?? this.password,
     );
@@ -237,6 +263,9 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
     if (email.present) {
       map['email'] = Variable<String>(email.value);
     }
+    if (username.present) {
+      map['username'] = Variable<String>(username.value);
+    }
     if (role.present) {
       final converter = $UserModelsTable.$converter0;
       map['role'] = Variable<int>(converter.mapToSql(role.value));
@@ -254,6 +283,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
           ..write('email: $email, ')
+          ..write('username: $username, ')
           ..write('role: $role, ')
           ..write('password: $password')
           ..write(')'))
@@ -311,6 +341,18 @@ class $UserModelsTable extends UserModels
     );
   }
 
+  final VerificationMeta _usernameMeta = const VerificationMeta('username');
+  GeneratedTextColumn _username;
+  @override
+  GeneratedTextColumn get username => _username ??= _constructUsername();
+  GeneratedTextColumn _constructUsername() {
+    return GeneratedTextColumn(
+      'username',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _roleMeta = const VerificationMeta('role');
   GeneratedIntColumn _role;
   @override
@@ -337,7 +379,7 @@ class $UserModelsTable extends UserModels
 
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, firstName, lastName, email, role, password];
+      [localId, firstName, lastName, email, username, role, password];
   @override
   $UserModelsTable get asDslTable => this;
   @override
@@ -370,6 +412,12 @@ class $UserModelsTable extends UserModels
           _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
     } else if (isInserting) {
       context.missing(_emailMeta);
+    }
+    if (data.containsKey('username')) {
+      context.handle(_usernameMeta,
+          username.isAcceptableOrUnknown(data['username'], _usernameMeta));
+    } else if (isInserting) {
+      context.missing(_usernameMeta);
     }
     context.handle(_roleMeta, const VerificationResult.success());
     if (data.containsKey('password')) {

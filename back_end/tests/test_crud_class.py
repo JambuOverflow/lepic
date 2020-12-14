@@ -17,7 +17,6 @@ class TestCRUDClass(APITestCase):
         response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-
     def test_create_class_with_authorization(self):
         #Create a user
         self.url = reverse('list-and-create-users')
@@ -25,22 +24,22 @@ class TestCRUDClass(APITestCase):
             "first_name": "Arthur",
             "last_name": "Takeshi",
             "email": "takeshi@ufpa.br",
-            "username" : "arthur",
-            "password" : "123456",
-            "user_role": 1
+            "username": "takeshi@ufpa.br",
+            "password": "123456",
+            "role": 1
         }
         response = self.client.post(self.url, self.data, format='json')
-        
+
         #Get token
         self.token_url = reverse('get-user-token')
         self.auth_data = {
-            "username": "arthur",
+            "username": "takeshi@ufpa.br",
             "password": "123456"
         }
         response = self.client.post(self.token_url, self.auth_data, format='json')
         token = response.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        
+
         #Try auth
         self.class_url = reverse('create-classes')
         self.class_data = {

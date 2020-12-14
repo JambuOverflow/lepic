@@ -23,6 +23,7 @@ void main() {
     firstName: 'ab',
     lastName: 'c',
     email: 'abc@g.com',
+    username: 'abc@g.com',
     role: Role.teacher,
     password: 'x1y2',
   );
@@ -65,6 +66,7 @@ void main() {
       firstName: 'ab',
       lastName: 'c',
       email: 'a@g.com',
+      username: 'a@g.com',
       role: Role.researcher,
       password: 'x1y2',
     );
@@ -95,7 +97,7 @@ void main() {
   group('login', () {
     final tToken = fixture('token');
     final tBody = jsonEncode({
-      "user_name": tUserModel.email,
+      "username": tUserModel.email,
       "password": tUserModel.password,
     });
 

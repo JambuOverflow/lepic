@@ -14,6 +14,7 @@ void main() {
     firstName: 'v',
     lastName: 'c',
     email: 'v@g.com',
+    username: 'v@g.com',
     role: Role.teacher,
     password: '123',
   );
@@ -23,6 +24,7 @@ void main() {
     firstName: 'v',
     lastName: 's',
     email: 'vs@g.com',
+    username: 'vs@g.com',
     role: Role.researcher,
     password: '1234',
   );
