@@ -20,7 +20,7 @@ class DrawerOverlay extends StatelessWidget {
                   '(Name)',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 16,
                   ),
                 ),
                 Text(
@@ -28,7 +28,7 @@ class DrawerOverlay extends StatelessWidget {
                   '(Role)',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 16,
                   ),
                 ),
                 Text(
@@ -36,7 +36,7 @@ class DrawerOverlay extends StatelessWidget {
                   '(ID)',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -56,10 +56,7 @@ class DrawerOverlay extends StatelessWidget {
             title: Text('Classes'),
             onTap: () {
               print('classes');
-              Navigator.of(context).pushNamed(
-                '/seventh',
-                //'/eighth',
-              );
+              Navigator.of(context).pushNamed('classes');
             },
           ),
           ListTile(

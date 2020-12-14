@@ -53,6 +53,12 @@ class _LoginState extends State<Login> {
                   Navigator.of(context).pushNamed(
                     '/home',
                   );
+                } else if (state is Error) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
                 }
               },
               child:
