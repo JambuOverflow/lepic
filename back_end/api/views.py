@@ -48,10 +48,9 @@ class ClassCreate(generics.ListCreateAPIView):
     """
     List classes of authenticated user or create a new class.
     """
-
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = ClassSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+    
     def get_queryset(self):
         user = self.request.user
         return Class.objects.filter(tutor=user)
@@ -65,7 +64,7 @@ class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
     Retrieve, update or delete a class instance.
     """
     queryset = Class.objects.all()
-    serializer_class = ClassSerializer()
+    serializer_class = ClassSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsTutorOrReadOnly]
 
@@ -74,10 +73,9 @@ class TextList(generics.ListCreateAPIView):
     """
     List texts of authenticated user or create a new text.
     """
-
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = TextSerializer
-    permissions_classes = [permissions.IsAuthenticatedOrReadOnly] 
-
+    
     def get_queryset(self):
         classes = Class.objects.filter(tutor=self.request.user.id)
         queryset = Text.objects.filter(_class__in=classes)
