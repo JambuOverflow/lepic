@@ -56,12 +56,9 @@ class ClassCreateTestCase(APITestCase):
 
     def test_class_registration_with_wrong_password(self):
         response = self.client.post(self.user_url, self.user_data, format='json')  
-        
         response = self.client.post(self.token_url, {"username": self.username, "password": "this-is-wrong"}, format='json')
-        token = response.data['token']
-        
         response = self.client.post(self.class_url, self.class_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 class ClassReadTestCase(APITestCase):
     class_url = reverse('create-classes')
