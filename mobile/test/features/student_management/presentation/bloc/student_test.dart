@@ -1,11 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
 
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/domain/use_cases/create_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/delete_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
+import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mockito/mockito.dart';
@@ -53,22 +55,44 @@ void main() {
     expect(bloc.state, StudentNotLoaded());
   });
 
-  test(
-      '''should emit [CreatingStudent, StudentCreated] when student creation is successful''',
-      () {
-    when(mockCreateNewStudent(any)).thenAnswer((_) async => Right(tStudent));
+  group('CreateNewUser', () {
+    test(
+        '''should emit [CreatingStudent, StudentCreated] when student creation is successful''',
+        () {
+      when(mockCreateNewStudent(any)).thenAnswer((_) async => Right(tStudent));
 
-    final expected = [
-      CreatingStudent(),
-      StudentCreated(student: tStudent),
-    ];
+      final expected = [
+        CreatingStudent(),
+        StudentCreated(student: tStudent),
+      ];
 
-    expectLater(bloc, emitsInOrder(expected));
-    bloc.add(CreateNewStudentEvent(
-      tFirstName,
-      tLastName,
-      tId,
-      tClassroomId,
-    ));
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(CreateNewStudentEvent(
+        tFirstName,
+        tLastName,
+        tId,
+        tClassroomId,
+      ));
+    });
+
+    test(
+        'should emit [CreatingStudent, Error] when student create is unsuccessful',
+        () async {
+      when(mockCreateNewStudent(StudentParams(student: tStudent)))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        CreatingStudent(),
+        Error(message: 'Could not create Student')
+      ];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(CreateNewStudentEvent(
+        tFirstName,
+        tLastName,
+        tId,
+        tClassroomId,
+      ));
+    });
   });
 }
