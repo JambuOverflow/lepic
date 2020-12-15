@@ -5,11 +5,14 @@ abstract class StudentState extends Equatable {
   List<Object> get props => [StudentState];
 }
 
-class StudentInitial extends StudentState {}
+class StudentNotLoaded extends StudentState {}
 
 class DeletingStudent extends StudentState {}
 
-class StudentDeleted extends StudentState {}
+class StudentDeleted extends StudentState {
+  final Response response;
+  StudentDeleted({@required this.response});
+}
 
 class CreatingStudent extends StudentState {}
 
@@ -21,9 +24,16 @@ class StudentCreated extends StudentState {
 
 class UpdatingStudent extends StudentState {}
 
-class StudentUpdated extends StudentState {}
+class StudentUpdated extends StudentState {
+  final Response response;
 
-class GetStudent extends StudentState {}
+  StudentUpdated({@required this.response});
+}
+
+class GetStudent extends StudentState {
+  final Student student;
+  GetStudent({@required this.student});
+}
 
 class Error extends StudentState {
   final String message;
