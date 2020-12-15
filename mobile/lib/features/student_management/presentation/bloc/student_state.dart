@@ -1,6 +1,7 @@
 part of 'student_bloc.dart';
 
 abstract class StudentState extends Equatable {
+  const StudentState();
   @override
   List<Object> get props => [StudentState];
 }
@@ -17,9 +18,9 @@ class StudentDeleted extends StudentState {
 class CreatingStudent extends StudentState {}
 
 class StudentCreated extends StudentState {
-  final Response response;
+  final Student student;
 
-  StudentCreated({@required this.response});
+  StudentCreated({@required this.student});
 }
 
 class UpdatingStudent extends StudentState {}

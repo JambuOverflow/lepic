@@ -1,14 +1,16 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-import 'package:mobile/core/network/response.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/student_management/domain/use_cases/create_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/delete_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/network/response.dart';
+import '../../domain/entities/student.dart';
+import '../../domain/use_cases/student_params.dart';
 
 part 'student_event.dart';
 part 'student_state.dart';
@@ -30,6 +32,40 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Stream<StudentState> mapEventToState(
     StudentEvent event,
   ) async* {
-    // TODO: implement mapEventToState
+    if (event is CreateNewStudentEvent) yield* _createNewStudentStates(event);
+  }
+
+  Stream<StudentState> _createNewStudentStates(
+      CreateNewStudentEvent event) async* {
+    yield CreatingStudent();
+
+    final student = _createStudentEntityFromEvent(event);
+
+    final failureOrResponse =
+        await createStudent(StudentParams(student: student));
+
+    yield failureOrResponse.fold(
+        (failure) => Error(message: _mapFailureToMessage(failure)),
+        (response) => StudentCreated(student: student));
+  }
+
+  Student _createStudentEntityFromEvent(CreateNewStudentEvent event) {
+    if (event is _StudentManagementEvent) {
+      return Student(
+        firstName: event.firstName,
+        lastName: event.lastName,
+        id: event.id,
+        classroomId: event.classroomId,
+      );
+    }
+  }
+
+  String _mapFailureToMessage(Failure failure) {
+    switch (failure.runtimeType) {
+      case ServerFailure:
+        return 'Could not reach server';
+      default:
+        return 'Unexpected Error';
+    }
   }
 }
