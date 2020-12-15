@@ -121,9 +121,6 @@ app.*.symbols
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
 
-##Django/Python##
-migrations/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -142,7 +139,10 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+
+# this folder is essential to flutter projects
+# lib/
+
 lib64/
 parts/
 sdist/

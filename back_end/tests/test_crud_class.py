@@ -13,7 +13,6 @@ class ClassCreateTestCase(APITestCase):
     def setUp(self):
         self.title = "TurmaA"
         self.grade = 3
-
         self.first_name = "Arthur"
         self.last_name = "Takeshi"
         self.email = "takeshi@ufpa.br"
@@ -47,7 +46,6 @@ class ClassCreateTestCase(APITestCase):
         response = self.client.post(self.token_url, {"username": self.username, "password": self.password}, format='json')
         token = response.data['token']
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
-        
         response = self.client.post(self.class_url, self.class_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
