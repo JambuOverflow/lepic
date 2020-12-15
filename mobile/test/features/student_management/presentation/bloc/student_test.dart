@@ -55,7 +55,7 @@ void main() {
     expect(bloc.state, StudentNotLoaded());
   });
 
-  group('CreateNewUser', () {
+  group('CreateNewStudent', () {
     test(
         '''should emit [CreatingStudent, StudentCreated] when student creation is successful''',
         () {
@@ -88,6 +88,44 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(CreateNewStudentEvent(
+        tFirstName,
+        tLastName,
+        tId,
+        tClassroomId,
+      ));
+    });
+  });
+
+  group('updateStudent', () {
+    test('''should emit [UpdatingStudent, StudentUpdated] when update 
+    is successful''', () async {
+      when(mockUpdateStudent(any)).thenAnswer(
+        (_) async => Right(tStudent),
+      );
+
+      final expected = [UpdatingStudent(), StudentUpdated(student: tStudent)];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateStudentEvent(
+        tFirstName,
+        tLastName,
+        tId,
+        tClassroomId,
+      ));
+    });
+
+    test('''should emit [UpdatingStudent, Error] when student creation 
+    is unsuccessful''', () {
+      when(mockUpdateStudent(any))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        UpdatingStudent(),
+        Error(message: 'Not able to update a student')
+      ];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateStudentEvent(
         tFirstName,
         tLastName,
         tId,

@@ -32,7 +32,9 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Stream<StudentState> mapEventToState(
     StudentEvent event,
   ) async* {
-    if (event is CreateNewStudentEvent) yield* _createNewStudentStates(event);
+    if (event is CreateNewStudentEvent)
+      yield* _createNewStudentStates(event);
+    else if (event is UpdateStudentEvent) yield* _updateStudentStates(event);
   }
 
   Stream<StudentState> _createNewStudentStates(
@@ -49,7 +51,20 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         (response) => StudentCreated(student: student));
   }
 
-  Student _createStudentEntityFromEvent(CreateNewStudentEvent event) {
+  Stream<StudentState> _updateStudentStates(UpdateStudentEvent event) async* {
+    yield UpdatingStudent();
+
+    final student = _createStudentEntityFromEvent(event);
+    final failureOrResponse =
+        await updateStudent(StudentParams(student: student));
+
+    yield failureOrResponse.fold(
+      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (response) => StudentUpdated(student: student),
+    );
+  }
+
+  Student _createStudentEntityFromEvent(StudentEvent event) {
     if (event is _StudentManagementEvent) {
       return Student(
         firstName: event.firstName,
@@ -58,6 +73,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         classroomId: event.classroomId,
       );
     }
+    throw Exception('Cannot create student from event');
   }
 
   String _mapFailureToMessage(Failure failure) {
