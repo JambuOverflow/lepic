@@ -30,9 +30,22 @@ class CreateNewStudentEvent extends _StudentManagementEvent {
   ) : super(firstName, lastName, id, classroomId);
 }
 
-class UpdateStudentEvent extends _StudentManagementEvent {}
+class UpdateStudentEvent extends _StudentManagementEvent {
+  UpdateStudentEvent(
+    String firstName,
+    String lastName,
+    int id,
+    int classroomId,
+  ) : super(firstName, lastName, id, classroomId);
+}
 
-class DeleteStudentEvent extends _StudentManagementEvent {}
+class DeleteStudentEvent extends StudentEvent {
+  final int id;
+
+  DeleteStudentEvent(
+    this.id,
+  );
+}
 
 class GetStudentEvent extends StudentEvent {
   final int id;
