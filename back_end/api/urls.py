@@ -4,6 +4,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.authtoken.views import ObtainAuthToken
 
 urlpatterns = [
+  path('students/', views.StudentList.as_view(), name='create-student'),
+  path('students/<int:pk>/', views.StudentDetail.as_view(), name='update-delete-students'),
   path('classes/', views.ClassCreate.as_view(), name='create-classes'),
   path('classes/<int:pk>/', views.ClassDetail.as_view()),
   path('texts/', views.TextList.as_view(), name='create-text'),
