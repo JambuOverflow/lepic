@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
+
+import '../bloc/bloc/user_bloc.dart';
+import 'input_fields/email_input_field.dart';
+import 'input_fields/confirm_password_input_field.dart';
+import 'input_fields/password_input_field.dart';
+import 'input_fields/first_name_input_field.dart';
+import 'input_fields/last_name_input_field.dart';
 import '../widgets/role_dropdown_button.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
+import '../../domain/entities/user.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -39,60 +45,15 @@ class _SignupState extends State<Signup> {
       body: Container(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
+          FirstNameInputField(),
+          LastNameInputField(),
+          EmailInputField(),
+          PasswordInputField(),
+          ConfirmPasswordInputField(),
           Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: firstnameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'First Name',
-              ),
-            ),
+            padding: const EdgeInsets.all(16.0),
+            child: RoleDropdownButton(),
           ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: lastnameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Last Name',
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'E-mail',
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              obscureText: true,
-              controller: passwordController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              obscureText: true,
-              controller: confirmPasswordController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Confirm password',
-              ),
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.all(16.0), child: RoleDropdownButton()),
           BlocListener<UserBloc, UserState>(
             listener: (context, state) {
               if (state is UserCreated) {
