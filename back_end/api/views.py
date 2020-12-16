@@ -61,17 +61,19 @@ class ClassCreate(generics.ListCreateAPIView):
 
 class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a class instance.
+    Retrieve, update or delete a class instance of authenticated tutor.
+    EX: GET or PUT or DELETE /api/classes/<int:pk>/
     """
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+    permission_classes = [permissions.IsAuthenticated,
                           IsTutorOrReadOnly]
 
 
 class TextList(generics.ListCreateAPIView):
     """
     List texts of authenticated user or create a new text.
+    EX: GET or POST /api/texts/
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = TextSerializer
@@ -85,6 +87,7 @@ class TextList(generics.ListCreateAPIView):
 class TextDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a text instance.
+    EX: GET or PUT or DELETE /api/texts/<int:pk>/
     """
     queryset = Text.objects.all()
     serializer_class = TextSerializer
