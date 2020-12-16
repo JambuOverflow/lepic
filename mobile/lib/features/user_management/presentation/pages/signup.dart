@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/user_bloc.dart';
-import 'input_fields/email_input_field.dart';
-import 'input_fields/confirm_password_input_field.dart';
-import 'input_fields/password_input_field.dart';
-import 'input_fields/first_name_input_field.dart';
-import 'input_fields/last_name_input_field.dart';
+import '../widgets/input_fields/confirm_password_input_field.dart';
+import '../widgets/input_fields/email_input_field.dart';
+import '../widgets/input_fields/password_input_field.dart';
+import '../widgets/input_fields/first_name_input_field.dart';
+import '../widgets/input_fields/last_name_input_field.dart';
 import '../widgets/role_dropdown_button.dart';
 import '../../domain/entities/user.dart';
 
@@ -43,63 +43,68 @@ class _SignupState extends State<Signup> {
         title: Text('Sign Up'),
       ),
       body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: ListView(children: <Widget>[
-          FirstNameInputField(),
-          LastNameInputField(),
-          EmailInputField(),
-          PasswordInputField(),
-          ConfirmPasswordInputField(),
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            child: RoleDropdownButton(),
-          ),
-          BlocListener<UserBloc, UserState>(
-            listener: (context, state) {
-              if (state is UserCreated) {
-                print("user added");
-                Navigator.pop(context);
-              } else if (state is Error) {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
+        padding: EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            FirstNameInputField(),
+            const SizedBox(height: 16),
+            LastNameInputField(),
+            const SizedBox(height: 16),
+            EmailInputField(),
+            const SizedBox(height: 16),
+            PasswordInputField(),
+            const SizedBox(height: 16),
+            ConfirmPasswordInputField(),
+            const SizedBox(height: 16),
+            RoleDropdownButton(),
+            BlocListener<UserBloc, UserState>(
+              listener: (context, state) {
+                if (state is UserCreated) {
+                  print("user added");
+                  Navigator.pop(context);
+                } else if (state is Error) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
+                }
+              },
+              child:
+                  BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+                return Container(
+                  height: 80,
+                  padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                  child: RaisedButton(
+                    child: Text(
+                      'Create user',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    onPressed: () {
+                      print("adding user");
+                      print("name: " +
+                          firstnameController.text +
+                          ' ' +
+                          lastnameController.text);
+                      print("email: " + emailController.text);
+                      print("password: " + passwordController.text);
+                      print("role: " + roleSelected.toString());
+                      _userBloc.add(
+                        CreateNewUserEvent(
+                          firstnameController.text,
+                          lastnameController.text,
+                          emailController.text,
+                          roleSelected,
+                          passwordController.text,
+                        ),
+                      );
+                    },
                   ),
                 );
-              }
-            },
-            child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-              return Container(
-                height: 80,
-                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-                child: RaisedButton(
-                  child: Text(
-                    'Create user',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    print("adding user");
-                    print("name: " +
-                        firstnameController.text +
-                        ' ' +
-                        lastnameController.text);
-                    print("email: " + emailController.text);
-                    print("password: " + passwordController.text);
-                    print("role: " + roleSelected.toString());
-                    _userBloc.add(
-                      CreateNewUserEvent(
-                        firstnameController.text,
-                        lastnameController.text,
-                        emailController.text,
-                        roleSelected,
-                        passwordController.text,
-                      ),
-                    );
-                  },
-                ),
-              );
-            }),
-          ),
-        ]),
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
