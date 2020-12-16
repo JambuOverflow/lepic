@@ -60,23 +60,16 @@ class ClassReadTestCase(APITestCase):
     class_url = reverse('create-classes')
     user_url = reverse('list-and-create-users')
     token_url = reverse('access-token')
-    client = APIClient()
-
-    user_credentials = {
-            "username":"usertest",
-            "password":"123456"
-        }
 
     def setUp(self):
+        self.username = "usertest"
+        self.password = "123456"
+        self.email = "user@user.com"
+        self.role = 1
 
         self.class_data = {
             "title": "TurmaA",
             "grade": 3
-        }
-
-        self.user_data = {
-            "email": "gugu@sbt.com",
-            "password": "123456eu"
         }
 
     def test_get_classes_without_token(self):
@@ -85,9 +78,8 @@ class ClassReadTestCase(APITestCase):
 
 
     def test_get_classes_with_token(self):
-        response = self.client.post(self.token_url, self.user_credentials, format='json')
-        token = response.data['token']
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+        self.user = User.objects.create_user(username=self.username, password=self.password, role=self.role)
+        token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
         response = self.client.get(self.class_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
