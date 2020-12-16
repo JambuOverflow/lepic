@@ -10,7 +10,7 @@ import 'features/user_management/domain/repositories/user_repository.dart';
 import 'features/user_management/domain/use_cases/create_user_use_case.dart';
 import 'features/user_management/domain/use_cases/get_stored_user_use_case.dart';
 import 'features/user_management/domain/use_cases/update_user_use_case.dart';
-import 'features/user_management/presentation/bloc/bloc/user_bloc.dart';
+import 'features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'core/network/network_info.dart';
 
