@@ -11,14 +11,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
-from .permissions import IsOwnerOrReadOnly, IsOwner
+from .permissions import IsTutorOrReadOnly, IsOwner
 from django.contrib.auth.hashers import make_password
-
-'''def check_role(role):
-    """
-    Checks if the user is a professor or support professional.
-    """
-    return role in [0, 1]'''
 
 
 class UserList(generics.ListCreateAPIView):
@@ -50,72 +44,52 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
             serializer.save()
 
 
-class TextCreate(generics.ListCreateAPIView):
-    """
-    Creates a new text.
-    """
-    queryset = Text.objects.all()
-    serializer_class = TextSerializer
-
-
-class TextDetail(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Retrieve, update or delete a text instance.
-    """
-    queryset = Text.objects.all()
-    serializer_class = TextSerializer
-
-
-class ListTutorTexts(generics.ListAPIView):
-    """
-    List a tutors texts.
-    """
-    queryset = ''
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get(self, request, pk_tutor):
-        classes = Class.objects.filter(tutor=pk_tutor)
-        texts = Text.objects.filter(_class__in=classes)
-        serializer = TextSerializer(texts, many=True)
-        if texts:
-            return Response(serializer.data)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-
 class ClassCreate(generics.ListCreateAPIView):
     """
-    Create a new class.
+    List classes of authenticated user or create a new class.
     """
-    queryset = Class.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = ClassSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
+    
+    def get_queryset(self):
+        user = self.request.user
+        return Class.objects.filter(tutor=user)
+    
     def perform_create(self, serializer):
         serializer.save(tutor=self.request.user)
 
 
 class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a class instance.
+    Retrieve, update or delete a class instance of authenticated tutor.
+    EX: GET or PUT or DELETE /api/classes/<int:pk>/
     """
     queryset = Class.objects.all()
-    serializer_class = ClassSerializer()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly]
+    serializer_class = ClassSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTutorOrReadOnly]
 
 
-class ListTutorClasses(generics.ListAPIView):
+class TextList(generics.ListCreateAPIView):
     """
-    List a tutors classes.
+    List texts of authenticated user or create a new text.
+    EX: GET or POST /api/texts/
     """
-    queryset = 'tutor'
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TextSerializer
+    
+    def get_queryset(self):
+        classes = Class.objects.filter(tutor=self.request.user.id)
+        queryset = Text.objects.filter(_class__in=classes)
+        return queryset
 
 
-    def get(self, request, pk_tutor):
-        classes = Class.objects.filter(tutor=pk_tutor)
-        serializer = ClassSerializer(classes, many=True)
-        if classes:
-            return Response(serializer.data)
-        return Response(status=status.HTTP_404_NOT_FOUND)
+class TextDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a text instance.
+    EX: GET or PUT or DELETE /api/texts/<int:pk>/
+    """
+    queryset = Text.objects.all()
+    serializer_class = TextSerializer
+    permission_classes = []
+    
