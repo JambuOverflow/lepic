@@ -1,10 +1,10 @@
 import json
 from rest_framework import status, serializers
-from .serializers import ClassSerializer, UserSerializer, TextSerializer
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
 from django.http import JsonResponse, Http404
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import Text, Class, User
+from .models import Text, Class, User, Student
 from django.shortcuts import render
 from rest_framework import generics, mixins, status, permissions
 from rest_framework.views import APIView
@@ -92,4 +92,19 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Text.objects.all()
     serializer_class = TextSerializer
     permission_classes = []
-    
+
+
+class StudentList(generics.ListCreateAPIView):
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        classes = Class.objects.filter(tutor=self.request.user.id)
+        queryset = Student.objects.filter(_class__in=classes)
+        return queryset
+
+
+class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = []
