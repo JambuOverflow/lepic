@@ -1,10 +1,6 @@
 part of 'user_form_bloc.dart';
 
-abstract class UserFormState extends Equatable {
-  const UserFormState();
-  
+class UserFormState extends Equatable {
   @override
   List<Object> get props => [];
 }
-
-class UserFormInitial extends UserFormState {}
