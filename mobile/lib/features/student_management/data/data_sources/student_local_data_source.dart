@@ -1,8 +1,5 @@
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 
