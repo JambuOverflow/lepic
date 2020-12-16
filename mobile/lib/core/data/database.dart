@@ -1,5 +1,6 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
+import 'package:mobile/features/student_management/domain/use_cases/delete_student_use_case.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
@@ -47,6 +48,26 @@ class Database extends _$Database {
     return update(classroomModels).replace(entry);
   }
 
+  /// returns the pk of the added entry
+  Future<int> insertStudent(StudentModelsCompanion modelCompanion) async {
+    return into(studentModels).insert(modelCompanion);
+  }
+
+   ///Returns the number of deleted rows
+  Future<int> deleteStudent(int id) async {
+    return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
+  }
+
+  ///Returns a list of classroomModels, and an empty list with the table is empty
+  Future<List<StudentModel>> getStudents(int classroomId) async {
+    return (select(studentModels)..where((t) => t.classroomId.equals(classroomId)))
+        .get();
+  }
+
+  ///Returns true if the class was updated, false otherwise
+  Future<bool> updateStudent(StudentModel entry) async {
+    return update(studentModels).replace(entry);
+  }
   @override
   int get schemaVersion => 2;
 }
