@@ -28,9 +28,11 @@ class StudentUpdated extends StudentState {
   StudentUpdated({@required this.student});
 }
 
-class GetStudent extends StudentState {
+class GettingStudents extends StudentState {}
+
+class StudentGot extends StudentState {
   final List<Student> students;
-  GetStudent({@required this.students});
+  StudentGot({@required this.students});
 }
 
 class Error extends StudentState {

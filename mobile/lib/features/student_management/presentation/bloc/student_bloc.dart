@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/use_cases/create_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/delete_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
@@ -34,7 +36,11 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   ) async* {
     if (event is CreateNewStudentEvent)
       yield* _createNewStudentStates(event);
-    else if (event is UpdateStudentEvent) yield* _updateStudentStates(event);
+    else if (event is UpdateStudentEvent)
+      yield* _updateStudentStates(event);
+    else if (event is DeleteStudentEvent)
+      yield* _deleteStudentStates(event);
+    else if (event is GetStudentEvent) yield* _getStudentsStates(event);
   }
 
   Stream<StudentState> _createNewStudentStates(
@@ -48,7 +54,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
     yield failureOrResponse.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
-        (response) => StudentCreated(student: student));
+        (response) => StudentCreated(student: response));
   }
 
   Stream<StudentState> _updateStudentStates(UpdateStudentEvent event) async* {
@@ -60,7 +66,37 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => StudentUpdated(student: student),
+      (response) => StudentUpdated(student: response),
+    );
+  }
+
+  Stream<StudentState> _deleteStudentStates(DeleteStudentEvent event) async* {
+    yield DeletingStudent();
+
+    final student = Student(
+      id: event.id,
+    );
+    final failureOrResponse =
+        await deleteStudent(StudentParams(student: student));
+
+    yield failureOrResponse.fold(
+      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (response) => StudentDeleted(),
+    );
+  }
+
+  Stream<StudentState> _getStudentsStates(GetStudentEvent event) async* {
+    yield GettingStudents();
+
+    final classroom = Classroom(
+      id: event.classroomId,
+    );
+
+    final failureOrResponse =
+        await getStudents(ClassroomParams(classroom: classroom));
+    yield failureOrResponse.fold(
+      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (response) => StudentGot(students: response),
     );
   }
 
