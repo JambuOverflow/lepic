@@ -10,8 +10,8 @@ class Text extends Equatable {
   Text(
       {@required this.title,
       @required this.body,
-      @required this.localId,
-      this.classId});
+      this.localId,
+      @required this.classId});
 
   @override
   List<Object> get props => [title, body, localId, classId];
