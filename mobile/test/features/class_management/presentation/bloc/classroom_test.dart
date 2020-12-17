@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/create_classroom_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/delete_classroom_use_case.dart';
@@ -124,6 +125,46 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+  });
+
+  group('''Delete a given classroom''', () {
+    test(
+        '''Should emit [DeletingClassroom, ClassroomDeleted] when a classroom is deleted successfully''',
+        () {
+      when(mockDeleteClassroomUseCase(any))
+          .thenAnswer((_) async => Right(Response));
+
+      final expected = [
+        DeletingClassroom(),
+        ClassroomDeleted(),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(DeleteClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+
+    test(
+        '''Should emit [DeletingClassroom, Error] when a classroom could not be deleted successfully''',
+        () {
+      when(mockDeleteClassroomUseCase(any))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        DeletingClassroom(),
+        Error(message: 'could not delete this classroom'),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(DeleteClassroomEvent(
         tTutorId,
         tId,
         tGrade,
