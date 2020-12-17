@@ -1,4 +1,6 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/create_classroom_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/delete_classroom_use_case.dart';
@@ -37,11 +39,13 @@ void main() {
   });
 
   final tClassroom = Classroom(
+    id: 001,
     tutorId: 001,
     grade: 01,
     name: 'thurminha',
   );
 
+  final int tId = 001;
   final int tTutorId = 001;
   final int tGrade = 01;
   final String tName = 'thurminha';
@@ -50,5 +54,41 @@ void main() {
     expect(bloc.state, GetClassroom());
   });
 
-  group('''Create new Classroom''', () {});
+  group('''Create new Classroom''', () {
+    test('''Should emit [CreatingClassroom, ClassroomCreated] when
+          classroom is created successfuly''', () {
+      when(mockCreateClassroomUseCase(any))
+          .thenAnswer((_) async => Right(tClassroom));
+
+      final expected = [
+        CreatingClassroom(),
+        ClassroomCreated(response: tClassroom),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(CreateNewClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+
+    test('''Should emit [CreatingClassroom, Error] when
+          classroom could not be created''', () {
+      when(mockCreateClassroomUseCase(any))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        CreatingClassroom(),
+        Error(message: 'Could not create a classroom'),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(CreateNewClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+  });
 }
