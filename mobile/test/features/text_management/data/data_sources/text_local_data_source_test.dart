@@ -6,7 +6,6 @@ import 'package:mobile/features/class_management/data/models/classroom_model.dar
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
 
-import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
 
