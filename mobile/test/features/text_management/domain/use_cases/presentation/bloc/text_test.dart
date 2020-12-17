@@ -2,6 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
+import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
@@ -44,6 +46,15 @@ void main() {
     body: 'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie',
     localId: 001,
     classId: 010,
+  );
+
+  final tTextList = List<Text>();
+  tTextList.add(tText);
+
+  final tClassroom = Classroom(
+    tutorId: 010,
+    grade: 001,
+    name: 'textClassroomName',
   );
 
   final String tTitle = 'Title';
@@ -164,6 +175,45 @@ void main() {
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(DeleteTextEvent(
         tLocalId,
+      ));
+    });
+  });
+
+  group('''Read a text list''', () {
+    test(
+        '''Should emit [GettingTextList, GotTextList] when get a student list''',
+        () {
+      when(mockGetText(ClassroomParams(classroom: tClassroom)))
+          .thenAnswer((_) async => Right(tTextList));
+
+      final expected = [
+        GettingTextList(),
+        GotTextList(texts: tTextList),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(GetTextEvent(
+        tTitle,
+        tBody,
+        tLocalId,
+        tClassId,
+      ));
+    });
+
+    test(
+        '''Should emit [GettingTextList, Error] when could not get a text list''',
+        () {
+      when(mockGetText(any)).thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        GettingTextList(),
+        Error(message: 'Not able to get student list'),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(GetTextEvent(
+        tTitle,
+        tBody,
+        tLocalId,
+        tClassId,
       ));
     });
   });

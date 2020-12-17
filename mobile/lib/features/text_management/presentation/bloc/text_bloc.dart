@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
@@ -35,7 +37,9 @@ class TextBloc extends Bloc<TextEvent, TextState> {
       yield* _createNewTextState(event);
     else if (event is UpdateTextEvent)
       yield* _updateTextState(event);
-    else if (event is DeleteTextEvent) yield* _deleteTextState(event);
+    else if (event is DeleteTextEvent)
+      yield* _deleteTextState(event);
+    else if (event is GetTextEvent) yield* _getTextListState(event);
   }
 
   Stream<TextState> _createNewTextState(CreateNewTextEvent event) async* {
@@ -73,6 +77,21 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
       (response) => TextDeleted(),
+    );
+  }
+
+  Stream<TextState> _getTextListState(GetTextEvent event) async* {
+    yield GettingTextList();
+
+    final classroom = Classroom(
+      id: event.classId,
+    );
+
+    final failureOrResponse =
+        await getTexts(ClassroomParams(classroom: classroom));
+    yield failureOrResponse.fold(
+      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (response) => GotTextList(texts: response),
     );
   }
 
