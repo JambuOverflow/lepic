@@ -27,7 +27,12 @@ class ClassroomUpdated extends ClassroomState {
   ClassroomUpdated({@required this.response});
 }
 
-class GetClassroom extends ClassroomState {}
+class GettingClassroom extends ClassroomState {}
+
+class ClassroomGot extends ClassroomState {
+  final List<Classroom> classrooms;
+  ClassroomGot({@required this.classrooms});
+}
 
 class Error extends ClassroomState {
   final String message;

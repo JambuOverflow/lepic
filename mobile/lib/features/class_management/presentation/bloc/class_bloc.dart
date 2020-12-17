@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/features/class_management/domain/use_cases/get_classrooms_use_case.dart';
+import 'package:mobile/features/user_management/domain/entities/user.dart';
 
 import '../../../../core/network/response.dart';
 import '../../../../core/error/failures.dart';
@@ -26,7 +27,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     @required this.deleteClassroom,
     @required this.createNewClassroom,
     @required this.getClassroom,
-  }) : super(GetClassroom());
+  }) : super(GettingClassroom());
 
   @override
   Stream<ClassroomState> mapEventToState(
@@ -56,19 +57,17 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
   }
 
   Stream<ClassroomState> _getClassesStates(GetClassroomEvent event) async* {
-    yield GetClassroom();
+    yield GettingClassroom();
 
-    final classroom = Classroom(
-      tutorId: event.tutorId,
-      name: event.name,
+    final user = User(
+      localId: event.id,
     );
 
-    final failureOrResponse =
-        await deleteClassroom(ClassroomParams(classroom: classroom));
+    final failureOrResponse = await getClassroom(UserParams(user));
 
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
-      (response) => GetClassroom(),
+      (response) => ClassroomGot(classrooms: response),
     );
   }
 

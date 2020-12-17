@@ -8,6 +8,7 @@ import 'package:mobile/features/class_management/domain/use_cases/delete_classro
 import 'package:mobile/features/class_management/domain/use_cases/get_classrooms_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/update_classroom_use_case.dart';
 import 'package:mobile/features/class_management/presentation/bloc/class_bloc.dart';
+import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
 
 class MockCreateClassroomUseCase extends Mock implements CreateClassroom {}
@@ -46,13 +47,24 @@ void main() {
     name: 'thurminha',
   );
 
+  final tUser = User(
+    firstName: 'v',
+    lastName: 'c',
+    email: 'v@g.com',
+    role: Role.teacher,
+    password: '123',
+  );
+
+  final tList = List<Classroom>();
+  tList.add(tClassroom);
+
   final int tId = 001;
   final int tTutorId = 001;
   final int tGrade = 01;
   final String tName = 'thurminha';
 
   test('initial state should be [GetClassroom]', () {
-    expect(bloc.state, GetClassroom());
+    expect(bloc.state, GettingClassroom());
   });
 
   group('''Create new Classroom''', () {
@@ -165,6 +177,46 @@ void main() {
       ];
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(DeleteClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+  });
+
+  group('''get a classroom list''', () {
+    test(
+        '''Should emit [GettingClassroom, ClassroomGot] when a classroom list is returned''',
+        () {
+      when(mockGetClassroomUseCase(UserParams(tUser)))
+          .thenAnswer((_) async => Right(tList));
+
+      final expected = [
+        GettingClassroom(),
+        ClassroomGot(classrooms: tList),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(GetClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+
+    test(
+        '''Should emit [GettingClassroom, Error] when a classroom list could not be returned''',
+        () {
+      when(mockGetClassroomUseCase(UserParams(tUser)))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        GettingClassroom(),
+        Error(message: 'could not return the classroom list'),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(GetClassroomEvent(
         tTutorId,
         tId,
         tGrade,

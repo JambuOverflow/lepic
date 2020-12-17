@@ -50,10 +50,14 @@ class DeleteClassroomEvent extends _ClassroomManagementEvent {
 
 class GetClassroomEvent extends ClassroomEvent {
   final int tutorId;
+  final int id;
+  final int grade;
   final String name;
 
   GetClassroomEvent(
     this.tutorId,
+    this.id,
+    this.grade,
     this.name,
   );
 }
