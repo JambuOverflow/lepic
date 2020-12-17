@@ -65,7 +65,7 @@ class _GuestState extends State<Guest> {
                   style: TextStyle(fontSize: 16),
                 ),
                 onPressed: () {
-                  print("guest added");
+                  print("adding guest");
                   print("name: " + nameController.text);
                   print("role: $roleSelected");
                   Navigator.of(context).pushNamed(

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:mobile/features/user_management/presentation/widgets/role_dropdown_button.dart';
-import '../widgets/drawer_overlay.dart';
+import 'package:mobile/core/widgets/drawer_overlay.dart';
 
 class UpdateUser extends StatefulWidget {
   @override

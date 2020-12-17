@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/classroom.dart';
+//import '../../domain/entities/classroom.dart';
 import '../bloc/class_bloc.dart';
 
 class AddClass extends StatefulWidget {
@@ -23,7 +23,6 @@ class _AddClassState extends State<AddClass> {
 
   @override
   Widget build(BuildContext context) {
-    //WELP ME PLIS
     _classBloc = BlocProvider.of<ClassBloc>(context);
     return Scaffold(
       appBar: AppBar(
@@ -113,42 +112,3 @@ class _AddClassState extends State<AddClass> {
     );
   }
 }
-
-///aqui vai provavelmente precisar de um bloc listener também
-//if class created -> navigator pop
-//if operation_fails -> show error screen/pop up/snack bar
-/*BlocListener <ClassBloc, ClassState>(
-listener: (context, state) {
-    if (state is Error) {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.message),
-        ),
-      );
-    }
-    else if(state is ClassCreated){
-      Navigator.pop(context);
-    };
-  },
-  child: blocbuilder
-),*/
-
-/*
- void _createClass(BuildContext context) {
-    final String name = _nameController.text;
-    final int grade = _gradeController.text as int;
-    final int tutorId = _tutorIdController.text as int;
-    final int id = 1;
-
-    if (name != null && grade != null) {
-      final createdClass = Classroom(
-        tutorId: tutorId,
-        grade: grade,
-        name: name,
-      );
-]      _classBloc.add(CreateNewClassEvent(tutorId, id, grade, name));
-      N//avigator.pop(context, createdClass);
-    }//
-  }
-*/
-//
