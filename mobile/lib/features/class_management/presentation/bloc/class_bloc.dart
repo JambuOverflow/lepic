@@ -51,7 +51,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
 
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => ClassroomUpdated(),
+      (response) => ClassroomUpdated(response: response),
     );
   }
 

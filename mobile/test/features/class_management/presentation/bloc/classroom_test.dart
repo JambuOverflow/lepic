@@ -91,4 +91,44 @@ void main() {
       ));
     });
   });
+
+  group('''Update Classroom''', () {
+    test(
+        '''Should emit [UpdatingClassroom, ClassroomUpdated] when classroom is updeted successfuly''',
+        () {
+      when(mockUpdateClassroomUseCase(any))
+          .thenAnswer((_) async => Right(tClassroom));
+
+      final expected = [
+        UpdatingClassroom(),
+        ClassroomUpdated(response: tClassroom),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+
+    test(
+        '''Should emit [UpdatingClassroom, Error] when classroom could not be updeted''',
+        () {
+      when(mockUpdateClassroomUseCase(any))
+          .thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        UpdatingClassroom(),
+        Error(message: 'Could not update this classroom'),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateClassroomEvent(
+        tTutorId,
+        tId,
+        tGrade,
+        tName,
+      ));
+    });
+  });
 }

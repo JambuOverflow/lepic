@@ -21,7 +21,11 @@ class ClassroomCreated extends ClassroomState {
 
 class UpdatingClassroom extends ClassroomState {}
 
-class ClassroomUpdated extends ClassroomState {}
+class ClassroomUpdated extends ClassroomState {
+  final Classroom response;
+
+  ClassroomUpdated({@required this.response});
+}
 
 class GetClassroom extends ClassroomState {}
 
