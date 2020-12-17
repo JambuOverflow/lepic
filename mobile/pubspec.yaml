@@ -46,6 +46,13 @@ dependencies:
   # Dependency Injection
   get_it: ^5.0.3
 
+  # Form validation
+  formz: ^0.3.2
+  email_validator: ^1.0.5
+
+  # Tests
+  bloc_test: ^7.1.0
+
   # Database
   moor: ^3.4.0
   sqlite3_flutter_libs:
