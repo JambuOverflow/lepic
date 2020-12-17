@@ -53,7 +53,7 @@ class StudentLocalDataSourceImpl implements StudentLocalDataSource {
     var pk = studentModel.localId;
     try {
       var done = await this.database.deleteStudent(pk);
-      if (done !=) {
+      if (done != 1) {
         throw SqliteException(787, "The table don't have this entry");
       }
     } on SqliteException {
@@ -64,7 +64,7 @@ class StudentLocalDataSourceImpl implements StudentLocalDataSource {
   @override
   Future<List<StudentModel>> getStudentsFromCache(
       ClassroomModel classroomModel) async {
-    final classroomId = classroomModel.localId; 
+    final classroomId = classroomModel.localId;
     try {
       return await this.database.getStudents(classroomId);
     } on SqliteException {
