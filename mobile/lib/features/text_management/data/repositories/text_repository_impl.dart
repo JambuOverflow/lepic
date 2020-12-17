@@ -29,6 +29,27 @@ class TextRepositoryImpl implements TextRepository {
     return await _tryDeleteText(text);
   }
 
+  @override
+  Future<Either<Failure, List<Text>>> getTexts(Classroom classroom) async {
+    return await _tryGetTexts(classroom);
+  }
+
+  @override
+  Future<Either<Failure, Text>> updateText(Text text) async {
+    return await _tryUpdateText(text);
+  }
+
+  Future<Either<Failure, Text>> _tryUpdateText(Text text) async {
+    try {
+      var model = textEntityToModel(text);
+      var localModel = await localDataSource.updateCachedText(model);
+      var localText = textModelToEntity(localModel);
+      return Right(localText);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
   Future<Either<Failure, void>> _tryDeleteText(Text text) async {
     try {
       var model = textEntityToModel(text);
@@ -50,11 +71,6 @@ class TextRepositoryImpl implements TextRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, List<Text>>> getTexts(Classroom classroom) async {
-    return await _tryGetTexts(classroom);
-  }
-
   Future<Either<Failure, List<Text>>> _tryGetTexts(Classroom classroom) async {
     try {
       var classroomModel = classroomEntityToModel(classroom);
@@ -63,22 +79,6 @@ class TextRepositoryImpl implements TextRepository {
         for (var model in listTextModel) textModelToEntity(model)
       ];
       return Right(listTextEntity);
-    } on CacheException {
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, Text>> updateText(Text text) async {
-    return await _tryUpdateText(text);
-  }
-
-  Future<Either<Failure, Text>> _tryUpdateText(Text text) async {
-    try {
-      var model = textEntityToModel(text);
-      var localModel = await localDataSource.updateCachedText(model);
-      var localText = textModelToEntity(localModel);
-      return Right(localText);
     } on CacheException {
       return Left(CacheFailure());
     }
