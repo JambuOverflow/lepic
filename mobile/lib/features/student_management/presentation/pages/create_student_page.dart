@@ -14,13 +14,6 @@ class _AddClassState extends State<AddClass> {
   TextEditingController _idController = TextEditingController();
   TextEditingController _classroomIdController = TextEditingController();
   StudentBloc _studentBloc;
-  int _levelSelected;
-  final List<int> levels = [
-    1,
-    2,
-    2,
-    4,
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -33,44 +26,18 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _firstnameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'First name',
-              ),
-            ),
+          ClassForm(
+            label: 'First name',
+            textController: _firstnameController,
           ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _classroomIdController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Class ID',
-              ),
-            ),
+          ClassForm(
+            label: 'Last name',
+            textController: _lastnameController,
           ),
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-              hint: Text("Select class grade"),
-              value: _levelSelected,
-              onChanged: (newValue) {
-                setState(() {
-                  _levelSelected = newValue;
-                });
-              },
-              items: levels.map<DropdownMenuItem<String>>((int value) {
-                return DropdownMenuItem<String>(
-                  value: value.toString(),
-                  child: Text(value.toString()),
-                );
-              }).toList(),
-            )),
+          ClassForm(
+            label: 'Classroom',
+            textController: _classroomIdController,
+            numeric: true,
           ),
           BlocListener<StudentBloc, StudentState>(
             listener: (context, state) {
@@ -91,11 +58,11 @@ class _AddClassState extends State<AddClass> {
                 padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
                 child: RaisedButton(
                   child: Text(
-                    'Create class',
+                    'Create student',
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
-                    print("creating class");
+                    print("creating student");
                     //print(_classBloc.value);                     _
                     _studentBloc.add(CreateNewStudentEvent(
                       _firstnameController.text,
@@ -109,6 +76,39 @@ class _AddClassState extends State<AddClass> {
             }),
           ),
         ]),
+      ),
+    );
+  }
+}
+
+class ClassForm extends StatefulWidget {
+  final TextEditingController textController;
+  final String label;
+  final bool numeric;
+
+  ClassForm({
+    this.textController,
+    this.label,
+    this.numeric,
+  });
+
+  @override
+  _ClassFormState createState() => _ClassFormState();
+}
+
+class _ClassFormState extends State<ClassForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: TextField(
+        controller: widget.textController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: widget.label,
+        ),
+        keyboardType:
+            widget.numeric != null ? TextInputType.number : TextInputType.text,
       ),
     );
   }
