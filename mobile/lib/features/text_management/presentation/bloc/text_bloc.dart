@@ -31,7 +31,9 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> mapEventToState(
     TextEvent event,
   ) async* {
-    if (event is CreateNewTextEvent) yield* _createNewTextState(event);
+    if (event is CreateNewTextEvent)
+      yield* _createNewTextState(event);
+    else if (event is UpdateTextEvent) yield* _updateTextState(event);
   }
 
   Stream<TextState> _createNewTextState(CreateNewTextEvent event) async* {
@@ -46,7 +48,19 @@ class TextBloc extends Bloc<TextEvent, TextState> {
         (response) => TextCreated(text: response));
   }
 
-  Text _createTextEntityFromEvent(CreateNewTextEvent event) {
+  Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
+    yield UpdatingText();
+
+    final text = _createTextEntityFromEvent(event);
+
+    final failureOrResponse = await updateText(TextParams(text: text));
+
+    yield failureOrResponse.fold(
+        (failure) => Error(message: _mapFailureToMessage(failure)),
+        (response) => TextUpdated(text: response));
+  }
+
+  Text _createTextEntityFromEvent(TextEvent event) {
     if (event is _TextManagementEvent) {
       return Text(
         title: event.title,
