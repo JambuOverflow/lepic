@@ -16,10 +16,10 @@ class ShowClasses extends StatefulWidget {
 
 class _ShowClassesState extends State<ShowClasses> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ClassBloc _classBloc;
+  ClassroomBloc _classBloc;
   @override
   Widget build(BuildContext context) {
-    _classBloc = BlocProvider.of<ClassBloc>(context);
+    _classBloc = BlocProvider.of<ClassroomBloc>(context);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(title: Text('Classes')),
