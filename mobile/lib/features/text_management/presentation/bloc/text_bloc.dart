@@ -33,7 +33,9 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   ) async* {
     if (event is CreateNewTextEvent)
       yield* _createNewTextState(event);
-    else if (event is UpdateTextEvent) yield* _updateTextState(event);
+    else if (event is UpdateTextEvent)
+      yield* _updateTextState(event);
+    else if (event is DeleteTextEvent) yield* _deleteTextState(event);
   }
 
   Stream<TextState> _createNewTextState(CreateNewTextEvent event) async* {
@@ -58,6 +60,20 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     yield failureOrResponse.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
         (response) => TextUpdated(text: response));
+  }
+
+  Stream<TextState> _deleteTextState(DeleteTextEvent event) async* {
+    yield DeletingText();
+
+    final text = Text(
+      localId: event.localId,
+    );
+    final failureOrResponse = await deleteText(TextParams(text: text));
+
+    yield failureOrResponse.fold(
+      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (response) => TextDeleted(),
+    );
   }
 
   Text _createTextEntityFromEvent(TextEvent event) {

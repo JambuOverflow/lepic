@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
@@ -131,6 +132,38 @@ void main() {
         tBody,
         tLocalId,
         tClassId,
+      ));
+    });
+  });
+
+  group('''Delete a given text''', () {
+    test(
+        '''Should emit [DeletingText, TextDeleted] when a text is deleted successfully''',
+        () {
+      when(mockDeleteText(any)).thenAnswer((_) async => Right(Response));
+
+      final expected = [
+        DeletingText(),
+        TextDeleted(),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(DeleteTextEvent(
+        tLocalId,
+      ));
+    });
+
+    test(
+        '''Should emit [DeletingClassroom, Error] when a text could not be deleted successfully''',
+        () {
+      when(mockDeleteText(any)).thenAnswer((_) async => Left(ServerFailure()));
+
+      final expected = [
+        DeletingText(),
+        Error(message: 'could not delete this text'),
+      ];
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(DeleteTextEvent(
+        tLocalId,
       ));
     });
   });
