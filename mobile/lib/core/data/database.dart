@@ -66,7 +66,7 @@ class Database extends _$Database {
   }
 
   /// returns the pk of the added entry
-    Future<int> insertStudent(StudentModelsCompanion modelCompanion) async {
+  Future<int> insertStudent(StudentModelsCompanion modelCompanion) async {
     return into(studentModels).insert(modelCompanion);
   }
 
@@ -85,14 +85,17 @@ class Database extends _$Database {
   ///Returns true if the student was updated, false otherwise
   Future<bool> updateStudent(StudentModel entry) async {
     return update(studentModels).replace(entry);
+  }
 
+  /// returns the pk of the added entry
   Future<int> insertText(TextModelsCompanion textCompanion) async {
     return into(textModels).insert(textCompanion);
   }
 
   ///Throws a SqliteException if the entry is not found
   Future<void> deleteText(int id) async {
-    var done = await (delete(textModels)..where((t) => t.localId.equals(id))).go();
+    var done =
+        await (delete(textModels)..where((t) => t.localId.equals(id))).go();
     if (done != 1) {
       throw SqliteException(787, "The table doesn't have this entry");
     }
