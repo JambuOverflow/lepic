@@ -15,7 +15,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
 from .models import Text, Class, User, Student
-from .permissions import IsTutorOrReadOnly, IsOwner, IsTeacherOrReadOnly
+from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator
 
 
 class UserList(generics.ListCreateAPIView):
@@ -70,7 +70,7 @@ class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
     permission_classes = [permissions.IsAuthenticated,
-                          IsTutorOrReadOnly]
+                          IsClassTutor]
 
 
 class TextList(generics.ListCreateAPIView):
@@ -94,7 +94,8 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Text.objects.all()
     serializer_class = TextSerializer
-    permission_classes = []
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTextCreator]
 
 
 class StudentList(generics.ListCreateAPIView):
