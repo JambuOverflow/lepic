@@ -27,3 +27,11 @@ class IsTextCreator(permissions.BasePermission):
     def has_object_permission(self, request, view, text):
         # All permissions are only allowed to the texts creator.
         return text._class.tutor == request.user
+
+class IsTeacherOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow the teacher of a student to create or edit his/her account.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Write permissions are only allowed to the owner of the object.
+        return obj._class.tutor == request.user

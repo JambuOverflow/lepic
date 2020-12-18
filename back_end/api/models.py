@@ -33,7 +33,6 @@ class Class(models.Model):
     def __str__(self):
         return self.title
 
-
 class Text(models.Model):
     title = models.CharField(max_length=50)
     body = models.CharField(max_length=1000)
@@ -41,3 +40,11 @@ class Text(models.Model):
 
     def __str__(self):
         return self.title
+
+class Student(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    _class = models.ForeignKey(Class, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.first_name + " " + self.last_name
