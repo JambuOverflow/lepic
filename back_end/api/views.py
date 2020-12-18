@@ -15,7 +15,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
 from .models import Text, Class, User, Student
-from .permissions import IsTutorOrReadOnly, IsOwner
+from .permissions import IsTutorOrReadOnly, IsOwner, IsTeacherOrReadOnly
 
 
 class UserList(generics.ListCreateAPIView):
@@ -100,6 +100,7 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
 class StudentList(generics.ListCreateAPIView):
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated]
+    queryset = Student.objects.all()
 
     def get_queryset(self):
         classes = Class.objects.filter(tutor=self.request.user.id)
@@ -111,10 +112,11 @@ class StudentList(generics.ListCreateAPIView):
         if(self.request.user.id in classes):
             serializer.save()
         else:
-            raise PermissionDenied("Unable to add a student to a class that isn't yours", 'permission_denied')
+            raise PermissionDenied("You do not have the permission to create a student account with " +
+        "a class where you are not the teacher", 'permission_denied')
 
 
 class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    permission_classes = []
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
+    queryset = Student.objects.all()
