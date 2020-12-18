@@ -15,10 +15,6 @@ class TestCRUDStudent(APITestCase):
             'last_name': 'Shay',
             '_class': 1
         }
-        self.class_data = {
-            "title": "Turma A",
-            "grade": 3
-        }
         self.user = User.objects.create_user(username = 'pedro', password = 'pedro', email = 'pedro@ufpa.br', role = 0)
         self.first_class = Class.objects.create(tutor=self.user, grade=7, title='Class A')
         self.second_class = Class.objects.create(tutor=self.user, grade=9, title='Class B')
@@ -26,7 +22,6 @@ class TestCRUDStudent(APITestCase):
     def test_create_students(self):
         token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
-        self.client.post(self.class_url, self.class_data, format='json')
         response = self.client.post(self.student_url_list_create, self.student_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Student.objects.count(), 1)
@@ -36,9 +31,9 @@ class TestCRUDStudent(APITestCase):
         token = Token.objects.create(user=self.user_2)
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
         response = self.client.post(self.student_url_list_create, self.student_data, format='json')
-        self.assertEqual(Student.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(response.data['detail'], "Unable to add a student to a class that isn't yours")
+        self.assertEqual(Student.objects.count(), 0)
+        self.assertEqual(response.data['detail'], "You do not have the permission to create a student account with a class where you are not the teacher")
 
     def test_list_students(self):
         self.user = User.objects.create_user(username="aian", email="aian@ufpa.br", password="123", role=1)
@@ -80,3 +75,13 @@ class TestCRUDStudent(APITestCase):
         response = self.client.delete(self.student_url_update_delete, self.student_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Student.objects.count(), 0)
+
+    def test_delete_student_from_another_class(self):
+        Student.objects.create(_class=self.first_class, first_name='Arthur', last_name='Takeshi')
+        self.user_2 = User.objects.create_user(username = 'aian', password = 'shay', email = 'naia@ufpa.br', role = 0)
+        token = Token.objects.create(user=self.user_2)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
+        response = self.client.delete(self.student_url_update_delete, self.student_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(Student.objects.count(), 1)
+        self.assertEqual(response.data['detail'], "You do not have permission to perform this action.")
