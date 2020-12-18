@@ -1,5 +1,10 @@
 //This file defines all the routing logic so it won't be anywhere else in the code
 import 'package:flutter/material.dart';
+import 'package:mobile/features/class_management/presentation/pages/list_class.dart';
+import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
+import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
+import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
+import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
 import 'pages/login.dart';
 import 'pages/guest.dart';
 import 'pages/signup.dart';
@@ -28,6 +33,18 @@ class RouteGenerator {
       case '/update_user':
         return MaterialPageRoute(
           builder: (_) => UpdateUser(),
+        );
+      case '/list_students':
+        return MaterialPageRoute(
+          builder: (_) => ShowStudents(),
+        );
+      case '/list_classes':
+        return MaterialPageRoute(
+          builder: (_) => ShowClasses(),
+        );
+      case '/list_texts':
+        return MaterialPageRoute(
+          builder: (_) => ShowTexts(),
         );
       default:
         return _errorRoute();

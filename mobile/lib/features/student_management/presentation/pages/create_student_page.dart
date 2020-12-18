@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/student.dart';
 import '../bloc/student_bloc.dart';
 
-class AddClass extends StatefulWidget {
+class AddStudent extends StatefulWidget {
   @override
-  _AddClassState createState() => _AddClassState();
+  _AddStudentState createState() => _AddStudentState();
 }
 
-class _AddClassState extends State<AddClass> {
+class _AddStudentState extends State<AddStudent> {
   TextEditingController _firstnameController = TextEditingController();
   TextEditingController _lastnameController = TextEditingController();
   TextEditingController _idController = TextEditingController();
@@ -26,15 +26,15 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          ClassForm(
+          StudentForm(
             label: 'First name',
             textController: _firstnameController,
           ),
-          ClassForm(
+          StudentForm(
             label: 'Last name',
             textController: _lastnameController,
           ),
-          ClassForm(
+          StudentForm(
             label: 'Classroom',
             textController: _classroomIdController,
             numeric: true,
@@ -81,22 +81,22 @@ class _AddClassState extends State<AddClass> {
   }
 }
 
-class ClassForm extends StatefulWidget {
+class StudentForm extends StatefulWidget {
   final TextEditingController textController;
   final String label;
   final bool numeric;
 
-  ClassForm({
+  StudentForm({
     this.textController,
     this.label,
     this.numeric,
   });
 
   @override
-  _ClassFormState createState() => _ClassFormState();
+  _StudentFormState createState() => _StudentFormState();
 }
 
-class _ClassFormState extends State<ClassForm> {
+class _StudentFormState extends State<StudentForm> {
   @override
   Widget build(BuildContext context) {
     return Container(

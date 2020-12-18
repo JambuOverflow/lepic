@@ -14,6 +14,10 @@ import 'features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'core/network/network_info.dart';
 
+import 'class_injection_container.dart' as ci;
+import 'student_injection_container.dart' as si;
+import 'text_injection_container.dart' as ti;
+
 void setUpLocator() {
   final getIt = GetIt.instance;
 
@@ -50,4 +54,9 @@ void setUpLocator() {
   getIt.registerLazySingleton(() => FlutterSecureStorage());
   getIt.registerLazySingleton(() => http.Client());
   getIt.registerLazySingleton(() => DataConnectionChecker());
+/*
+  ci.init();
+  si.init();
+  ti.init();
+  */
 }

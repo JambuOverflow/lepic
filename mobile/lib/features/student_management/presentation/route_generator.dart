@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
 
-import 'pages/home_page.dart';
+// import 'pages/home_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(),
+          builder: (_) => ShowStudents(),
         );
       default:
         return _errorRoute();

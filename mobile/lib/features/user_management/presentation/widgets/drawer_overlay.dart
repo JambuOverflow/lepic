@@ -56,7 +56,7 @@ class DrawerOverlay extends StatelessWidget {
             title: Text('Classes'),
             onTap: () {
               print('classes');
-              Navigator.of(context).pushNamed('classes');
+              Navigator.of(context).pushNamed('/list_classroom');
             },
           ),
           ListTile(
