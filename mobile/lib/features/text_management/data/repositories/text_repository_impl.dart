@@ -20,26 +20,26 @@ class TextRepositoryImpl implements TextRepository {
   });
 
   @override
-  Future<Either<Failure, Text>> createText(Text text) async {
+  Future<Either<Failure, MyText>> createText(MyText text) async {
     return await _tryCacheText(text);
   }
 
   @override
-  Future<Either<Failure, void>> deleteText(Text text) async {
+  Future<Either<Failure, void>> deleteText(MyText text) async {
     return await _tryDeleteText(text);
   }
 
   @override
-  Future<Either<Failure, List<Text>>> getTexts(Classroom classroom) async {
+  Future<Either<Failure, List<MyText>>> getTexts(Classroom classroom) async {
     return await _tryGetTexts(classroom);
   }
 
   @override
-  Future<Either<Failure, Text>> updateText(Text text) async {
+  Future<Either<Failure, MyText>> updateText(MyText text) async {
     return await _tryUpdateText(text);
   }
 
-  Future<Either<Failure, Text>> _tryUpdateText(Text text) async {
+  Future<Either<Failure, MyText>> _tryUpdateText(MyText text) async {
     try {
       var model = textEntityToModel(text);
       var localModel = await localDataSource.updateCachedText(model);
@@ -50,7 +50,7 @@ class TextRepositoryImpl implements TextRepository {
     }
   }
 
-  Future<Either<Failure, void>> _tryDeleteText(Text text) async {
+  Future<Either<Failure, void>> _tryDeleteText(MyText text) async {
     try {
       var model = textEntityToModel(text);
       await localDataSource.deleteTextFromCache(model);
@@ -60,7 +60,7 @@ class TextRepositoryImpl implements TextRepository {
     }
   }
 
-  Future<Either<Failure, Text>> _tryCacheText(Text text) async {
+  Future<Either<Failure, MyText>> _tryCacheText(MyText text) async {
     try {
       var model = textEntityToModel(text);
       var localModel = await localDataSource.cacheNewText(model);
@@ -71,10 +71,12 @@ class TextRepositoryImpl implements TextRepository {
     }
   }
 
-  Future<Either<Failure, List<Text>>> _tryGetTexts(Classroom classroom) async {
+  Future<Either<Failure, List<MyText>>> _tryGetTexts(
+      Classroom classroom) async {
     try {
       var classroomModel = classroomEntityToModel(classroom);
-      var listTextModel = await localDataSource.getTextsFromCache(classroomModel);
+      var listTextModel =
+          await localDataSource.getTextsFromCache(classroomModel);
       var listTextEntity = [
         for (var model in listTextModel) textModelToEntity(model)
       ];

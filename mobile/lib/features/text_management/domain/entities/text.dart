@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-class Text extends Equatable {
+class MyText extends Equatable {
   final String title;
   final String body;
   final int localId;
   final int classId;
 
-  Text(
+  MyText(
       {@required this.title,
       @required this.body,
       this.localId,

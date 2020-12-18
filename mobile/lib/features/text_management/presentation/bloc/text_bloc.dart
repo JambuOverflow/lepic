@@ -69,7 +69,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _deleteTextState(DeleteTextEvent event) async* {
     yield DeletingText();
 
-    final text = Text(
+    final text = MyText(
       localId: event.localId,
     );
     final failureOrResponse = await deleteText(TextParams(text: text));
@@ -95,9 +95,9 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     );
   }
 
-  Text _createTextEntityFromEvent(TextEvent event) {
+  MyText _createTextEntityFromEvent(TextEvent event) {
     if (event is _TextManagementEvent) {
-      return Text(
+      return MyText(
         title: event.title,
         body: event.body,
         localId: event.localId,

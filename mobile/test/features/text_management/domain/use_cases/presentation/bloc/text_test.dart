@@ -41,14 +41,14 @@ void main() {
     );
   });
 
-  final tText = Text(
+  final tText = MyText(
     title: 'Title',
     body: 'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie',
     localId: 001,
     classId: 010,
   );
 
-  final tTextList = List<Text>();
+  final tTextList = List<MyText>();
   tTextList.add(tText);
 
   final tClassroom = Classroom(

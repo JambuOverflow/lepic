@@ -16,15 +16,13 @@ void main() {
     useCase = DeleteText(repository: mockTextRepository);
   });
 
-
- final tText = Text(
+  final tText = MyText(
     title: "Test Title",
     body: "Test Body",
     classId: 1,
   );
 
   test('should return nothing when deleting a Text', () async {
-
     await useCase(TextParams(text: tText));
 
     verify(mockTextRepository.deleteText(tText));
