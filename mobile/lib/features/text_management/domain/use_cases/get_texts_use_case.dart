@@ -6,13 +6,12 @@ import 'package:mobile/features/class_management/domain/use_cases/classroom_para
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
 
-
-class GetTexts implements UseCase<List<Text>, ClassroomParams> {
+class GetTexts implements UseCase<List<MyText>, ClassroomParams> {
   final TextRepository repository;
 
   GetTexts({@required this.repository});
 
   @override
-  Future<Either<Failure, List<Text>>> call(ClassroomParams params) =>
+  Future<Either<Failure, List<MyText>>> call(ClassroomParams params) =>
       repository.getTexts(params.classroom);
 }

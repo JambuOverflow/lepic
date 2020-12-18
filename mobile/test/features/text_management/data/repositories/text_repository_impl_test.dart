@@ -24,7 +24,7 @@ void main() {
     id: 1,
   );
 
-  final tText = Text(
+  final tText = MyText(
     title: "a",
     body: "b",
     classId: 1,
@@ -121,7 +121,7 @@ void main() {
           .thenAnswer((_) async => tTextsModels);
 
       final result = await repository.getTexts(tClassroom);
-      final List<Text> resultList = result.getOrElse(() => null);
+      final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
       equals(resultTest);

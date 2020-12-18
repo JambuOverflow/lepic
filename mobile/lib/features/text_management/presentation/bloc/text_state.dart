@@ -18,7 +18,7 @@ class TextDeleted extends TextState {}
 class CreatingText extends TextState {}
 
 class TextCreated extends TextState {
-  final Text text;
+  final MyText text;
 
   TextCreated({@required this.text});
 }
@@ -26,7 +26,7 @@ class TextCreated extends TextState {
 class UpdatingText extends TextState {}
 
 class TextUpdated extends TextState {
-  final Text text;
+  final MyText text;
 
   TextUpdated({@required this.text});
 }
@@ -34,7 +34,7 @@ class TextUpdated extends TextState {
 class GettingTextList extends TextState {}
 
 class GotTextList extends TextState {
-  final List<Text> texts;
+  final List<MyText> texts;
   GotTextList({@required this.texts});
 }
 
