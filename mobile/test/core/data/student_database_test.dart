@@ -55,11 +55,12 @@ void main() {
       name: Value("A"), grade: Value(1), tutorId: Value(1));
 
   final tUserCompanion = UserModelsCompanion(
-    firstName: Value("cana"),
-    lastName: Value("varro"),
-    email: Value("dede@.com"),
+    firstName: Value('v'),
+    lastName: Value('c'),
+    email: Value('v@g.com'),
+    username: Value('v@g.com'),
     role: Value(Role.teacher),
-    password: Value("1234"),
+    password: Value('123'),
   );
 
   Database database;
