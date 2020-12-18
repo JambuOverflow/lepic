@@ -31,8 +31,8 @@ class ClassSerializer(serializers.ModelSerializer):
 class TextSerializer(serializers.ModelSerializer):
     class Meta:
         model = Text
-        fields = ['title', 'body', '_class']
-
+        fields = ['id', 'title', 'body', '_class']
+        
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student

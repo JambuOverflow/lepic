@@ -1,19 +1,14 @@
 from rest_framework import permissions
+from api.models import Class, Text
 
-
-class IsTutorOrReadOnly(permissions.BasePermission):
+class IsClassTutor(permissions.BasePermission):
     """
-    Custom permission to only allow owners of an object to edit it.
+    Custom permission to only allow the class tutor to edit it.
     """
 
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
+    def has_object_permission(self, request, view, class_):
         # Write permissions are only allowed to the owner of the object.
-        return obj.tutor == request.user
+        return class_.tutor == request.user
 
 class IsOwner(permissions.BasePermission):
     """
@@ -23,3 +18,12 @@ class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # All permissions are only allowed to the owner of the object.
         return obj == request.user
+
+class IsTextCreator(permissions.BasePermission):
+    """
+    Custom permission to allow only tutor of a class to edit its texts.
+    """
+
+    def has_object_permission(self, request, view, text):
+        # All permissions are only allowed to the texts creator.
+        return text._class.tutor == request.user

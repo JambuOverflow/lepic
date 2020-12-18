@@ -1026,6 +1026,290 @@ class $StudentModelsTable extends StudentModels
   }
 }
 
+class TextModel extends DataClass implements Insertable<TextModel> {
+  final int localId;
+  final String title;
+  final String body;
+  final int classId;
+  TextModel(
+      {@required this.localId,
+      @required this.title,
+      @required this.body,
+      @required this.classId});
+  factory TextModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return TextModel(
+      localId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      title:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
+      body: stringType.mapFromDatabaseResponse(data['${effectivePrefix}body']),
+      classId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}class_id']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int>(localId);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || body != null) {
+      map['body'] = Variable<String>(body);
+    }
+    if (!nullToAbsent || classId != null) {
+      map['class_id'] = Variable<int>(classId);
+    }
+    return map;
+  }
+
+  TextModelsCompanion toCompanion(bool nullToAbsent) {
+    return TextModelsCompanion(
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      body: body == null && nullToAbsent ? const Value.absent() : Value(body),
+      classId: classId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(classId),
+    );
+  }
+
+  factory TextModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return TextModel(
+      localId: serializer.fromJson<int>(json['local_id']),
+      title: serializer.fromJson<String>(json['title']),
+      body: serializer.fromJson<String>(json['body']),
+      classId: serializer.fromJson<int>(json['class_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'local_id': serializer.toJson<int>(localId),
+      'title': serializer.toJson<String>(title),
+      'body': serializer.toJson<String>(body),
+      'class_id': serializer.toJson<int>(classId),
+    };
+  }
+
+  TextModel copyWith({int localId, String title, String body, int classId}) =>
+      TextModel(
+        localId: localId ?? this.localId,
+        title: title ?? this.title,
+        body: body ?? this.body,
+        classId: classId ?? this.classId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('TextModel(')
+          ..write('localId: $localId, ')
+          ..write('title: $title, ')
+          ..write('body: $body, ')
+          ..write('classId: $classId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(localId.hashCode,
+      $mrjc(title.hashCode, $mrjc(body.hashCode, classId.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is TextModel &&
+          other.localId == this.localId &&
+          other.title == this.title &&
+          other.body == this.body &&
+          other.classId == this.classId);
+}
+
+class TextModelsCompanion extends UpdateCompanion<TextModel> {
+  final Value<int> localId;
+  final Value<String> title;
+  final Value<String> body;
+  final Value<int> classId;
+  const TextModelsCompanion({
+    this.localId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.body = const Value.absent(),
+    this.classId = const Value.absent(),
+  });
+  TextModelsCompanion.insert({
+    this.localId = const Value.absent(),
+    @required String title,
+    @required String body,
+    @required int classId,
+  })  : title = Value(title),
+        body = Value(body),
+        classId = Value(classId);
+  static Insertable<TextModel> custom({
+    Expression<int> localId,
+    Expression<String> title,
+    Expression<String> body,
+    Expression<int> classId,
+  }) {
+    return RawValuesInsertable({
+      if (localId != null) 'local_id': localId,
+      if (title != null) 'title': title,
+      if (body != null) 'body': body,
+      if (classId != null) 'class_id': classId,
+    });
+  }
+
+  TextModelsCompanion copyWith(
+      {Value<int> localId,
+      Value<String> title,
+      Value<String> body,
+      Value<int> classId}) {
+    return TextModelsCompanion(
+      localId: localId ?? this.localId,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      classId: classId ?? this.classId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localId.present) {
+      map['local_id'] = Variable<int>(localId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (classId.present) {
+      map['class_id'] = Variable<int>(classId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TextModelsCompanion(')
+          ..write('localId: $localId, ')
+          ..write('title: $title, ')
+          ..write('body: $body, ')
+          ..write('classId: $classId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TextModelsTable extends TextModels
+    with TableInfo<$TextModelsTable, TextModel> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $TextModelsTable(this._db, [this._alias]);
+  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
+  GeneratedIntColumn _localId;
+  @override
+  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
+  GeneratedIntColumn _constructLocalId() {
+    return GeneratedIntColumn('local_id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _titleMeta = const VerificationMeta('title');
+  GeneratedTextColumn _title;
+  @override
+  GeneratedTextColumn get title => _title ??= _constructTitle();
+  GeneratedTextColumn _constructTitle() {
+    return GeneratedTextColumn(
+      'title',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _bodyMeta = const VerificationMeta('body');
+  GeneratedTextColumn _body;
+  @override
+  GeneratedTextColumn get body => _body ??= _constructBody();
+  GeneratedTextColumn _constructBody() {
+    return GeneratedTextColumn(
+      'body',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _classIdMeta = const VerificationMeta('classId');
+  GeneratedIntColumn _classId;
+  @override
+  GeneratedIntColumn get classId => _classId ??= _constructClassId();
+  GeneratedIntColumn _constructClassId() {
+    return GeneratedIntColumn('class_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES classroom_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [localId, title, body, classId];
+  @override
+  $TextModelsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'text_models';
+  @override
+  final String actualTableName = 'text_models';
+  @override
+  VerificationContext validateIntegrity(Insertable<TextModel> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_id')) {
+      context.handle(_localIdMeta,
+          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title'], _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+          _bodyMeta, body.isAcceptableOrUnknown(data['body'], _bodyMeta));
+    } else if (isInserting) {
+      context.missing(_bodyMeta);
+    }
+    if (data.containsKey('class_id')) {
+      context.handle(_classIdMeta,
+          classId.isAcceptableOrUnknown(data['class_id'], _classIdMeta));
+    } else if (isInserting) {
+      context.missing(_classIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localId};
+  @override
+  TextModel map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return TextModel.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $TextModelsTable createAlias(String alias) {
+    return $TextModelsTable(_db, alias);
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserModelsTable _userModels;
@@ -1036,9 +1320,11 @@ abstract class _$Database extends GeneratedDatabase {
   $StudentModelsTable _studentModels;
   $StudentModelsTable get studentModels =>
       _studentModels ??= $StudentModelsTable(this);
+  $TextModelsTable _textModels;
+  $TextModelsTable get textModels => _textModels ??= $TextModelsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [userModels, classroomModels, studentModels];
+      [userModels, classroomModels, studentModels, textModels];
 }
