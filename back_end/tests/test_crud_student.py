@@ -47,7 +47,6 @@ class TestCRUDStudent(APITestCase):
         token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
         Student.objects.create(_class=self.first_class, first_name='Arthur', last_name='Takeshi')
-        Class.objects.create(tutor=self.user, grade=10, title='Turma B')
         student_new_data = {
             'first_name': 'Aian',
             'last_name': 'Takeshi',
@@ -56,6 +55,22 @@ class TestCRUDStudent(APITestCase):
         response = self.client.put(self.student_url_update_delete, student_new_data, format='json')
         self.assertEqual(response.data, student_new_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_put_students_from_another_class(self):
+        self.user_2 = User.objects.create_user(username = 'aian', password = 'shay', email = 'naia@ufpa.br', role = 0)
+        token = Token.objects.create(user=self.user_2)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
+        student_new_data = {
+            'first_name': 'Aian',
+            'last_name': 'Takeshi',
+            '_class': 2
+        }
+        Student.objects.create(_class=self.first_class, first_name='Arthur', last_name='Takeshi')
+        response = self.client.put(self.student_url_update_delete, student_new_data, format='json')
+        student_original_first_name = Student.objects.filter(id=1).values_list('first_name', flat=True)[0]
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['detail'], "You do not have permission to perform this action.")
+        self.assertEqual(student_original_first_name, "Arthur")
 
     def test_update_patch_students(self):
         student_new_data = {
@@ -67,6 +82,20 @@ class TestCRUDStudent(APITestCase):
         response = self.client.patch(self.student_url_update_delete, student_new_data, format='json')
         self.assertEqual(response.data['first_name'], student_new_data['first_name'])
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_patch_students_from_another_class(self):
+        self.user_2 = User.objects.create_user(username = 'aian', password = 'shay', email = 'naia@ufpa.br', role = 0)
+        token = Token.objects.create(user=self.user_2)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token))
+        student_new_data = {
+            'first_name': 'Aian'
+        }
+        Student.objects.create(_class=self.first_class, first_name='Arthur', last_name='Takeshi')
+        response = self.client.patch(self.student_url_update_delete, student_new_data, format='json')
+        student_original_first_name = Student.objects.filter(id=1).values_list('first_name', flat=True)[0]
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['detail'], "You do not have permission to perform this action.")
+        self.assertEqual(student_original_first_name, "Arthur")
 
     def test_delete_students(self):
         token = Token.objects.create(user=self.user)
