@@ -25,21 +25,21 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          TextForm(
-            label: 'First name',
-            textController: _firstnameController,
-          ),
-          TextForm(
-            label: 'Last name',
-            textController: _lastnameController,
-          ),
-          TextForm(
+          ClassForm(
             label: 'id',
             textController: _idController,
             numeric: true,
           ),
-          TextForm(
-            label: 'Class id',
+          ClassForm(
+            label: 'First name',
+            textController: _firstnameController,
+          ),
+          ClassForm(
+            label: 'Last name',
+            textController: _lastnameController,
+          ),
+          ClassForm(
+            label: 'Classroom',
             textController: _classroomIdController,
             numeric: true,
           ),
@@ -85,22 +85,24 @@ class _AddClassState extends State<AddClass> {
   }
 }
 
-class TextForm extends StatefulWidget {
+
+class ClassForm extends StatefulWidget {
   final TextEditingController textController;
   final String label;
   final bool numeric;
 
-  const TextForm({
-    @required this.textController,
-    @required this.label,
+
+  ClassForm({
+    this.textController,
+    this.label,
     this.numeric,
   });
 
   @override
-  _TextFormState createState() => _TextFormState();
+  _ClassFormState createState() => _ClassFormState();
 }
 
-class _TextFormState extends State<TextForm> {
+class _ClassFormState extends State<ClassForm> {
   @override
   Widget build(BuildContext context) {
     return Container(

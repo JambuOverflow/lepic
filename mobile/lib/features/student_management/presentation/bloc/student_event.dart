@@ -47,7 +47,9 @@ class DeleteStudentEvent extends StudentEvent {
   );
 }
 
+
 class GetStudentEvent extends _StudentManagementEvent {
+
   final String firstName;
   final String lastName;
   final int id;
@@ -59,4 +61,5 @@ class GetStudentEvent extends _StudentManagementEvent {
     this.classroomId,
     this.id,
   ) : super(firstName, lastName, classroomId, id);
+
 }

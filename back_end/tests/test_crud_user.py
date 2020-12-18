@@ -43,7 +43,7 @@ class TestCrudUser(APITestCase):
             "role": 2
         }
         response = self.client.post(url, data, format='json')
-        url = reverse('get-user-token')
+        url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
             "password": "arthur"
@@ -67,7 +67,7 @@ class TestCrudUser(APITestCase):
         old_username = response.data['username']
         old_password = response.data['password']
 
-        url = reverse('get-user-token')
+        url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
             "password": "arthur"
@@ -106,7 +106,7 @@ class TestCrudUser(APITestCase):
         old_username = response.data['username']
         old_password = response.data['password']
 
-        url = reverse('get-user-token')
+        url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
             "password": "arthur"
@@ -141,7 +141,7 @@ class TestCrudUser(APITestCase):
         response = self.client.post(url, data, format='json')
         response_get_users = self.client.get(url)
 
-        url = reverse('get-user-token')
+        url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
             "password": "arthur"

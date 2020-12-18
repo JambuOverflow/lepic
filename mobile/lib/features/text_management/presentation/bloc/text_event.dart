@@ -1,50 +1,63 @@
 part of 'text_bloc.dart';
 
 @immutable
-abstract class TextEvent {
+abstract class TextEvent extends Equatable {
   const TextEvent();
   @override
   List<Object> get props => [];
 }
 
 class _TextManagementEvent extends TextEvent {
-  final int textId;
-  final String text;
+
+  final String title;
+  final String body;
+  final int localId;
+  final int classId;
 
   _TextManagementEvent(
-    this.textId,
-    this.text,
+    this.title,
+    this.body,
+    this.localId,
+    this.classId,
   );
 }
 
 class CreateNewTextEvent extends _TextManagementEvent {
   CreateNewTextEvent(
-    int textId,
-    String text,
-  ) : super(textId, text);
+    String title,
+    String body,
+    int localId,
+    int classId,
+  ) : super(title, body, localId, classId);
 }
 
 class UpdateTextEvent extends _TextManagementEvent {
   UpdateTextEvent(
-    int textId,
-    String text,
-  ) : super(textId, text);
+    String title,
+    String body,
+    int localId,
+    int classId,
+  ) : super(title, body, localId, classId);
 }
 
 class DeleteTextEvent extends TextEvent {
-  final int textId;
+  final int localId;
 
   DeleteTextEvent(
-    this.textId,
+    this.localId,
   );
 }
 
-class GetTextEvent extends _TextManagementEvent {
-  final int textId;
-  final String text;
+class GetTextEvent extends TextEvent {
+  final String title;
+  final String body;
+  final int localId;
+  final int classId;
 
   GetTextEvent(
-    this.textId,
-    this.text,
-  ) : super(textId, text);
+    this.title,
+    this.body,
+    this.localId,
+    this.classId,
+  );
 }

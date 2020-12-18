@@ -1,5 +1,6 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
+import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
@@ -25,7 +26,7 @@ LazyDatabase openConnection() {
   });
 }
 
-@UseMoor(tables: [UserModels, ClassroomModels, StudentModels])
+@UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
   Database.customExecutor(QueryExecutor executor) : super(executor);
@@ -53,7 +54,7 @@ class Database extends _$Database {
     return (delete(classroomModels)..where((t) => t.localId.equals(id))).go();
   }
 
-  ///Returns a list of classroomModels, and an empty list with the table is empty
+  ///Returns a list of classroomModels, and an empty list when the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
     return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId)))
         .get();
@@ -62,6 +63,30 @@ class Database extends _$Database {
   ///Returns true if the class was updated, false otherwise
   Future<bool> updateClassroom(ClassroomModel entry) async {
     return update(classroomModels).replace(entry);
+  }
+
+  /// returns the pk of the added entry
+  Future<int> insertText(TextModelsCompanion textCompanion) async {
+    return into(textModels).insert(textCompanion);
+  }
+
+  ///Throws a SqliteException if the entry is not found
+  Future<void> deleteText(int id) async {
+    var done = await (delete(textModels)..where((t) => t.localId.equals(id))).go();
+    if (done != 1) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+  }
+
+  ///Returns a list of textModels, and an empty list when the table is empty
+  Future<List<TextModel>> getTexts(int classroomId) async {
+    return (select(textModels)..where((t) => t.classId.equals(classroomId)))
+        .get();
+  }
+
+  ///Returns true if the text was updated, false otherwise
+  Future<bool> updateText(TextModel entry) async {
+    return update(textModels).replace(entry);
   }
 
   @override

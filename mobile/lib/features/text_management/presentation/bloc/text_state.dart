@@ -7,6 +7,9 @@ abstract class TextState extends Equatable {
   List<Object> get props => [TextState];
 }
 
+
+class TextInitial extends TextState {}
+
 class TextNotLoaded extends TextState {}
 
 class DeletingText extends TextState {}
@@ -16,24 +19,24 @@ class TextDeleted extends TextState {}
 class CreatingText extends TextState {}
 
 class TextCreated extends TextState {
-  // final MyText text;
+  final Text text;
 
-  // TextCreated({@required this.text});
+  TextCreated({@required this.text});
 }
 
 class UpdatingText extends TextState {}
 
 class TextUpdated extends TextState {
-  // final MyText text;
+  final Text text;
 
-  // TextUpdated({@required this.text});
+  TextUpdated({@required this.text});
 }
 
-class GettingText extends TextState {}
+class GettingTextList extends TextState {}
 
-class TextGot extends TextState {
-  // final List<MyText> texts;
-  // TextGot({@required this.texts});
+class GotTextList extends TextState {
+  final List<Text> texts;
+  GotTextList({@required this.texts});
 }
 
 class Error extends TextState {
