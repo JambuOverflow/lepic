@@ -3,6 +3,7 @@
   "first_name": "ab",
   "last_name": "c",
   "email": "abc@g.com",
+  "username": "abc@g.com",
   "role": 0,
   "password": "x1y2"
 }

@@ -7,10 +7,10 @@ import '../../../../core/use_cases/use_case.dart';
 import '../entities/user.dart';
 import '../repositories/user_repository.dart';
 
-class GetStoredUser extends UseCase<User, NoParams> {
+class GetStoredUserCase extends UseCase<User, NoParams> {
   final UserRepository repository;
 
-  GetStoredUser({@required this.repository});
+  GetStoredUserCase({@required this.repository});
 
   @override
   Future<Either<Failure, User>> call(params) async =>

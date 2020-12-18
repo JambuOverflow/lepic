@@ -32,6 +32,7 @@ class UserModels extends Table {
   @JsonKey('last_name')
   TextColumn get lastName => text()();
   TextColumn get email => text()();
+  TextColumn get username => text()();
   IntColumn get role => intEnum<Role>()();
   TextColumn get password => text()();
 }
@@ -42,6 +43,7 @@ UserModel userEntityToModel(User entity) {
       firstName: entity.firstName,
       lastName: entity.lastName,
       email: entity.email,
+      username: entity.email,
       role: entity.role,
       password: entity.password);
 }

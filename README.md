@@ -4,7 +4,7 @@ Supporting the assessment and management of reading fluency.
 
 **Warning:** This is `develop` branch README and should not be merged to `master`.
 
-[![Coverage Status](https://coveralls.io/repos/github/JambuOverflow/lepic/badge.svg?branch=master)](https://fcoveralls.io/github/JambuOverflow/lepic?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/JambuOverflow/lepic/badge.svg?branch=develop)](https://coveralls.io/github/JambuOverflow/lepic?branch=develop)
 
 [![Build Status](https://travis-ci.com/JambuOverflow/lepic.svg?branch=develop)](https://travis-ci.com/JambuOverflow/lepic)
 
@@ -108,6 +108,8 @@ Finally, just focus on making clear the reasons why you made the change in the f
 ### Pull Request & Code Review Conventions
 
 > If we don't use meaningful commit messages, this will be the area to explain what is the purpose and accomplishment of your code.
+
+* Always link only one issue to your pull request [link](https://docs.github.com/pt/free-pro-team@latest/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
 
 
 ### Folder Structure
