@@ -66,13 +66,36 @@ class Database extends _$Database {
   }
 
   /// returns the pk of the added entry
+  Future<int> insertStudent(StudentModelsCompanion modelCompanion) async {
+    return into(studentModels).insert(modelCompanion);
+  }
+
+  ///Returns the number of deleted rows
+  Future<int> deleteStudent(int id) async {
+    return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
+  }
+
+  ///Returns a list of studentModels, and an empty list with the table is empty
+  Future<List<StudentModel>> getStudents(int classroomId) async {
+    return (select(studentModels)
+          ..where((t) => t.classroomId.equals(classroomId)))
+        .get();
+  }
+
+  ///Returns true if the student was updated, false otherwise
+  Future<bool> updateStudent(StudentModel entry) async {
+    return update(studentModels).replace(entry);
+  }
+
+  /// returns the pk of the added entry
   Future<int> insertText(TextModelsCompanion textCompanion) async {
     return into(textModels).insert(textCompanion);
   }
 
   ///Throws a SqliteException if the entry is not found
   Future<void> deleteText(int id) async {
-    var done = await (delete(textModels)..where((t) => t.localId.equals(id))).go();
+    var done =
+        await (delete(textModels)..where((t) => t.localId.equals(id))).go();
     if (done != 1) {
       throw SqliteException(787, "The table doesn't have this entry");
     }

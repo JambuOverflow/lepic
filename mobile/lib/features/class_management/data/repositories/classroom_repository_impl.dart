@@ -9,7 +9,6 @@ import 'package:mobile/features/class_management/domain/repositories/classroom_r
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 
-
 import '../data_sources/classroom_local_data_source.dart';
 
 class ClassroomRepositoryImpl implements ClassroomRepository {
@@ -25,6 +24,18 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     return await _tryCacheClassroom(classroom);
   }
 
+  Future<Either<Failure, Classroom>> _tryCacheClassroom(
+      Classroom classroom) async {
+    try {
+      var model = classroomEntityToModel(classroom);
+      var localModel = await localDataSource.cacheNewClassroom(model);
+      var localClassroom = classroomModelToEntity(localModel);
+      return Right(localClassroom);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
   @override
   Future<Either<Failure, void>> deleteClassroom(Classroom classroom) async {
     return await _tryDeleteClassroom(classroom);
@@ -34,18 +45,6 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     try {
       var model = classroomEntityToModel(classroom);
       await localDataSource.deleteClassroomFromCache(model);
-    } on CacheException {
-      return Left(CacheFailure());
-    }
-  }
-
-  Future<Either<Failure, Classroom>> _tryCacheClassroom(
-      Classroom classroom) async {
-    try {
-      var model = classroomEntityToModel(classroom);
-      var localModel = await localDataSource.cacheNewClassroom(model);
-      var localClassroom = classroomModelToEntity(localModel);
-      return Right(localClassroom);
     } on CacheException {
       return Left(CacheFailure());
     }
