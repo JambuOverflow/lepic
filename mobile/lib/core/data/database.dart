@@ -1,7 +1,6 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
-import 'package:mobile/features/student_management/domain/use_cases/delete_student_use_case.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
