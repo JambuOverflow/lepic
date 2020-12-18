@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
-from .permissions import IsTutorOrReadOnly, IsOwner
+from .permissions import IsClassTutor, IsOwner, IsTextCreator
 from django.contrib.auth.hashers import make_password
 
 
@@ -67,7 +67,7 @@ class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
     permission_classes = [permissions.IsAuthenticated,
-                          IsTutorOrReadOnly]
+                          IsClassTutor]
 
 
 class TextList(generics.ListCreateAPIView):
@@ -91,5 +91,6 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Text.objects.all()
     serializer_class = TextSerializer
-    permission_classes = []
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTextCreator]
     
