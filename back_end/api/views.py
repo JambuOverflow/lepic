@@ -1,18 +1,21 @@
 import json
-from rest_framework import status, serializers
-from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
-from django.http import JsonResponse, Http404
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import Text, Class, User, Student
-from django.shortcuts import render
-from rest_framework import generics, mixins, status, permissions
+
+from rest_framework import generics, mixins, status, permissions, status, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
-from .permissions import IsTutorOrReadOnly, IsOwner
+from rest_framework.exceptions import PermissionDenied
+
+from django.http import JsonResponse, Http404
+from django.shortcuts import render
 from django.contrib.auth.hashers import make_password
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
+
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
+from .models import Text, Class, User, Student
+from .permissions import IsTutorOrReadOnly, IsOwner
 
 
 class UserList(generics.ListCreateAPIView):
@@ -102,6 +105,13 @@ class StudentList(generics.ListCreateAPIView):
         classes = Class.objects.filter(tutor=self.request.user.id)
         queryset = Student.objects.filter(_class__in=classes)
         return queryset
+
+    def perform_create(self, serializer):
+        classes = Class.objects.filter(tutor=self.request.user.id).values_list('tutor', flat=True)
+        if(self.request.user.id in classes):
+            serializer.save()
+        else:
+            raise PermissionDenied("Unable to add a student to a class that isn't yours", 'permission_denied')
 
 
 class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
