@@ -83,7 +83,7 @@ Future<void> main() {
     test(
         "should throw CacheException when trying to delete an ivalid text",
         () {
-      when(mockDatabase.deleteText(tValidPk)).thenAnswer((_) async => 0);
+      when(mockDatabase.deleteText(tValidPk)).thenThrow(SqliteException(787, ""));
       expect(
           () async => await textLocalDataSourceImpl
               .deleteTextFromCache(tTextModel1),

@@ -38,7 +38,10 @@ void main() {
       localId: tValidTextPk2);
 
   final tValidUpdateTextModel = TextModel(
-      title: title, body: updateBody, classId: tValidClassroomPk, localId: tValidTextPk1);
+      title: title,
+      body: updateBody,
+      classId: tValidClassroomPk,
+      localId: tValidTextPk1);
 
   final tInvalidUpdateTextModel = TextModel(
       localId: tInvalidTextPk,
@@ -87,42 +90,39 @@ void main() {
 
       expect(pk, tValidTextPk1);
     });
-    
+
     test("should return a SQLite error", () async {
       expect(() => database.insertText(tInvalidTextCompanion),
           throwsA(TypeMatcher<SqliteException>()));
     });
-    
   });
-  
+
   group("deleteText", () {
     setUp(() async {
       await database.insertText(tValidTextCompanion);
     });
 
     test(
-        "should return 1 indicating that a row was deleted when the input is a valid pk",
+        "shouldn't throw an exception when the input is a valid pk",
         () async {
-      final deleted = await database.deleteText(tValidTextPk1);
-      expect(deleted, 1);
+      await database.deleteText(tValidTextPk1);
+      equals(true);
     });
-    
 
     test(
-        "should return 0 indicating that no rows were deleted when the input is an invalid pk",
+        "should throw an exception when the input is an invalid pk",
         () async {
-      final deleted = await database.deleteText(tInvalidTextPk);
-      expect(deleted, 0);
+      expect(() => database.deleteText(tInvalidTextPk), throwsA(const
+      TypeMatcher<SqliteException>()));
+      
     });
-    
   });
-  
+
   group("getTexts", () {
     test("should return an empty list of texts", () async {
       final texts = await database.getTexts(tValidClassroomPk);
       expect(texts, []);
     });
-    
 
     test("should return a list with one text", () async {
       await database.insertText(tValidTextCompanion);
@@ -138,7 +138,6 @@ void main() {
       final texts = await database.getTexts(tValidClassroomPk);
       expect(texts, [tValidTextModel1, tValidTextModel2]);
     });
-    
   });
 
   group("getTexts", () {
@@ -150,13 +149,12 @@ void main() {
       final done = await database.updateText(tValidUpdateTextModel);
       expect(done, true);
     });
-  
+
     test("should return false when updating an invalid text", () async {
       final done = await database.updateText(tInvalidUpdateTextModel);
       expect(done, false);
     });
   });
-  
 }
 
 void closeDatabase(Database database) async {

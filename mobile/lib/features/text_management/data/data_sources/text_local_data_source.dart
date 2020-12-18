@@ -33,8 +33,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   TextLocalDataSourceImpl({@required this.database});
 
   @override
-  Future<TextModel> cacheNewText(
-      TextModel textModel) async {
+  Future<TextModel> cacheNewText(TextModel textModel) async {
     try {
       bool nullToAbsent = true;
       final textCompanion = textModel.toCompanion(nullToAbsent);
@@ -53,10 +52,8 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   Future<void> deleteTextFromCache(TextModel textModel) async {
     var pk = textModel.localId;
     try {
-      var done = await this.database.deleteText(pk);
-      if (done != 1) {
-        throw SqliteException(787, "The table doesn't have this entry");
-      }
+      await this.database.deleteText(pk);
+      return null;
     } on SqliteException {
       throw CacheException();
     }
@@ -74,8 +71,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   }
 
   @override
-  Future<TextModel> updateCachedText(
-      TextModel textModel) async {
+  Future<TextModel> updateCachedText(TextModel textModel) async {
     bool updated = await this.database.updateText(textModel);
     if (updated) {
       return textModel;
