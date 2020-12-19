@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
-import 'package:mobile/features/user_management/presentation/widgets/role_dropdown_button.dart';
+import 'package:mobile/features/user_management/presentation/widgets/input_fields/role_dropdown_input_field.dart';
 import '../widgets/drawer_overlay.dart';
 
 class UpdateUser extends StatefulWidget {
@@ -87,7 +87,7 @@ class _UpdateUserStatefulWidgetState extends State<UpdateUser> {
             ),
             Container(
               padding: const EdgeInsets.all(16.0),
-              child: RoleDropdownButton(),
+              child: RoleDropdownInputField(),
             ),
             BlocListener<UserBloc, UserState>(
               listener: (context, state) {
