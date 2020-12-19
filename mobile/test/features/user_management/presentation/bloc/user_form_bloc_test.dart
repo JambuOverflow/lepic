@@ -1,15 +1,20 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/presentation/validators/confirm_password_input.dart';
 import 'package:mobile/core/presentation/validators/email_input.dart';
 import 'package:mobile/core/presentation/validators/name_input.dart';
 import 'package:mobile/core/presentation/validators/password_input.dart';
 import 'package:mobile/core/presentation/validators/role_input.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:mobile/features/user_management/domain/use_cases/create_user_use_case.dart';
 import 'package:mobile/features/user_management/presentation/bloc/user_form_bloc.dart';
+import 'package:mockito/mockito.dart';
 
-import 'user_bloc_test.dart';
+class MockCreateNewUserCase extends Mock implements CreateNewUserCase {}
 
 void main() {
   MockCreateNewUserCase mockCreateNewUserCase;
@@ -238,5 +243,108 @@ void main() {
         UserFormState(role: RoleInput.dirty(), status: FormzStatus.invalid),
       ],
     );
+  });
+
+  group('formSubmitted', () {
+    final tFirstName = 'Vitor';
+    final tLastName = 'Cantao';
+    final tEmail = 'vc@gmail.com';
+    final tPassword = 'ABCdef123';
+    final tRole = Role.teacher;
+
+    group('valid', () {
+      UserFormBloc validBloc;
+
+      final validFormState = UserFormState(
+        firstName: NameInput.dirty(tFirstName),
+        lastName: NameInput.dirty(tLastName),
+        email: EmailInput.dirty(tEmail),
+        password: PasswordInput.dirty(tPassword),
+        confirmPassword: ConfirmPasswordInput.dirty(
+          password: tPassword,
+          value: tPassword,
+        ),
+        role: RoleInput.dirty(tRole),
+      );
+
+      setUp(() {
+        validBloc = UserFormBloc(createNewUser: mockCreateNewUserCase);
+        validBloc.add(FirstNameChanged(firstName: tFirstName));
+        validBloc.add(LastNameChanged(lastName: tLastName));
+        validBloc.add(EmailChanged(email: tEmail));
+        validBloc.add(PasswordChanged(password: tPassword));
+        validBloc.add(ConfirmPasswordChanged(confirmPassword: tPassword));
+        validBloc.add(RoleChanged(role: tRole));
+      });
+
+      group('successfulResponse', () {
+        setUp(() {
+          when(mockCreateNewUserCase(any)).thenAnswer(
+            (_) async => Right(SuccessfulResponse()),
+          );
+        });
+
+        blocTest(
+          '''should emit state with submission in progress status and 
+      state with submission success when form is valid''',
+          build: () => validBloc,
+          act: (bloc) {
+            bloc.add(FormSubmitted());
+          },
+          skip: 6,
+          expect: [
+            validFormState.copyWith(status: FormzStatus.submissionInProgress),
+            validFormState.copyWith(status: FormzStatus.submissionSuccess),
+          ],
+        );
+      });
+
+      group('server failure', () {
+        setUp(() {
+          when(mockCreateNewUserCase(any)).thenAnswer(
+            (_) async => Left(ServerFailure()),
+          );
+        });
+
+        blocTest(
+          '''should emit state with submission in progress status and 
+            state with submission failure when form is valid but an server error
+            has occurred''',
+          build: () => validBloc,
+          act: (bloc) {
+            bloc.add(FormSubmitted());
+          },
+          skip: 6,
+          expect: [
+            validFormState.copyWith(status: FormzStatus.submissionInProgress),
+            validFormState.copyWith(status: FormzStatus.submissionFailure),
+          ],
+        );
+      });
+    });
+
+    group('invalid', () {
+      blocTest(
+        '''should emit state with dirty inputs and  invalid status''',
+        build: () => bloc,
+        act: (bloc) {
+          bloc.add(FormSubmitted());
+        },
+        expect: [
+          UserFormState(
+            firstName: NameInput.dirty(),
+            lastName: NameInput.dirty(),
+            email: EmailInput.dirty(),
+            password: PasswordInput.dirty(),
+            confirmPassword: ConfirmPasswordInput.dirty(
+              password: '',
+              value: '',
+            ),
+            role: RoleInput.dirty(),
+            status: FormzStatus.invalid,
+          ),
+        ],
+      );
+    });
   });
 }
