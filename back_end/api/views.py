@@ -1,10 +1,11 @@
 import json
 
-from rest_framework import generics, mixins, status, permissions, status, serializers
+from rest_framework import generics, mixins, status, permissions, status, serializers, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.http import JsonResponse, Http404
 from django.shortcuts import render
@@ -13,8 +14,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.exceptions import ObjectDoesNotExist
 
-from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
-from .models import Text, Class, User, Student
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer
+from .models import Text, Class, User, Student, AudioFile
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator
 
 
@@ -121,3 +122,9 @@ class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
     queryset = Student.objects.all()
+
+class AudioFileList(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = AudioFileSerializer
+    queryset = AudioFile.objects.all()
