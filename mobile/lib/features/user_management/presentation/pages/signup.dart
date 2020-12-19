@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
-import '../widgets/role_dropdown_button.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:formz/formz.dart';
+
+import '../widgets/create_user_button.dart';
+import '../bloc/user_form_bloc.dart';
+import '../widgets/input_fields/confirm_password_input_field.dart';
+import '../widgets/input_fields/email_input_field.dart';
+import '../widgets/input_fields/password_input_field.dart';
+import '../widgets/input_fields/first_name_input_field.dart';
+import '../widgets/input_fields/last_name_input_field.dart';
+import '../widgets/input_fields/role_dropdown_input_field.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -10,136 +17,75 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  TextEditingController firstnameController = TextEditingController();
-  TextEditingController lastnameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  final _firstNameFocusNode = FocusNode();
+  final _lastNameFocusNode = FocusNode();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  final _confirmPasswordFocusNode = FocusNode();
+  final _roleFocusNode = FocusNode();
 
-  UserBloc _userBloc;
+  bool _ignoreTouch = false;
 
-  final List<String> roles = [
-    "Teacher",
-    "Pedagogist",
-    "Speech therapist",
-    "Psychopedagogist",
-    "Researcher"
-  ];
+  @override
+  void initState() {
+    super.initState();
 
-  String roleSelected = "Teacher";
+    _addUnfocusedEventToFocusNodes();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Role roleSelected = Role.teacher;
-    _userBloc = BlocProvider.of<UserBloc>(
-        context); //Block provider(acho que não precisa mais no main)
     return Scaffold(
       appBar: AppBar(
         title: Text('Sign Up'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: ListView(children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: firstnameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'First Name',
-              ),
+      body:
+          BlocConsumer<UserFormBloc, UserFormState>(listener: (context, state) {
+        state.status == FormzStatus.submissionInProgress
+            ? _ignoreTouch = true
+            : _ignoreTouch = false;
+      }, builder: (context, state) {
+        return IgnorePointer(
+          ignoring: _ignoreTouch,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: ListView(
+              children: <Widget>[
+                const SizedBox(height: 16),
+                FirstNameInputField(focusNode: _firstNameFocusNode),
+                const SizedBox(height: 16),
+                LastNameInputField(focusNode: _lastNameFocusNode),
+                const SizedBox(height: 16),
+                EmailInputField(focusNode: _emailFocusNode),
+                const SizedBox(height: 32),
+                PasswordInputField(focusNode: _passwordFocusNode),
+                const SizedBox(height: 16),
+                ConfirmPasswordInputField(focusNode: _confirmPasswordFocusNode),
+                const SizedBox(height: 32),
+                RoleDropdownInputField(focusNode: _confirmPasswordFocusNode),
+                const SizedBox(height: 16),
+                CreateUserButton(),
+              ],
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: lastnameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Last Name',
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'E-mail',
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              obscureText: true,
-              controller: passwordController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              obscureText: true,
-              controller: confirmPasswordController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Confirm password',
-              ),
-            ),
-          ),
-          Container(
-              padding: const EdgeInsets.all(16.0), child: RoleDropdownButton()),
-          BlocListener<UserBloc, UserState>(
-            listener: (context, state) {
-              if (state is UserCreated) {
-                print("user added");
-                Navigator.pop(context);
-              } else if (state is Error) {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                  ),
-                );
-              }
-            },
-            child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-              return Container(
-                height: 80,
-                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-                child: RaisedButton(
-                  child: Text(
-                    'Create user',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    print("adding user");
-                    print("name: " +
-                        firstnameController.text +
-                        ' ' +
-                        lastnameController.text);
-                    print("email: " + emailController.text);
-                    print("password: " + passwordController.text);
-                    print("role: " + roleSelected.toString());
-                    _userBloc.add(
-                      CreateNewUserEvent(
-                        firstnameController.text,
-                        lastnameController.text,
-                        emailController.text,
-                        roleSelected,
-                        passwordController.text,
-                      ),
-                    );
-                  },
-                ),
-              );
-            }),
-          ),
-        ]),
-      ),
+        );
+      }),
     );
+  }
+
+  void _addUnfocusedEventToFocusNodes() {
+    _addEventWhenUnfocused(_firstNameFocusNode, FirstNameUnfocused());
+    _addEventWhenUnfocused(_lastNameFocusNode, LastNameUnfocused());
+    _addEventWhenUnfocused(_emailFocusNode, EmailUnfocused());
+    _addEventWhenUnfocused(_passwordFocusNode, PasswordUnfocused());
+    _addEventWhenUnfocused(
+        _confirmPasswordFocusNode, ConfirmPasswordUnfocused());
+    _addEventWhenUnfocused(_roleFocusNode, RoleUnfocused());
+  }
+
+  void _addEventWhenUnfocused(FocusNode node, UserFormEvent unfocusedEvent) {
+    node.addListener(() {
+      if (!node.hasFocus) context.read<UserFormBloc>().add(unfocusedEvent);
+    });
   }
 }

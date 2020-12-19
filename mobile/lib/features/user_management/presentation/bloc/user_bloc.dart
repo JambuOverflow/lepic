@@ -6,10 +6,10 @@ import 'package:mobile/features/user_management/domain/use_cases/create_user_use
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
 import 'package:mobile/features/user_management/domain/use_cases/update_user_use_case.dart';
 
-import '../../../../../core/error/failures.dart';
-import '../../../../../core/network/response.dart';
-import '../../../domain/entities/user.dart';
-import '../../../domain/use_cases/user_params.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/network/response.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/use_cases/user_params.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';

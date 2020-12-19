@@ -1,5 +1,9 @@
 //This file defines all the routing logic so it won't be anywhere else in the code
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mobile/features/user_management/presentation/bloc/user_form_bloc.dart';
+import 'package:mobile/features/user_management/presentation/pages/signup_success.dart';
 import 'pages/login.dart';
 import 'pages/guest.dart';
 import 'pages/signup.dart';
@@ -19,7 +23,10 @@ class RouteGenerator {
         );
       case '/signup':
         return MaterialPageRoute(
-          builder: (_) => Signup(),
+          builder: (_) => BlocProvider(
+            create: (_) => GetIt.instance<UserFormBloc>(),
+            child: Signup(),
+          ),
         );
       case '/guest':
         return MaterialPageRoute(
@@ -29,6 +36,8 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => UpdateUser(),
         );
+      case '/signup_success':
+        return MaterialPageRoute(builder: (_) => SignUpSuccess());
       default:
         return _errorRoute();
     }
