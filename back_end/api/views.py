@@ -100,6 +100,10 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class StudentList(generics.ListCreateAPIView):
+    """
+    List all students instances or create a new student instance.
+    EX: GET or POST /api/students/
+    """
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated]
     queryset = Student.objects.all()
@@ -110,8 +114,8 @@ class StudentList(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        classes = Class.objects.filter(tutor=self.request.user.id).values_list('tutor', flat=True)
-        if(self.request.user.id in classes):
+        class_tutor = Class.objects.filter(id=self.request.data['_class']).values_list('tutor', flat=True)
+        if(self.request.user.id in class_tutor):
             serializer.save()
         else:
             raise PermissionDenied("You do not have the permission to create a student account with " +
@@ -119,12 +123,21 @@ class StudentList(generics.ListCreateAPIView):
 
 
 class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a student instance.
+    EX: GET, PUT, PATCH or DELETE /api/students/
+    """
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
     queryset = Student.objects.all()
 
 class AudioFileList(generics.ListCreateAPIView):
+    """
+    List all audio file instances or create a new audio file instance.
+    EX: GET or POST /api/audio-files/
+    """
     parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
     serializer_class = AudioFileSerializer
     queryset = AudioFile.objects.all()
+        
