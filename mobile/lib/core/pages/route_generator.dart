@@ -7,6 +7,7 @@ import 'package:mobile/features/class_management/presentation/pages/update_class
 import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
 import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
+import 'package:mobile/features/text_management/presentation/pages/create_text.dart';
 import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
 import 'package:mobile/features/user_management/presentation/pages/guest.dart';
 
@@ -42,17 +43,25 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => ShowStudents(),
         );
+      case '/add_student':
+        return MaterialPageRoute(
+          builder: (_) => AddStudent(),
+        );
       case '/list_classes':
         return MaterialPageRoute(
           builder: (_) => ShowClasses(),
+        );
+      case '/add_class':
+        return MaterialPageRoute(
+          builder: (_) => AddClass(),
         );
       case '/list_texts':
         return MaterialPageRoute(
           builder: (_) => ShowTexts(),
         );
-      case '/add_class':
+      case '/add_text':
         return MaterialPageRoute(
-          builder: (_) => AddClass(),
+          builder: (_) => AddText(),
         );
       case '/detail_class':
         return MaterialPageRoute(

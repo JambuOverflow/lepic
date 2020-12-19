@@ -53,11 +53,11 @@ class PopupMenuOption extends StatelessWidget {
             value: MenuOption.Assign,
           ),
           PopupMenuItem(
-            child: Text('Edit class'),
+            child: Text('Edit student'),
             value: MenuOption.Edit,
           ),
           PopupMenuItem(
-            child: Text('Remove class'),
+            child: Text('Remove student'),
             value: MenuOption.Remove,
           ),
         ];
@@ -67,9 +67,9 @@ class PopupMenuOption extends StatelessWidget {
 }
 
 class Constants {
-  static const String assign = 'Assign Student';
-  static const String edit = 'Edit class';
-  static const String remove = 'Remove class';
+  static const String assign = 'Assign student';
+  static const String edit = 'Edit student';
+  static const String remove = 'Remove student';
 
   static const List<String> choices = <String>[
     assign,
@@ -84,10 +84,10 @@ void choiceAction(String choice) {
       print('add student');
       break;
     case Constants.edit:
-      print('edit list');
+      print('edit student');
       break;
     case Constants.remove:
-      print('remove this class');
+      print('remove this student');
       break;
     default:
       print('error');

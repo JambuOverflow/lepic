@@ -60,7 +60,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     yield GettingClassroom();
 
     final user = User(
-      localId: event.id,
+      localId: event.tutorId,
     );
 
     final failureOrResponse = await getClassroom(UserParams(user));

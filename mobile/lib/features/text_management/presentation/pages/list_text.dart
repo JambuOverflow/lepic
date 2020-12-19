@@ -35,7 +35,7 @@ class _ShowTextsState extends State<ShowTexts> {
         onPressed: () {
           Navigator.of(context)
               .pushNamed(
-                '/fifth',
+                '/add_text',
               )
               .then(
                 (createdText) => _atualiza(createdText),
