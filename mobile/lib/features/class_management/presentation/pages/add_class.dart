@@ -27,7 +27,7 @@ class _AddClassState extends State<AddClass> {
     _classBloc = BlocProvider.of<ClassBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('New class'),
+        title: Text('Create class'),
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),

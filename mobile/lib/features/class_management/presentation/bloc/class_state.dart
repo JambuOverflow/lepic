@@ -23,7 +23,12 @@ class UpdatingClass extends ClassState {}
 
 class ClassUpdated extends ClassState {}
 
-class GetClass extends ClassState {}
+class GetClass /*GettingClass*/ extends ClassState {}
+
+class GotClass extends ClassState {
+  final Response response;
+  GotClass({@required this.response});
+}
 
 class Error extends ClassState {
   final String message;

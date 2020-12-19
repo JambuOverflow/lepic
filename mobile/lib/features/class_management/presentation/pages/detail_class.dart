@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/classroom.dart';
 
 class ClassDetailPage extends StatelessWidget {
-  final Classroom _schoolClass;
+  //final Classroom _schoolClass;
 
-  ClassDetailPage(this._schoolClass);
+  //ClassDetailPage(this._schoolClass);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_schoolClass.name.toString()),
+        title: Text('Class Details'), //Text(_schoolClass.name.toString()),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: choiceAction,
@@ -29,9 +29,12 @@ class ClassDetailPage extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            Text(_schoolClass.grade.toString()),
-            Text(_schoolClass.tutorId.toString()),
-            Text(_schoolClass.id.toString()),
+            //Text(_schoolClass.grade.toString()),
+            //Text(_schoolClass.tutorId.toString()),
+            //Text(_schoolClass.id.toString()),
+            Text('Class grade'),
+            Text('Tutor ID'),
+            Text('Class ID'),
           ],
         ),
       ),
