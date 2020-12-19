@@ -1,4 +1,4 @@
-part of 'user_form_bloc.dart';
+part of 'signup_form_bloc.dart';
 
 abstract class SignupFormEvent extends Equatable {
   const SignupFormEvent();

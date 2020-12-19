@@ -11,7 +11,7 @@ import 'package:mobile/core/presentation/validators/password_input.dart';
 import 'package:mobile/core/presentation/validators/role_input.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/create_user_use_case.dart';
-import 'package:mobile/features/user_management/presentation/bloc/user_form_bloc.dart';
+import 'package:mobile/features/user_management/presentation/bloc/signup_form_bloc.dart';
 import 'package:mockito/mockito.dart';
 
 class MockCreateNewUserCase extends Mock implements CreateNewUserCase {}

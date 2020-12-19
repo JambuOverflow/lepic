@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import '../widgets/create_user_button.dart';
-import '../bloc/user_form_bloc.dart';
+import '../bloc/signup_form_bloc.dart';
 import '../widgets/input_fields/confirm_password_input_field.dart';
 import '../widgets/input_fields/email_input_field.dart';
 import '../widgets/input_fields/password_input_field.dart';

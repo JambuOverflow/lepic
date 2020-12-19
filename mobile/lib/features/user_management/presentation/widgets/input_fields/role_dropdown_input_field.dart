@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/user.dart';
-import '../../bloc/user_form_bloc.dart';
+import '../../bloc/signup_form_bloc.dart';
 
 class RoleDropdownInputField extends StatelessWidget {
   final FocusNode focusNode;

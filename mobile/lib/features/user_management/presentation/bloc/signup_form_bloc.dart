@@ -15,8 +15,8 @@ import '../../../../core/presentation/validators/email_input.dart';
 import '../../../../core/presentation/validators/name_input.dart';
 import '../../../../core/presentation/validators/password_input.dart';
 
-part 'user_form_event.dart';
-part 'user_form_state.dart';
+part 'signup_form_event.dart';
+part 'signup_form_state.dart';
 
 class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
   final CreateNewUserCase createNewUser;
