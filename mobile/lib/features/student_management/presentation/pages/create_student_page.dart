@@ -25,24 +25,8 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          ClassForm(
-            label: 'id',
-            textController: _idController,
-            numeric: true,
-          ),
-          ClassForm(
-            label: 'First name',
-            textController: _firstnameController,
-          ),
-          ClassForm(
-            label: 'Last name',
-            textController: _lastnameController,
-          ),
-          ClassForm(
-            label: 'Classroom',
-            textController: _classroomIdController,
-            numeric: true,
-          ),
+          ClassFormWidget(context, _idController, _firstnameController,
+              _lastnameController, _classroomIdController),
           BlocListener<StudentBloc, StudentState>(
             listener: (context, state) {
               if (state is Error) {
@@ -83,14 +67,40 @@ class _AddClassState extends State<AddClass> {
       ),
     );
   }
-}
 
+  Widget ClassFormWidget(
+      BuildContext context,
+      TextEditingController _idController,
+      TextEditingController _firstnameController,
+      TextEditingController _lastnameController,
+      TextEditingController _classroomIdController) {
+    return ListView(children: <Widget>[
+      ClassForm(
+        label: 'id',
+        textController: _idController,
+        numeric: true,
+      ),
+      ClassForm(
+        label: 'First name',
+        textController: _firstnameController,
+      ),
+      ClassForm(
+        label: 'Last name',
+        textController: _lastnameController,
+      ),
+      ClassForm(
+        label: 'Classroom',
+        textController: _classroomIdController,
+        numeric: true,
+      ),
+    ]);
+  }
+}
 
 class ClassForm extends StatefulWidget {
   final TextEditingController textController;
   final String label;
   final bool numeric;
-
 
   ClassForm({
     this.textController,
@@ -118,4 +128,5 @@ class _ClassFormState extends State<ClassForm> {
       ),
     );
   }
+//}
 }

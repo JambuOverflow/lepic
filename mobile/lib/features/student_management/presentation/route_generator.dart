@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/class_management/presentation/pages/list_class.dart';
 
 import 'pages/home_page.dart';
 
@@ -8,6 +9,10 @@ class RouteGenerator {
       case '/home':
         return MaterialPageRoute(
           builder: (_) => HomeScreen(),
+        );
+      case '/classes':
+        return MaterialPageRoute(
+          builder: (_) => ShowClasses(),
         );
       default:
         return _errorRoute();
