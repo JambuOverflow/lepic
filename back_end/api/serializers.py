@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Class, User, School, Text, Student
+from .models import Class, User, School, Text, Student, AudioFile
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -36,4 +36,9 @@ class TextSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['first_name', 'last_name', '_class']
+        fields = ['id', 'first_name', 'last_name', '_class']
+
+class AudioFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AudioFile
+        fields = ['id', 'title', 'file', 'student', 'text']
