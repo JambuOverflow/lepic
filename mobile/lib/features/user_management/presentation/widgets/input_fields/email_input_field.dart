@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/presentation/validators/email_input.dart';
 import 'package:mobile/features/user_management/presentation/bloc/user_form_bloc.dart';
 
 class EmailInputField extends StatelessWidget {
@@ -19,7 +20,7 @@ class EmailInputField extends StatelessWidget {
             border: OutlineInputBorder(),
             labelText: 'E-mail',
             errorText:
-                state.email.invalid ? 'Please, enter a valid email' : null,
+                state.email.invalid ? _errorToText(state.email.error) : null,
           ),
           keyboardType: TextInputType.emailAddress,
           onChanged: (value) =>
@@ -28,5 +29,16 @@ class EmailInputField extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _errorToText(EmailValidationError error) {
+    switch (error) {
+      case EmailValidationError.alreadyExists:
+        return 'That email is taken. Try another.';
+      case EmailValidationError.invalid:
+        return 'Please enter a valid email';
+      default:
+        return 'Something is not right';
+    }
   }
 }
