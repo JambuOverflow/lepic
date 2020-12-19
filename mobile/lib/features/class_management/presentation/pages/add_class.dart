@@ -12,7 +12,7 @@ class _AddClassState extends State<AddClass> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
-  ClassBloc _classBloc;
+  ClassroomBloc _classBloc;
   int _levelSelected;
   final List<int> levels = [
     1,
@@ -24,7 +24,7 @@ class _AddClassState extends State<AddClass> {
   @override
   Widget build(BuildContext context) {
     //WELP ME PLIS
-    _classBloc = BlocProvider.of<ClassBloc>(context);
+    _classBloc = BlocProvider.of<ClassroomBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Create class'),
@@ -71,7 +71,7 @@ class _AddClassState extends State<AddClass> {
               }).toList(),
             )),
           ),
-          BlocListener<ClassBloc, ClassState>(
+          BlocListener<ClassroomBloc, ClassroomState>(
             listener: (context, state) {
               if (state is Error) {
                 Scaffold.of(context).showSnackBar(
@@ -83,8 +83,8 @@ class _AddClassState extends State<AddClass> {
                 Navigator.pop(context);
               }
             },
-            child:
-                BlocBuilder<ClassBloc, ClassState>(builder: (context, state) {
+            child: BlocBuilder<ClassroomBloc, ClassroomState>(
+                builder: (context, state) {
               return Container(
                 height: 80,
                 padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
@@ -96,11 +96,11 @@ class _AddClassState extends State<AddClass> {
                   onPressed: () {
                     print("creating class");
                     //print(_classBloc.value);                     _
-                    _classBloc.add(CreateNewClassEvent(
-                      _tutorIdController.text as int,
+                    _classBloc.add(CreateNewClassroomEvent(
+                      int.tryParse(_tutorIdController.text),
                       //1,//ID
                       _levelSelected, //era pra ser ID aqui -ter ID é estranho pois a pessoa não deveria poder editar o ID da classe
-                      _gradeController.text as int,
+                      int.tryParse(_gradeController.text),
                       _nameController.text,
                     ));
                   },

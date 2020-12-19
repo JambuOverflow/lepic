@@ -1,8 +1,4 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/network/network_info.dart';
 import 'package:mobile/features/student_management/data/data_sources/student_local_data_source.dart';
 import 'package:mobile/features/student_management/data/repositories/student_repository_impl.dart';
 import 'package:mobile/features/student_management/domain/repositories/student_repository.dart';
@@ -12,40 +8,32 @@ import 'package:mobile/features/student_management/domain/use_cases/get_students
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 
-import 'package:http/http.dart' as http;
-
-final sl = GetIt.instance;
+final slStudent = GetIt.instance;
 
 void init() {
-  sl.registerFactory(
+  slStudent.registerFactory(
     () => StudentBloc(
-      updateStudent: sl(),
-      deleteStudent: sl(),
-      createStudent: sl(),
-      getStudents: sl(),
+      updateStudent: slStudent(),
+      deleteStudent: slStudent(),
+      createStudent: slStudent(),
+      getStudents: slStudent(),
     ),
   );
 
-  sl.registerLazySingleton(() => CreateStudent(repository: sl()));
-  sl.registerLazySingleton(() => UpdateStudent(repository: sl()));
-  sl.registerLazySingleton(() => DeleteStudent(repository: sl()));
-  sl.registerLazySingleton(() => GetStudents(repository: sl()));
+  slStudent.registerLazySingleton(() => CreateStudent(repository: slStudent()));
+  slStudent.registerLazySingleton(() => UpdateStudent(repository: slStudent()));
+  slStudent.registerLazySingleton(() => DeleteStudent(repository: slStudent()));
+  slStudent.registerLazySingleton(() => GetStudents(repository: slStudent()));
 
-  sl.registerLazySingleton<StudentRepository>(
+  slStudent.registerLazySingleton<StudentRepository>(
     () => StudentRepositoryImpl(
-      localDataSource: sl(),
+      localDataSource: slStudent(),
     ),
   );
 
-  sl.registerLazySingleton<StudentLocalDataSource>(
+  slStudent.registerLazySingleton<StudentLocalDataSource>(
     () => StudentLocalDataSourceImpl(
-      database: sl(),
+      database: slStudent(),
     ),
   );
-
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfo(sl()));
-  sl.registerLazySingleton(() => Database(openConnection()));
-  sl.registerLazySingleton(() => FlutterSecureStorage());
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => DataConnectionChecker());
 }

@@ -3,14 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/class_management/presentation/bloc/class_bloc.dart';
+import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:moor/moor.dart';
 
 import 'core/pages/route_generator.dart';
 import 'features/user_management/data/models/user_model.dart';
 import 'injection_container.dart';
-import 'class_injection_container.dart';
-import 'student_injection_container.dart';
 
 const IS_IN_DEVELOPMENT = true;
 
@@ -23,8 +22,10 @@ void main() async {
   runApp(
     MultiBlocProvider(providers: [
       BlocProvider<UserBloc>(create: (_) => GetIt.instance<UserBloc>()),
-      BlocProvider<ClassBloc>(create: (_) => GetIt.instance<ClassBloc>()),
+      BlocProvider<ClassroomBloc>(
+          create: (_) => GetIt.instance<ClassroomBloc>()),
       BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
+      BlocProvider<TextBloc>(create: (_) => GetIt.instance<TextBloc>()),
     ], child: MyApp()),
   );
 }

@@ -21,6 +21,10 @@ import 'text_injection_container.dart' as ti;
 void setUpLocator() {
   final getIt = GetIt.instance;
 
+  ci.init();
+  si.init();
+  ti.init();
+
   getIt.registerFactory(
     () => UserBloc(
       createNewUser: getIt(),
@@ -54,9 +58,4 @@ void setUpLocator() {
   getIt.registerLazySingleton(() => FlutterSecureStorage());
   getIt.registerLazySingleton(() => http.Client());
   getIt.registerLazySingleton(() => DataConnectionChecker());
-/*
-  ci.init();
-  si.init();
-  ti.init();
-  */
 }

@@ -8,43 +8,50 @@ import 'package:mobile/features/class_management/data/repositories/classroom_rep
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/class_management/domain/use_cases/create_classroom_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/delete_classroom_use_case.dart';
+import 'package:mobile/features/class_management/domain/use_cases/get_classrooms_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/update_classroom_use_case.dart';
 import 'package:mobile/features/class_management/presentation/bloc/class_bloc.dart';
 
 import 'package:http/http.dart' as http;
 
-final sl = GetIt.instance;
+final slClassroom = GetIt.instance;
 
 void init() {
-  sl.registerFactory(
-    () => ClassBloc(
-      updateClass: sl(),
-      deleteClass: sl(),
-      createNewClass: sl(),
-      //getClass: sl(),
+  slClassroom.registerFactory(
+    () => ClassroomBloc(
+      updateClassroom: slClassroom(),
+      deleteClassroom: slClassroom(),
+      createNewClassroom: slClassroom(),
+      getClassroom: slClassroom(),
     ),
   );
 
-  sl.registerLazySingleton(() => CreateClassroom(repository: sl()));
-  sl.registerLazySingleton(() => UpdateClassroom(repository: sl()));
-  sl.registerLazySingleton(() => DeleteClassroom(repository: sl()));
-  // sl.registerLazySingleton(() => GetClassrooms(repository: sl()));
+  slClassroom
+      .registerLazySingleton(() => CreateClassroom(repository: slClassroom()));
+  slClassroom
+      .registerLazySingleton(() => UpdateClassroom(repository: slClassroom()));
+  slClassroom
+      .registerLazySingleton(() => DeleteClassroom(repository: slClassroom()));
+  slClassroom
+      .registerLazySingleton(() => GetClassrooms(repository: slClassroom()));
 
-  sl.registerLazySingleton<ClassroomRepository>(
+  slClassroom.registerLazySingleton<ClassroomRepository>(
     () => ClassroomRepositoryImpl(
-      localDataSource: sl(),
+      localDataSource: slClassroom(),
     ),
   );
 
-  sl.registerLazySingleton<ClassroomLocalDataSource>(
+  slClassroom.registerLazySingleton<ClassroomLocalDataSource>(
     () => ClassroomLocalDataSourceImpl(
-      database: sl(),
+      database: slClassroom(),
     ),
   );
-
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfo(sl()));
-  sl.registerLazySingleton(() => Database(openConnection()));
-  sl.registerLazySingleton(() => FlutterSecureStorage());
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => DataConnectionChecker());
+/*
+  slClassroom
+      .registerLazySingleton<NetworkInfo>(() => NetworkInfo(slClassroom()));
+  slClassroom.registerLazySingleton(() => Database(openConnection()));
+  slClassroom.registerLazySingleton(() => FlutterSecureStorage());
+  slClassroom.registerLazySingleton(() => http.Client());
+  slClassroom.registerLazySingleton(() => DataConnectionChecker());
+  */
 }

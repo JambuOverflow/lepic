@@ -43,10 +43,10 @@ class _ShowClassesState extends State<ShowClasses> {
 
   TextEditingController tutorIdController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  ClassBloc _classBloc;
+  ClassroomBloc _classBloc;
   @override
   Widget build(BuildContext context) {
-    _classBloc = BlocProvider.of<ClassBloc>(context); //aqui começa o erro
+    _classBloc = BlocProvider.of<ClassroomBloc>(context); //aqui começa o erro
     return Scaffold(
         //key: _scaffoldKey,
         appBar: AppBar(title: Text('Classes')),

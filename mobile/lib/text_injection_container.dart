@@ -1,10 +1,4 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/network/network_info.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
 import 'package:mobile/features/text_management/data/repositories/text_repository_impl.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
@@ -14,38 +8,32 @@ import 'package:mobile/features/text_management/domain/use_cases/get_texts_use_c
 import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
-final sl = GetIt.instance;
+final slText = GetIt.instance;
 
 void init() {
-  sl.registerFactory(
+  slText.registerFactory(
     () => TextBloc(
-      updateText: sl(),
-      deleteText: sl(),
-      createText: sl(),
-      getTexts: sl(),
+      updateText: slText(),
+      deleteText: slText(),
+      createText: slText(),
+      getTexts: slText(),
     ),
   );
 
-  sl.registerLazySingleton(() => CreateText(repository: sl()));
-  sl.registerLazySingleton(() => UpdateText(repository: sl()));
-  sl.registerLazySingleton(() => DeleteText(repository: sl()));
-  sl.registerLazySingleton(() => GetTexts(repository: sl()));
+  slText.registerLazySingleton(() => CreateText(repository: slText()));
+  slText.registerLazySingleton(() => UpdateText(repository: slText()));
+  slText.registerLazySingleton(() => DeleteText(repository: slText()));
+  slText.registerLazySingleton(() => GetTexts(repository: slText()));
 
-  sl.registerLazySingleton<TextRepository>(
+  slText.registerLazySingleton<TextRepository>(
     () => TextRepositoryImpl(
-      localDataSource: sl(),
+      localDataSource: slText(),
     ),
   );
 
-  sl.registerLazySingleton<TextLocalDataSource>(
+  slText.registerLazySingleton<TextLocalDataSource>(
     () => TextLocalDataSourceImpl(
-      database: sl(),
+      database: slText(),
     ),
   );
-
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfo(sl()));
-  sl.registerLazySingleton(() => Database(openConnection()));
-  sl.registerLazySingleton(() => FlutterSecureStorage());
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => DataConnectionChecker());
 }
