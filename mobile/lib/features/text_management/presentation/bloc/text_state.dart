@@ -7,6 +7,7 @@ abstract class TextState extends Equatable {
   List<Object> get props => [TextState];
 }
 
+
 class TextInitial extends TextState {}
 
 class TextNotLoaded extends TextState {}
