@@ -12,7 +12,7 @@ class _AddClassState extends State<AddClass> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
-  TextEditingController _levelSelected = TextEditingController();
+  TextEditingController idController = TextEditingController();
   ClassroomBloc _classBloc;
 
   @override
@@ -42,7 +42,7 @@ class _AddClassState extends State<AddClass> {
           ),
           ClasroomForm(
             label: 'Id - for tests',
-            textController: _levelSelected,
+            textController: idController,
             numeric: true,
           ),
           BlocListener<ClassroomBloc, ClassroomState>(
@@ -68,14 +68,14 @@ class _AddClassState extends State<AddClass> {
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
-                    print("creating class");
                     //print(_classBloc.value);                     _
                     _classBloc.add(CreateNewClassroomEvent(
                       int.tryParse(_tutorIdController.text),
-                      int.tryParse(_levelSelected.text),
+                      int.tryParse(idController.text),
                       int.tryParse(_gradeController.text),
                       _nameController.text,
                     ));
+                    print("class created");
                   },
                 ),
               );

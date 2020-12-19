@@ -64,8 +64,8 @@ class _AddTextState extends State<AddText> {
                     _textBloc.add(CreateNewTextEvent(
                       _titleController.text,
                       _bodyController.text,
-                      _idController.text as int,
-                      _classroomIdController.text as int,
+                      int.tryParse(_idController.text),
+                      int.tryParse(_classroomIdController.text),
                     ));
                   },
                 ),

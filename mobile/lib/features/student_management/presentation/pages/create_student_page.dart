@@ -26,7 +26,7 @@ class _AddStudentState extends State<AddStudent> {
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
           StudentFormWidget(context, _firstnameController, _lastnameController,
-              _classroomIdController),
+              _classroomIdController, _idController),
           BlocListener<StudentBloc, StudentState>(
             listener: (context, state) {
               if (state is Error) {
@@ -71,8 +71,9 @@ class _AddStudentState extends State<AddStudent> {
       BuildContext context,
       TextEditingController _firstnameController,
       TextEditingController _lastnameController,
-      TextEditingController _classroomIdController) {
-    return ListView(children: <Widget>[
+      TextEditingController _classroomIdController,
+      TextEditingController _idController) {
+    return Column(children: <Widget>[
       StudentForm(
         label: 'First name',
         textController: _firstnameController,
@@ -80,6 +81,11 @@ class _AddStudentState extends State<AddStudent> {
       StudentForm(
         label: 'Last name',
         textController: _lastnameController,
+      ),
+      StudentForm(
+        label: 'id',
+        textController: _idController,
+        numeric: true,
       ),
       StudentForm(
         label: 'Classroom',

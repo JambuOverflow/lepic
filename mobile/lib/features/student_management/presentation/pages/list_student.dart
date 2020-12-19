@@ -35,7 +35,7 @@ class _ShowStudentsState extends State<ShowStudents> {
         onPressed: () {
           Navigator.of(context)
               .pushNamed(
-                '/fifth',
+                '/add_student',
               )
               .then(
                 (createdStudent) => _atualiza(createdStudent),
