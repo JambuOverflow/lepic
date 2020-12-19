@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/widgets/drawer_overlay.dart';
 
-import '../../../user_management/presentation/widgets/drawer_overlay.dart';
 import '../../domain/entities/classroom.dart';
 import '../bloc/class_bloc.dart';
 import 'detail_class.dart';

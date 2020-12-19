@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/widgets/drawer_overlay.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
-import '../widgets/drawer_overlay.dart';
 
 class ShowStudents extends StatefulWidget {
   ShowStudents({Key key}) : super(key: key);

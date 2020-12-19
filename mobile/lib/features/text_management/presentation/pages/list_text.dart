@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/widgets/drawer_overlay.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:mobile/features/text_management/presentation/pages/detail_text.dart';
-import 'package:mobile/features/user_management/presentation/widgets/drawer_overlay.dart';
 
 class ShowTexts extends StatefulWidget {
   ShowTexts({Key key}) : super(key: key);

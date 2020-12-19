@@ -17,7 +17,6 @@ class _AddStudentState extends State<AddStudent> {
 
   @override
   Widget build(BuildContext context) {
-    //WELP ME PLIS
     _studentBloc = BlocProvider.of<StudentBloc>(context);
     return Scaffold(
       appBar: AppBar(
@@ -26,19 +25,8 @@ class _AddStudentState extends State<AddStudent> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          StudentForm(
-            label: 'First name',
-            textController: _firstnameController,
-          ),
-          StudentForm(
-            label: 'Last name',
-            textController: _lastnameController,
-          ),
-          StudentForm(
-            label: 'Classroom',
-            textController: _classroomIdController,
-            numeric: true,
-          ),
+          StudentFormWidget(context, _firstnameController, _lastnameController,
+              _classroomIdController),
           BlocListener<StudentBloc, StudentState>(
             listener: (context, state) {
               if (state is Error) {
@@ -63,7 +51,6 @@ class _AddStudentState extends State<AddStudent> {
                   ),
                   onPressed: () {
                     print("creating student");
-                    //print(_classBloc.value);                     _
                     _studentBloc.add(CreateNewStudentEvent(
                       _firstnameController.text,
                       _lastnameController.text,
@@ -78,6 +65,28 @@ class _AddStudentState extends State<AddStudent> {
         ]),
       ),
     );
+  }
+
+  Widget StudentFormWidget(
+      BuildContext context,
+      TextEditingController _firstnameController,
+      TextEditingController _lastnameController,
+      TextEditingController _classroomIdController) {
+    return ListView(children: <Widget>[
+      StudentForm(
+        label: 'First name',
+        textController: _firstnameController,
+      ),
+      StudentForm(
+        label: 'Last name',
+        textController: _lastnameController,
+      ),
+      StudentForm(
+        label: 'Classroom',
+        textController: _classroomIdController,
+        numeric: true,
+      ),
+    ]);
   }
 }
 

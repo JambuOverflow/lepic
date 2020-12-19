@@ -5,8 +5,8 @@ import 'package:mobile/features/student_management/presentation/bloc/student_blo
 import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
 import 'package:moor/moor.dart';
 
+import 'core/pages/route_generator.dart';
 import 'features/user_management/data/models/user_model.dart';
-import 'features/user_management/presentation/route_generator.dart';
 import 'injection_container.dart';
 
 const IS_IN_DEVELOPMENT = true;
