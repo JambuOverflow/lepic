@@ -58,6 +58,18 @@ void main() {
 
       expect(result, UnsuccessfulResponse(message: '', statusCode: 400));
     });
+
+    test('''should perform an invalid POST request and receive
+        return EmailAlreadyExists when email is duplicated.''', () async {
+      when(mockHttpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer(
+              (_) async => http.Response('"email": ["already exists"]', 400));
+
+      final result = await dataSource.createUser(tUserModel);
+
+      expect(result, EmailAlreadyExists());
+    });
   });
 
   group('updateUser', () {

@@ -24,3 +24,5 @@ class UnsuccessfulResponse extends Response {
 
   UnsuccessfulResponse({@required this.message, this.statusCode});
 }
+
+class EmailAlreadyExists extends UnsuccessfulResponse {}

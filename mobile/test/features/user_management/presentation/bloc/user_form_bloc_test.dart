@@ -299,6 +299,32 @@ void main() {
         );
       });
 
+      group('emailAlreadyExists', () {
+        setUp(() {
+          when(mockCreateNewUserCase(any)).thenAnswer(
+            (_) async => Right(EmailAlreadyExists()),
+          );
+        });
+
+        blocTest(
+          '''should emit state with submission in progress status and 
+            state with submission failure when form is invalid becaus of
+            existing email''',
+          build: () => validBloc,
+          act: (bloc) {
+            bloc.add(FormSubmitted());
+          },
+          skip: 6,
+          expect: [
+            validFormState.copyWith(status: FormzStatus.submissionInProgress),
+            validFormState.copyWith(
+              email: EmailInput.dirty(tEmail, true),
+              status: FormzStatus.submissionFailure,
+            ),
+          ],
+        );
+      });
+
       group('server failure', () {
         setUp(() {
           when(mockCreateNewUserCase(any)).thenAnswer(
