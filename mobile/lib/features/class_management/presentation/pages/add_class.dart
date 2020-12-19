@@ -69,7 +69,6 @@ class _AddClassState extends State<AddClass> {
                   ),
                   onPressed: () {
                     print("creating class");
-                    //print(_classBloc.value);                     _
                     _classBloc.add(CreateNewClassroomEvent(
                       int.tryParse(_tutorIdController.text),
                       int.tryParse(_levelSelected.text),
@@ -119,42 +118,3 @@ class _ClasroomFormState extends State<ClasroomForm> {
     );
   }
 }
-
-///aqui vai provavelmente precisar de um bloc listener também
-//if class created -> navigator pop
-//if operation_fails -> show error screen/pop up/snack bar
-/*BlocListener <ClassBloc, ClassState>(
-listener: (context, state) {
-    if (state is Error) {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.message),
-        ),
-      );
-    }
-    else if(state is ClassCreated){
-      Navigator.pop(context);
-    };
-  },
-  child: blocbuilder
-),*/
-
-/*
- void _createClass(BuildContext context) {
-    final String name = _nameController.text;
-    final int grade = _gradeController.text as int;
-    final int tutorId = _tutorIdController.text as int;
-    final int id = 1;
-
-    if (name != null && grade != null) {
-      final createdClass = Classroom(
-        tutorId: tutorId,
-        grade: grade,
-        name: name,
-      );
-]      _classBloc.add(CreateNewClassEvent(tutorId, id, grade, name));
-      N//avigator.pop(context, createdClass);
-    }//
-  }
-*/
-//

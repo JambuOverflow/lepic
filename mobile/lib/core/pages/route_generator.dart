@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/features/class_management/presentation/pages/detail_class.dart';
 import 'package:mobile/features/class_management/presentation/pages/list_class.dart';
 import 'package:mobile/features/class_management/presentation/pages/add_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/update_class.dart';
 import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
 import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
@@ -54,11 +55,13 @@ class RouteGenerator {
           builder: (_) => AddClass(),
         );
       case '/detail_class':
-        //return _errorRoute();
-
         return MaterialPageRoute(
           builder: (_) =>
               ClassDetailPage(/*_schoolClass*/), //receives arguments
+        );
+      case '/update_class':
+        return MaterialPageRoute(
+          builder: (_) => UpdateClass(),
         );
 
       default:

@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       create: (_) => GetIt.instance<UserBloc>(),
       child: */
         MaterialApp(
-      //debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.blue[900],
         accentColor: Colors.blueAccent[700],
