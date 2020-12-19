@@ -1,6 +1,6 @@
 part of 'user_form_bloc.dart';
 
-class UserFormState extends Equatable {
+class SignupFormState extends Equatable {
   final NameInput firstName;
   final NameInput lastName;
   final EmailInput email;
@@ -9,7 +9,7 @@ class UserFormState extends Equatable {
   final RoleInput role;
   final FormzStatus status;
 
-  const UserFormState({
+  const SignupFormState({
     this.firstName = const NameInput.pure(),
     this.lastName = const NameInput.pure(),
     this.email = const EmailInput.pure(),
@@ -19,7 +19,7 @@ class UserFormState extends Equatable {
     this.status = FormzStatus.pure,
   });
 
-  UserFormState copyWith({
+  SignupFormState copyWith({
     final NameInput firstName,
     final NameInput lastName,
     final EmailInput email,
@@ -28,7 +28,7 @@ class UserFormState extends Equatable {
     final RoleInput role,
     final FormzStatus status,
   }) {
-    return UserFormState(
+    return SignupFormState(
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,

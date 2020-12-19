@@ -26,7 +26,7 @@ void setUpLocator() {
     ),
   );
 
-  getIt.registerFactory(() => UserFormBloc(createNewUser: getIt()));
+  getIt.registerFactory(() => SignupFormBloc(createNewUser: getIt()));
 
   getIt.registerLazySingleton(() => CreateNewUserCase(repository: getIt()));
   getIt.registerLazySingleton(() => LoginCase(repository: getIt()));

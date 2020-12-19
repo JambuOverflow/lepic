@@ -12,7 +12,7 @@ class PasswordInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserFormBloc, UserFormState>(
+    return BlocBuilder<SignupFormBloc, SignupFormState>(
       builder: (context, state) {
         return TextFormField(
           initialValue: state.password.value,
@@ -29,7 +29,7 @@ class PasswordInputField extends StatelessWidget {
           ),
           keyboardType: TextInputType.text,
           onChanged: (value) => context
-              .read<UserFormBloc>()
+              .read<SignupFormBloc>()
               .add(PasswordChanged(password: value)),
           textInputAction: TextInputAction.next,
         );

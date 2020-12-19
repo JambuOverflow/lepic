@@ -7,7 +7,7 @@ import '../bloc/user_form_bloc.dart';
 class CreateUserButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UserFormBloc, UserFormState>(
+    return BlocConsumer<SignupFormBloc, SignupFormState>(
       builder: (context, state) {
         return Container(
           height: 80,
@@ -22,7 +22,7 @@ class CreateUserButton extends StatelessWidget {
                     style: TextStyle(fontSize: 16),
                   ),
             onPressed: () {
-              context.read<UserFormBloc>().add(FormSubmitted());
+              context.read<SignupFormBloc>().add(FormSubmitted());
             },
           ),
         );

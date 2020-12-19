@@ -24,7 +24,7 @@ class RouteGenerator {
       case '/signup':
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => GetIt.instance<UserFormBloc>(),
+            create: (_) => GetIt.instance<SignupFormBloc>(),
             child: Signup(),
           ),
         );

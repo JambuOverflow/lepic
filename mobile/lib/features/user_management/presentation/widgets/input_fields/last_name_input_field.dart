@@ -11,7 +11,7 @@ class LastNameInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserFormBloc, UserFormState>(
+    return BlocBuilder<SignupFormBloc, SignupFormState>(
       builder: (context, state) {
         return TextFormField(
           initialValue: state.lastName.value,
@@ -24,7 +24,7 @@ class LastNameInputField extends StatelessWidget {
           ),
           keyboardType: TextInputType.text,
           onChanged: (value) => context
-              .read<UserFormBloc>()
+              .read<SignupFormBloc>()
               .add(LastNameChanged(lastName: value)),
           textInputAction: TextInputAction.next,
         );

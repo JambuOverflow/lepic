@@ -18,11 +18,11 @@ class MockCreateNewUserCase extends Mock implements CreateNewUserCase {}
 
 void main() {
   MockCreateNewUserCase mockCreateNewUserCase;
-  UserFormBloc bloc;
+  SignupFormBloc bloc;
 
   setUp(() {
     mockCreateNewUserCase = MockCreateNewUserCase();
-    bloc = UserFormBloc(createNewUser: mockCreateNewUserCase);
+    bloc = SignupFormBloc(createNewUser: mockCreateNewUserCase);
   });
 
   group('firstName', () {
@@ -34,7 +34,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(FirstNameChanged(firstName: tValidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             firstName: NameInput.dirty(tValidName),
             status: FormzStatus.invalid),
       ],
@@ -45,7 +45,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(FirstNameChanged(firstName: tInvalidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             firstName: NameInput.pure(''), status: FormzStatus.invalid),
       ],
     );
@@ -55,7 +55,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(FirstNameUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             firstName: NameInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
@@ -70,7 +70,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(LastNameChanged(lastName: tValidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             lastName: NameInput.dirty(tValidName), status: FormzStatus.invalid),
       ],
     );
@@ -80,7 +80,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(LastNameChanged(lastName: tInvalidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             lastName: NameInput.pure(''), status: FormzStatus.invalid),
       ],
     );
@@ -90,7 +90,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(LastNameUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             lastName: NameInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
@@ -105,7 +105,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailChanged(email: tValidEmail)),
       expect: [
-        UserFormState(
+        SignupFormState(
             email: EmailInput.dirty(tValidEmail), status: FormzStatus.invalid),
       ],
     );
@@ -115,7 +115,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailChanged(email: tInvalidEmail)),
       expect: [
-        UserFormState(
+        SignupFormState(
             email: EmailInput.pure(tInvalidEmail), status: FormzStatus.invalid),
       ],
     );
@@ -125,7 +125,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailUnfocused()),
       expect: [
-        UserFormState(email: EmailInput.dirty(''), status: FormzStatus.invalid),
+        SignupFormState(email: EmailInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
   });
@@ -139,7 +139,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(PasswordChanged(password: tValidPassword)),
       expect: [
-        UserFormState(
+        SignupFormState(
             password: PasswordInput.dirty(tValidPassword),
             status: FormzStatus.invalid),
       ],
@@ -150,7 +150,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(PasswordChanged(password: tInvalidPassword)),
       expect: [
-        UserFormState(
+        SignupFormState(
             password: PasswordInput.pure(tInvalidPassword),
             status: FormzStatus.invalid),
       ],
@@ -161,7 +161,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(PasswordUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             password: PasswordInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
@@ -178,7 +178,7 @@ void main() {
       act: (bloc) =>
           bloc.add(ConfirmPasswordChanged(confirmPassword: tValidConfirm)),
       expect: [
-        UserFormState(
+        SignupFormState(
             confirmPassword:
                 ConfirmPasswordInput.dirty(password: '', value: tValidConfirm),
             status: FormzStatus.invalid),
@@ -191,7 +191,7 @@ void main() {
       act: (bloc) =>
           bloc.add(ConfirmPasswordChanged(confirmPassword: tInvalidConfirm)),
       expect: [
-        UserFormState(
+        SignupFormState(
             confirmPassword:
                 ConfirmPasswordInput.pure(password: '', value: tInvalidConfirm),
             status: FormzStatus.invalid),
@@ -203,7 +203,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(ConfirmPasswordUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             confirmPassword:
                 ConfirmPasswordInput.dirty(password: tPassword, value: ''),
             status: FormzStatus.invalid),
@@ -220,7 +220,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(RoleChanged(role: tValidRole)),
       expect: [
-        UserFormState(
+        SignupFormState(
             role: RoleInput.dirty(tValidRole), status: FormzStatus.invalid),
       ],
     );
@@ -230,7 +230,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(RoleChanged(role: tInvalidRole)),
       expect: [
-        UserFormState(
+        SignupFormState(
             role: RoleInput.pure(tInvalidRole), status: FormzStatus.invalid),
       ],
     );
@@ -240,7 +240,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(RoleUnfocused()),
       expect: [
-        UserFormState(role: RoleInput.dirty(), status: FormzStatus.invalid),
+        SignupFormState(role: RoleInput.dirty(), status: FormzStatus.invalid),
       ],
     );
   });
@@ -253,9 +253,9 @@ void main() {
     final tRole = Role.teacher;
 
     group('valid', () {
-      UserFormBloc validBloc;
+      SignupFormBloc validBloc;
 
-      final validFormState = UserFormState(
+      final validFormState = SignupFormState(
         firstName: NameInput.dirty(tFirstName),
         lastName: NameInput.dirty(tLastName),
         email: EmailInput.dirty(tEmail),
@@ -268,7 +268,7 @@ void main() {
       );
 
       setUp(() {
-        validBloc = UserFormBloc(createNewUser: mockCreateNewUserCase);
+        validBloc = SignupFormBloc(createNewUser: mockCreateNewUserCase);
         validBloc.add(FirstNameChanged(firstName: tFirstName));
         validBloc.add(LastNameChanged(lastName: tLastName));
         validBloc.add(EmailChanged(email: tEmail));
@@ -357,7 +357,7 @@ void main() {
           bloc.add(FormSubmitted());
         },
         expect: [
-          UserFormState(
+          SignupFormState(
             firstName: NameInput.dirty(),
             lastName: NameInput.dirty(),
             email: EmailInput.dirty(),

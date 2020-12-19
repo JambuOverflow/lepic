@@ -18,14 +18,14 @@ import '../../../../core/presentation/validators/password_input.dart';
 part 'user_form_event.dart';
 part 'user_form_state.dart';
 
-class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
+class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
   final CreateNewUserCase createNewUser;
 
-  UserFormBloc({@required this.createNewUser}) : super(UserFormState());
+  SignupFormBloc({@required this.createNewUser}) : super(SignupFormState());
 
   @override
-  Stream<UserFormState> mapEventToState(
-    UserFormEvent event,
+  Stream<SignupFormState> mapEventToState(
+    SignupFormEvent event,
   ) async* {
     if (event is FirstNameChanged) {
       final firstName = NameInput.dirty(event.firstName);
@@ -152,7 +152,7 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
     }
   }
 
-  UserFormState _setStateDirtyAndValidate() {
+  SignupFormState _setStateDirtyAndValidate() {
     final dirtyConfirmPassword = ConfirmPasswordInput.dirty(
       password: state.password.value,
       value: state.confirmPassword.value,

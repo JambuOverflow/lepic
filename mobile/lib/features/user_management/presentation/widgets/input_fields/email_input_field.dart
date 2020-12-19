@@ -10,7 +10,7 @@ class EmailInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserFormBloc, UserFormState>(
+    return BlocBuilder<SignupFormBloc, SignupFormState>(
       builder: (context, state) {
         return TextFormField(
           initialValue: state.email.value,
@@ -24,7 +24,7 @@ class EmailInputField extends StatelessWidget {
           ),
           keyboardType: TextInputType.emailAddress,
           onChanged: (value) =>
-              context.read<UserFormBloc>().add(EmailChanged(email: value)),
+              context.read<SignupFormBloc>().add(EmailChanged(email: value)),
           textInputAction: TextInputAction.next,
         );
       },

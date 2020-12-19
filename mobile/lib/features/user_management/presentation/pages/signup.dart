@@ -40,7 +40,7 @@ class _SignupState extends State<Signup> {
         title: Text('Sign Up'),
       ),
       body:
-          BlocConsumer<UserFormBloc, UserFormState>(listener: (context, state) {
+          BlocConsumer<SignupFormBloc, SignupFormState>(listener: (context, state) {
         state.status == FormzStatus.submissionInProgress
             ? _ignoreTouch = true
             : _ignoreTouch = false;
@@ -83,9 +83,9 @@ class _SignupState extends State<Signup> {
     _addEventWhenUnfocused(_roleFocusNode, RoleUnfocused());
   }
 
-  void _addEventWhenUnfocused(FocusNode node, UserFormEvent unfocusedEvent) {
+  void _addEventWhenUnfocused(FocusNode node, SignupFormEvent unfocusedEvent) {
     node.addListener(() {
-      if (!node.hasFocus) context.read<UserFormBloc>().add(unfocusedEvent);
+      if (!node.hasFocus) context.read<SignupFormBloc>().add(unfocusedEvent);
     });
   }
 }
