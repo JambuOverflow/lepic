@@ -21,8 +21,11 @@ class ClassDetailPage extends StatelessWidget {
                     '/update_class',
                   );
                 } else if (result == MenuOption.Remove) {
-                  Navigator.of(context).pushNamed(
-                    '/detail_class',
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content:
+                          Text('Are you sure you want to remove this class?'),
+                    ),
                   );
                 }
               },
