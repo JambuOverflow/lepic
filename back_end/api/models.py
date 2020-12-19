@@ -54,3 +54,6 @@ class AudioFile(models.Model):
     text = models.ForeignKey(Text, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     file = models.FileField()
+
+    def __str__(self):
+        return f"Title: {self.title}; Path: {self.file}"
