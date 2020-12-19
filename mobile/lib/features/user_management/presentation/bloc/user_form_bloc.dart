@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/presentation/validators/role_input.dart';
 
 import '../../domain/use_cases/user_params.dart';
@@ -137,7 +138,15 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
 
         yield failureOrResponse.fold(
           (failure) => state.copyWith(status: FormzStatus.submissionFailure),
-          (response) => state.copyWith(status: FormzStatus.submissionSuccess),
+          (response) {
+            if (response is EmailAlreadyExists)
+              return state.copyWith(
+                email: EmailInput.dirty(state.email.value, true),
+                status: FormzStatus.submissionFailure,
+              );
+            else
+              return state.copyWith(status: FormzStatus.submissionSuccess);
+          },
         );
       }
     }
