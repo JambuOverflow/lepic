@@ -52,14 +52,25 @@ class PasswordChanged extends UserFormEvent {
 class PasswordUnfocused extends UserFormEvent {}
 
 class ConfirmPasswordChanged extends UserFormEvent {
-  const ConfirmPasswordChanged({@required this.password});
+  const ConfirmPasswordChanged({@required this.confirmPassword});
 
-  final String password;
+  final String confirmPassword;
 
   @override
-  List<Object> get props => [password];
+  List<Object> get props => [confirmPassword];
 }
 
 class ConfirmPasswordUnfocused extends UserFormEvent {}
+
+class RoleChanged extends UserFormEvent {
+  final Role role;
+
+  RoleChanged({@required this.role});
+
+  @override
+  List<Object> get props => [role];
+}
+
+class RoleUnfocused extends UserFormEvent {}
 
 class FormSubmitted extends UserFormEvent {}
