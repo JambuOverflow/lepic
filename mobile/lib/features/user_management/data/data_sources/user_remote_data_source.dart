@@ -49,6 +49,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
       if (response.statusCode == 201) {
         return SuccessfulResponse();
+      } else if (response.body.contains('email')) {
+        return EmailAlreadyExists();
       } else
         return UnsuccessfulResponse(
           message: response.body,
