@@ -6,10 +6,11 @@ import 'package:mobile/features/student_management/presentation/pages/detail_stu
 import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
 import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
 import 'package:mobile/features/user_management/presentation/pages/guest.dart';
-import 'package:mobile/features/user_management/presentation/pages/home.dart';
+
 import 'package:mobile/features/user_management/presentation/pages/login.dart';
 import 'package:mobile/features/user_management/presentation/pages/signup.dart';
 import 'package:mobile/features/user_management/presentation/pages/update_user.dart';
+import 'home.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
