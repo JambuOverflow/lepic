@@ -9,7 +9,7 @@ import '../widgets/input_fields/email_input_field.dart';
 import '../widgets/input_fields/password_input_field.dart';
 import '../widgets/input_fields/first_name_input_field.dart';
 import '../widgets/input_fields/last_name_input_field.dart';
-import '../widgets/role_dropdown_button.dart';
+import '../widgets/input_fields/role_dropdown_input_field.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -62,7 +62,7 @@ class _SignupState extends State<Signup> {
                 const SizedBox(height: 16),
                 ConfirmPasswordInputField(focusNode: _confirmPasswordFocusNode),
                 const SizedBox(height: 32),
-                RoleDropdownButton(focusNode: _confirmPasswordFocusNode),
+                RoleDropdownInputField(focusNode: _confirmPasswordFocusNode),
                 const SizedBox(height: 16),
                 CreateUserButton(),
               ],
