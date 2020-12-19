@@ -308,7 +308,7 @@ void main() {
 
         blocTest(
           '''should emit state with submission in progress status and 
-            state with submission failure when form is valid but an server error
+            state with submission failure when form is valid but a server error
             has occurred''',
           build: () => validBloc,
           act: (bloc) {
