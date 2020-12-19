@@ -16,7 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer
 from .models import Text, Class, User, Student, AudioFile
-from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator
+from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile
 
 
 class UserList(generics.ListCreateAPIView):
@@ -137,7 +137,25 @@ class AudioFileList(generics.ListCreateAPIView):
     EX: GET or POST /api/audio-files/
     """
     parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = AudioFileSerializer
     queryset = AudioFile.objects.all()
+
+    def perform_create(self,serializer):
+        student_class = Student.objects.filter(id=self.request.data['student']).values_list('_class', flat=True)
+        class_tutor = Class.objects.filter(id=student_class[0]).values_list('tutor', flat=True)
+        if(self.request.user.id in class_tutor):
+            serializer.save()
+        else:
+            raise PermissionDenied("You do not have the permission to upload students audio files from another class",
+        'permission_denied')
         
+class AudioFileDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a student instance.
+    EX: GET, PUT, PATCH or DELETE /api/students/
+    """
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [permissions.IsAuthenticated,IsTeacherOrReadOnlyAudioFile]
+    serializer_class = AudioFileSerializer
+    queryset = AudioFile.objects.all()
