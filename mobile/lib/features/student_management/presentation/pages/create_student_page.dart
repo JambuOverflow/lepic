@@ -54,8 +54,8 @@ class _AddStudentState extends State<AddStudent> {
                     _studentBloc.add(CreateNewStudentEvent(
                       _firstnameController.text,
                       _lastnameController.text,
-                      _idController.text as int,
-                      _classroomIdController.text as int,
+                      int.tryParse(_idController.text),
+                      int.tryParse(_classroomIdController.text),
                     ));
                   },
                 ),

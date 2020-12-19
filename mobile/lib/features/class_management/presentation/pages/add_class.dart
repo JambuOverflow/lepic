@@ -12,14 +12,8 @@ class _AddClassState extends State<AddClass> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
+  TextEditingController _levelSelected = TextEditingController();
   ClassroomBloc _classBloc;
-  int _levelSelected;
-  final List<int> levels = [
-    1,
-    2,
-    2,
-    4,
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,44 +26,24 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Class name',
-              ),
-            ),
+          ClasroomForm(
+            label: 'Class name',
+            textController: _nameController,
           ),
-          Container(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _tutorIdController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Class tutor',
-              ),
-            ),
+          ClasroomForm(
+            label: 'Grade',
+            textController: _gradeController,
+            numeric: true,
           ),
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-              hint: Text("Select class grade"),
-              value: _levelSelected,
-              onChanged: (newValue) {
-                setState(() {
-                  _levelSelected = newValue;
-                });
-              },
-              items: levels.map<DropdownMenuItem<String>>((int value) {
-                return DropdownMenuItem<String>(
-                  value: value.toString(),
-                  child: Text(value.toString()),
-                );
-              }).toList(),
-            )),
+          ClasroomForm(
+            label: 'Tutor',
+            textController: _tutorIdController,
+            numeric: true,
+          ),
+          ClasroomForm(
+            label: 'Id - for tests',
+            textController: _levelSelected,
+            numeric: true,
           ),
           BlocListener<ClassroomBloc, ClassroomState>(
             listener: (context, state) {
@@ -98,8 +72,7 @@ class _AddClassState extends State<AddClass> {
                     //print(_classBloc.value);                     _
                     _classBloc.add(CreateNewClassroomEvent(
                       int.tryParse(_tutorIdController.text),
-                      //1,//ID
-                      _levelSelected, //era pra ser ID aqui -ter ID é estranho pois a pessoa não deveria poder editar o ID da classe
+                      int.tryParse(_levelSelected.text),
                       int.tryParse(_gradeController.text),
                       _nameController.text,
                     ));
@@ -109,6 +82,39 @@ class _AddClassState extends State<AddClass> {
             }),
           ),
         ]),
+      ),
+    );
+  }
+}
+
+class ClasroomForm extends StatefulWidget {
+  final TextEditingController textController;
+  final String label;
+  final bool numeric;
+
+  ClasroomForm({
+    this.textController,
+    this.label,
+    this.numeric,
+  });
+
+  @override
+  _ClasroomFormState createState() => _ClasroomFormState();
+}
+
+class _ClasroomFormState extends State<ClasroomForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: TextField(
+        controller: widget.textController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: widget.label,
+        ),
+        keyboardType:
+            widget.numeric != null ? TextInputType.number : TextInputType.text,
       ),
     );
   }
