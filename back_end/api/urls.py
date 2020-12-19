@@ -13,6 +13,7 @@ urlpatterns = [
   path('users/', views.UserList.as_view(), name='list-and-create-users'),
   path('users/<int:pk>/', views.UserDetail.as_view(), name='update-delete-users'),
   path('token-auth/', ObtainAuthToken.as_view(), name='access-token'),
+  path('audio-file/', views.AudioFileList.as_view(), name='upload-file')
 ] 
 
 urlpatterns = format_suffix_patterns(urlpatterns)
