@@ -142,7 +142,7 @@ class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
             if (response is EmailAlreadyExists)
               return state.copyWith(
                 email: EmailInput.dirty(state.email.value, true),
-                status: FormzStatus.submissionFailure,
+                status: FormzStatus.invalid,
               );
             else
               return state.copyWith(status: FormzStatus.submissionSuccess);

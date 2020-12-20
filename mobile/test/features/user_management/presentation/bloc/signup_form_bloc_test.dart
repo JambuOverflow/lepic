@@ -125,7 +125,8 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailUnfocused()),
       expect: [
-        SignupFormState(email: EmailInput.dirty(''), status: FormzStatus.invalid),
+        SignupFormState(
+            email: EmailInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
   });
@@ -308,7 +309,7 @@ void main() {
 
         blocTest(
           '''should emit state with submission in progress status and 
-            state with submission failure when form is invalid becaus of
+            state with submission failure when form is invalid because of
             existing email''',
           build: () => validBloc,
           act: (bloc) {
@@ -319,7 +320,7 @@ void main() {
             validFormState.copyWith(status: FormzStatus.submissionInProgress),
             validFormState.copyWith(
               email: EmailInput.dirty(tEmail, true),
-              status: FormzStatus.submissionFailure,
+              status: FormzStatus.invalid,
             ),
           ],
         );

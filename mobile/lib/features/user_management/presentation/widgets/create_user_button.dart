@@ -13,28 +13,41 @@ class CreateUserButton extends StatelessWidget {
           height: 80,
           padding: EdgeInsets.symmetric(horizontal: 64.0, vertical: 16.0),
           child: RaisedButton(
-            child: state.status == FormzStatus.submissionInProgress
-                ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-                : Text(
-                    'Create Account',
-                    style: TextStyle(fontSize: 16),
-                  ),
-            onPressed: () {
-              context.read<SignupFormBloc>().add(FormSubmitted());
-            },
+            child: _loadingOrTextBasedOn(state),
+            onPressed: () =>
+                context.read<SignupFormBloc>().add(FormSubmitted()),
           ),
         );
       },
       listener: (context, state) {
         if (state.status == FormzStatus.submissionSuccess)
           Navigator.of(context).pushReplacementNamed('/signup_success');
-        else if (state.status == FormzStatus.submissionFailure)
-          SnackBar(
-            content: Text('Submission failed'),
-          );
+        else if (state.status == FormzStatus.submissionFailure) {
+          _showServerFailureSnackBar(context);
+        }
       },
+    );
+  }
+
+  Widget _loadingOrTextBasedOn(SignupFormState state) {
+    if (state.status == FormzStatus.submissionInProgress)
+      return CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      );
+    else
+      return Text(
+        'Create Account',
+        style: TextStyle(fontSize: 16),
+      );
+  }
+
+  void _showServerFailureSnackBar(BuildContext context) {
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text('Could not reach server'),
+      ),
     );
   }
 }
