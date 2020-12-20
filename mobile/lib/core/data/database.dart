@@ -60,6 +60,18 @@ class Database extends _$Database {
         .get();
   }
 
+  //returns true if the classroom exists, and false otherwise
+  Future<bool> classroomExists(int id) async {
+    final classroomModel = await (select(classroomModels)
+          ..where((t) => t.localId.equals(id)))
+        .getSingle();
+    if (classroomModel == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   ///Returns true if the class was updated, false otherwise
   Future<bool> updateClassroom(ClassroomModel entry) async {
     return update(classroomModels).replace(entry);
