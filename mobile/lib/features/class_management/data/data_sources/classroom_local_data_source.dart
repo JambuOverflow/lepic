@@ -23,12 +23,12 @@ abstract class ClassroomLocalDataSource {
   /// Throws [CacheException] if something wrong happens.
   Future<ClassroomModel> cacheNewClassroom(ClassroomModel classroomModel);
 
-  /// Updated in cache the [Classroom] passed.
+  /// Updates in cache the [Classroom] passed.
   ///
   /// Throws [CacheException] if [Clasroom] is not cached.
   Future<ClassroomModel> updateCachedClassroom(ClassroomModel classroomModel);
 
-  /// Updated in cache the [Classroom] passed if the [Classroom] already exists.
+  /// Updates in cache the [Classroom] passed if the [Classroom] already exists.
   /// Creates the [Classroom] if it does not yet exists.
   /// Throws [CacheException] if something wrong happens.
   Future<ClassroomModel> cacheClassroom(ClassroomModel classroomModel);
