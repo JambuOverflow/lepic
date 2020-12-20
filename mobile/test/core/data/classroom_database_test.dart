@@ -154,7 +154,7 @@ void main() {
       expect(result, true);
     });
 
-    test("should return false when the class doesn't exists", () async {
+    test("should return false when the class doesn't exist", () async {
       final result = await database.classroomExists(tInvalidClassroomPk);
       expect(result, false);
     });
