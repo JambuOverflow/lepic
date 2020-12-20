@@ -128,7 +128,7 @@ void main() {
     });
   });
 
-  group("getClassrooms", () {
+  group("UpdateClassroom", () {
     setUp(() async {
       await database.insertClassroom(tValidClassCompanion);
     });
@@ -141,6 +141,22 @@ void main() {
     test("should return false when updating an invalid classroom", () async {
       final done = await database.updateClassroom(tInvalidUpdateClassModel);
       expect(done, false);
+    });
+  });
+
+  group("classroomExists", () {
+    setUp(() async {
+      await database.insertClassroom(tValidClassCompanion);
+    });
+
+    test("should return true when the class exists", () async {
+      final result = await database.classroomExists(tValidClassroomPk1);
+      expect(result, true);
+    });
+
+    test("should return false when the class doesn't exists", () async {
+      final result = await database.classroomExists(tInvalidClassroomPk);
+      expect(result, false);
     });
   });
 }
