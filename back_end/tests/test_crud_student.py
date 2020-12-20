@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from api.models import User, Student, Class
+from api.models import User, Student, Class, School
 
 class TestCRUDStudent(APITestCase):
     
@@ -16,8 +16,10 @@ class TestCRUDStudent(APITestCase):
             '_class': 1
         }
         self.user = User.objects.create_user(username = 'pedro', password = 'pedro', email = 'pedro@ufpa.br', role = 0)
-        self.first_class = Class.objects.create(tutor=self.user, grade=7, title='Class A')
-        self.second_class = Class.objects.create(tutor=self.user, grade=9, title='Class B')
+        school = School.objects.create(name="Escola Municipal", city="Sao Paulo", neighbourhood="Itaim Bibi",
+                                       state="SP", zip_code=60000000, modality=1, creator=self.user)
+        self.first_class = Class.objects.create(tutor=self.user, grade=7, title='Class A', school=school)
+        self.second_class = Class.objects.create(tutor=self.user, grade=9, title='Class B', school=school)
 
     def test_create_students(self):
         token = Token.objects.create(user=self.user)
