@@ -40,21 +40,20 @@ class SyncClassroom {
     return await this.client.get(uri, headers: headers);
   }
 
-/*Future<Response> pull() async {
-    http.Response response = await this.getServerUpdated();
+  Future<Response> pull() async {
+    final lastSyncTimeString = this.lastSyncTime.toString();
+    http.Response response = await this.getServerUpdated(lastSyncTimeString);
+
+    if (response.statusCode == 401) {
+      return UnsuccessfulResponse(message: response.body);
+    }
 
     Iterable objects = json.decode(response.body);
 
     objects.forEach((element) async {
       ClassroomModel model = ClassroomModel.fromJson(element);
-      bool classroomExists = await this.database.classroomExists(model.localId);
-
-      if (classroomExists) {
-        await this.database.updateClassroom(model);
-      } else {
-        final classCompanion = model.toCompanion(true);
-        await this.database.insertClassroom(classCompanion);
-      }
+      this.classroomLocalDataSourceImpl.cacheClassroom(model);
     });
-  }*/
+    return SuccessfulResponse();
+  }
 }
