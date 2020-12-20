@@ -1,21 +1,16 @@
 import json
-
-from rest_framework import generics, mixins, status, permissions, status, serializers
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.exceptions import PermissionDenied
-
+from rest_framework import status, serializers
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, SchoolSerializer, StudentSerializer
 from django.http import JsonResponse, Http404
-from django.shortcuts import render
-from django.contrib.auth.hashers import make_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.core.exceptions import ObjectDoesNotExist
-
-from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer
-from .models import Text, Class, User, Student
-from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator
+from .models import Text, Class, User, School, Student
+from django.shortcuts import render
+from rest_framework import generics, status, permissions, status, serializers
+from rest_framework.response import Response
+from .permissions import IsClassTutor, IsOwner, IsTextCreator, IsCreator, IsTeacher, IsTeacherOrReadOnly
+from rest_framework.exceptions import PermissionDenied
+from django.contrib.auth.hashers import make_password
 
 
 class UserList(generics.ListCreateAPIView):
@@ -98,6 +93,31 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
                           IsTextCreator]
 
 
+class SchoolList(generics.ListCreateAPIView):
+    """
+    List texts of authenticated user or create a new text.
+    EX: GET or POST /api/schools/
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacher]
+                          
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class SchoolDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a text instance.
+    EX: GET or PUT or DELETE /api/schools/<int:pk>/
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsCreator]
+    
+    
 class StudentList(generics.ListCreateAPIView):
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated]

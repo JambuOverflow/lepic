@@ -15,18 +15,29 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+
 class School(models.Model):
     name = models.CharField(max_length=100)
     city = models.CharField(max_length=30)
     neighbourhood = models.CharField(max_length=30)
     state = models.CharField(max_length=2)
     zip_code = models.IntegerField()
-    flag_private = models.BooleanField()
+    TYPE_CHOICES = (
+        (0, 'municipal'),
+        (1, 'estadual'),
+        (2, 'federal'),
+        (3, 'privada')
+    )
+    modality = models.PositiveIntegerField(choices=TYPE_CHOICES)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Class(models.Model):
     tutor = models.ForeignKey(User, on_delete=models.CASCADE)
-    # school = models.ForeignKey(School, on_delete=CASCADE)
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
     grade = models.IntegerField()
     title = models.CharField(max_length=50)
 
