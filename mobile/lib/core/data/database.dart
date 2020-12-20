@@ -1,4 +1,6 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
+import 'package:mobile/features/school_management/data/models/school_model.dart';
+import 'package:mobile/features/school_management/domain/use_cases/update_school_use_case.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
@@ -26,7 +28,13 @@ LazyDatabase openConnection() {
   });
 }
 
-@UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
+@UseMoor(tables: [
+  UserModels,
+  ClassroomModels,
+  StudentModels,
+  TextModels,
+  SchoolModels
+])
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
   Database.customExecutor(QueryExecutor executor) : super(executor);
@@ -84,6 +92,26 @@ class Database extends _$Database {
   ///Returns true if the text was updated, false otherwise
   Future<bool> updateText(TextModel entry) async {
     return update(textModels).replace(entry);
+  }
+
+  /// returns the pk of the added entry
+  Future<int> insertSchool(SchoolModelsCompanion modelCompanion) async {
+    return into(schoolModels).insert(modelCompanion);
+  }
+
+  ///Returns the number of deleted rows
+  Future<int> deleteSchool(int id) async {
+    return (delete(schoolModels)..where((t) => t.localId.equals(id))).go();
+  }
+
+  ///Returns a list of schoolModels, and an empty list when the table is empty
+  Future<List<SchoolModel>> getSchools(int userId) async {
+    return (select(schoolModels)..where((t) => t.localId.equals(userId))).get();
+  }
+
+  ///Returns true if the school was updated, false otherwise
+  Future<bool> updateSchool(SchoolModel entry) async {
+    return update(schoolModels).replace(entry);
   }
 
   @override
