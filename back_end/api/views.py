@@ -1,17 +1,17 @@
 import json
 from rest_framework import status, serializers
-from .serializers import ClassSerializer, UserSerializer, TextSerializer
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, SchoolSerializer
 from django.http import JsonResponse, Http404
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import Text, Class, User
+from .models import Text, Class, User, School
 from django.shortcuts import render
 from rest_framework import generics, mixins, status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view
-from .permissions import IsClassTutor, IsOwner, IsTextCreator
+from .permissions import IsClassTutor, IsOwner, IsTextCreator, IsCreator, IsTeacher
 from django.contrib.auth.hashers import make_password
 
 
@@ -93,4 +93,29 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TextSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsTextCreator]
+
+
+class SchoolList(generics.ListCreateAPIView):
+    """
+    List texts of authenticated user or create a new text.
+    EX: GET or POST /api/schools/
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacher]
+                          
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class SchoolDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a text instance.
+    EX: GET or PUT or DELETE /api/schools/<int:pk>/
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsCreator]
     

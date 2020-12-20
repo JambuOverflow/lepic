@@ -15,17 +15,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SchoolSerializer(serializers.ModelSerializer):
+    creator = serializers.ReadOnlyField(source='creator.username')
     class Meta:
         model = School
-        fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 'flag_private']
+        fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 'modality', 'creator']
 
 
 class ClassSerializer(serializers.ModelSerializer):
     tutor = serializers.ReadOnlyField(source='tutor.username')
-    
     class Meta:
         model = Class
-        fields = ['id', 'title', 'tutor', 'grade']
+        fields = ['id', 'title', 'tutor', 'grade', 'school']
 
 
 class TextSerializer(serializers.ModelSerializer):
