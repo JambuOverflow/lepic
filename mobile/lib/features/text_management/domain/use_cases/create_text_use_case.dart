@@ -6,12 +6,12 @@ import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
 import 'package:mobile/features/text_management/domain/use_cases/text_params.dart';
 
-class CreateText implements UseCase<Text, TextParams> {
+class CreateText implements UseCase<MyText, TextParams> {
   final TextRepository repository;
 
   CreateText({@required this.repository});
 
   @override
-  Future<Either<Failure, Text>> call(TextParams params) =>
-    repository.createText(params.text);
+  Future<Either<Failure, MyText>> call(TextParams params) =>
+      repository.createText(params.text);
 }

@@ -17,7 +17,6 @@ class _AddClassState extends State<AddClass> {
 
   @override
   Widget build(BuildContext context) {
-    //WELP ME PLIS
     _studentBloc = BlocProvider.of<StudentBloc>(context);
     return Scaffold(
       appBar: AppBar(
@@ -26,6 +25,11 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
+          ClassForm(
+            label: 'id',
+            textController: _idController,
+            numeric: true,
+          ),
           ClassForm(
             label: 'First name',
             textController: _firstnameController,
@@ -81,10 +85,12 @@ class _AddClassState extends State<AddClass> {
   }
 }
 
+
 class ClassForm extends StatefulWidget {
   final TextEditingController textController;
   final String label;
   final bool numeric;
+
 
   ClassForm({
     this.textController,

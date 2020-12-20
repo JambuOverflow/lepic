@@ -1,17 +1,15 @@
 import json
 from rest_framework import status, serializers
-from .serializers import ClassSerializer, UserSerializer, TextSerializer, SchoolSerializer
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, SchoolSerializer, StudentSerializer
 from django.http import JsonResponse, Http404
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from .models import Text, Class, User, School
+from .models import Text, Class, User, School, Student
 from django.shortcuts import render
-from rest_framework import generics, mixins, status, permissions
-from rest_framework.views import APIView
+from rest_framework import generics, status, permissions, status, serializers
 from rest_framework.response import Response
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.decorators import api_view
-from .permissions import IsClassTutor, IsOwner, IsTextCreator, IsCreator, IsTeacher
+from .permissions import IsClassTutor, IsOwner, IsTextCreator, IsCreator, IsTeacher, IsTeacherOrReadOnly
+from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth.hashers import make_password
 
 
@@ -119,3 +117,27 @@ class SchoolDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated,
                           IsCreator]
     
+    
+class StudentList(generics.ListCreateAPIView):
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Student.objects.all()
+
+    def get_queryset(self):
+        classes = Class.objects.filter(tutor=self.request.user.id)
+        queryset = Student.objects.filter(_class__in=classes)
+        return queryset
+
+    def perform_create(self, serializer):
+        classes = Class.objects.filter(tutor=self.request.user.id).values_list('tutor', flat=True)
+        if(self.request.user.id in classes):
+            serializer.save()
+        else:
+            raise PermissionDenied("You do not have the permission to create a student account with " +
+        "a class where you are not the teacher", 'permission_denied')
+
+
+class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
+    queryset = Student.objects.all()

@@ -57,7 +57,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
     try {
       var done = await this.database.deleteClassroom(pk);
       if (done != 1) {
-        throw SqliteException(787, "The table don't have this entry");
+        throw SqliteException(787, "The table doesn't have this entry");
       }
     } on SqliteException {
       throw CacheException();

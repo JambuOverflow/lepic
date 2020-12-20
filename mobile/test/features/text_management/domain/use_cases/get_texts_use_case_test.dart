@@ -25,23 +25,22 @@ void main() {
     id: 1,
   );
 
-  final tText1 = Text(
+  final tText1 = MyText(
     title: "Test Title",
     body: "Test Body",
     classId: 1,
   );
 
-  final tText2 = Text(
+  final tText2 = MyText(
     title: "Test Title",
     body: "Test Body",
     classId: 1,
   );
 
-  final List<Text> tTwoTexts = [tText1, tText2];
-  final List<Text> tEmptyTexts = [];
+  final List<MyText> tTwoTexts = [tText1, tText2];
+  final List<MyText> tEmptyTexts = [];
 
-  test('should return an empty list of texts if there is no text',
-      () async {
+  test('should return an empty list of texts if there is no text', () async {
     when(mockTextRepository.getTexts(tClassroom))
         .thenAnswer((_) async => Right(tEmptyTexts));
 
