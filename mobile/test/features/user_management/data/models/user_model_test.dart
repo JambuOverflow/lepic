@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/moor.dart';
@@ -9,7 +10,7 @@ import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
-  moorRuntimeOptions.defaultSerializer = UserSerializer();
+  moorRuntimeOptions.defaultSerializer = Serializer();
 
   final tUserModel = UserModel(
     localId: 1,

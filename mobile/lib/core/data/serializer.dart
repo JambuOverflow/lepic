@@ -1,8 +1,6 @@
+import 'package:mobile/features/school_management/domain/entities/school.dart';
+import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/moor.dart';
-
-// Don't change the order!
-enum Role { teacher, support, researcher }
-enum Modality { municipal, estadual, federal, privada }
 
 class Serializer extends ValueSerializer {
   @override

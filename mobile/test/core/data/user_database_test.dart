@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/serializer.dart';
+import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 
 void main() {
