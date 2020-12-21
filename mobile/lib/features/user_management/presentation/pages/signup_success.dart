@@ -5,7 +5,7 @@ class SignUpSuccess extends StatelessWidget {
   Widget build(BuildContext context) {
     new Future.delayed(
       const Duration(seconds: 2),
-      () => Navigator.of(context).pushReplacementNamed('/login'),
+      () => Navigator.of(context).pop(),
     );
 
     return Scaffold(
