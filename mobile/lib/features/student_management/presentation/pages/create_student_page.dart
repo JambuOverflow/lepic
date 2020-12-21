@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/student.dart';
 import '../bloc/student_bloc.dart';
 
-class AddClass extends StatefulWidget {
+class AddStudent extends StatefulWidget {
   @override
-  _AddClassState createState() => _AddClassState();
+  _AddStudentState createState() => _AddStudentState();
 }
 
-class _AddClassState extends State<AddClass> {
+class _AddStudentState extends State<AddStudent> {
   TextEditingController _firstnameController = TextEditingController();
   TextEditingController _lastnameController = TextEditingController();
   TextEditingController _idController = TextEditingController();
@@ -25,24 +25,8 @@ class _AddClassState extends State<AddClass> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          ClassForm(
-            label: 'id',
-            textController: _idController,
-            numeric: true,
-          ),
-          ClassForm(
-            label: 'First name',
-            textController: _firstnameController,
-          ),
-          ClassForm(
-            label: 'Last name',
-            textController: _lastnameController,
-          ),
-          ClassForm(
-            label: 'Classroom',
-            textController: _classroomIdController,
-            numeric: true,
-          ),
+          StudentFormWidget(context, _firstnameController, _lastnameController,
+              _classroomIdController, _idController),
           BlocListener<StudentBloc, StudentState>(
             listener: (context, state) {
               if (state is Error) {
@@ -67,12 +51,11 @@ class _AddClassState extends State<AddClass> {
                   ),
                   onPressed: () {
                     print("creating student");
-                    //print(_classBloc.value);                     _
                     _studentBloc.add(CreateNewStudentEvent(
                       _firstnameController.text,
                       _lastnameController.text,
-                      _idController.text as int,
-                      _classroomIdController.text as int,
+                      int.tryParse(_idController.text),
+                      int.tryParse(_classroomIdController.text),
                     ));
                   },
                 ),
@@ -83,26 +66,52 @@ class _AddClassState extends State<AddClass> {
       ),
     );
   }
+
+  Widget StudentFormWidget(
+      BuildContext context,
+      TextEditingController _firstnameController,
+      TextEditingController _lastnameController,
+      TextEditingController _classroomIdController,
+      TextEditingController _idController) {
+    return Column(children: <Widget>[
+      StudentForm(
+        label: 'First name',
+        textController: _firstnameController,
+      ),
+      StudentForm(
+        label: 'Last name',
+        textController: _lastnameController,
+      ),
+      StudentForm(
+        label: 'id',
+        textController: _idController,
+        numeric: true,
+      ),
+      StudentForm(
+        label: 'Classroom',
+        textController: _classroomIdController,
+        numeric: true,
+      ),
+    ]);
+  }
 }
 
-
-class ClassForm extends StatefulWidget {
+class StudentForm extends StatefulWidget {
   final TextEditingController textController;
   final String label;
   final bool numeric;
 
-
-  ClassForm({
+  StudentForm({
     this.textController,
     this.label,
     this.numeric,
   });
 
   @override
-  _ClassFormState createState() => _ClassFormState();
+  _StudentFormState createState() => _StudentFormState();
 }
 
-class _ClassFormState extends State<ClassForm> {
+class _StudentFormState extends State<StudentForm> {
   @override
   Widget build(BuildContext context) {
     return Container(

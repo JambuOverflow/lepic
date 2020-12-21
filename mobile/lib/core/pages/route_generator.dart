@@ -1,0 +1,92 @@
+//This file defines all the routing logic so it won't be anywhere else in the code
+import 'package:flutter/material.dart';
+import 'package:mobile/features/class_management/presentation/pages/detail_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/list_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/add_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/update_class.dart';
+import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
+import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
+import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
+import 'package:mobile/features/text_management/presentation/pages/create_text.dart';
+import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
+import 'package:mobile/features/user_management/presentation/pages/guest.dart';
+
+import 'package:mobile/features/user_management/presentation/pages/login.dart';
+import 'package:mobile/features/user_management/presentation/pages/signup.dart';
+import 'package:mobile/features/user_management/presentation/pages/update_user.dart';
+import 'home.dart';
+
+class RouteGenerator {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/login':
+        return MaterialPageRoute(
+          builder: (_) => Login(),
+        );
+      case '/home':
+        return MaterialPageRoute(
+          builder: (_) => HomeScreen(),
+        );
+      case '/signup':
+        return MaterialPageRoute(
+          builder: (_) => Signup(),
+        );
+      case '/guest':
+        return MaterialPageRoute(
+          builder: (_) => Guest(),
+        );
+      case '/update_user':
+        return MaterialPageRoute(
+          builder: (_) => UpdateUser(),
+        );
+      case '/list_students':
+        return MaterialPageRoute(
+          builder: (_) => ShowStudents(),
+        );
+      case '/add_student':
+        return MaterialPageRoute(
+          builder: (_) => AddStudent(),
+        );
+      case '/list_classes':
+        return MaterialPageRoute(
+          builder: (_) => ShowClasses(),
+        );
+      case '/add_class':
+        return MaterialPageRoute(
+          builder: (_) => AddClass(),
+        );
+      case '/list_texts':
+        return MaterialPageRoute(
+          builder: (_) => ShowTexts(),
+        );
+      case '/add_text':
+        return MaterialPageRoute(
+          builder: (_) => AddText(),
+        );
+      case '/detail_class':
+        return MaterialPageRoute(
+          builder: (_) =>
+              ClassDetailPage(/*_schoolClass*/), //receives arguments
+        );
+      case '/update_class':
+        return MaterialPageRoute(
+          builder: (_) => UpdateClass(),
+        );
+
+      default:
+        return _errorRoute();
+    }
+  }
+
+  static Route<dynamic> _errorRoute() {
+    return MaterialPageRoute(builder: (_) {
+      return Scaffold(
+          appBar: AppBar(
+            title: Text('Error'),
+          ),
+          body: Center(
+            child: Text('Page not Found'),
+          ));
+    });
+  }
+}

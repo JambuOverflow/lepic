@@ -3,46 +3,46 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/classroom.dart';
 import '../bloc/class_bloc.dart';
 
-class AddClass extends StatefulWidget {
+class UpdateClass extends StatefulWidget {
   @override
-  _AddClassState createState() => _AddClassState();
+  _UpdateClassState createState() => _UpdateClassState();
 }
 
-class _AddClassState extends State<AddClass> {
+class _UpdateClassState extends State<UpdateClass> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
-  TextEditingController idController = TextEditingController();
+  TextEditingController _levelSelected = TextEditingController();
   ClassroomBloc _classBloc;
 
   @override
   Widget build(BuildContext context) {
-    //WELP ME PLIS
     _classBloc = BlocProvider.of<ClassroomBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create class'),
+        title: Text('Update class'),
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
           ClasroomForm(
-            label: 'Class name',
+            label: 'Current Name',
             textController: _nameController,
           ),
           ClasroomForm(
-            label: 'Grade',
+            label: 'Current Grade',
             textController: _gradeController,
             numeric: true,
           ),
           ClasroomForm(
-            label: 'Tutor',
+            label: 'Current Tutor',
             textController: _tutorIdController,
             numeric: true,
           ),
           ClasroomForm(
-            label: 'Id - for tests',
-            textController: idController,
+            //This does not make much sense to be together
+            label: 'Current Id - for tests',
+            textController: _levelSelected,
             numeric: true,
           ),
           BlocListener<ClassroomBloc, ClassroomState>(
@@ -64,18 +64,19 @@ class _AddClassState extends State<AddClass> {
                 padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
                 child: RaisedButton(
                   child: Text(
-                    'Create class',
+                    'Update',
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
-                    print("creating class");
-                    _classBloc.add(CreateNewClassroomEvent(
+                    print("Updating class");
+                    _classBloc.add(//não devia ser update?
+                        UpdateClassroomEvent(
+                      //tutorId, id, grade, name
                       int.tryParse(_tutorIdController.text),
-                      int.tryParse(idController.text),
+                      int.tryParse(_levelSelected.text), //era pra ser id
                       int.tryParse(_gradeController.text),
                       _nameController.text,
                     ));
-                    print("class created");
                   },
                 ),
               );
