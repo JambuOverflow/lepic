@@ -59,3 +59,11 @@ class IsTeacherOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Write permissions are only allowed to the owner of the object.
         return obj._class.tutor == request.user
+
+class IsTeacherOrReadOnlyAudioFile(permissions.BasePermission):
+    """
+    Custom permission to only allow the teacher of a student to create or edit his/her account.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Write permissions are only allowed to the owner of the object.
+        return obj.student._class.tutor == request.user

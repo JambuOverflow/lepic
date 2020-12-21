@@ -15,6 +15,8 @@ urlpatterns = [
   path('schools/', views.SchoolList.as_view(), name='create-schools'),
   path('schools/<int:pk>/', views.SchoolDetail.as_view(), name='update-delete-schools'),
   path('token-auth/', ObtainAuthToken.as_view(), name='access-token'),
+  path('audio-file/', views.AudioFileList.as_view(), name='upload-file'),
+  path('audio-file/<int:pk>', views.AudioFileDetail.as_view(), name='update-delete-file'),
 ] 
 
 urlpatterns = format_suffix_patterns(urlpatterns)

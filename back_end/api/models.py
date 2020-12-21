@@ -59,3 +59,12 @@ class Student(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
+
+class AudioFile(models.Model):
+    title = models.CharField(max_length=200)
+    text = models.ForeignKey(Text, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    file = models.FileField()
+
+    def __str__(self):
+        return f"Title: {self.title}; Path: {self.file}"

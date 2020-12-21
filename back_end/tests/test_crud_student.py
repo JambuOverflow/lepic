@@ -51,10 +51,11 @@ class TestCRUDStudent(APITestCase):
         Student.objects.create(_class=self.first_class, first_name='Arthur', last_name='Takeshi')
         student_new_data = {
             'first_name': 'Aian',
-            'last_name': 'Takeshi',
+            'last_name': 'Shay',
             '_class': 2
         }
         response = self.client.put(self.student_url_update_delete, student_new_data, format='json')
+        response.data.pop('id')
         self.assertEqual(response.data, student_new_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
