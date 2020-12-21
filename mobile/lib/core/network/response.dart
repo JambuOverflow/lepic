@@ -26,3 +26,5 @@ class UnsuccessfulResponse extends Response {
 }
 
 class EmailAlreadyExists extends UnsuccessfulResponse {}
+
+class InvalidCredentials extends UnsuccessfulResponse {}

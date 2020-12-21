@@ -123,6 +123,16 @@ void main() {
       expect(result, TokenResponse(token: tToken));
     });
 
+    test('''should perform a valid POST request with invalid info
+        and receive a 400 code response''', () async {
+      when(mockHttpClient.post(any, headers: anyNamed('headers'), body: tBody))
+          .thenAnswer((_) async => http.Response('non_field_errors', 400));
+
+      final result = await dataSource.login(tUserModel);
+
+      expect(result, InvalidCredentials());
+    });
+
     test('''should perform an invalid POST request and receive 
     a 400 code response''', () async {
       when(mockHttpClient.post(any,

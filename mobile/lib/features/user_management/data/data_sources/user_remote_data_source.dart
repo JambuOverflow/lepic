@@ -97,10 +97,13 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
           HttpHeaders.contentTypeHeader: "application/json",
         },
       );
+      print('status code: ' + response.statusCode.toString());
 
       if (response.statusCode == 200) {
         final token = _extractTokenFromResponse(response);
         return TokenResponse(token: token);
+      } else if (response.body.contains('non_field_errors')) {
+        return InvalidCredentials();
       } else {
         return UnsuccessfulResponse(
           message: response.body,

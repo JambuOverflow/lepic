@@ -62,6 +62,8 @@ class UserRepositoryImpl implements UserRepository {
       if (response is TokenResponse) {
         await localDataSource.storeTokenSecurely(response.token);
         return Right(response);
+      } else if (response is InvalidCredentials) {
+        return Right(response);
       } else
         return Left(ServerFailure());
     } on ServerException {
