@@ -14,7 +14,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer, SchoolSerializer
-from .models import Text, Class, User, Student, AudioFile
+from .models import Text, Class, User, Student, AudioFile, School
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, IsCreator, IsTeacher
 
 
