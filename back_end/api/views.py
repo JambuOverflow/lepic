@@ -1,6 +1,6 @@
 import json
 
-from rest_framework import generics, mixins, status, permissions, status, serializers, viewsets
+from rest_framework import generics, mixins, status, permissions, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -12,11 +12,10 @@ from django.shortcuts import render
 from django.contrib.auth.hashers import make_password
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.core.exceptions import ObjectDoesNotExist
 
-from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer
+from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer, SchoolSerializer
 from .models import Text, Class, User, Student, AudioFile
-from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile
+from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, IsCreator, IsTeacher
 
 
 class UserList(generics.ListCreateAPIView):
@@ -99,6 +98,31 @@ class TextDetail(generics.RetrieveUpdateDestroyAPIView):
                           IsTextCreator]
 
 
+class SchoolList(generics.ListCreateAPIView):
+    """
+    List texts of authenticated user or create a new text.
+    EX: GET or POST /api/schools/
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacher]
+                          
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class SchoolDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a text instance.
+    EX: GET or PUT or DELETE /api/schools/<int:pk>/
+    """
+    queryset = School.objects.all()
+    serializer_class = SchoolSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsCreator]
+    
+    
 class StudentList(generics.ListCreateAPIView):
     """
     List all students instances or create a new student instance.

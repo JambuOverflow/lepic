@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
@@ -13,10 +14,12 @@ import 'package:mobile/features/text_management/domain/use_cases/get_texts_use_c
 import 'package:mobile/features/text_management/domain/use_cases/text_params.dart';
 import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
 
+
 part 'text_event.dart';
 part 'text_state.dart';
 
 class TextBloc extends Bloc<TextEvent, TextState> {
+  
   final CreateText createText;
   final UpdateText updateText;
   final GetTexts getTexts;

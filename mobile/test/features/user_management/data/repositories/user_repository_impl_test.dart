@@ -249,6 +249,15 @@ void main() {
         verify(mockLocalDataSource.storeTokenSecurely(any));
       });
 
+      test('should return invalid credentials', () async {
+        when(mockRemoteDataSource.login(tUserModel))
+            .thenAnswer((_) async => InvalidCredentials());
+
+        final result = await repository.login(tUser);
+
+        expect(result, Right(InvalidCredentials()));
+      });
+
       test('should return server failure when call returns exception',
           () async {
         when(mockRemoteDataSource.login(tUserModel))
