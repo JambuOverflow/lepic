@@ -27,7 +27,7 @@ class LoginButton extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.status == FormzStatus.submissionSuccess) {
-          Navigator.of(context).pushNamed('/home');
+          Navigator.of(context).pushReplacementNamed('/home');
         } else if (state.status == FormzStatus.submissionFailure) {
           Scaffold.of(context).showServerFailureSnackBar(context);
         }
