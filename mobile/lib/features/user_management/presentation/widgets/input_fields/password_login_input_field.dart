@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
 
 class PasswordLoginInputField extends StatelessWidget {
   const PasswordLoginInputField({
     Key key,
-    @required this.passwordController,
   }) : super(key: key);
-
-  final TextEditingController passwordController;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      obscureText: true,
-      controller: passwordController,
-      decoration: InputDecoration(
-        border: UnderlineInputBorder(),
-        labelText: 'Password',
-        prefixIcon: Icon(Icons.lock_rounded),
-      ),
+    return BlocBuilder<LoginFormBloc, LoginFormState>(
+      builder: (context, state) {
+        return TextFormField(
+          obscureText: true,
+          decoration: InputDecoration(
+            border: UnderlineInputBorder(),
+            labelText: 'Password',
+            prefixIcon: Icon(Icons.lock_rounded),
+            errorText: state.password.invalid ? 'Password is empty' : null,
+          ),
+          onChanged: (value) => BlocProvider.of<LoginFormBloc>(context)
+              .add(PasswordChanged(password: value)),
+        );
+      },
     );
   }
 }
