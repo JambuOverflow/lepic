@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
 
 import '../../domain/use_cases/user_params.dart';
@@ -50,20 +52,25 @@ class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
 
         final failureOrResponse = await loginCase(UserParams(user: user));
 
-        yield failureOrResponse.fold(
-          (failure) => state.copyWith(status: FormzStatus.submissionFailure),
-          (response) {
-            if (response is SuccessfulResponse)
-              return state.copyWith(status: FormzStatus.submissionSuccess);
-            else
-              return state.copyWith(
-                status: FormzStatus.invalid,
-                credentialInvalid: true,
-              );
-          },
-        );
+        yield _stateSuccessOrFailure(failureOrResponse);
       }
     }
+  }
+
+  LoginFormState _stateSuccessOrFailure(
+      Either<Failure, Response> failureOrResponse) {
+    return failureOrResponse.fold(
+      (failure) => state.copyWith(status: FormzStatus.submissionFailure),
+      (response) {
+        if (response is SuccessfulResponse)
+          return state.copyWith(status: FormzStatus.submissionSuccess);
+        else
+          return state.copyWith(
+            status: FormzStatus.invalid,
+            credentialInvalid: true,
+          );
+      },
+    );
   }
 
   LoginFormState _setStateDirtyAndValidate() {
