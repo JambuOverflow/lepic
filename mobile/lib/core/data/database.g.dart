@@ -1409,7 +1409,7 @@ class SchoolModel extends DataClass implements Insertable<SchoolModel> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return SchoolModel(
       localId: serializer.fromJson<int>(json['local_id']),
-      zipCode: serializer.fromJson<int>(json['zipCode']),
+      zipCode: serializer.fromJson<int>(json['zip_code']),
       modality: serializer.fromJson<Modality>(json['modality']),
       state: serializer.fromJson<String>(json['state']),
       city: serializer.fromJson<String>(json['city']),
@@ -1423,7 +1423,7 @@ class SchoolModel extends DataClass implements Insertable<SchoolModel> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'local_id': serializer.toJson<int>(localId),
-      'zipCode': serializer.toJson<int>(zipCode),
+      'zip_code': serializer.toJson<int>(zipCode),
       'modality': serializer.toJson<Modality>(modality),
       'state': serializer.toJson<String>(state),
       'city': serializer.toJson<String>(city),

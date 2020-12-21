@@ -1,10 +1,9 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/school_management/data/models/school_model.dart';
-import 'package:mobile/features/school_management/domain/use_cases/update_school_use_case.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'serializer.dart';
 import 'package:moor/ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
