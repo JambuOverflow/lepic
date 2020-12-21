@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
+
+import '../bloc/login_form_bloc.dart';
+import '../../../../core/presentation/extensions/snack_bar_extensions.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({
@@ -27,7 +29,7 @@ class LoginButton extends StatelessWidget {
         if (state.status == FormzStatus.submissionSuccess) {
           Navigator.of(context).pushNamed('/home');
         } else if (state.status == FormzStatus.submissionFailure) {
-          _showServerFailureSnackBar(context);
+          Scaffold.of(context).showServerFailureSnackBar(context);
         }
       },
     );
@@ -43,15 +45,5 @@ class LoginButton extends StatelessWidget {
         'Login',
         style: TextStyle(fontSize: 16),
       );
-  }
-
-  void _showServerFailureSnackBar(BuildContext context) {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text('Could not reach server'),
-      ),
-    );
   }
 }
