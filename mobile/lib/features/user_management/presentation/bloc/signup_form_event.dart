@@ -1,13 +1,13 @@
-part of 'user_form_bloc.dart';
+part of 'signup_form_bloc.dart';
 
-abstract class UserFormEvent extends Equatable {
-  const UserFormEvent();
+abstract class SignupFormEvent extends Equatable {
+  const SignupFormEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class FirstNameChanged extends UserFormEvent {
+class FirstNameChanged extends SignupFormEvent {
   final String firstName;
 
   const FirstNameChanged({@required this.firstName});
@@ -16,9 +16,9 @@ class FirstNameChanged extends UserFormEvent {
   List<Object> get props => [firstName];
 }
 
-class FirstNameUnfocused extends UserFormEvent {}
+class FirstNameUnfocused extends SignupFormEvent {}
 
-class LastNameChanged extends UserFormEvent {
+class LastNameChanged extends SignupFormEvent {
   final String lastName;
 
   const LastNameChanged({@required this.lastName});
@@ -27,9 +27,9 @@ class LastNameChanged extends UserFormEvent {
   List<Object> get props => [lastName];
 }
 
-class LastNameUnfocused extends UserFormEvent {}
+class LastNameUnfocused extends SignupFormEvent {}
 
-class EmailChanged extends UserFormEvent {
+class EmailChanged extends SignupFormEvent {
   final String email;
 
   const EmailChanged({@required this.email});
@@ -38,9 +38,9 @@ class EmailChanged extends UserFormEvent {
   List<Object> get props => [email];
 }
 
-class EmailUnfocused extends UserFormEvent {}
+class EmailUnfocused extends SignupFormEvent {}
 
-class PasswordChanged extends UserFormEvent {
+class PasswordChanged extends SignupFormEvent {
   const PasswordChanged({@required this.password});
 
   final String password;
@@ -49,9 +49,9 @@ class PasswordChanged extends UserFormEvent {
   List<Object> get props => [password];
 }
 
-class PasswordUnfocused extends UserFormEvent {}
+class PasswordUnfocused extends SignupFormEvent {}
 
-class ConfirmPasswordChanged extends UserFormEvent {
+class ConfirmPasswordChanged extends SignupFormEvent {
   const ConfirmPasswordChanged({@required this.confirmPassword});
 
   final String confirmPassword;
@@ -60,9 +60,9 @@ class ConfirmPasswordChanged extends UserFormEvent {
   List<Object> get props => [confirmPassword];
 }
 
-class ConfirmPasswordUnfocused extends UserFormEvent {}
+class ConfirmPasswordUnfocused extends SignupFormEvent {}
 
-class RoleChanged extends UserFormEvent {
+class RoleChanged extends SignupFormEvent {
   final Role role;
 
   RoleChanged({@required this.role});
@@ -71,6 +71,6 @@ class RoleChanged extends UserFormEvent {
   List<Object> get props => [role];
 }
 
-class RoleUnfocused extends UserFormEvent {}
+class RoleUnfocused extends SignupFormEvent {}
 
-class FormSubmitted extends UserFormEvent {}
+class FormSubmitted extends SignupFormEvent {}

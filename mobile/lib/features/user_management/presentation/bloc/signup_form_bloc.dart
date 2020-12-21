@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/presentation/validators/role_input.dart';
 
 import '../../domain/use_cases/user_params.dart';
@@ -14,17 +15,17 @@ import '../../../../core/presentation/validators/email_input.dart';
 import '../../../../core/presentation/validators/name_input.dart';
 import '../../../../core/presentation/validators/password_input.dart';
 
-part 'user_form_event.dart';
-part 'user_form_state.dart';
+part 'signup_form_event.dart';
+part 'signup_form_state.dart';
 
-class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
+class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
   final CreateNewUserCase createNewUser;
 
-  UserFormBloc({@required this.createNewUser}) : super(UserFormState());
+  SignupFormBloc({@required this.createNewUser}) : super(SignupFormState());
 
   @override
-  Stream<UserFormState> mapEventToState(
-    UserFormEvent event,
+  Stream<SignupFormState> mapEventToState(
+    SignupFormEvent event,
   ) async* {
     if (event is FirstNameChanged) {
       final firstName = NameInput.dirty(event.firstName);
@@ -137,13 +138,21 @@ class UserFormBloc extends Bloc<UserFormEvent, UserFormState> {
 
         yield failureOrResponse.fold(
           (failure) => state.copyWith(status: FormzStatus.submissionFailure),
-          (response) => state.copyWith(status: FormzStatus.submissionSuccess),
+          (response) {
+            if (response is EmailAlreadyExists)
+              return state.copyWith(
+                email: EmailInput.dirty(state.email.value, true),
+                status: FormzStatus.invalid,
+              );
+            else
+              return state.copyWith(status: FormzStatus.submissionSuccess);
+          },
         );
       }
     }
   }
 
-  UserFormState _setStateDirtyAndValidate() {
+  SignupFormState _setStateDirtyAndValidate() {
     final dirtyConfirmPassword = ConfirmPasswordInput.dirty(
       password: state.password.value,
       value: state.confirmPassword.value,

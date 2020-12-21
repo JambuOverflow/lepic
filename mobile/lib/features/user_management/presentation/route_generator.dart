@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/user_management/presentation/bloc/user_form_bloc.dart';
+import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
+import 'package:mobile/features/user_management/presentation/bloc/signup_form_bloc.dart';
 import 'package:mobile/features/user_management/presentation/pages/signup_success.dart';
 import 'pages/login.dart';
 import 'pages/guest.dart';
@@ -15,7 +16,10 @@ class RouteGenerator {
     switch (settings.name) {
       case '/login':
         return MaterialPageRoute(
-          builder: (_) => Login(),
+          builder: (_) => BlocProvider(
+            create: (_) => GetIt.instance<LoginFormBloc>(),
+            child: Login(),
+          ),
         );
       case '/home':
         return MaterialPageRoute(
@@ -24,7 +28,7 @@ class RouteGenerator {
       case '/signup':
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (_) => GetIt.instance<UserFormBloc>(),
+            create: (_) => GetIt.instance<SignupFormBloc>(),
             child: Signup(),
           ),
         );

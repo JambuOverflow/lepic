@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/entities/user.dart';
-import '../../bloc/user_form_bloc.dart';
+import '../../bloc/signup_form_bloc.dart';
 
 class RoleDropdownInputField extends StatelessWidget {
   final FocusNode focusNode;
@@ -14,7 +14,7 @@ class RoleDropdownInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserFormBloc, UserFormState>(builder: (context, state) {
+    return BlocBuilder<SignupFormBloc, SignupFormState>(builder: (context, state) {
       return DropdownButtonFormField<Role>(
         hint: Text("I am a ..."),
         focusNode: focusNode,
@@ -28,7 +28,7 @@ class RoleDropdownInputField extends StatelessWidget {
           errorText: state.role.invalid ? 'Choose your role' : null,
         ),
         onChanged: (Role value) =>
-            context.read<UserFormBloc>().add(RoleChanged(role: value)),
+            context.read<SignupFormBloc>().add(RoleChanged(role: value)),
         items: [
           DropdownMenuItem(
             child: Text("Teacher"),

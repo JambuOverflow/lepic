@@ -1,23 +1,28 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/presentation/validators/confirm_password_input.dart';
 import 'package:mobile/core/presentation/validators/email_input.dart';
 import 'package:mobile/core/presentation/validators/name_input.dart';
 import 'package:mobile/core/presentation/validators/password_input.dart';
 import 'package:mobile/core/presentation/validators/role_input.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:mobile/features/user_management/presentation/bloc/user_form_bloc.dart';
+import 'package:mobile/features/user_management/domain/use_cases/create_user_use_case.dart';
+import 'package:mobile/features/user_management/presentation/bloc/signup_form_bloc.dart';
+import 'package:mockito/mockito.dart';
 
-import 'user_bloc_test.dart';
+class MockCreateNewUserCase extends Mock implements CreateNewUserCase {}
 
 void main() {
   MockCreateNewUserCase mockCreateNewUserCase;
-  UserFormBloc bloc;
+  SignupFormBloc bloc;
 
   setUp(() {
     mockCreateNewUserCase = MockCreateNewUserCase();
-    bloc = UserFormBloc(createNewUser: mockCreateNewUserCase);
+    bloc = SignupFormBloc(createNewUser: mockCreateNewUserCase);
   });
 
   group('firstName', () {
@@ -29,7 +34,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(FirstNameChanged(firstName: tValidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             firstName: NameInput.dirty(tValidName),
             status: FormzStatus.invalid),
       ],
@@ -40,7 +45,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(FirstNameChanged(firstName: tInvalidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             firstName: NameInput.pure(''), status: FormzStatus.invalid),
       ],
     );
@@ -50,7 +55,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(FirstNameUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             firstName: NameInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
@@ -65,7 +70,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(LastNameChanged(lastName: tValidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             lastName: NameInput.dirty(tValidName), status: FormzStatus.invalid),
       ],
     );
@@ -75,7 +80,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(LastNameChanged(lastName: tInvalidName)),
       expect: [
-        UserFormState(
+        SignupFormState(
             lastName: NameInput.pure(''), status: FormzStatus.invalid),
       ],
     );
@@ -85,7 +90,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(LastNameUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             lastName: NameInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
@@ -100,7 +105,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailChanged(email: tValidEmail)),
       expect: [
-        UserFormState(
+        SignupFormState(
             email: EmailInput.dirty(tValidEmail), status: FormzStatus.invalid),
       ],
     );
@@ -110,7 +115,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailChanged(email: tInvalidEmail)),
       expect: [
-        UserFormState(
+        SignupFormState(
             email: EmailInput.pure(tInvalidEmail), status: FormzStatus.invalid),
       ],
     );
@@ -120,7 +125,8 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(EmailUnfocused()),
       expect: [
-        UserFormState(email: EmailInput.dirty(''), status: FormzStatus.invalid),
+        SignupFormState(
+            email: EmailInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
   });
@@ -134,7 +140,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(PasswordChanged(password: tValidPassword)),
       expect: [
-        UserFormState(
+        SignupFormState(
             password: PasswordInput.dirty(tValidPassword),
             status: FormzStatus.invalid),
       ],
@@ -145,7 +151,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(PasswordChanged(password: tInvalidPassword)),
       expect: [
-        UserFormState(
+        SignupFormState(
             password: PasswordInput.pure(tInvalidPassword),
             status: FormzStatus.invalid),
       ],
@@ -156,7 +162,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(PasswordUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             password: PasswordInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
@@ -173,7 +179,7 @@ void main() {
       act: (bloc) =>
           bloc.add(ConfirmPasswordChanged(confirmPassword: tValidConfirm)),
       expect: [
-        UserFormState(
+        SignupFormState(
             confirmPassword:
                 ConfirmPasswordInput.dirty(password: '', value: tValidConfirm),
             status: FormzStatus.invalid),
@@ -186,7 +192,7 @@ void main() {
       act: (bloc) =>
           bloc.add(ConfirmPasswordChanged(confirmPassword: tInvalidConfirm)),
       expect: [
-        UserFormState(
+        SignupFormState(
             confirmPassword:
                 ConfirmPasswordInput.pure(password: '', value: tInvalidConfirm),
             status: FormzStatus.invalid),
@@ -198,7 +204,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(ConfirmPasswordUnfocused()),
       expect: [
-        UserFormState(
+        SignupFormState(
             confirmPassword:
                 ConfirmPasswordInput.dirty(password: tPassword, value: ''),
             status: FormzStatus.invalid),
@@ -215,7 +221,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(RoleChanged(role: tValidRole)),
       expect: [
-        UserFormState(
+        SignupFormState(
             role: RoleInput.dirty(tValidRole), status: FormzStatus.invalid),
       ],
     );
@@ -225,7 +231,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(RoleChanged(role: tInvalidRole)),
       expect: [
-        UserFormState(
+        SignupFormState(
             role: RoleInput.pure(tInvalidRole), status: FormzStatus.invalid),
       ],
     );
@@ -235,8 +241,137 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(RoleUnfocused()),
       expect: [
-        UserFormState(role: RoleInput.dirty(), status: FormzStatus.invalid),
+        SignupFormState(role: RoleInput.dirty(), status: FormzStatus.invalid),
       ],
     );
+  });
+
+  group('formSubmitted', () {
+    final tFirstName = 'Vitor';
+    final tLastName = 'Cantao';
+    final tEmail = 'vc@gmail.com';
+    final tPassword = 'ABCdef123';
+    final tRole = Role.teacher;
+
+    group('valid', () {
+      SignupFormBloc validBloc;
+
+      final validFormState = SignupFormState(
+        firstName: NameInput.dirty(tFirstName),
+        lastName: NameInput.dirty(tLastName),
+        email: EmailInput.dirty(tEmail),
+        password: PasswordInput.dirty(tPassword),
+        confirmPassword: ConfirmPasswordInput.dirty(
+          password: tPassword,
+          value: tPassword,
+        ),
+        role: RoleInput.dirty(tRole),
+      );
+
+      setUp(() {
+        validBloc = SignupFormBloc(createNewUser: mockCreateNewUserCase);
+        validBloc.add(FirstNameChanged(firstName: tFirstName));
+        validBloc.add(LastNameChanged(lastName: tLastName));
+        validBloc.add(EmailChanged(email: tEmail));
+        validBloc.add(PasswordChanged(password: tPassword));
+        validBloc.add(ConfirmPasswordChanged(confirmPassword: tPassword));
+        validBloc.add(RoleChanged(role: tRole));
+      });
+
+      group('successfulResponse', () {
+        setUp(() {
+          when(mockCreateNewUserCase(any)).thenAnswer(
+            (_) async => Right(SuccessfulResponse()),
+          );
+        });
+
+        blocTest(
+          '''should emit state with submission in progress status and 
+      state with submission success when form is valid''',
+          build: () => validBloc,
+          act: (bloc) {
+            bloc.add(FormSubmitted());
+          },
+          skip: 6,
+          expect: [
+            validFormState.copyWith(status: FormzStatus.submissionInProgress),
+            validFormState.copyWith(status: FormzStatus.submissionSuccess),
+          ],
+        );
+      });
+
+      group('emailAlreadyExists', () {
+        setUp(() {
+          when(mockCreateNewUserCase(any)).thenAnswer(
+            (_) async => Right(EmailAlreadyExists()),
+          );
+        });
+
+        blocTest(
+          '''should emit state with submission in progress status and 
+            state with submission failure when form is invalid because of
+            existing email''',
+          build: () => validBloc,
+          act: (bloc) {
+            bloc.add(FormSubmitted());
+          },
+          skip: 6,
+          expect: [
+            validFormState.copyWith(status: FormzStatus.submissionInProgress),
+            validFormState.copyWith(
+              email: EmailInput.dirty(tEmail, true),
+              status: FormzStatus.invalid,
+            ),
+          ],
+        );
+      });
+
+      group('server failure', () {
+        setUp(() {
+          when(mockCreateNewUserCase(any)).thenAnswer(
+            (_) async => Left(ServerFailure()),
+          );
+        });
+
+        blocTest(
+          '''should emit state with submission in progress status and 
+            state with submission failure when form is valid but a server error
+            has occurred''',
+          build: () => validBloc,
+          act: (bloc) {
+            bloc.add(FormSubmitted());
+          },
+          skip: 6,
+          expect: [
+            validFormState.copyWith(status: FormzStatus.submissionInProgress),
+            validFormState.copyWith(status: FormzStatus.submissionFailure),
+          ],
+        );
+      });
+    });
+
+    group('invalid', () {
+      blocTest(
+        '''should emit state with dirty inputs and  invalid status''',
+        build: () => bloc,
+        act: (bloc) {
+          bloc.add(FormSubmitted());
+        },
+        expect: [
+          SignupFormState(
+            firstName: NameInput.dirty(),
+            lastName: NameInput.dirty(),
+            email: EmailInput.dirty(),
+            password: PasswordInput.dirty(),
+            confirmPassword: ConfirmPasswordInput.dirty(
+              password: '',
+              value: '',
+            ),
+            role: RoleInput.dirty(),
+            status: FormzStatus.invalid,
+          ),
+        ],
+      );
+    });
   });
 }

@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moor/moor.dart';
+
+import '../bloc/login_form_bloc.dart';
+import '../widgets/invalid_credentials_warning.dart';
+import '../widgets/input_fields/user_login_input_field.dart';
+import '../widgets/input_fields/password_login_input_field.dart';
+import '../widgets/login_button.dart';
+import '../widgets/signup_button.dart';
+import '../widgets/guest_login_button.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -8,119 +16,49 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  UserBloc _userBloc;
   @override
   Widget build(BuildContext context) {
-    _userBloc = BlocProvider.of<UserBloc>(context);
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: ListView(
-          children: <Widget>[
-            Container(
-                alignment: Alignment.center,
-                child: Text(
-                  'Lepic',
-                  style: TextStyle(fontSize: 20),
-                )),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'E-mail',
+    return BlocBuilder<LoginFormBloc, LoginFormState>(
+        builder: (context, state) {
+      return Scaffold(
+        body: Form(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: ListView(
+              children: <Widget>[
+                SizedBox(height: 32),
+                Image.asset(
+                  "assets/images/JambuOverflow.png",
+                  width: MediaQuery.of(context).size.width / 3,
+                  height: MediaQuery.of(context).size.width / 3,
                 ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                obscureText: true,
-                controller: passwordController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                ),
-              ),
-            ),
-            BlocListener<UserBloc, UserState>(
-              listener: (context, state) {
-                if (state is LoggedIn) {
-                  print('logged in');
-                  Navigator.of(context).pushNamed(
-                    '/home',
-                  );
-                } else if (state is Error) {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                    ),
-                  );
-                }
-              },
-              child:
-                  BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-                return Container(
-                  height: 80,
-                  padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-                  child: RaisedButton(
-                    child: Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    onPressed: () {
-                      print(nameController.text);
-                      print(passwordController.text);
-                      _userBloc.add(LoggingUserEvent(
-                        nameController.text,
-                        passwordController.text,
-                      ));
-                    },
-                  ),
-                );
-              }),
-            ),
-            Container(
-              height: 80,
-              padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-              child: OutlineButton(
-                child: Text(
-                  'Login as guest',
-                  style: TextStyle(fontSize: 16),
-                ),
-                onPressed: () {
-                  print("opening guest screen");
-                  Navigator.of(context).pushNamed(
-                    '/guest',
-                  );
-                },
-              ),
-            ),
-            Container(
-                padding: EdgeInsets.all(8.0),
-                child: FlatButton(
+                SizedBox(height: 8),
+                Center(
                   child: Text(
-                    'Sign up',
-                    style: TextStyle(fontSize: 16),
+                    'Lepic',
+                    style: Theme.of(context).textTheme.headline4,
                   ),
-                  onPressed: () {
-                    print("Opening signup screen...");
-                    Navigator.of(context).pushNamed(
-                      '/signup',
-                    );
-                  },
-                ))
-          ],
+                ),
+                SizedBox(height: 16),
+                UserLoginInputField(),
+                SizedBox(height: 8),
+                PasswordLoginInputField(),
+                SizedBox(height: 12),
+                InvalidCredentialsWarning(isVisible: state.isCredentialInvalid),
+                SizedBox(height: 16),
+                LoginButton(),
+                Row(
+                  children: [
+                    Expanded(child: GuestLoginButton()),
+                    SizedBox(width: 16),
+                    Expanded(child: SignupButton()),
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
-  /*void submitLogin(BuildContext context, String name, String password){
-    final
-    _userBloc
-  }*/
 }
