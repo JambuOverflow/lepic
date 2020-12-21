@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from api.models import User, Student, Class, AudioFile, Text
+from api.models import User, Student, Class, AudioFile, Text, School
 from pathlib import Path
 from django.core.files import File
 import re
@@ -22,7 +22,9 @@ class TestCRUDAudioFile(APITestCase):
         }
         self.user = User.objects.create_user(username = 'pedro', password = 'pedro', email = 'pedro@ufpa.br', role = 0)
         self.user_2 = User.objects.create_user(username = 'renan', password = 'renan', email = 'renan@ufpa.br', role = 0)
-        self.first_class = Class.objects.create(tutor=self.user, grade=7, title='Class A')
+        self.school = School.objects.create(name="Escola Municipal", city="Sao Paulo", neighbourhood="Itaim Bibi",
+                                       state="SP", zip_code=60000000, modality=1, creator=self.user)
+        self.first_class = Class.objects.create(tutor=self.user, grade=7, title='Class A', school=self.school)
         self.student_1 = Student.objects.create(_class=self.first_class, first_name='Arthur', last_name='Takeshi')
         self.student_2 = Student.objects.create(_class=self.first_class, first_name='Aian', last_name='Shay')
         self.text_1 = Text.objects.create(title='Excerpt from The Little Prince', body='"Anything essential is invisible to the eyes," ' +
