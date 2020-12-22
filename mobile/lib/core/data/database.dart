@@ -65,11 +65,7 @@ class Database extends _$Database {
     final classroomModel = await (select(classroomModels)
           ..where((t) => t.localId.equals(id)))
         .getSingle();
-    if (classroomModel == null) {
-      return false;
-    } else {
-      return true;
-    }
+    return (classroomModel != null);
   }
 
   ///Returns true if the class was updated, false otherwise
