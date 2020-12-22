@@ -52,7 +52,7 @@ void main() {
   });
 
   group('getServerUpdated', () {
-    test('should return a correct response with the server', () async {
+    test('should return a correct response from the server', () async {
       when(mockClient.get(uri, headers: headers))
           .thenAnswer((_) async => validResponse);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -65,7 +65,7 @@ void main() {
       expect(response, validResponse);
     });
 
-    test('should return an error response with the server', () async {
+    test('should return an error response from the server', () async {
       when(mockClient.get(uri, headers: headers))
           .thenAnswer((_) async => invalidResponse);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -79,7 +79,7 @@ void main() {
     });
   });
   group('pull', () {
-    test('should return a correct response with the server', () async {
+    test('should return a correct response from the server', () async {
       when(mockClient.get(uri, headers: headers))
           .thenAnswer((_) async => validResponseWithContent);
       when(mockClassroomLocalDataSourceIml.cacheClassroom(model1))
@@ -97,7 +97,7 @@ void main() {
       expect(response, SuccessfulResponse());
     });
 
-    test('should return a wrong response with the server', () async {
+    test('should return a wrong response from the server', () async {
       when(mockClient.get(uri, headers: headers))
           .thenAnswer((_) async => invalidResponse);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
