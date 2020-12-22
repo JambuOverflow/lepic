@@ -47,10 +47,14 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
       final classCompanion = classroomModel.toCompanion(nullToAbsent);
       final classPk = await this.database.insertClassroom(classCompanion);
       return ClassroomModel(
-          grade: classroomModel.grade,
-          tutorId: classroomModel.tutorId,
-          name: classroomModel.name,
-          localId: classPk);
+        grade: classroomModel.grade,
+        tutorId: classroomModel.tutorId,
+        name: classroomModel.name,
+        localId: classPk,
+        deleted: false,
+        lastUpdated: classroomModel.lastUpdated,
+        clientLastUpdated: classroomModel.clientLastUpdated,
+      );
     } on SqliteException {
       throw CacheException();
     }
@@ -58,10 +62,10 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
 
   @override
   Future<void> deleteClassroomFromCache(ClassroomModel classroomModel) async {
-    var pk = classroomModel.localId;
+    ClassroomModel deletedClassroomModel = classroomModel.copyWith(deleted: true);
     try {
-      var done = await this.database.deleteClassroom(pk);
-      if (done != 1) {
+      bool done = await this.database.updateClassroom(deletedClassroomModel);
+      if (done != true) {
         throw SqliteException(787, "The table doesn't have this entry");
       }
     } on SqliteException {
