@@ -8,13 +8,34 @@ import '../../../../core/fixtures/fixture_reader.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 
 void main() {
-  final tClassModel =
-      ClassroomModel(grade: 1, localId: 2, name: "A", tutorId: 3);
+  final tClassModel = ClassroomModel(
+    grade: 1,
+    localId: 2,
+    name: "A",
+    tutorId: 3,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
-  final tClassEntity = Classroom(grade: 1, id: 2, name: "A", tutorId: 3);
+  final tClassEntity = Classroom(
+    grade: 1,
+    id: 2,
+    name: "A",
+    tutorId: 3,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
-  final tClassCompanion = ClassroomModelsCompanion(grade: Value(1), name: Value("A"),
-  tutorId: Value(3));
+  final tClassCompanion = ClassroomModelsCompanion(
+    grade: Value(1),
+    name: Value("A"),
+    tutorId: Value(3),
+    deleted: Value(false),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
 
   group("from json", () {
     test("should return a valid Classroom model", () async {
@@ -34,7 +55,11 @@ void main() {
         "local_id": 2,
         "grade": 1,
         "name": "A",
+        "lastUpdated": 1577847600000,
+        "clientLastUpdated": 1577847600000,
+        "deleted": false,
         "tutor_id": 3,
+        
       };
 
       expect(result, expectedMap);
@@ -56,5 +81,4 @@ void main() {
       expect(result, tClassModel);
     });
   });
-
 }

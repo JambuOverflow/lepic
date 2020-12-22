@@ -16,34 +16,70 @@ void main() {
   final updateName = "B";
 
   final tValidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(grade), name: Value(name), tutorId: Value(tValidUserPk));
+    grade: Value(grade),
+    name: Value(name),
+    tutorId: Value(tValidUserPk),
+    deleted: Value(false),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
+
+  final tDeletedClassCompanion = ClassroomModelsCompanion(
+    grade: Value(grade),
+    name: Value(name),
+    tutorId: Value(tValidUserPk),
+    deleted: Value(true),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
 
   final tInvalidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(grade), name: Value(name), tutorId: Value(tInvalidUserPk));
+    grade: Value(grade),
+    name: Value(name),
+    tutorId: Value(tInvalidUserPk),
+    deleted: Value(false),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
 
   final tValidClassModel1 = ClassroomModel(
-      grade: grade,
-      name: name,
-      tutorId: tValidUserPk,
-      localId: tValidClassroomPk1);
+    grade: grade,
+    name: name,
+    tutorId: tValidUserPk,
+    localId: tValidClassroomPk1,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
   final tValidClassModel2 = ClassroomModel(
-      grade: grade,
-      name: name,
-      tutorId: tValidUserPk,
-      localId: tValidClassroomPk2);
+    grade: grade,
+    name: name,
+    tutorId: tValidUserPk,
+    localId: tValidClassroomPk2,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
   final tValidUpdateClassModel = ClassroomModel(
       grade: grade,
       name: updateName,
       tutorId: tValidUserPk,
-      localId: tValidClassroomPk1);
+      localId: tValidClassroomPk1,
+      deleted: false,
+      lastUpdated: DateTime(2020),
+      clientLastUpdated: DateTime(2020));
 
   final tInvalidUpdateClassModel = ClassroomModel(
-      localId: tInvalidClassroomPk,
-      grade: grade,
-      name: updateName,
-      tutorId: tValidUserPk);
+    localId: tInvalidClassroomPk,
+    grade: grade,
+    name: updateName,
+    tutorId: tValidUserPk,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
   final tUserCompanion = UserModelsCompanion(
     firstName: Value("cana"),
@@ -86,26 +122,6 @@ void main() {
     });
   });
 
-  group("deleteClassroom", () {
-    setUp(() async {
-      await database.insertClassroom(tValidClassCompanion);
-    });
-
-    test(
-        "should return 1 indicating that a row was deleted when the input is a valid pk",
-        () async {
-      final deleted = await database.deleteClassroom(tValidClassroomPk1);
-      expect(deleted, 1);
-    });
-
-    test(
-        "should return 0 indicating that no rows were deleted when the input is an invalid pk",
-        () async {
-      final deleted = await database.deleteClassroom(tInvalidClassroomPk);
-      expect(deleted, 0);
-    });
-  });
-
   group("getClassrooms", () {
     test("should return an empty list of classrooms", () async {
       final classrooms = await database.getClassrooms(tValidUserPk);
@@ -114,6 +130,14 @@ void main() {
 
     test("should return a list with one classroom", () async {
       await database.insertClassroom(tValidClassCompanion);
+
+      final classrooms = await database.getClassrooms(tValidUserPk);
+      expect(classrooms, [tValidClassModel1]);
+    });
+
+    test("should return a list with one valid classroom", () async {
+      await database.insertClassroom(tValidClassCompanion);
+      await database.insertClassroom(tDeletedClassCompanion);
 
       final classrooms = await database.getClassrooms(tValidUserPk);
       expect(classrooms, [tValidClassModel1]);

@@ -49,14 +49,10 @@ class Database extends _$Database {
     return into(classroomModels).insert(modelCompanion);
   }
 
-  ///Returns the number of deleted rows
-  Future<int> deleteClassroom(int id) async {
-    return (delete(classroomModels)..where((t) => t.localId.equals(id))).go();
-  }
-
-  ///Returns a list of classroomModels, and an empty list when the table is empty
+  ///Returns a list of classroomModels that weren't deleted, 
+  /// and an empty list when the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
-    return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId)))
+    return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
         .get();
   }
 

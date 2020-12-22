@@ -2,5 +2,9 @@
     "local_id": 2,
     "grade": 1,
     "name": "A",
+    "lastUpdated": 1577847600000,
+    "clientLastUpdated": 1577847600000,
+    "deleted": false,
     "tutor_id": 3
+    
 }
