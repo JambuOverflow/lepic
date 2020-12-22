@@ -62,6 +62,9 @@ void main() {
     grade: Value(1),
     name: Value("varro"),
     tutorId: Value(1),
+    lastUpdated: Value(DateTime.now()),
+    clientLastUpdated: Value(DateTime.now()),
+    deleted: Value(false),
   );
 
   Database database;
@@ -102,19 +105,14 @@ void main() {
       await database.insertText(tValidTextCompanion);
     });
 
-    test(
-        "shouldn't throw an exception when the input is a valid pk",
-        () async {
+    test("shouldn't throw an exception when the input is a valid pk", () async {
       await database.deleteText(tValidTextPk1);
       equals(true);
     });
 
-    test(
-        "should throw an exception when the input is an invalid pk",
-        () async {
-      expect(() => database.deleteText(tInvalidTextPk), throwsA(const
-      TypeMatcher<SqliteException>()));
-      
+    test("should throw an exception when the input is an invalid pk", () async {
+      expect(() => database.deleteText(tInvalidTextPk),
+          throwsA(const TypeMatcher<SqliteException>()));
     });
   });
 
