@@ -21,10 +21,11 @@ class SyncClassroom {
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
   DateTime lastSyncTime = DateTime.now();
 
-  SyncClassroom(
-      {@required this.client,
-      @required this.secureStorage,
-      @required this.classroomLocalDataSourceImpl});
+  SyncClassroom({
+    @required this.client,
+    @required this.secureStorage,
+    @required this.classroomLocalDataSourceImpl,
+  });
 
   // Gets from server the classrooms that were updated synce last time
   Future<http.Response> getServerUpdated(String lastSyncTime) async {
