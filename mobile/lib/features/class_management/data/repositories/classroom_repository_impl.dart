@@ -8,19 +8,27 @@ import 'package:dartz/dartz.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
-
+import 'package:clock/clock.dart';
 import '../data_sources/classroom_local_data_source.dart';
 
 class ClassroomRepositoryImpl implements ClassroomRepository {
   final ClassroomLocalDataSource localDataSource;
+  final Clock clock;
 
   ClassroomRepositoryImpl({
     @required this.localDataSource,
+    @required this.clock,
   });
+
+  Classroom updateClientLastUpdated(Classroom classroom) {
+    classroom.clientLastUpdated = clock.now();
+    return classroom;
+  }
 
   @override
   Future<Either<Failure, Classroom>> createClassroom(
       Classroom classroom) async {
+    classroom = updateClientLastUpdated(classroom);
     return await _tryCacheClassroom(classroom);
   }
 
@@ -38,6 +46,7 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
 
   @override
   Future<Either<Failure, void>> deleteClassroom(Classroom classroom) async {
+    classroom = updateClientLastUpdated(classroom);
     return await _tryDeleteClassroom(classroom);
   }
 
@@ -45,6 +54,7 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     try {
       var model = classroomEntityToModel(classroom);
       await localDataSource.deleteClassroomFromCache(model);
+      return null;
     } on CacheException {
       return Left(CacheFailure());
     }
@@ -72,6 +82,7 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   @override
   Future<Either<Failure, Classroom>> updateClassroom(
       Classroom classroom) async {
+    classroom = updateClientLastUpdated(classroom);
     return await _tryUpdateClassroom(classroom);
   }
 
