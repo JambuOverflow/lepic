@@ -33,16 +33,7 @@ class TestCrudUser(APITestCase):
 
     def test_get_token(self):
         self.client.credentials()
-        url = reverse('list-and-create-users')
-        data = {
-            "first_name": "Arthur",
-            "last_name": "Takeshi",
-            "email": "takeshi@ufpa.br",
-            "username": "takeshi@ufpa.br",
-            "password": "arthur",
-            "role": 2
-        }
-        response = self.client.post(url, data, format='json')
+        User.objects.create_user(username="takeshi@ufpa.br", email="takeshi@ufpa.br", password="arthur", role=0)
         url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
@@ -53,19 +44,7 @@ class TestCrudUser(APITestCase):
         self.assertEqual('token' in response.data, True)
 
     def test_update_user_put(self):
-        self.client.credentials()
-        url = reverse('list-and-create-users')
-        data = {
-            "first_name": "Arthur",
-            "last_name": "Takeshi",
-            "email": "takeshi@ufpa.br",
-            "username": "takeshi@ufpa.br",
-            "password": "arthur",
-            "role": 2
-        }
-        response = self.client.post(url, data, format='json')
-        old_username = response.data['username']
-        old_password = response.data['password']
+        User.objects.create_user(username="takeshi@ufpa.br", email="takeshi@ufpa.br", password="arthur", role=0)
 
         url = reverse('access-token')
         data = {
@@ -86,26 +65,17 @@ class TestCrudUser(APITestCase):
             "role": 1
         }
         response = self.client.put(url, data, format='json')
+        response.data.pop('id')
+        response.data.pop('password')
+        data.pop('password')
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.get().username == old_username, False)
-        self.assertEqual(User.objects.get().password == old_password, False)
+        self.assertEqual(response.data, data)
 
     def test_update_user_patch(self):
         self.client.credentials()
-        url = reverse('list-and-create-users')
-        data = {
-            "first_name": "Arthur",
-            "last_name": "Takeshi",
-            "email": "takeshi@ufpa.br",
-            "username": "takeshi@ufpa.br",
-            "password": "arthur",
-            "role": 1
-        }
-        response = self.client.post(url, data, format='json')
-        old_username = response.data['username']
-        old_password = response.data['password']
-
+        User.objects.create_user(username="takeshi@ufpa.br", email="takeshi@ufpa.br", password="arthur", role=0)
         url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
@@ -124,23 +94,11 @@ class TestCrudUser(APITestCase):
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.get().username == old_username, False)
-        self.assertEqual(User.objects.get().password == old_password, False)
+        self.assertEqual(response.data['username'], 'renan@ufpa.br')
 
     def test_delete_user(self):
         self.client.credentials()
-        url = reverse('list-and-create-users')
-        data = {
-            "first_name": "Arthur",
-            "last_name": "Takeshi",
-            "email": "takeshi@ufpa.br",
-            "username": "takeshi@ufpa.br",
-            "password": "arthur",
-            "role": 2
-        }
-        response = self.client.post(url, data, format='json')
-        response_get_users = self.client.get(url)
-
+        User.objects.create_user(username="takeshi@ufpa.br", email="takeshi@ufpa.br", password="arthur", role=0)
         url = reverse('access-token')
         data = {
             "username": "takeshi@ufpa.br",
@@ -155,6 +113,4 @@ class TestCrudUser(APITestCase):
 
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(response_get_users.status_code, status.HTTP_200_OK)
-        self.assertEqual(response_get_users.data == response.data, False)
         
