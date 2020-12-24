@@ -2,18 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/features/school_management/data/models/school_model.dart';
 import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
+  moorRuntimeOptions.defaultSerializer = Serializer();
+
   final tSchoolModel = SchoolModel(
     localId: 1,
     userId: 1,
     name: 'A',
     zipCode: 0,
-    modality: Modality.estadual,
+    modality: Modality.municipal,
     state: 'B',
     city: 'C',
     neighborhood: 'D',
@@ -24,7 +27,7 @@ void main() {
     userId: 1,
     name: 'A',
     zipCode: 0,
-    modality: Modality.estadual,
+    modality: Modality.municipal,
     state: 'B',
     city: 'C',
     neighborhood: 'D',
