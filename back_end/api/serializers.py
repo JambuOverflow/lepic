@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import IntegrityError
 from .models import Class, User, School, Text, Student, AudioFile
 
 
@@ -11,7 +12,10 @@ class UserSerializer(serializers.ModelSerializer):
                   'email', 'password', 'role']
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        try:
+            return User.objects.create_user(**validated_data, is_active=False)
+        except IntegrityError as exception:
+            raise exception
 
 
 class SchoolSerializer(serializers.ModelSerializer):
