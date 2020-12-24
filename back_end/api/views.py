@@ -77,10 +77,11 @@ class ResetPassword(generics.GenericAPIView):
             user = User._default_manager.get(pk=uid)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
-        if user is not None and default_token_generator.check_token(user, token):
+        if user is not None and PasswordResetTokenGenerator().check_token(user, token):
             user.set_password(request.data['password'])
             user.save()
-            return Response({'success_message': 'Your password was successfully reseted!'}, status=status.HTTP_200_OK)
+            return Response({'success_message': 'Your password was successfully reseted!',
+                            'user': { 'password': user.password } }, status=status.HTTP_200_OK)
         else:
             return Response({'error_message': 'Your password was not successfully reseted, please check your reset link.'}, status=status.HTTP_400_BAD_REQUEST)
 
