@@ -8,6 +8,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
 
 from django.http import JsonResponse, Http404
+from django.db import IntegrityError
 from django.urls import reverse
 from django.shortcuts import render
 from django.core.validators import validate_email
@@ -105,21 +106,35 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
     def perform_create(self, serializer):
-        user = serializer.save()
-        current_domain = get_current_site(self.request).domain
-        uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
-        link = reverse('email-verification', kwargs={'uidb64': uidb64, 'token': token})
-        activate_url = 'http://' + current_domain + link
+        try:
+            user = serializer.save()
+            current_domain = get_current_site(self.request).domain
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            link = reverse('email-verification', kwargs={'uidb64': uidb64, 'token': token})
+            activate_url = 'http://' + current_domain + link
 
-        email_subject = 'Activate your account.'
-        email_body = f'Hi {user.first_name},\nPlease use this link to verify your account:\n{activate_url}'
-        email = EmailMessage(
-            email_subject,
-            email_body,
-            to=[user.email],
-        )
-        EmailThread(email).start()
+            email_subject = 'Activate your account.'
+            email_body = f'Hi {user.first_name},\nPlease use this link to verify your account:\n{activate_url}'
+            email = EmailMessage(
+                email_subject,
+                email_body,
+                to=[user.email],
+            )
+            EmailThread(email).start()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError as exception:
+            return Response({"email": ["user with this email address already exists."],
+                            'exception_message': exception}, status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.initial_data['email'] = serializer.initial_data['email'].lower()
+        serializer.is_valid(raise_exception=True)
+        response = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(response.data, response.status_code, headers=headers)
+
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     """
