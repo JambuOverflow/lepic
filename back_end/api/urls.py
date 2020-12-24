@@ -17,6 +17,9 @@ urlpatterns = [
   path('token-auth/', ObtainAuthToken.as_view(), name='access-token'),
   path('audio-file/', views.AudioFileList.as_view(), name='upload-file'),
   path('audio-file/<int:pk>', views.AudioFileDetail.as_view(), name='update-delete-file'),
+  path('verification/<str:uidb64>/<str:token>', views.EmailVerification.as_view(), name='email-verification'),
+  path('forgot-my-password/', views.ForgotMyPassword.as_view(), name='request-reset-password'),
+  path('forgot-my-password/<uidb64>/<token>/', views.ResetPassword.as_view(), name='reset-password')
 ] 
 
 urlpatterns = format_suffix_patterns(urlpatterns)
