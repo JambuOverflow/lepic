@@ -38,7 +38,7 @@ class SchoolLocalDataSourceImpl implements SchoolLocalDataSource {
     try {
       bool nullToAbsent = true;
       final schoolCompanion = schoolModel.toCompanion(nullToAbsent);
-      final classPk = await this.database.insertSchool(schoolCompanion);
+      final schoolPk = await this.database.insertSchool(schoolCompanion);
       return SchoolModel(
           userId: schoolModel.userId,
           zipCode: schoolModel.zipCode,
@@ -47,7 +47,7 @@ class SchoolLocalDataSourceImpl implements SchoolLocalDataSource {
           city: schoolModel.city,
           neighborhood: schoolModel.neighborhood,
           name: schoolModel.name,
-          localId: classPk);
+          localId: schoolPk);
     } on SqliteException {
       throw CacheException();
     }

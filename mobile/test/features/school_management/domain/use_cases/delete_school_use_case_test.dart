@@ -32,7 +32,7 @@ void main() {
     userId: 1,
     name: 'A',
     zipCode: 0,
-    modality: Modality.estadual,
+    modality: Modality.public,
     state: 'B',
     city: 'C',
     neighborhood: 'D',

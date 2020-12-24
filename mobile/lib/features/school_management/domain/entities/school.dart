@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-enum Modality { municipal, estadual, federal, privada }
+enum Modality { municipal, public, federal, private }
 
 class School extends Equatable {
   final int id;

@@ -15,7 +15,7 @@ void main() {
   final tInvalidUserPk = 2;
 
   final zipCode = 1;
-  final Modality modality = Modality.estadual;
+  final Modality modality = Modality.public;
   final String state = "PA";
   final String city = "Belém";
   final String neighborhood = "Nazaré";
