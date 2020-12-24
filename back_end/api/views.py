@@ -26,7 +26,7 @@ from .utils import EmailThread
 
 class EmailVerification(generics.GenericAPIView):
     """
-    Verifies the verification token and user id, if it is valid, set user state to active, if not, returns an error message.
+    Verifies the verification token and user id, if are valid, set user state to active, if not, returns an error message.
     If the user state is already active, it returns a message to alert about it.
     EX: GET /api/email-verification/<base 64 id>/<verification token>
     """
@@ -46,6 +46,11 @@ class EmailVerification(generics.GenericAPIView):
             return Response({'detail': 'Your email was not successfully verified, please check your verification link.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ForgotMyPassword(generics.GenericAPIView):
+    """
+    Sends a valid email for password reset, to the email given inside the request body. If there is no user
+    with that email in the database, then returns a Bad Request status with an error message.
+    EX: POST /api/forgot-my-password/
+    """
     def post(self, request):
         data = request.data
         email = data['email']
@@ -71,6 +76,11 @@ class ForgotMyPassword(generics.GenericAPIView):
             return Response({'error_message': 'This email is not registered in our database, please send an email already registered'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ResetPassword(generics.GenericAPIView):
+    """
+    Verifies the token and user id validity, and if are valid, reset the user password to the given one inside the request body.
+    If are not valid, returns a Bad Request status and an error message.
+    EX: PATCH /api/forgot-my-password/<uidb64>/<token>/
+    """
     def patch(self, request, uidb64, token):
         try:
             uid = urlsafe_base64_decode(uidb64).decode()
