@@ -107,7 +107,7 @@ class Database extends _$Database {
 
   ///Returns a list of schoolModels, and an empty list when the table is empty
   Future<List<SchoolModel>> getSchools(int userId) async {
-    return (select(schoolModels)..where((t) => t.localId.equals(userId))).get();
+    return (select(schoolModels)..where((t) => t.userId.equals(userId))).get();
   }
 
   ///Returns true if the school was updated, false otherwise
