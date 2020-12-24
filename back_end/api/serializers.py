@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'email', 'password', 'role']
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        return User.objects.create_user(**validated_data, is_active=False)
 
 
 class SchoolSerializer(serializers.ModelSerializer):
