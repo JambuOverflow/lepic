@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../widgets/classroom_form_field.dart';
 
 import '../bloc/classroom_bloc.dart';
 
@@ -13,12 +14,9 @@ class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
   TextEditingController idController = TextEditingController();
-  ClassroomBloc _classBloc;
 
   @override
   Widget build(BuildContext context) {
-    //WELP ME PLIS
-    _classBloc = BlocProvider.of<ClassroomBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Create class'),
@@ -45,7 +43,7 @@ class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
             textController: idController,
             numeric: true,
           ),
-          BlocListener<ClassroomBloc, ClassroomState>(
+          BlocConsumer<ClassroomBloc, ClassroomState>(
             listener: (context, state) {
               if (state is Error) {
                 Scaffold.of(context).showSnackBar(
@@ -57,56 +55,21 @@ class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
                 Navigator.pop(context);
               }
             },
-            child: BlocBuilder<ClassroomBloc, ClassroomState>(
-                builder: (context, state) {
+            builder: (context, state) {
               return Container(
                 height: 80,
-                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: RaisedButton(
                   child: Text(
                     'Create class',
                     style: TextStyle(fontSize: 16),
                   ),
-                  onPressed: () {
-                  },
+                  onPressed: () {},
                 ),
               );
-            }),
+            },
           ),
         ]),
-      ),
-    );
-  }
-}
-
-class ClasroomForm extends StatefulWidget {
-  final TextEditingController textController;
-  final String label;
-  final bool numeric;
-
-  ClasroomForm({
-    this.textController,
-    this.label,
-    this.numeric,
-  });
-
-  @override
-  _ClasroomFormState createState() => _ClasroomFormState();
-}
-
-class _ClasroomFormState extends State<ClasroomForm> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      child: TextField(
-        controller: widget.textController,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: widget.label,
-        ),
-        keyboardType:
-            widget.numeric != null ? TextInputType.number : TextInputType.text,
       ),
     );
   }
