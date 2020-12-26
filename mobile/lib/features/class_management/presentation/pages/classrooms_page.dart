@@ -4,12 +4,12 @@ import 'package:mobile/core/widgets/drawer_overlay.dart';
 
 import '../bloc/classroom_bloc.dart';
 
-class ShowClasses extends StatefulWidget {
+class ClassroomsPage extends StatefulWidget {
   @override
-  _ShowClassesState createState() => _ShowClassesState();
+  _ClassroomsPageState createState() => _ClassroomsPageState();
 }
 
-class _ShowClassesState extends State<ShowClasses> {
+class _ClassroomsPageState extends State<ClassroomsPage> {
   TextEditingController tutorIdController = TextEditingController();
   TextEditingController nameController = TextEditingController();
 
