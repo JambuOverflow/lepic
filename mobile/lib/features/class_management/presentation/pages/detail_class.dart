@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/classroom.dart';
 
 enum MenuOption { Assign, Edit, Remove }
 
