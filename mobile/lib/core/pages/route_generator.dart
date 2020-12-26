@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mobile/features/class_management/presentation/pages/detail_class.dart';
 import 'package:mobile/features/class_management/presentation/pages/classrooms_page.dart';
 import 'package:mobile/features/class_management/presentation/pages/classroom_creation_page.dart';
-import 'package:mobile/features/class_management/presentation/pages/update_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/classroom_update_page.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
@@ -86,7 +86,7 @@ class RouteGenerator {
 
       case '/update_class':
         return MaterialPageRoute(
-          builder: (_) => UpdateClass(),
+          builder: (_) => ClassroomUpdatePage(),
         );
 
       default:

@@ -4,12 +4,12 @@ import 'package:mobile/features/class_management/presentation/widgets/classroom_
 
 import '../bloc/classroom_bloc.dart';
 
-class UpdateClass extends StatefulWidget {
+class ClassroomUpdatePage extends StatefulWidget {
   @override
-  _UpdateClassState createState() => _UpdateClassState();
+  _ClassroomUpdatePageState createState() => _ClassroomUpdatePageState();
 }
 
-class _UpdateClassState extends State<UpdateClass> {
+class _ClassroomUpdatePageState extends State<ClassroomUpdatePage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
