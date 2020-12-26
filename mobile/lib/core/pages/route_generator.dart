@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/class_management/presentation/pages/detail_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/classroom_detail_page.dart';
 import 'package:mobile/features/class_management/presentation/pages/classrooms_page.dart';
 import 'package:mobile/features/class_management/presentation/pages/classroom_creation_page.dart';
 import 'package:mobile/features/class_management/presentation/pages/classroom_update_page.dart';
@@ -81,7 +81,7 @@ class RouteGenerator {
       case '/detail_class':
         return MaterialPageRoute(
           builder: (_) =>
-              ClassDetailPage(/*_schoolClass*/), //receives arguments
+              ClassroomDetailPage(/*_schoolClass*/), //receives arguments
         );
 
       case '/update_class':
