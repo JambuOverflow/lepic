@@ -24,21 +24,21 @@ class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(children: <Widget>[
-          ClasroomForm(
+          ClasroomFormField(
             label: 'Class name',
             textController: _nameController,
           ),
-          ClasroomForm(
+          ClasroomFormField(
             label: 'Grade',
             textController: _gradeController,
             numeric: true,
           ),
-          ClasroomForm(
+          ClasroomFormField(
             label: 'Tutor',
             textController: _tutorIdController,
             numeric: true,
           ),
-          ClasroomForm(
+          ClasroomFormField(
             label: 'Id - for tests',
             textController: idController,
             numeric: true,

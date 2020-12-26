@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
-class ClasroomForm extends StatefulWidget {
+class ClasroomFormField extends StatefulWidget {
   final TextEditingController textController;
   final String label;
   final bool numeric;
 
-  ClasroomForm({
+  ClasroomFormField({
     this.textController,
     this.label,
     this.numeric,
   });
 
   @override
-  _ClasroomFormState createState() => _ClasroomFormState();
+  _ClasroomFormFieldState createState() => _ClasroomFormFieldState();
 }
 
-class _ClasroomFormState extends State<ClasroomForm> {
+class _ClasroomFormFieldState extends State<ClasroomFormField> {
   @override
   Widget build(BuildContext context) {
     return Container(
