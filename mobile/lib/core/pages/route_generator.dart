@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/class_management/presentation/pages/detail_class.dart';
 import 'package:mobile/features/class_management/presentation/pages/list_class.dart';
-import 'package:mobile/features/class_management/presentation/pages/add_class.dart';
+import 'package:mobile/features/class_management/presentation/pages/classroom_creation_page.dart';
 import 'package:mobile/features/class_management/presentation/pages/update_class.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
@@ -68,7 +68,7 @@ class RouteGenerator {
         );
       case '/add_class':
         return MaterialPageRoute(
-          builder: (_) => AddClass(),
+          builder: (_) => ClassroomCreationPage(),
         );
       case '/list_texts':
         return MaterialPageRoute(

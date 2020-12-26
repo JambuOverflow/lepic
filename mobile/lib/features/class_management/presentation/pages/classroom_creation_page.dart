@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/classroom_bloc.dart';
 
-class AddClass extends StatefulWidget {
+class ClassroomCreationPage extends StatefulWidget {
   @override
-  _AddClassState createState() => _AddClassState();
+  _ClassroomCreationPageState createState() => _ClassroomCreationPageState();
 }
 
-class _AddClassState extends State<AddClass> {
+class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
   TextEditingController _tutorIdController = TextEditingController();
