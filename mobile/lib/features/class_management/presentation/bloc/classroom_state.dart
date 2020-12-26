@@ -1,4 +1,4 @@
-part of 'class_bloc.dart';
+part of 'classroom_bloc.dart';
 
 abstract class ClassroomState extends Equatable {
   const ClassroomState();
@@ -14,24 +14,34 @@ class ClassroomDeleted extends ClassroomState {}
 class CreatingClassroom extends ClassroomState {}
 
 class ClassroomCreated extends ClassroomState {
-  final Classroom response;
+  final Classroom newClassroom;
 
-  ClassroomCreated({@required this.response});
+  ClassroomCreated({@required this.newClassroom});
+
+  @override
+  List<Object> get props => [newClassroom];
 }
 
 class UpdatingClassroom extends ClassroomState {}
 
 class ClassroomUpdated extends ClassroomState {
-  final Classroom response;
+  final Classroom updatedClassroom;
 
-  ClassroomUpdated({@required this.response});
+  ClassroomUpdated({@required this.updatedClassroom});
+
+  @override
+  List<Object> get props => [updatedClassroom];
 }
 
-class GettingClassroom extends ClassroomState {}
+class GettingClassrooms extends ClassroomState {}
 
-class ClassroomGot extends ClassroomState {
+class ClassroomsGot extends ClassroomState {
   final List<Classroom> classrooms;
-  ClassroomGot({@required this.classrooms});
+
+  ClassroomsGot({@required this.classrooms});
+
+  @override
+  List<Object> get props => [classrooms];
 }
 
 class Error extends ClassroomState {
