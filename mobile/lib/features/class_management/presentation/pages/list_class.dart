@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/widgets/drawer_overlay.dart';
 
-import '../../domain/entities/classroom.dart';
-import '../bloc/class_bloc.dart';
-import 'detail_class.dart';
+import '../bloc/classroom_bloc.dart';
 
 class ShowClasses extends StatefulWidget {
   @override

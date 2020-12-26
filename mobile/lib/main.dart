@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/pages/route_generator.dart';
-import 'package:mobile/features/class_management/presentation/bloc/class_bloc.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:moor/moor.dart';
 
+import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
 // import 'features/user_management/presentation/route_generator.dart';
 import 'injection_container.dart';

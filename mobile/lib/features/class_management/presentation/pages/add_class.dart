@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/classroom.dart';
-import '../bloc/class_bloc.dart';
+
+import '../bloc/classroom_bloc.dart';
 
 class AddClass extends StatefulWidget {
   @override
@@ -68,14 +68,6 @@ class _AddClassState extends State<AddClass> {
                     style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
-                    print("creating class");
-                    _classBloc.add(CreateNewClassroomEvent(
-                      int.tryParse(_tutorIdController.text),
-                      int.tryParse(idController.text),
-                      int.tryParse(_gradeController.text),
-                      _nameController.text,
-                    ));
-                    print("class created");
                   },
                 ),
               );

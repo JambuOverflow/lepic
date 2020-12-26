@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/core/util/input_converter.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/class_management/domain/use_cases/create_classroom_use_case.dart';
@@ -12,6 +11,7 @@ import 'package:mobile/features/class_management/presentation/bloc/classroom_blo
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/presentation/bloc/auth_bloc.dart';
 import 'package:mockito/mockito.dart';
+import 'package:mobile/core/utils/input_converter.dart';
 
 class MockInputConverter extends Mock implements InputConverter {}
 

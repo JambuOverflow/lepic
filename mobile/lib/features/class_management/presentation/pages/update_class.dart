@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/classroom.dart';
-import '../bloc/class_bloc.dart';
+
+import '../bloc/classroom_bloc.dart';
 
 class UpdateClass extends StatefulWidget {
   @override
@@ -67,17 +67,7 @@ class _UpdateClassState extends State<UpdateClass> {
                     'Update',
                     style: TextStyle(fontSize: 16),
                   ),
-                  onPressed: () {
-                    print("Updating class");
-                    _classBloc.add(//não devia ser update?
-                        UpdateClassroomEvent(
-                      //tutorId, id, grade, name
-                      int.tryParse(_tutorIdController.text),
-                      int.tryParse(_levelSelected.text), //era pra ser id
-                      int.tryParse(_gradeController.text),
-                      _nameController.text,
-                    ));
-                  },
+                  onPressed: () {},
                 ),
               );
             }),
