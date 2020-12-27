@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/student.dart';
-import '../pages/detail_student.dart';
+import '../pages/student_detail_page.dart';
 
 class StudentItem extends StatelessWidget {
   final Student _student;
