@@ -12,8 +12,6 @@ class ClassroomCreationPage extends StatefulWidget {
 class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _gradeController = TextEditingController();
-  TextEditingController _tutorIdController = TextEditingController();
-  TextEditingController idController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +29,6 @@ class _ClassroomCreationPageState extends State<ClassroomCreationPage> {
           ClasroomFormField(
             label: 'Grade',
             textController: _gradeController,
-            numeric: true,
-          ),
-          ClasroomFormField(
-            label: 'Tutor',
-            textController: _tutorIdController,
-            numeric: true,
-          ),
-          ClasroomFormField(
-            label: 'Id - for tests',
-            textController: idController,
             numeric: true,
           ),
           BlocConsumer<ClassroomBloc, ClassroomState>(
