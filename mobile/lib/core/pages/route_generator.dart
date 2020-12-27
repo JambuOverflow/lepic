@@ -9,7 +9,7 @@ import 'package:mobile/features/class_management/presentation/pages/classroom_up
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
-import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
+import 'package:mobile/features/student_management/presentation/pages/student_detail_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/students_page.dart';
 import 'package:mobile/features/text_management/presentation/pages/create_text.dart';
 import 'package:mobile/features/text_management/presentation/pages/list_text.dart';

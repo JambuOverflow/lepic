@@ -11,19 +11,6 @@ class StudentDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(_student.firstName.toString()),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: choiceAction,
-            itemBuilder: (BuildContext context) {
-              return Constants.choices.map((String choice) {
-                return PopupMenuItem<String>(
-                  child: Text(choice),
-                  value: choice,
-                );
-              }).toList();
-            },
-          ),
-        ],
       ),
       body: Container(
         padding: EdgeInsets.all(8.0),
@@ -63,33 +50,5 @@ class PopupMenuOption extends StatelessWidget {
         ];
       },
     );
-  }
-}
-
-class Constants {
-  static const String assign = 'Assign student';
-  static const String edit = 'Edit student';
-  static const String remove = 'Remove student';
-
-  static const List<String> choices = <String>[
-    assign,
-    edit,
-    remove,
-  ];
-}
-
-void choiceAction(String choice) {
-  switch (choice) {
-    case Constants.assign:
-      print('add student');
-      break;
-    case Constants.edit:
-      print('edit student');
-      break;
-    case Constants.remove:
-      print('remove this student');
-      break;
-    default:
-      print('error');
   }
 }
