@@ -10,12 +10,10 @@ abstract class StudentEvent extends Equatable {
 abstract class StudentManagementEvent extends StudentEvent {
   final String firstName;
   final String lastName;
-  final int classroomId;
 
   StudentManagementEvent(
     this.firstName,
     this.lastName,
-    this.classroomId,
   );
 }
 
@@ -23,16 +21,14 @@ class CreateNewStudentEvent extends StudentManagementEvent {
   CreateNewStudentEvent({
     @required String firstName,
     @required String lastName,
-    @required int classroomId,
-  }) : super(firstName, lastName, classroomId);
+  }) : super(firstName, lastName);
 }
 
 class UpdateStudentEvent extends StudentManagementEvent {
   UpdateStudentEvent({
     String firstName,
     String lastName,
-    @required int classroomId,
-  }) : super(firstName, lastName, classroomId);
+  }) : super(firstName, lastName);
 }
 
 class DeleteStudentEvent extends StudentEvent {
