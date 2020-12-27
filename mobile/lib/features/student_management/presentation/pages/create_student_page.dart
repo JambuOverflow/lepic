@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/student.dart';
 import '../bloc/student_bloc.dart';
 
 class AddStudent extends StatefulWidget {
@@ -9,90 +8,97 @@ class AddStudent extends StatefulWidget {
 }
 
 class _AddStudentState extends State<AddStudent> {
-  TextEditingController _firstnameController = TextEditingController();
-  TextEditingController _lastnameController = TextEditingController();
-  TextEditingController _idController = TextEditingController();
-  TextEditingController _classroomIdController = TextEditingController();
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
+
   StudentBloc _studentBloc;
 
   @override
   Widget build(BuildContext context) {
     _studentBloc = BlocProvider.of<StudentBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('New student'),
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
-        child: ListView(children: <Widget>[
-          StudentFormWidget(context, _firstnameController, _lastnameController,
-              _classroomIdController, _idController),
-          BlocListener<StudentBloc, StudentState>(
-            listener: (context, state) {
-              if (state is Error) {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
+        child: ListView(
+          children: <Widget>[
+            StudentFormWidget(
+              firstNameController: _firstNameController,
+              lastNameController: _lastNameController,
+            ),
+            BlocConsumer<StudentBloc, StudentState>(
+              listener: (context, state) {
+                if (state is Error) {
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                    ),
+                  );
+                } else if (state is Error) {
+                  Navigator.pop(context);
+                }
+              },
+              builder: (context, state) {
+                return Container(
+                  height: 80,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 16.0,
+                  ),
+                  child: RaisedButton(
+                    child: Text(
+                      'Create student',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    onPressed: () {
+                      print("creating student");
+                      // _studentBloc.add(
+                      //   CreateNewStudentEvent(
+                      //     _firstNameController.text,
+                      //     _lastNameController.text,
+                      //   ),
+                      // );
+                    },
                   ),
                 );
-              } else if (state is Error) {
-                Navigator.pop(context);
-              }
-            },
-            child: BlocBuilder<StudentBloc, StudentState>(
-                builder: (context, state) {
-              return Container(
-                height: 80,
-                padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-                child: RaisedButton(
-                  child: Text(
-                    'Create student',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onPressed: () {
-                    print("creating student");
-                    _studentBloc.add(CreateNewStudentEvent(
-                      _firstnameController.text,
-                      _lastnameController.text,
-                      int.tryParse(_idController.text),
-                      int.tryParse(_classroomIdController.text),
-                    ));
-                  },
-                ),
-              );
-            }),
-          ),
-        ]),
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
+}
 
-  Widget StudentFormWidget(
-      BuildContext context,
-      TextEditingController _firstnameController,
-      TextEditingController _lastnameController,
-      TextEditingController _classroomIdController,
-      TextEditingController _idController) {
-    return Column(children: <Widget>[
-      StudentForm(
-        label: 'First name',
-        textController: _firstnameController,
-      ),
-      StudentForm(
-        label: 'Last name',
-        textController: _lastnameController,
-      ),
-      StudentForm(
-        label: 'id',
-        textController: _idController,
-        numeric: true,
-      ),
-      StudentForm(
-        label: 'Classroom',
-        textController: _classroomIdController,
-        numeric: true,
-      ),
-    ]);
+class StudentFormWidget extends StatelessWidget {
+  final TextEditingController _firstnameController;
+  final TextEditingController _lastnameController;
+
+  const StudentFormWidget({
+    Key key,
+    @required TextEditingController firstNameController,
+    @required TextEditingController lastNameController,
+  })  : this._firstnameController = firstNameController,
+        this._lastnameController = lastNameController,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        StudentForm(
+          label: 'First name',
+          textController: _firstnameController,
+        ),
+        StudentForm(
+          label: 'Last name',
+          textController: _lastnameController,
+        ),
+      ],
+    );
   }
 }
 
