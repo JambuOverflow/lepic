@@ -4,15 +4,15 @@ import '../../../../core/widgets/drawer_overlay.dart';
 import '../../domain/entities/student.dart';
 import '../widgets/student_item.dart';
 
-class ShowStudents extends StatefulWidget {
-  ShowStudents({Key key}) : super(key: key);
+class StudentsPage extends StatefulWidget {
+  StudentsPage({Key key}) : super(key: key);
   final List<Student> _listStudents = List();
 
   @override
-  _ShowStudentsState createState() => _ShowStudentsState();
+  _StudentsPageState createState() => _StudentsPageState();
 }
 
-class _ShowStudentsState extends State<ShowStudents> {
+class _StudentsPageState extends State<StudentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

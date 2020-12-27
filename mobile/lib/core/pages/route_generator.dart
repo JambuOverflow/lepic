@@ -10,7 +10,7 @@ import 'package:mobile/features/student_management/domain/entities/student.dart'
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/detail_student.dart';
-import 'package:mobile/features/student_management/presentation/pages/list_student.dart';
+import 'package:mobile/features/student_management/presentation/pages/students_page.dart';
 import 'package:mobile/features/text_management/presentation/pages/create_text.dart';
 import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
 import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
@@ -56,7 +56,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => SignUpSuccess());
       case '/list_students':
         return MaterialPageRoute(
-          builder: (_) => ShowStudents(),
+          builder: (_) => StudentsPage(),
         );
       case '/add_student':
         return MaterialPageRoute(
