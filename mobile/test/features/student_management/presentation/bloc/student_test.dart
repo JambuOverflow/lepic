@@ -188,10 +188,10 @@ void main() {
 
       final expected = [
         GettingStudents(),
-        StudentGot(students: tList),
+        StudentsGot(students: tList),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentEvent(
+      bloc.add(GetStudentsEvent(
         tFirstName,
         tLastName,
         tId,
@@ -209,7 +209,7 @@ void main() {
         Error(message: 'Not able to get student list'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentEvent(
+      bloc.add(GetStudentsEvent(
         tFirstName,
         tLastName,
         tId,

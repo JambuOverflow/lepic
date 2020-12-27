@@ -7,59 +7,38 @@ abstract class StudentEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class _StudentManagementEvent extends StudentEvent {
+abstract class StudentManagementEvent extends StudentEvent {
   final String firstName;
   final String lastName;
-  final int id;
   final int classroomId;
 
-  _StudentManagementEvent(
+  StudentManagementEvent(
     this.firstName,
     this.lastName,
     this.classroomId,
-    this.id,
   );
 }
 
-class CreateNewStudentEvent extends _StudentManagementEvent {
-  CreateNewStudentEvent(
-    String firstName,
-    String lastName,
-    int id,
-    int classroomId,
-  ) : super(firstName, lastName, id, classroomId);
+class CreateNewStudentEvent extends StudentManagementEvent {
+  CreateNewStudentEvent({
+    @required String firstName,
+    @required String lastName,
+    @required int classroomId,
+  }) : super(firstName, lastName, classroomId);
 }
 
-class UpdateStudentEvent extends _StudentManagementEvent {
-  UpdateStudentEvent(
+class UpdateStudentEvent extends StudentManagementEvent {
+  UpdateStudentEvent({
     String firstName,
     String lastName,
-    int id,
-    int classroomId,
-  ) : super(firstName, lastName, id, classroomId);
+    @required int classroomId,
+  }) : super(firstName, lastName, classroomId);
 }
 
 class DeleteStudentEvent extends StudentEvent {
   final int id;
 
-  DeleteStudentEvent(
-    this.id,
-  );
+  DeleteStudentEvent({@required this.id});
 }
 
-
-class GetStudentEvent extends _StudentManagementEvent {
-
-  final String firstName;
-  final String lastName;
-  final int id;
-  final int classroomId;
-
-  GetStudentEvent(
-    this.firstName,
-    this.lastName,
-    this.classroomId,
-    this.id,
-  ) : super(firstName, lastName, classroomId, id);
-
-}
+class GetStudentsEvent extends StudentEvent {}

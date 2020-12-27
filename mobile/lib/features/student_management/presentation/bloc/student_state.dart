@@ -30,9 +30,9 @@ class StudentUpdated extends StudentState {
 
 class GettingStudents extends StudentState {}
 
-class StudentGot extends StudentState {
+class StudentsGot extends StudentState {
   final List<Student> students;
-  StudentGot({@required this.students});
+  StudentsGot({@required this.students});
 }
 
 class Error extends StudentState {

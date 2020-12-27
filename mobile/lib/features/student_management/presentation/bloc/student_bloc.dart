@@ -10,7 +10,6 @@ import 'package:mobile/features/student_management/domain/use_cases/get_students
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../../core/network/response.dart';
 import '../../domain/entities/student.dart';
 import '../../domain/use_cases/student_params.dart';
 
@@ -18,12 +17,14 @@ part 'student_event.dart';
 part 'student_state.dart';
 
 class StudentBloc extends Bloc<StudentEvent, StudentState> {
+  final Classroom classroom;
   final CreateStudent createStudent;
   final GetStudents getStudents;
   final DeleteStudent deleteStudent;
   final UpdateStudent updateStudent;
 
   StudentBloc({
+    @required this.classroom,
     @required this.createStudent,
     @required this.getStudents,
     @required this.deleteStudent,
@@ -40,7 +41,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       yield* _updateStudentStates(event);
     else if (event is DeleteStudentEvent)
       yield* _deleteStudentStates(event);
-    else if (event is GetStudentEvent) yield* _getStudentsStates(event);
+    else if (event is GetStudentsEvent) yield* _getStudentsStates(event);
   }
 
   Stream<StudentState> _createNewStudentStates(
@@ -49,67 +50,56 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
 
     final student = _createStudentEntityFromEvent(event);
 
-    final failureOrResponse =
-        await createStudent(StudentParams(student: student));
+    final studentEither = await createStudent(StudentParams(student: student));
 
-    yield failureOrResponse.fold(
-        (failure) => Error(message: _mapFailureToMessage(failure)),
-        (response) => StudentCreated(student: response));
+    yield studentEither.fold(
+      (failure) => Error(message: _mapFailureToMessage(failure)),
+      (newStudent) => StudentCreated(student: newStudent),
+    );
   }
 
   Stream<StudentState> _updateStudentStates(UpdateStudentEvent event) async* {
     yield UpdatingStudent();
 
     final student = _createStudentEntityFromEvent(event);
-    final failureOrResponse =
-        await updateStudent(StudentParams(student: student));
+    final studentEither = await updateStudent(StudentParams(student: student));
 
-    yield failureOrResponse.fold(
+    yield studentEither.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => StudentUpdated(student: response),
+      (updatedStudent) => StudentUpdated(student: updatedStudent),
     );
   }
 
   Stream<StudentState> _deleteStudentStates(DeleteStudentEvent event) async* {
     yield DeletingStudent();
 
-    final student = Student(
-      id: event.id,
-    );
-    final failureOrResponse =
-        await deleteStudent(StudentParams(student: student));
+    final student = Student(id: event.id);
 
-    yield failureOrResponse.fold(
+    final deleteEither = await deleteStudent(StudentParams(student: student));
+
+    yield deleteEither.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
       (response) => StudentDeleted(),
     );
   }
 
-  Stream<StudentState> _getStudentsStates(GetStudentEvent event) async* {
+  Stream<StudentState> _getStudentsStates(GetStudentsEvent event) async* {
     yield GettingStudents();
 
-    final classroom = Classroom(
-      id: event.classroomId,
-    );
+    final getEither = await getStudents(ClassroomParams(classroom: classroom));
 
-    final failureOrResponse =
-        await getStudents(ClassroomParams(classroom: classroom));
-    yield failureOrResponse.fold(
+    yield getEither.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => StudentGot(students: response),
+      (students) => StudentsGot(students: students),
     );
   }
 
-  Student _createStudentEntityFromEvent(StudentEvent event) {
-    if (event is _StudentManagementEvent) {
-      return Student(
-        firstName: event.firstName,
-        lastName: event.lastName,
-        id: event.id,
-        classroomId: event.classroomId,
-      );
-    }
-    throw Exception('Cannot create student from event');
+  Student _createStudentEntityFromEvent(StudentManagementEvent event) {
+    return Student(
+      firstName: event.firstName,
+      lastName: event.lastName,
+      classroomId: classroom.id,
+    );
   }
 
   String _mapFailureToMessage(Failure failure) {
