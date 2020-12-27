@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mobile/features/user_management/domain/use_cases/user_params.dart';
 
 import '../../domain/use_cases/get_classrooms_use_case.dart';
 import '../../../user_management/presentation/bloc/auth_bloc.dart';
@@ -116,7 +117,8 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
 
     final loggedUser = authBloc.state.user;
 
-    final failureOrClassrooms = await getClassrooms(UserParams(loggedUser));
+    final failureOrClassrooms =
+        await getClassrooms(UserParams(user: loggedUser));
 
     yield failureOrClassrooms.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
