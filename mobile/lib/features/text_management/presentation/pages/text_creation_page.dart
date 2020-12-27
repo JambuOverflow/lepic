@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
+
+import '../../../../core/presentation/widgets/basic_form.dart';
+import '../bloc/text_bloc.dart';
 
 class TextCreationPage extends StatefulWidget {
   @override
@@ -21,11 +23,11 @@ class _TextCreationPageState extends State<TextCreationPage> {
         padding: EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            StudentForm(
+            BasicForm(
               label: 'Title',
               textController: _titleController,
             ),
-            StudentForm(
+            BasicForm(
               label: 'Body',
               textController: _bodyController,
             ),
@@ -57,39 +59,6 @@ class _TextCreationPageState extends State<TextCreationPage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class StudentForm extends StatefulWidget {
-  final TextEditingController textController;
-  final String label;
-  final bool numeric;
-
-  StudentForm({
-    this.textController,
-    this.label,
-    this.numeric,
-  });
-
-  @override
-  _StudentFormState createState() => _StudentFormState();
-}
-
-class _StudentFormState extends State<StudentForm> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8.0),
-      child: TextField(
-        controller: widget.textController,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: widget.label,
-        ),
-        keyboardType:
-            widget.numeric != null ? TextInputType.number : TextInputType.text,
       ),
     );
   }

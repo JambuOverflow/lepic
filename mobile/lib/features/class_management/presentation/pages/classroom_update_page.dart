@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/class_management/presentation/widgets/classroom_form_field.dart';
+import 'package:mobile/core/presentation/widgets/basic_form.dart';
 
 import '../bloc/classroom_bloc.dart';
 
@@ -23,11 +23,11 @@ class _ClassroomUpdatePageState extends State<ClassroomUpdatePage> {
         padding: EdgeInsets.all(8.0),
         child: ListView(
           children: <Widget>[
-            ClasroomFormField(
+            BasicForm(
               label: 'Current Name',
               textController: _nameController,
             ),
-            ClasroomFormField(
+            BasicForm(
               label: 'Current Grade',
               textController: _gradeController,
               numeric: true,
