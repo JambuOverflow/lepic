@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/core/widgets/drawer_overlay.dart';
 
+import '../../../../core/presentation/widgets/drawer_overlay.dart';
 import '../bloc/classroom_bloc.dart';
 
 class ClassroomsPage extends StatefulWidget {

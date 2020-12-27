@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/widgets/drawer_overlay.dart';
+
+import '../widgets/drawer_overlay.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

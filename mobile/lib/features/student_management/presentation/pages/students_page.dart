@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/drawer_overlay.dart';
+import '../../../../core/presentation/widgets/drawer_overlay.dart';
 import '../../domain/entities/student.dart';
 import '../widgets/student_item.dart';
 

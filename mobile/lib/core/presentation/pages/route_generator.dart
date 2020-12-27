@@ -11,7 +11,7 @@ import 'package:mobile/features/student_management/presentation/bloc/student_blo
 import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/student_detail_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/students_page.dart';
-import 'package:mobile/features/text_management/presentation/pages/create_text.dart';
+import 'package:mobile/features/text_management/presentation/pages/text_creation_page.dart';
 import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
 import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
 import 'package:mobile/features/user_management/presentation/pages/guest.dart';
@@ -76,7 +76,7 @@ class RouteGenerator {
         );
       case '/add_text':
         return MaterialPageRoute(
-          builder: (_) => AddText(),
+          builder: (_) => TextCreationPage(),
         );
       case '/detail_class':
         return MaterialPageRoute(
