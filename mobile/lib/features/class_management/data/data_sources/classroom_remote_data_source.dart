@@ -57,8 +57,10 @@ class SyncClassroom {
     });
     return SuccessfulResponse();
   }
+
   Future<Response> push() async {
     final lastSyncTimeString = this.lastSyncTime.toString();
+    
     http.Response response = await this.getServerUpdated(lastSyncTimeString);
 
     if (response.statusCode == 401) {

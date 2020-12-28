@@ -43,6 +43,8 @@ Future<void> main() {
   final tClassroomInputModel2 =
       ClassroomModel(tutorId: 1, grade: 1, name: "B", localId: null);
 
+  final lastSync = DateTime(2020);
+
   final tClassroomModel1 = ClassroomModel(
     tutorId: 1,
     grade: 1,
@@ -147,6 +149,41 @@ Future<void> main() {
       expect(
           () async => await classroomLocalDataSourceImpl
               .getClassroomsFromCache(tUserModel),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+  });
+
+  group("getClassroomSinceLastSync", () {
+    test("should correctly return a list of classrooms", () async {
+      when(mockDatabase.getClassroomsSinceLastSync(lastSync))
+          .thenAnswer((_) async => tClassroomModels);
+
+      final result =
+          await classroomLocalDataSourceImpl.getClassroomsSinceLastSync(lastSync);
+
+      verify(mockDatabase.getClassroomsSinceLastSync(lastSync));
+      final testResult = listEquals(result, tClassroomModels);
+      equals(testResult);
+    });
+
+    test("should correctly return an empty list", () async {
+      when(mockDatabase.getClassroomsSinceLastSync(lastSync)).thenAnswer((_) async => []);
+
+      final result =
+          await classroomLocalDataSourceImpl.getClassroomsSinceLastSync(lastSync);
+
+      verify(mockDatabase.getClassroomsSinceLastSync(lastSync));
+      final testResult = listEquals(result, []);
+      equals(testResult);
+    });
+
+    test("should throw a CacheException", () async {
+      when(mockDatabase.getClassroomsSinceLastSync(lastSync))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async => await classroomLocalDataSourceImpl
+              .getClassroomsSinceLastSync(lastSync),
           throwsA(TypeMatcher<CacheException>()));
     });
   });

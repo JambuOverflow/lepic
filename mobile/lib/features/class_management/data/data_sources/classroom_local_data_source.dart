@@ -13,6 +13,13 @@ abstract class ClassroomLocalDataSource {
   /// Throws [CacheException] if something wrong happens.
   Future<List<ClassroomModel>> getClassroomsFromCache(UserModel userModel);
 
+  /// Gets the cached list of [Classroom] with clientLastUpdated >= lastSync.
+  ///
+  /// Returns an empty list if no [Classroom] is found with these conditions.
+  ///
+  /// Throws [CacheException] if something wrong happens.
+  Future<List<ClassroomModel>> getClassroomsSinceLastSync(DateTime lastSync);
+
   /// Deletes the [Classroom] passed.
   ///
   /// Throws [CacheException] if the [Classroom] is not cached.
@@ -96,6 +103,15 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
     try {
       await this.database.updateClassroom(classroomModel);
       return classroomModel;
+    } on SqliteException {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<List<ClassroomModel>> getClassroomsSinceLastSync(DateTime lastSync) async {
+    try {
+      return await this.database.getClassroomsSinceLastSync(lastSync);
     } on SqliteException {
       throw CacheException();
     }
