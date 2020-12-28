@@ -46,15 +46,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
       bool nullToAbsent = true;
       final classCompanion = classroomModel.toCompanion(nullToAbsent);
       final classPk = await this.database.insertClassroom(classCompanion);
-      return ClassroomModel(
-        grade: classroomModel.grade,
-        tutorId: classroomModel.tutorId,
-        name: classroomModel.name,
-        localId: classPk,
-        deleted: false,
-        lastUpdated: classroomModel.lastUpdated,
-        clientLastUpdated: classroomModel.clientLastUpdated,
-      );
+      return classroomModel.copyWith(localId: classPk, deleted: false);
     } on SqliteException {
       throw CacheException();
     }
@@ -62,7 +54,8 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
 
   @override
   Future<void> deleteClassroomFromCache(ClassroomModel classroomModel) async {
-    ClassroomModel deletedClassroomModel = classroomModel.copyWith(deleted: true);
+    ClassroomModel deletedClassroomModel =
+        classroomModel.copyWith(deleted: true);
     try {
       await this.database.updateClassroom(deletedClassroomModel);
     } on SqliteException {
@@ -100,7 +93,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   @override
   Future<ClassroomModel> updateCachedClassroom(
       ClassroomModel classroomModel) async {
-    try{
+    try {
       await this.database.updateClassroom(classroomModel);
       return classroomModel;
     } on SqliteException {
