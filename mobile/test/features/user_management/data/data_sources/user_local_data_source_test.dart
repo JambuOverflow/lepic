@@ -90,4 +90,27 @@ void main() {
       verify(mockSecureStorage.write(key: key, value: token));
     });
   });
+
+  group('retrieveToken', () {
+    final token = 'secret shh';
+    test('should store token in the secure storage', () async {
+      when(mockSecureStorage.read(key: anyNamed('key')))
+          .thenAnswer((_) async => token);
+
+      final expected = await dataSource.retrieveToken(tUserModel);
+
+      expect(expected, token);
+      verify(mockSecureStorage.read(key: anyNamed('key')));
+    });
+
+    test('should throw cache exception when key is not present', () async {
+      when(mockSecureStorage.read(key: anyNamed('key')))
+          .thenThrow(CacheException());
+
+      final call = dataSource.retrieveToken;
+
+      expect(() => call(tUserModel), throwsA(isA<CacheException>()));
+      verify(mockSecureStorage.read(key: anyNamed('key')));
+    });
+  });
 }

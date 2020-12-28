@@ -59,7 +59,12 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<String> retrieveToken(UserModel user) {
-    // TODO: implement retrieveToken
-    throw UnimplementedError();
+    final key = user.localId.toString();
+    final token = secureStorage.read(key: key);
+
+    if (token != null)
+      return token;
+    else
+      throw CacheException();
   }
 }
