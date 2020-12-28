@@ -22,6 +22,7 @@ void main() {
   MockClock mockClock;
   ClassroomRepositoryImpl repository;
   final nowTime = DateTime.now();
+  final nowTimeUtc = nowTime.toUtc();
 
   final tUser = User(
     firstName: 'v',
@@ -38,8 +39,8 @@ void main() {
     name: "A",
     id: 1,
     deleted: false,
-    lastUpdated: nowTime,
-    clientLastUpdated: nowTime,
+    lastUpdated: nowTimeUtc,
+    clientLastUpdated: nowTimeUtc,
   );
 
   final tClassroomModel = classroomEntityToModel(tClassroom);
@@ -68,7 +69,6 @@ void main() {
       final result = await repository.createClassroom(tClassroom);
 
       expect(result, Left(CacheFailure()));
-      verify(repository.updateClientLastUpdated(tClassroom));
     });
 
     test('should cache newly created classroom', () async {
