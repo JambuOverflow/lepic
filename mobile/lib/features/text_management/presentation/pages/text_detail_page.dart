@@ -15,12 +15,14 @@ class TextDetailPage extends StatelessWidget {
           PopupMenuButton<String>(
             onSelected: choiceAction,
             itemBuilder: (BuildContext context) {
-              return Constants.choices.map((String choice) {
-                return PopupMenuItem<String>(
-                  child: Text(choice),
-                  value: choice,
-                );
-              }).toList();
+              return Constants.choices.map(
+                (String choice) {
+                  return PopupMenuItem<String>(
+                    child: Text(choice),
+                    value: choice,
+                  );
+                },
+              ).toList();
             },
           ),
         ],
