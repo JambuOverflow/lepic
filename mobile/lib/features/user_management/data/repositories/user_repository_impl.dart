@@ -55,6 +55,12 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, String>> retrieveToken(User user) {
+    // TODO: implement retrieveToken
+    throw UnimplementedError();
+  }
+
   Future<Either<Failure, Response>> _tryLoginUser(User user) async {
     try {
       final response = await remoteDataSource.login(_toModel(user));
