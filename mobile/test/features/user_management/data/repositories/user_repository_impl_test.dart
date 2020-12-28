@@ -83,7 +83,7 @@ void main() {
       when(mockLocalDataSource.getStoredUser())
           .thenAnswer((_) async => tUserModel);
 
-      final result = await repository.getStoredUser();
+      final result = await repository.getLoggedInUser();
 
       verify(mockLocalDataSource.getStoredUser());
       expect(result, Right<Failure, User>(tUser));
@@ -92,7 +92,7 @@ void main() {
     test('should throw cache failure when there is not cached data', () async {
       when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
 
-      final result = await repository.getStoredUser();
+      final result = await repository.getLoggedInUser();
 
       verify(mockLocalDataSource.getStoredUser());
       expect(result, Left(CacheFailure()));

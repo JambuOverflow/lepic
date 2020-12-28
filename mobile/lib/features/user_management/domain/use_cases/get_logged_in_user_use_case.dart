@@ -14,7 +14,7 @@ class GetStoredUserCase extends UseCase<User, NoParams> {
 
   @override
   Future<Either<Failure, User>> call(params) async =>
-      await repository.getStoredUser();
+      await repository.getLoggedInUser();
 }
 
 class NoParams extends Equatable {

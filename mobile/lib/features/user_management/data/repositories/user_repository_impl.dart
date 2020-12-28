@@ -42,7 +42,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, User>> getStoredUser() async {
+  Future<Either<Failure, User>> getLoggedInUser() async {
     return await _tryGetLocalUser();
   }
 

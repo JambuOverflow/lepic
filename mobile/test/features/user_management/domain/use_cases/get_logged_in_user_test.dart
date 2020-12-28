@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/repositories/user_repository.dart';
-import 'package:mobile/features/user_management/domain/use_cases/get_stored_user_use_case.dart';
+import 'package:mobile/features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
 import 'package:mockito/mockito.dart';
 
 class MockUserRepository extends Mock implements UserRepository {}
@@ -26,13 +26,13 @@ void main() {
   
   test('should send new user to the repository with successful response',
       () async {
-    when(mockUserRepository.getStoredUser())
+    when(mockUserRepository.getLoggedInUser())
         .thenAnswer((_) async => Right(tUser));
 
     final result = await useCase(NoParams());
 
     expect(result, Right(tUser));
-    verify(mockUserRepository.getStoredUser());
+    verify(mockUserRepository.getLoggedInUser());
     verifyNoMoreInteractions(mockUserRepository);
   });
 }
