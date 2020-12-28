@@ -1,13 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_remote_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:matcher/matcher.dart';
 
 import '../../../../core/fixtures/fixture_reader.dart';
 
@@ -76,6 +79,40 @@ void main() {
       verify(mockClient.get(uri, headers: headers));
       verify(mockSecureStorage.read(key: "token"));
       expect(response, invalidResponse);
+    });
+  });
+
+  group('postClassroom', () {
+    test('should return a correct response from the server', () async {
+      final url = API_URL + '/api/classes';
+      final body = json.encode(model1.toJson());
+      when(mockClient.post(url, headers: headers, body: body))
+          .thenAnswer((_) async => validResponse);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      await syncClassroom.postClassroom(model1);
+
+      verify(
+        mockClient.post(
+          url,
+          headers: headers,
+          body: body,
+        ),
+      );
+      verify(mockSecureStorage.read(key: "token"));
+    });
+
+    test('should throw a server exception', () async {
+      final url = API_URL + '/api/classes';
+      final body = json.encode(model1.toJson());
+      when(mockClient.post(url, headers: headers, body: body))
+          .thenAnswer((_) async => invalidResponse);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      expect(() async => await syncClassroom.postClassroom(model1),
+          throwsA(TypeMatcher<ServerException>()));
+
+      verify(mockSecureStorage.read(key: "token"));
     });
   });
   group('pull', () {

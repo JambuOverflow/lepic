@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import "package:http/http.dart" as http;
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import '../../../../core/network/response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -29,7 +30,7 @@ class SyncClassroom {
 
   // Gets from server the classrooms that were updated synce last time
   Future<http.Response> getServerUpdated(String lastSyncTime) async {
-    final token = await secureStorage.read(key: 'token');
+    String token = await getToken();
 
     final queryParameters = {'last_sync_time': lastSyncTime};
     final uri = Uri.http(API_URL, 'api/classes/', queryParameters);
@@ -39,6 +40,11 @@ class SyncClassroom {
     };
 
     return await this.client.get(uri, headers: headers);
+  }
+
+  Future<String> getToken() async {
+    final token = await secureStorage.read(key: 'token');
+    return token;
   }
 
   Future<Response> pull() async {
@@ -58,21 +64,62 @@ class SyncClassroom {
     return SuccessfulResponse();
   }
 
+  Future<bool> isInServer(ClassroomModel model) {
+    throw UnimplementedError();
+  }
+
   Future<Response> push() async {
-    final lastSyncTimeString = this.lastSyncTime.toString();
-    
-    http.Response response = await this.getServerUpdated(lastSyncTimeString);
+    List<ClassroomModel> classroomsToPush = await this
+        .classroomLocalDataSourceImpl
+        .getClassroomsSinceLastSync(this.lastSyncTime);
 
-    if (response.statusCode == 401) {
-      return UnsuccessfulResponse(message: response.body);
+    try {
+      classroomsToPush.forEach((element) async {
+        bool inServer;
+        inServer = await this.isInServer(element);
+        if (inServer) {
+          putClassroom(element);
+        } else {
+          postClassroom(element);
+        }
+      });
+    } on ServerException {
+      return UnsuccessfulResponse(message: "Error when pushing");
     }
-
-    Iterable objects = json.decode(response.body);
-
-    objects.forEach((element) async {
-      ClassroomModel model = ClassroomModel.fromJson(element);
-      this.classroomLocalDataSourceImpl.cacheClassroom(model);
-    });
     return SuccessfulResponse();
+  }
+
+  Future<void> putClassroom(ClassroomModel element) async {
+    String token = await getToken();
+    final http.Response response = await this.client.put(
+          API_URL + "/api/classes",
+          headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "token ${token}",
+          },
+          body: json.encode(
+            element.toJson(),
+          ),
+        );
+    if (response.statusCode != 200) {
+      throw ServerException();
+    }
+  }
+
+  Future<void> postClassroom(ClassroomModel element) async {
+    String token = await getToken();
+    final http.Response response = await this.client.post(
+          API_URL + "/api/classes",
+          headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader: "token ${token}",
+          },
+          body: json.encode(
+            element.toJson(),
+          ),
+        );
+    if (response.statusCode != 200) {
+      throw ServerException();
+    }
   }
 }
