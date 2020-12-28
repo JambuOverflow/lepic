@@ -22,8 +22,17 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
 
   Classroom updateClientLastUpdated(Classroom classroom) {
     DateTime time = clock.now();
-    classroom.lastUpdated = time.toUtc();
-    return classroom;
+
+    DateTime lastUpdated = time.toUtc();
+    return Classroom(
+      grade: classroom.grade,
+      name: classroom.name,
+      tutorId: classroom.tutorId,
+      id: classroom.id,
+      lastUpdated: classroom.lastUpdated,
+      clientLastUpdated: lastUpdated,
+      deleted: classroom.deleted,
+    );
   }
 
   @override

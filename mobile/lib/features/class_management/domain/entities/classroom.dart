@@ -7,9 +7,9 @@ class Classroom extends Equatable {
   final int id;
   final int grade;
   final String name;
-  bool deleted = false;
-  DateTime lastUpdated;
-  DateTime clientLastUpdated;
+  final bool deleted;
+  final DateTime lastUpdated;
+  final DateTime clientLastUpdated;
 
   Classroom({
     @required this.tutorId,

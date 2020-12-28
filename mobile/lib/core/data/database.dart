@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:moor/moor.dart';
 import 'dart:io';
+import 'package:clock/clock.dart';
 
 import '../../main.dart';
 
@@ -28,6 +29,7 @@ LazyDatabase openConnection() {
 
 @UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
 class Database extends _$Database {
+  final clock = Clock();
   Database(QueryExecutor e) : super(e);
   Database.customExecutor(QueryExecutor executor) : super(executor);
 
