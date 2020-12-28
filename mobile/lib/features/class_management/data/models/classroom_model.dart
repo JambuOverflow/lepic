@@ -7,7 +7,9 @@ class ClassroomModels extends Table {
   IntColumn get localId => integer().autoIncrement()();
   IntColumn get grade => integer()();
   TextColumn get name => text()();
+  @JsonKey("last_updated")
   DateTimeColumn get lastUpdated => dateTime()();
+  @JsonKey("client_last_updated")
   DateTimeColumn get clientLastUpdated => dateTime()();
   BoolColumn get deleted => boolean()();
   @JsonKey("tutor_id")

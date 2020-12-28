@@ -542,9 +542,9 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       localId: serializer.fromJson<int>(json['local_id']),
       grade: serializer.fromJson<int>(json['grade']),
       name: serializer.fromJson<String>(json['name']),
-      lastUpdated: serializer.fromJson<DateTime>(json['lastUpdated']),
+      lastUpdated: serializer.fromJson<DateTime>(json['last_updated']),
       clientLastUpdated:
-          serializer.fromJson<DateTime>(json['clientLastUpdated']),
+          serializer.fromJson<DateTime>(json['client_last_updated']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       tutorId: serializer.fromJson<int>(json['tutor_id']),
     );
@@ -556,8 +556,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       'local_id': serializer.toJson<int>(localId),
       'grade': serializer.toJson<int>(grade),
       'name': serializer.toJson<String>(name),
-      'lastUpdated': serializer.toJson<DateTime>(lastUpdated),
-      'clientLastUpdated': serializer.toJson<DateTime>(clientLastUpdated),
+      'last_updated': serializer.toJson<DateTime>(lastUpdated),
+      'client_last_updated': serializer.toJson<DateTime>(clientLastUpdated),
       'deleted': serializer.toJson<bool>(deleted),
       'tutor_id': serializer.toJson<int>(tutorId),
     };

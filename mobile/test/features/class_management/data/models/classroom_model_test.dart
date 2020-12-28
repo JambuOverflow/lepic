@@ -49,8 +49,8 @@ void main() {
         "local_id": 2,
         "grade": 1,
         "name": "A",
-        "lastUpdated": 1514768460000,
-        "clientLastUpdated": 1514768460000,
+        "last_updated": 1514768460000,
+        "client_last_updated": 1514768460000,
         "deleted": false,
         "tutor_id": 3,
       };
