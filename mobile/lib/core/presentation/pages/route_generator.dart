@@ -12,7 +12,7 @@ import 'package:mobile/features/student_management/presentation/pages/create_stu
 import 'package:mobile/features/student_management/presentation/pages/student_detail_page.dart';
 import 'package:mobile/features/student_management/presentation/pages/students_page.dart';
 import 'package:mobile/features/text_management/presentation/pages/text_creation_page.dart';
-import 'package:mobile/features/text_management/presentation/pages/list_text.dart';
+import 'package:mobile/features/text_management/presentation/pages/texts_page.dart';
 import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
 import 'package:mobile/features/user_management/presentation/pages/guest.dart';
 
@@ -72,7 +72,7 @@ class RouteGenerator {
         );
       case '/list_texts':
         return MaterialPageRoute(
-          builder: (_) => ShowTexts(),
+          builder: (_) => TextsPage(),
         );
       case '/add_text':
         return MaterialPageRoute(

@@ -6,14 +6,14 @@ import '../../domain/entities/text.dart';
 import 'detail_text.dart';
 import '../../../user_management/presentation/widgets/drawer_overlay.dart';
 
-class ShowTexts extends StatefulWidget {
-  ShowTexts({Key key}) : super(key: key);
+class TextsPage extends StatefulWidget {
+  TextsPage({Key key}) : super(key: key);
 
   @override
-  _ShowTextsState createState() => _ShowTextsState();
+  _TextsPageState createState() => _TextsPageState();
 }
 
-class _ShowTextsState extends State<ShowTexts> {
+class _TextsPageState extends State<TextsPage> {
   @override
   Widget build(BuildContext context) {
     final _bloc = BlocProvider.of<TextBloc>(context);
@@ -53,8 +53,7 @@ class ItemText extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => TextDetailPage(
-                    _text), // depois ajeitar pra receber parâmetro (args) no generate route
+                builder: (context) => TextDetailPage(_text),
               ),
             );
           },
