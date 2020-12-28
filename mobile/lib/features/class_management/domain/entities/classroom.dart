@@ -8,8 +8,8 @@ class Classroom extends Equatable {
   final int grade;
   final String name;
   bool deleted = false;
-  DateTime lastUpdated = DateTime(0);
-  DateTime clientLastUpdated = DateTime(0);
+  DateTime lastUpdated;
+  DateTime clientLastUpdated;
 
   Classroom({
     @required this.tutorId,
