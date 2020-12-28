@@ -3,8 +3,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 
-import '../../domain/entities/user.dart';
-
 abstract class UserLocalDataSource {
   /// Gets the cached [UserModel].
   ///
@@ -13,9 +11,12 @@ abstract class UserLocalDataSource {
 
   Future<void> cacheUser(UserModel user);
 
-  Future<void> storeTokenSecurely(String token);
+  Future<void> storeTokenSecurely({
+    @required String token,
+    @required UserModel user,
+  });
 
-  Future<String> retrieveToken(User user);
+  Future<String> retrieveToken(UserModel user);
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -48,12 +49,16 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   }
 
   @override
-  Future<void> storeTokenSecurely(String token) async {
-    return await secureStorage.write(key: 'token', value: token);
+  Future<void> storeTokenSecurely({
+    @required String token,
+    @required UserModel user,
+  }) async {
+    final userId = user.localId.toString();
+    return await secureStorage.write(key: userId, value: token);
   }
 
   @override
-  Future<String> retrieveToken(User user) {
+  Future<String> retrieveToken(UserModel user) {
     // TODO: implement retrieveToken
     throw UnimplementedError();
   }

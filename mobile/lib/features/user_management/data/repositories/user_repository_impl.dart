@@ -58,7 +58,8 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, String>> retrieveToken(User user) async {
     try {
-      final token = await localDataSource.retrieveToken(user);
+      final userModel = _toModel(user);
+      final token = await localDataSource.retrieveToken(userModel);
 
       return Right(token);
     } on CacheException {
@@ -68,10 +69,13 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, Response>> _tryLoginUser(User user) async {
     try {
-      final response = await remoteDataSource.login(_toModel(user));
+      final userModel = _toModel(user);
+      final response = await remoteDataSource.login(userModel);
 
       if (response is TokenResponse) {
-        await localDataSource.storeTokenSecurely(response.token);
+        await localDataSource.storeTokenSecurely(
+            token: response.token, user: _toModel(user));
+
         return Right(response);
       } else if (response is InvalidCredentials) {
         return Right(response);

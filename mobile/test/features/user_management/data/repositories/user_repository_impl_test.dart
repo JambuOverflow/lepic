@@ -246,7 +246,8 @@ void main() {
         await repository.login(tUser);
 
         verify(mockRemoteDataSource.login(tUserModel));
-        verify(mockLocalDataSource.storeTokenSecurely(any));
+        verify(mockLocalDataSource.storeTokenSecurely(
+            token: anyNamed('token'), user: tUserModel));
       });
 
       test('should return invalid credentials', () async {
@@ -299,7 +300,7 @@ void main() {
 
       final result = await repository.retrieveToken(tUser);
 
-      verify(mockLocalDataSource.retrieveToken(tUser));
+      verify(mockLocalDataSource.retrieveToken(tUserModel));
       expect(result, Right(tToken));
     });
 
@@ -308,7 +309,7 @@ void main() {
 
       final result = await repository.retrieveToken(tUser);
 
-      verify(mockLocalDataSource.retrieveToken(tUser));
+      verify(mockLocalDataSource.retrieveToken(tUserModel));
       expect(result, Left(CacheFailure()));
     });
   });

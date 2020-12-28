@@ -78,13 +78,16 @@ void main() {
   });
 
   group('storeTokenSecurely', () {
+    final token = 'secret shh';
+
     test('should store token in the secure storage', () async {
-      when(mockSecureStorage.write(key: 'token', value: 'secret'))
+      when(mockSecureStorage.write(key: anyNamed('key'), value: token))
           .thenReturn(null);
 
-      await dataSource.storeTokenSecurely('secret');
-      
-      verify(mockSecureStorage.write(key: 'token', value: 'secret'));
+      await dataSource.storeTokenSecurely(token: token, user: tUserModel);
+
+      final key = tUserModel.localId.toString();
+      verify(mockSecureStorage.write(key: key, value: token));
     });
   });
 }
