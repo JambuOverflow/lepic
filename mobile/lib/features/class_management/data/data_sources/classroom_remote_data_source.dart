@@ -20,6 +20,7 @@ class SyncClassroom {
   final http.Client client;
   final FlutterSecureStorage secureStorage;
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
+  final url = API_URL + "/api/classes";
   DateTime lastSyncTime = DateTime.now().toUtc();
 
   SyncClassroom({
@@ -30,8 +31,6 @@ class SyncClassroom {
 
   // Gets from server the classrooms that were updated synce last time
   Future<http.Response> getServerUpdated(String lastSyncTime) async {
-    
-
     final queryParameters = {'last_sync_time': lastSyncTime};
     final uri = Uri.http(API_URL, 'api/classes/', queryParameters);
     final headers = await getHeaders();
@@ -42,9 +41,9 @@ class SyncClassroom {
   Future<Map<String, String>> getHeaders() async {
     String token = await getToken();
     return {
-    HttpHeaders.contentTypeHeader: "application/json",
-    HttpHeaders.authorizationHeader: "token ${token}",
-  };
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader: "token ${token}",
+    };
   }
 
   Future<String> getToken() async {
@@ -96,7 +95,7 @@ class SyncClassroom {
 
   Future<void> putClassroom(ClassroomModel element) async {
     final http.Response response = await this.client.put(
-          API_URL + "/api/classes",
+          this.url,
           headers: await getHeaders(),
           body: json.encode(
             element.toJson(),
@@ -109,7 +108,7 @@ class SyncClassroom {
 
   Future<void> postClassroom(ClassroomModel element) async {
     final http.Response response = await this.client.post(
-          API_URL + "/api/classes",
+          this.url,
           headers: await getHeaders(),
           body: json.encode(
             element.toJson(),
