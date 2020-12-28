@@ -115,6 +115,41 @@ void main() {
       verify(mockSecureStorage.read(key: "token"));
     });
   });
+
+   group('putClassroom', () {
+    test('should return a correct response from the server', () async {
+      final url = API_URL + '/api/classes';
+      final body = json.encode(model1.toJson());
+      when(mockClient.put(url, headers: headers, body: body))
+          .thenAnswer((_) async => validResponse);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      await syncClassroom.putClassroom(model1);
+
+      verify(
+        mockClient.put(
+          url,
+          headers: headers,
+          body: body,
+        ),
+      );
+      verify(mockSecureStorage.read(key: "token"));
+    });
+
+    test('should throw a server exception', () async {
+      final url = API_URL + '/api/classes';
+      final body = json.encode(model1.toJson());
+      when(mockClient.put(url, headers: headers, body: body))
+          .thenAnswer((_) async => invalidResponse);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      expect(() async => await syncClassroom.putClassroom(model1),
+          throwsA(TypeMatcher<ServerException>()));
+
+      verify(mockSecureStorage.read(key: "token"));
+    });
+  });
+
   group('pull', () {
     test('should return a correct response from the server', () async {
       when(mockClient.get(uri, headers: headers))
