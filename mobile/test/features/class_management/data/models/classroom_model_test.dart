@@ -3,12 +3,19 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
+import 'package:clock/clock.dart';
+
+
+class MockClock extends Mock implements Clock {}
+
 
 void main() {
-  final time = DateTime(2020, 1, 1, 1, 1);
+  
+  final time = DateTime(2018, 1, 1, 1, 1);
   final tClassModel = ClassroomModel(
     grade: 1,
     localId: 2,
@@ -56,8 +63,8 @@ void main() {
         "local_id": 2,
         "grade": 1,
         "name": "A",
-        "lastUpdated": 1577851260000,
-        "clientLastUpdated": 1577851260000,
+        "lastUpdated": 1514779260000,
+        "clientLastUpdated": 1514779260000,
         "deleted": false,
         "tutor_id": 3,
       };
