@@ -7,7 +7,7 @@ abstract class UserLocalDataSource {
   /// Gets the cached [UserModel].
   ///
   /// Throws [CacheException] if there's no cached [UserModel].
-  Future<UserModel> getStoredUser();
+  Future<UserModel> getLoggedInUser();
 
   Future<void> cacheUser(UserModel user);
 
@@ -39,7 +39,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   }
 
   @override
-  Future<UserModel> getStoredUser() async {
+  Future<UserModel> getLoggedInUser() async {
     final model = await database.activeUser;
 
     if (model != null)

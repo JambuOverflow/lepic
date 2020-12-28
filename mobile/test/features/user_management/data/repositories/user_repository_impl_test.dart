@@ -77,24 +77,24 @@ void main() {
     });
   }
 
-  group('getStoredUser', () {
+  group('getLoggedInUser', () {
     test('should get User from local cache when there is cached data',
         () async {
-      when(mockLocalDataSource.getStoredUser())
+      when(mockLocalDataSource.getLoggedInUser())
           .thenAnswer((_) async => tUserModel);
 
       final result = await repository.getLoggedInUser();
 
-      verify(mockLocalDataSource.getStoredUser());
+      verify(mockLocalDataSource.getLoggedInUser());
       expect(result, Right<Failure, User>(tUser));
     });
 
     test('should throw cache failure when there is not cached data', () async {
-      when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
+      when(mockLocalDataSource.getLoggedInUser()).thenThrow(CacheException());
 
       final result = await repository.getLoggedInUser();
 
-      verify(mockLocalDataSource.getStoredUser());
+      verify(mockLocalDataSource.getLoggedInUser());
       expect(result, Left(CacheFailure()));
     });
   });

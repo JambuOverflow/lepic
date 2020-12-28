@@ -111,7 +111,7 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, User>> _tryGetLocalUser() async {
     try {
-      final localUser = await localDataSource.getStoredUser();
+      final localUser = await localDataSource.getLoggedInUser();
       User user = _toEntity(localUser);
 
       return Right(user);

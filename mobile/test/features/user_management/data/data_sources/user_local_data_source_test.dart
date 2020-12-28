@@ -37,7 +37,7 @@ void main() {
     test('should return User from database when there is one stored', () async {
       when(mockDatabase.activeUser).thenAnswer((_) async => tUserModel);
 
-      final result = await dataSource.getStoredUser();
+      final result = await dataSource.getLoggedInUser();
 
       expect(result, tUserModel);
     });
@@ -45,7 +45,7 @@ void main() {
     test('should throw a CacheException when User is not stored', () async {
       when(mockDatabase.activeUser).thenReturn(null);
 
-      final call = dataSource.getStoredUser;
+      final call = dataSource.getLoggedInUser;
 
       expect(() => call(), throwsA(isA<CacheException>()));
     });
