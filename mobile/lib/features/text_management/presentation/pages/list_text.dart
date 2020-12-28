@@ -1,56 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
-import 'package:mobile/features/text_management/presentation/pages/detail_text.dart';
-import 'package:mobile/features/user_management/presentation/widgets/drawer_overlay.dart';
+
+import '../../domain/entities/text.dart';
+import 'detail_text.dart';
+import '../../../user_management/presentation/widgets/drawer_overlay.dart';
 
 class ShowTexts extends StatefulWidget {
   ShowTexts({Key key}) : super(key: key);
-  final List<MyText> _listTexts = List();
 
   @override
   _ShowTextsState createState() => _ShowTextsState();
 }
 
 class _ShowTextsState extends State<ShowTexts> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextBloc _textBloc;
   @override
   Widget build(BuildContext context) {
-    _textBloc = BlocProvider.of<TextBloc>(context);
+    final _bloc = BlocProvider.of<TextBloc>(context);
+
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(title: Text('Texts')),
       drawer: DrawerOverlay(),
       body: ListView.builder(
-        itemCount: widget._listTexts.length,
-        itemBuilder: (context, indice) {
-          final text = widget._listTexts[indice];
+        itemCount: _bloc.texts.length,
+        itemBuilder: (context, index) {
+          final text = _bloc.texts[index];
           return ItemText(text);
         },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context)
-              .pushNamed(
-                '/add_text',
-              )
-              .then(
-                (createdText) => _atualiza(createdText),
-              );
+          Navigator.of(context).pushNamed('/add_text');
         },
       ),
     );
-  }
-
-  void _atualiza(MyText createdText) {
-    if (createdText != null) {
-      setState(() {
-        widget._listTexts.add(createdText);
-      });
-    }
   }
 }
 
