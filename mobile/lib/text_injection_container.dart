@@ -1,10 +1,4 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/network/network_info.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
 import 'package:mobile/features/text_management/data/repositories/text_repository_impl.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
@@ -42,10 +36,4 @@ void init() {
       database: sl(),
     ),
   );
-
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfo(sl()));
-  sl.registerLazySingleton(() => Database(openConnection()));
-  sl.registerLazySingleton(() => FlutterSecureStorage());
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => DataConnectionChecker());
 }

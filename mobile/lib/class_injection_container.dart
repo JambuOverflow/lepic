@@ -1,8 +1,4 @@
-import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/network/network_info.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
@@ -10,19 +6,20 @@ import 'package:mobile/features/class_management/domain/use_cases/create_classro
 import 'package:mobile/features/class_management/domain/use_cases/delete_classroom_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/get_classrooms_use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/update_classroom_use_case.dart';
-import 'package:mobile/features/class_management/presentation/bloc/class_bloc.dart';
 
-import 'package:http/http.dart' as http;
+import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 
 final sl = GetIt.instance;
 
 void init() {
   sl.registerFactory(
     () => ClassroomBloc(
+      authBloc: sl(),
+      inputConverter: sl(),
       updateClassroom: sl(),
       deleteClassroom: sl(),
       createNewClassroom: sl(),
-      getClassroom: sl(),
+      getClassrooms: sl(),
     ),
   );
 
@@ -42,10 +39,4 @@ void init() {
       database: sl(),
     ),
   );
-
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfo(sl()));
-  sl.registerLazySingleton(() => Database(openConnection()));
-  sl.registerLazySingleton(() => FlutterSecureStorage());
-  sl.registerLazySingleton(() => http.Client());
-  sl.registerLazySingleton(() => DataConnectionChecker());
 }

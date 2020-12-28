@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 
@@ -29,24 +28,25 @@ void main() {
   MockDeleteStudentEventUseCase mockdeleteStudent;
   MockGetStudentsEventUseCase mockGetStudent;
 
-  setUp(() {
-    mockCreateNewStudent = MockCreateStudentUseCase();
-    mockUpdateStudent = MockUpdateStudentEventUseCase();
-    mockdeleteStudent = MockDeleteStudentEventUseCase();
-    mockGetStudent = MockGetStudentsEventUseCase();
-    bloc = StudentBloc(
-        createStudent: mockCreateNewStudent,
-        getStudents: mockGetStudent,
-        deleteStudent: mockdeleteStudent,
-        updateStudent: mockUpdateStudent);
-  });
-
   final tClassroom = Classroom(
     grade: 1,
     id: 001,
     tutorId: 01,
     name: "class name",
   );
+
+  setUp(() {
+    mockCreateNewStudent = MockCreateStudentUseCase();
+    mockUpdateStudent = MockUpdateStudentEventUseCase();
+    mockdeleteStudent = MockDeleteStudentEventUseCase();
+    mockGetStudent = MockGetStudentsEventUseCase();
+    bloc = StudentBloc(
+        classroom: tClassroom,
+        createStudent: mockCreateNewStudent,
+        getStudents: mockGetStudent,
+        deleteStudent: mockdeleteStudent,
+        updateStudent: mockUpdateStudent);
+  });
 
   final tStudent = Student(
     firstName: 'joãozinho',
@@ -61,7 +61,6 @@ void main() {
   final String tFirstName = 'joãozinho';
   final String tLastName = 'da Silva';
   final int tId = 1;
-  final int tClassroomId = 001;
 
   test('initial state should be [StudentNotLoaded]', () {
     expect(bloc.state, StudentNotLoaded());
@@ -80,10 +79,8 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(CreateNewStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
       ));
     });
 
@@ -100,10 +97,8 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(CreateNewStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
       ));
     });
   });
@@ -119,10 +114,8 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
       ));
     });
 
@@ -138,10 +131,8 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
       ));
     });
   });
@@ -157,9 +148,7 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteStudentEvent(
-        tId,
-      ));
+      bloc.add(DeleteStudentEvent(id: tId));
     });
 
     test('''Should emit [DeletingStudent, Error] when delete is
@@ -173,13 +162,11 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteStudentEvent(
-        tId,
-      ));
+      bloc.add(DeleteStudentEvent(id: tId));
     });
   });
 
-  group('''Read a student list''', () {
+  group('''getStudents''', () {
     test(
         '''Should emit [GettingStudents, StudentGot] when get a student list''',
         () {
@@ -188,15 +175,10 @@ void main() {
 
       final expected = [
         GettingStudents(),
-        StudentGot(students: tList),
+        StudentsGot(students: tList),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
-      ));
+      bloc.add(GetStudentsEvent());
     });
 
     test(
@@ -209,12 +191,7 @@ void main() {
         Error(message: 'Not able to get student list'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
-      ));
+      bloc.add(GetStudentsEvent());
     });
   });
 }
