@@ -30,16 +30,21 @@ class SyncClassroom {
 
   // Gets from server the classrooms that were updated synce last time
   Future<http.Response> getServerUpdated(String lastSyncTime) async {
-    String token = await getToken();
+    
 
     final queryParameters = {'last_sync_time': lastSyncTime};
     final uri = Uri.http(API_URL, 'api/classes/', queryParameters);
-    final headers = {
-      HttpHeaders.contentTypeHeader: "application/json",
-      HttpHeaders.authorizationHeader: "token ${token}",
-    };
+    final headers = await getHeaders();
 
     return await this.client.get(uri, headers: headers);
+  }
+
+  Future<Map<String, String>> getHeaders() async {
+    String token = await getToken();
+    return {
+    HttpHeaders.contentTypeHeader: "application/json",
+    HttpHeaders.authorizationHeader: "token ${token}",
+  };
   }
 
   Future<String> getToken() async {
@@ -90,13 +95,9 @@ class SyncClassroom {
   }
 
   Future<void> putClassroom(ClassroomModel element) async {
-    String token = await getToken();
     final http.Response response = await this.client.put(
           API_URL + "/api/classes",
-          headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "token ${token}",
-          },
+          headers: await getHeaders(),
           body: json.encode(
             element.toJson(),
           ),
@@ -107,13 +108,9 @@ class SyncClassroom {
   }
 
   Future<void> postClassroom(ClassroomModel element) async {
-    String token = await getToken();
     final http.Response response = await this.client.post(
           API_URL + "/api/classes",
-          headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "token ${token}",
-          },
+          headers: await getHeaders(),
           body: json.encode(
             element.toJson(),
           ),
