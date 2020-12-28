@@ -288,4 +288,28 @@ void main() {
       });
     });
   });
+
+  group('retrieveToken', () {
+    final String tToken = 'aASj24s4#sf';
+
+    test('should get token from local cache when the user token exists',
+        () async {
+      when(mockLocalDataSource.retrieveToken(any))
+          .thenAnswer((_) async => tToken);
+
+      final result = await repository.retrieveToken(tUser);
+
+      verify(mockLocalDataSource.retrieveToken(tUser));
+      expect(result, Right(tToken));
+    });
+
+    test('should throw cache failure when there is not cached token', () async {
+      when(mockLocalDataSource.retrieveToken(any)).thenThrow(CacheException());
+
+      final result = await repository.retrieveToken(tUser);
+
+      verify(mockLocalDataSource.retrieveToken(tUser));
+      expect(result, Left(CacheFailure()));
+    });
+  });
 }
