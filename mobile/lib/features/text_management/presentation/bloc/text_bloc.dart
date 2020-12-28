@@ -19,6 +19,8 @@ part 'text_event.dart';
 part 'text_state.dart';
 
 class TextBloc extends Bloc<TextEvent, TextState> {
+  final List<MyText> texts = [];
+
   final CreateText createText;
   final UpdateText updateText;
   final GetTexts getTexts;
@@ -32,16 +34,14 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   }) : super(TextInitial());
 
   @override
-  Stream<TextState> mapEventToState(
-    TextEvent event,
-  ) async* {
+  Stream<TextState> mapEventToState(TextEvent event) async* {
     if (event is CreateTextEvent)
       yield* _createNewTextState(event);
     else if (event is UpdateTextEvent)
       yield* _updateTextState(event);
     else if (event is DeleteTextEvent)
       yield* _deleteTextState(event);
-    else if (event is GetTextsEvent) yield* _getTextListState(event);
+    else if (event is GetTextsEvent) yield* _getTextsState(event);
   }
 
   Stream<TextState> _createNewTextState(CreateTextEvent event) async* {
@@ -49,11 +49,11 @@ class TextBloc extends Bloc<TextEvent, TextState> {
 
     final text = _createTextEntityFromEvent(event);
 
-    final failureOrResponse = await createText(TextParams(text: text));
+    final failureOrText = await createText(TextParams(text: text));
 
-    yield failureOrResponse.fold(
+    yield failureOrText.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
-        (response) => TextCreated(text: response));
+        (newText) => TextCreated(text: newText));
   }
 
   Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
@@ -61,36 +61,39 @@ class TextBloc extends Bloc<TextEvent, TextState> {
 
     final text = _updateTextEntityFromEvent(event);
 
-    final failureOrResponse = await updateText(TextParams(text: text));
+    final failureOrText = await updateText(TextParams(text: text));
 
-    yield failureOrResponse.fold(
+    yield failureOrText.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
-        (response) => TextUpdated(text: response));
+        (updatedText) => TextUpdated(text: updatedText));
   }
 
   Stream<TextState> _deleteTextState(DeleteTextEvent event) async* {
     yield DeletingText();
 
-    final text = MyText(
-      localId: event.localId,
-    );
+    final text = MyText(localId: event.localId);
 
-    final failureOrResponse = await deleteText(TextParams(text: text));
+    final failureOrSuccess = await deleteText(TextParams(text: text));
 
-    yield failureOrResponse.fold(
+    yield failureOrSuccess.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => TextDeleted(),
+      (_) => TextDeleted(),
     );
   }
 
-  Stream<TextState> _getTextListState(GetTextsEvent event) async* {
+  Stream<TextState> _getTextsState(GetTextsEvent event) async* {
     yield GettingTexts();
 
-    final failureOrResponse =
-        await getTexts(ClassroomParams(classroom: event.classroom));
-    yield failureOrResponse.fold(
+    final failureOrTexts = await getTexts(
+      ClassroomParams(classroom: event.classroom),
+    );
+
+    yield failureOrTexts.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => TextsGot(texts: response),
+      (texts) {
+        texts = texts;
+        return TextsGot(texts: texts);
+      },
     );
   }
 
