@@ -97,7 +97,7 @@ Future<void> main() {
   group("deleteClassroom", () {
     test("should correctly delete a cached classroom", () async {
       when(mockDatabase.updateClassroom(tClassroomModel1Deleted))
-          .thenAnswer((_) async => true);
+          .thenAnswer((_) async => null);
 
       await classroomLocalDataSourceImpl
           .deleteClassroomFromCache(tClassroomModel1);
@@ -108,7 +108,7 @@ Future<void> main() {
         "should throw CacheException when trying to delete an ivalid classroom",
         () {
       when(mockDatabase.updateClassroom(tClassroomModel1Deleted))
-          .thenAnswer((_) async => false);
+          .thenThrow((SqliteException(787, "")));
       expect(
           () async => await classroomLocalDataSourceImpl
               .deleteClassroomFromCache(tClassroomModel1),
@@ -154,7 +154,7 @@ Future<void> main() {
   group("updateClassroom", () {
     test("should correctly update a cached classroom", () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
-          .thenAnswer((_) async => true);
+          .thenAnswer((_) async => null);
 
       await classroomLocalDataSourceImpl
           .updateCachedClassroom(tClassroomModel1);
@@ -164,7 +164,7 @@ Future<void> main() {
     test("should throw a cache expection if the update was not completed",
         () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
-          .thenAnswer((_) async => false);
+          .thenThrow(SqliteException(787, ""));
 
       expect(
           () async => await classroomLocalDataSourceImpl

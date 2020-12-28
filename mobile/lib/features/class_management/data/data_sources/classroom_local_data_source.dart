@@ -64,10 +64,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   Future<void> deleteClassroomFromCache(ClassroomModel classroomModel) async {
     ClassroomModel deletedClassroomModel = classroomModel.copyWith(deleted: true);
     try {
-      bool done = await this.database.updateClassroom(deletedClassroomModel);
-      if (done != true) {
-        throw SqliteException(787, "The table doesn't have this entry");
-      }
+      await this.database.updateClassroom(deletedClassroomModel);
     } on SqliteException {
       throw CacheException();
     }
@@ -103,10 +100,10 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   @override
   Future<ClassroomModel> updateCachedClassroom(
       ClassroomModel classroomModel) async {
-    bool updated = await this.database.updateClassroom(classroomModel);
-    if (updated) {
+    try{
+      await this.database.updateClassroom(classroomModel);
       return classroomModel;
-    } else {
+    } on SqliteException {
       throw CacheException();
     }
   }

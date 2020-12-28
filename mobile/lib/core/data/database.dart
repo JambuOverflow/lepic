@@ -49,10 +49,11 @@ class Database extends _$Database {
     return into(classroomModels).insert(modelCompanion);
   }
 
-  ///Returns a list of classroomModels that weren't deleted, 
+  ///Returns a list of classroomModels that weren't deleted,
   /// and an empty list when the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
-    return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
+    return (select(classroomModels)
+          ..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
         .get();
   }
 
@@ -64,9 +65,12 @@ class Database extends _$Database {
     return (classroomModel != null);
   }
 
-  ///Returns true if the class was updated, false otherwise
-  Future<bool> updateClassroom(ClassroomModel entry) async {
-    return update(classroomModels).replace(entry);
+  ///Throws an exception if the table doesn't contain the entry
+  Future<void> updateClassroom(ClassroomModel entry) async {
+    var done = await update(classroomModels).replace(entry);
+    if (!done) {
+      throw SqliteException(787, "The table does not contain this entry");
+    }
   }
 
   /// returns the pk of the added entry

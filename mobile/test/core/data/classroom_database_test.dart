@@ -157,14 +157,13 @@ void main() {
       await database.insertClassroom(tValidClassCompanion);
     });
 
-    test("should return true when updating a valid classroom", () async {
-      final done = await database.updateClassroom(tValidUpdateClassModel);
-      expect(done, true);
+    test("should return nothing when updating a valid classroom", () async {
+      await database.updateClassroom(tValidUpdateClassModel);
     });
 
-    test("should return false when updating an invalid classroom", () async {
-      final done = await database.updateClassroom(tInvalidUpdateClassModel);
-      expect(done, false);
+    test("should throw a SqlException when updating an invalid classroom", () async {
+      expect(() => database.updateClassroom(tInvalidUpdateClassModel),
+          throwsA(TypeMatcher<SqliteException>()));
     });
   });
 
