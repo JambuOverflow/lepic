@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:mobile/features/user_management/presentation/widgets/input_fields/role_dropdown_input_field.dart';
 import '../widgets/drawer_overlay.dart';
 
@@ -19,11 +17,9 @@ class _UpdateUserStatefulWidgetState extends State<UpdateUser> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   Role roleSelected = Role.teacher;
-  UserBloc _userBloc;
 
   @override
   Widget build(BuildContext context) {
-    _userBloc = BlocProvider.of<UserBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit User'),
@@ -88,53 +84,6 @@ class _UpdateUserStatefulWidgetState extends State<UpdateUser> {
             Container(
               padding: const EdgeInsets.all(16.0),
               child: RoleDropdownInputField(),
-            ),
-            BlocListener<UserBloc, UserState>(
-              listener: (context, state) {
-                if (state is UserUpdated) {
-                  Navigator.pop(context);
-                } else if (state is Error) {
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                    ),
-                  );
-                }
-              },
-              child:
-                  BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-                return Container(
-                  height: 80,
-                  padding: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
-                  child: RaisedButton(
-                    child: Text(
-                      'Save Changes',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    onPressed: () {
-                      print("Changes Saved");
-                      print("name: " +
-                          firstnameController.text +
-                          ' ' +
-                          lastnameController.text);
-                      print("email: " + emailController.text);
-                      print("password: " +
-                          passwordController
-                              .text); //só falta checar se as senhas batem uma com a outra
-                      print("role: " + roleSelected.toString());
-                      _userBloc.add(
-                        UpdateUserEvent(
-                          firstnameController.text,
-                          lastnameController.text,
-                          emailController.text,
-                          roleSelected,
-                          passwordController.text,
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }),
             ),
           ],
         ),

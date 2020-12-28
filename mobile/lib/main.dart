@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
-import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:moor/moor.dart';
 
 import 'core/presentation/pages/route_generator.dart';
@@ -21,7 +20,6 @@ void main() async {
 
   runApp(
     MultiBlocProvider(providers: [
-      BlocProvider<UserBloc>(create: (_) => GetIt.instance<UserBloc>()),
       BlocProvider<ClassroomBloc>(
           create: (_) => GetIt.instance<ClassroomBloc>()),
       BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
