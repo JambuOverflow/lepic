@@ -7,7 +7,7 @@ class ClassroomDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Class Details'), //Text(_schoolClass.name.toString()),
+        title: Text('Class Details'),
         actions: <Widget>[
           PopupMenuButton<MenuOption>(
             onSelected: (MenuOption result) {
