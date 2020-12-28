@@ -57,4 +57,20 @@ class SyncClassroom {
     });
     return SuccessfulResponse();
   }
+  Future<Response> push() async {
+    final lastSyncTimeString = this.lastSyncTime.toString();
+    http.Response response = await this.getServerUpdated(lastSyncTimeString);
+
+    if (response.statusCode == 401) {
+      return UnsuccessfulResponse(message: response.body);
+    }
+
+    Iterable objects = json.decode(response.body);
+
+    objects.forEach((element) async {
+      ClassroomModel model = ClassroomModel.fromJson(element);
+      this.classroomLocalDataSourceImpl.cacheClassroom(model);
+    });
+    return SuccessfulResponse();
+  }
 }

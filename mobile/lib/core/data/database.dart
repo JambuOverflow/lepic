@@ -59,6 +59,12 @@ class Database extends _$Database {
         .get();
   }
 
+  Future<List<ClassroomModel>> getClassroomsSinceLastSync(DateTime lastSync) async {
+    return (select(classroomModels)
+          ..where((t) => t.clientLastUpdated.isBiggerOrEqualValue(lastSync)))
+        .get();
+  }
+
   //returns true if the classroom exists, and false otherwise
   Future<bool> classroomExists(int id) async {
     final classroomModel = await (select(classroomModels)

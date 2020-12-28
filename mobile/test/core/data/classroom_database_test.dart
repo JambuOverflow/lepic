@@ -81,6 +81,33 @@ void main() {
     clientLastUpdated: DateTime(2020),
   );
 
+  final tClassModel2018 = ClassroomModel(
+    grade: grade,
+    name: updateName,
+    tutorId: tValidUserPk,
+    deleted: false,
+    lastUpdated: DateTime(2018),
+    clientLastUpdated: DateTime(2018),
+  );
+
+  final tClassModel2019 = ClassroomModel(
+    grade: grade,
+    name: updateName,
+    tutorId: tValidUserPk,
+    deleted: false,
+    lastUpdated: DateTime(2019),
+    clientLastUpdated: DateTime(2019),
+  );
+
+  final tClassModel2020 = ClassroomModel(
+    grade: grade,
+    name: updateName,
+    tutorId: tValidUserPk,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
+
   final tUserCompanion = UserModelsCompanion(
     firstName: Value("cana"),
     lastName: Value("varro"),
@@ -152,6 +179,49 @@ void main() {
     });
   });
 
+  group("getClassroomsSinceLastSync", () {
+    test("should return an empty list of classrooms", () async {
+      final lastSync = DateTime(2020);
+      final classrooms = await database.getClassroomsSinceLastSync(
+        lastSync,
+      );
+      expect(classrooms, []);
+    });
+
+    test("should return a list with one classroom", () async {
+      final pk =
+          await database.insertClassroom(tClassModel2020.toCompanion(true));
+      final lastSync = DateTime(2020);
+
+      final classrooms = await database.getClassroomsSinceLastSync(lastSync);
+      expect(classrooms, [tClassModel2020.copyWith(localId: pk)]);
+    });
+
+    test("should return a list with one valid classroom", () async {
+      await database.insertClassroom(tClassModel2018.toCompanion(true));
+      final pk2 =
+          await database.insertClassroom(tClassModel2019.toCompanion(true));
+      final lastSync = DateTime(2019);
+
+      final classrooms = await database.getClassroomsSinceLastSync(lastSync);
+      expect(classrooms, [tClassModel2019.copyWith(localId: pk2)]);
+    });
+
+    test("should return a list with two classrooms", () async {
+      final pk1 =
+          await database.insertClassroom(tClassModel2020.toCompanion(true));
+      final pk2 =
+          await database.insertClassroom(tClassModel2019.toCompanion(true));
+      final lastTime = DateTime(2017);
+
+      final classrooms = await database.getClassroomsSinceLastSync(lastTime);
+      expect(classrooms, [
+        tClassModel2020.copyWith(localId: pk1),
+        tClassModel2019.copyWith(localId: pk2),
+      ]);
+    });
+  });
+
   group("UpdateClassroom", () {
     setUp(() async {
       await database.insertClassroom(tValidClassCompanion);
@@ -161,7 +231,8 @@ void main() {
       await database.updateClassroom(tValidUpdateClassModel);
     });
 
-    test("should throw a SqlException when updating an invalid classroom", () async {
+    test("should throw a SqlException when updating an invalid classroom",
+        () async {
       expect(() => database.updateClassroom(tInvalidUpdateClassModel),
           throwsA(TypeMatcher<SqliteException>()));
     });
