@@ -64,7 +64,6 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     try {
       var model = classroomEntityToModel(classroom);
       await localDataSource.deleteClassroomFromCache(model);
-      return null;
     } on CacheException {
       return Left(CacheFailure());
     }
