@@ -2,24 +2,23 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
-import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
-import 'package:mobile/features/text_management/domain/entities/text.dart';
-import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/get_texts_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/text_params.dart';
-import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
-
+import '../../../../core/error/failures.dart';
+import '../../../class_management/domain/entities/classroom.dart';
+import '../../../class_management/domain/use_cases/classroom_params.dart';
+import '../../domain/entities/text.dart';
+import '../../domain/use_cases/create_text_use_case.dart';
+import '../../domain/use_cases/delete_text_use_case.dart';
+import '../../domain/use_cases/get_texts_use_case.dart';
+import '../../domain/use_cases/text_params.dart';
+import '../../domain/use_cases/update_text_use_case.dart';
 
 part 'text_event.dart';
 part 'text_state.dart';
 
 class TextBloc extends Bloc<TextEvent, TextState> {
-  
   final CreateText createText;
   final UpdateText updateText;
   final GetTexts getTexts;
@@ -36,16 +35,16 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> mapEventToState(
     TextEvent event,
   ) async* {
-    if (event is CreateNewTextEvent)
+    if (event is CreateTextEvent)
       yield* _createNewTextState(event);
     else if (event is UpdateTextEvent)
       yield* _updateTextState(event);
     else if (event is DeleteTextEvent)
       yield* _deleteTextState(event);
-    else if (event is GetTextEvent) yield* _getTextListState(event);
+    else if (event is GetTextsEvent) yield* _getTextListState(event);
   }
 
-  Stream<TextState> _createNewTextState(CreateNewTextEvent event) async* {
+  Stream<TextState> _createNewTextState(CreateTextEvent event) async* {
     yield CreatingText();
 
     final text = _createTextEntityFromEvent(event);
@@ -60,7 +59,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
     yield UpdatingText();
 
-    final text = _createTextEntityFromEvent(event);
+    final text = _updateTextEntityFromEvent(event);
 
     final failureOrResponse = await updateText(TextParams(text: text));
 
@@ -75,6 +74,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     final text = MyText(
       localId: event.localId,
     );
+
     final failureOrResponse = await deleteText(TextParams(text: text));
 
     yield failureOrResponse.fold(
@@ -83,31 +83,31 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     );
   }
 
-  Stream<TextState> _getTextListState(GetTextEvent event) async* {
-    yield GettingTextList();
-
-    final classroom = Classroom(
-      id: event.classId,
-    );
+  Stream<TextState> _getTextListState(GetTextsEvent event) async* {
+    yield GettingTexts();
 
     final failureOrResponse =
-        await getTexts(ClassroomParams(classroom: classroom));
+        await getTexts(ClassroomParams(classroom: event.classroom));
     yield failureOrResponse.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => GotTextList(texts: response),
+      (response) => TextsGot(texts: response),
     );
   }
 
-  MyText _createTextEntityFromEvent(TextEvent event) {
-    if (event is _TextManagementEvent) {
-      return MyText(
-        title: event.title,
-        body: event.body,
-        localId: event.localId,
-        classId: event.classId,
-      );
-    }
-    throw Exception('Cannot create text from event');
+  MyText _createTextEntityFromEvent(CreateTextEvent event) {
+    return MyText(
+      title: event.title,
+      body: event.body,
+      classId: event.classroom.id,
+    );
+  }
+
+  MyText _updateTextEntityFromEvent(UpdateTextEvent event) {
+    return MyText(
+      title: event.title ?? event.oldText.title,
+      body: event.body ?? event.oldText.body,
+      classId: event.oldText.classId,
+    );
   }
 
   String _mapFailureToMessage(Failure failure) {

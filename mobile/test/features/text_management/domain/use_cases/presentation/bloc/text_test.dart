@@ -61,7 +61,6 @@ void main() {
   final String tBody =
       'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie';
   final int tLocalId = 001;
-  final int tClassId = 010;
 
   test('initial state should be [TextInitial]', () {
     expect(bloc.state, TextInitial());
@@ -79,11 +78,10 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateNewTextEvent(
-        tTitle,
-        tBody,
-        tLocalId,
-        tClassId,
+      bloc.add(CreateTextEvent(
+        title: tTitle,
+        body: tBody,
+        classroom: tClassroom,
       ));
     });
 
@@ -98,11 +96,10 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateNewTextEvent(
-        tTitle,
-        tBody,
-        tLocalId,
-        tClassId,
+      bloc.add(CreateTextEvent(
+        title: tTitle,
+        body: tBody,
+        classroom: tClassroom,
       ));
     });
   });
@@ -121,10 +118,9 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateTextEvent(
-        tTitle,
-        tBody,
-        tLocalId,
-        tClassId,
+        title: tTitle,
+        body: tBody,
+        oldText: tText,
       ));
     });
 
@@ -138,12 +134,7 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateTextEvent(
-        tTitle,
-        tBody,
-        tLocalId,
-        tClassId,
-      ));
+      bloc.add(UpdateTextEvent(title: tTitle, body: tBody, oldText: tText));
     });
   });
 
@@ -158,9 +149,7 @@ void main() {
         TextDeleted(),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteTextEvent(
-        tLocalId,
-      ));
+      bloc.add(DeleteTextEvent(localId: tLocalId));
     });
 
     test(
@@ -173,9 +162,7 @@ void main() {
         Error(message: 'could not delete this text'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteTextEvent(
-        tLocalId,
-      ));
+      bloc.add(DeleteTextEvent(localId: tLocalId));
     });
   });
 
@@ -187,16 +174,11 @@ void main() {
           .thenAnswer((_) async => Right(tTextList));
 
       final expected = [
-        GettingTextList(),
-        GotTextList(texts: tTextList),
+        GettingTexts(),
+        TextsGot(texts: tTextList),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetTextEvent(
-        tTitle,
-        tBody,
-        tLocalId,
-        tClassId,
-      ));
+      bloc.add(GetTextsEvent(classroom: tClassroom));
     });
 
     test(
@@ -205,16 +187,11 @@ void main() {
       when(mockGetText(any)).thenAnswer((_) async => Left(ServerFailure()));
 
       final expected = [
-        GettingTextList(),
+        GettingTexts(),
         Error(message: 'Not able to get student list'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetTextEvent(
-        tTitle,
-        tBody,
-        tLocalId,
-        tClassId,
-      ));
+      bloc.add(GetTextsEvent(classroom: tClassroom));
     });
   });
 }
