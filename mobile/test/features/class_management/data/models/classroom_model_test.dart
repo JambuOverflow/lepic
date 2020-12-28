@@ -8,14 +8,15 @@ import '../../../../core/fixtures/fixture_reader.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 
 void main() {
+  final time = DateTime(2020, 1, 1, 1, 1);
   final tClassModel = ClassroomModel(
     grade: 1,
     localId: 2,
     name: "A",
     tutorId: 3,
     deleted: false,
-    lastUpdated: DateTime(2020),
-    clientLastUpdated: DateTime(2020),
+    lastUpdated: time,
+    clientLastUpdated: time,
   );
 
   final tClassEntity = Classroom(
@@ -24,8 +25,8 @@ void main() {
     name: "A",
     tutorId: 3,
     deleted: false,
-    lastUpdated: DateTime(2020),
-    clientLastUpdated: DateTime(2020),
+    lastUpdated: time,
+    clientLastUpdated: time,
   );
 
   final tClassCompanion = ClassroomModelsCompanion(
@@ -33,8 +34,8 @@ void main() {
     name: Value("A"),
     tutorId: Value(3),
     deleted: Value(false),
-    lastUpdated: Value(DateTime(2020)),
-    clientLastUpdated: Value(DateTime(2020)),
+    lastUpdated: Value(time),
+    clientLastUpdated: Value(time),
   );
 
   group("from json", () {
@@ -55,11 +56,10 @@ void main() {
         "local_id": 2,
         "grade": 1,
         "name": "A",
-        "lastUpdated": 1577847600000,
-        "clientLastUpdated": 1577847600000,
+        "lastUpdated": 1577851260000,
+        "clientLastUpdated": 1577851260000,
         "deleted": false,
         "tutor_id": 3,
-        
       };
 
       expect(result, expectedMap);
