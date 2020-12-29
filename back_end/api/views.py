@@ -107,11 +107,8 @@ class UserCreate(generics.CreateAPIView,
     serializer_class = UserSerializer
     queryset = User.objects.all()
     
-    def get_object(self, **kwargs):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, ('id', self.request.user.id))
-        self.check_object_permissions(self.request, obj)
-        return obj
+    def get_object(self):
+        return get_object_or_404(self.queryset, ('id', self.request.user.id))
 
 
     def perform_create(self, serializer):
