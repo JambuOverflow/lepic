@@ -78,7 +78,7 @@ class UserRepositoryImpl implements UserRepository {
           user: userModel,
         );
 
-        await localDataSource.cacheUser(userModel);
+        await _getCompleteUserAndCacheIt(response);
 
         return Right(response);
       } else if (response is InvalidCredentials) {
@@ -88,6 +88,13 @@ class UserRepositoryImpl implements UserRepository {
     } on ServerException {
       return Left(ServerFailure());
     }
+  }
+
+  Future _getCompleteUserAndCacheIt(TokenResponse response) async {
+    final completeUserModel =
+        await remoteDataSource.getUser(response.token);
+    
+    await localDataSource.cacheUser(completeUserModel);
   }
 
   Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(

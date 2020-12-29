@@ -250,14 +250,38 @@ void main() {
             token: anyNamed('token'), user: tUserModel));
       });
 
-      test('should cache user when call is successful', () async {
+      test('''should get user info from remote data soruce when
+       call is successful''', () async {
         when(mockRemoteDataSource.login(tUserModel))
             .thenAnswer((_) async => response);
 
         await repository.login(tUser);
 
         verify(mockRemoteDataSource.login(tUserModel));
-        verify(mockLocalDataSource.cacheUser(tUserModel));
+        verify(mockRemoteDataSource.getUser(any));
+      });
+
+      test('should cache remote user when call is successful', () async {
+        final completeUserModel = UserModel(
+          localId: 5,
+          firstName: 'as',
+          lastName: 'cd',
+          email: 'as@cd.com',
+          username: 'as@cd.com',
+          role: Role.researcher,
+          password: 'abc',
+        );
+
+        when(mockRemoteDataSource.login(tUserModel))
+            .thenAnswer((_) async => response);
+        when(mockRemoteDataSource.getUser(any))
+            .thenAnswer((_) async => completeUserModel);
+
+        await repository.login(tUser);
+
+        verify(mockRemoteDataSource.login(tUserModel));
+        verify(mockRemoteDataSource.getUser(any));
+        verify(mockLocalDataSource.cacheUser(completeUserModel));
       });
 
       test('should return invalid credentials', () async {
