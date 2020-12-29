@@ -32,7 +32,7 @@ void setUpLocator() {
   getIt.registerLazySingleton(() => CreateNewUserCase(repository: getIt()));
   getIt.registerLazySingleton(() => LoginCase(repository: getIt()));
   getIt.registerLazySingleton(() => UpdateUserCase(repository: getIt()));
-  getIt.registerLazySingleton(() => GetStoredUserCase(repository: getIt()));
+  getIt.registerLazySingleton(() => GetLoggedInUserCase(repository: getIt()));
 
   getIt.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(
