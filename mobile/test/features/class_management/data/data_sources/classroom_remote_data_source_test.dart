@@ -116,7 +116,7 @@ void main() {
     });
   });
 
-   group('putClassroom', () {
+  group('putClassroom', () {
     test('should return a correct response from the server', () async {
       final url = API_URL + '/api/classes';
       final body = json.encode(model1.toJson());
@@ -177,6 +177,46 @@ void main() {
       final response = await syncClassroom.pull();
 
       expect(response, UnsuccessfulResponse(message: ""));
+    });
+  });
+
+  group('getClassroomsInServer', () {
+    test('should throw an exception', () async {
+      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      when(mockClient.get(uriLocal, headers: headers))
+          .thenAnswer((_) async => invalidResponse);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      expect(() async => await syncClassroom.getClassroomsInServer(),
+          throwsA(TypeMatcher<ServerException>()));
+
+      verify(mockSecureStorage.read(key: "token"));
+    });
+
+    test('should return an empty list', () async {
+      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      when(mockClient.get(uriLocal, headers: headers))
+          .thenAnswer((_) async => validResponse);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      final output = await syncClassroom.getClassroomsInServer();
+
+      expect(output, []);
+      verify(mockSecureStorage.read(key: "token"));
+      verify(mockClient.get(uriLocal, headers: headers));
+    });
+
+    test('should return a list with models', () async {
+      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      when(mockClient.get(uriLocal, headers: headers))
+          .thenAnswer((_) async => validResponseWithContent);
+      when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+
+      final output = await syncClassroom.getClassroomsInServer();
+
+      expect(output, [model1, model2]);
+      verify(mockSecureStorage.read(key: "token"));
+      verify(mockClient.get(uriLocal, headers: headers));
     });
   });
 }
