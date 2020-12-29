@@ -59,28 +59,17 @@ void main() {
   });
 
   group('cacheUser', () {
-    test(
-        'should cache the User in the database by calling insert user '
-        'when no user exists', () async {
-      when(mockDatabase.insertUser(tUserModel))
+    test('should override the User in the secure storage', () async {
+      final userJsonString = tUserModel.toJsonString();
+      when(mockSecureStorage.write(key: loggedInUserKey, value: userJsonString))
           .thenAnswer((_) async => tUserModel.localId);
 
-      final result = await dataSource.cacheUser(tUserModel);
+      await dataSource.cacheUser(tUserModel);
 
-      verify(mockDatabase.insertUser(tUserModel));
-      expect(result, tUserModel.localId);
-    });
-
-    test(
-        'should cache the User in the database by calling update user '
-        'when the user already exists', () async {
-      when(mockDatabase.activeUser).thenAnswer((_) async => tUserModel);
-      when(mockDatabase.updateUser(tUserModel)).thenAnswer((_) async => true);
-
-      final result = await dataSource.cacheUser(tUserModel);
-
-      verify(mockDatabase.updateUser(tUserModel));
-      expect(result, tUserModel.localId);
+      verify(mockSecureStorage.write(
+        key: loggedInUserKey,
+        value: userJsonString,
+      ));
     });
   });
 

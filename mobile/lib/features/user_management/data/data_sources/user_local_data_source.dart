@@ -33,13 +33,9 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   });
 
   @override
-  Future<int> cacheUser(UserModel user) {
-    if (database.activeUser == null)
-      return database.insertUser(user);
-    else {
-      database.updateUser(user);
-      return Future.value(user.localId);
-    }
+  Future<void> cacheUser(UserModel user) async {
+    final userJsonString = user.toJsonString();
+    await secureStorage.write(key: loggedInUserKey, value: userJsonString);
   }
 
   @override
