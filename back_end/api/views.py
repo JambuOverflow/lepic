@@ -2,7 +2,7 @@ import json
 from rest_framework import generics, mixins, status, permissions, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.http import JsonResponse, Http404
@@ -21,6 +21,7 @@ from .serializers import ClassSerializer, UserSerializer, TextSerializer, Studen
 from .models import Text, Class, User, Student, AudioFile, School
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, IsCreator, IsTeacher
 from .utils import EmailThread
+from django.shortcuts import get_object_or_404
 
 
 class EmailVerification(generics.GenericAPIView):
@@ -97,15 +98,20 @@ class ResetPassword(generics.GenericAPIView):
             return Response({'error_message': 'Your password was not successfully reseted, please check your reset link.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserList(generics.ListCreateAPIView):
+class UserCreate(generics.CreateAPIView,
+                 generics.RetrieveAPIView):
     """
     Get authenticated user data or create a new user.
     EX: GET or POST /api/users/
     """
     serializer_class = UserSerializer
+    queryset = User.objects.all()
     
-    def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('id', self.request.user.id))
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 
     def perform_create(self, serializer):
