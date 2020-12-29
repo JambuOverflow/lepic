@@ -250,6 +250,16 @@ void main() {
             token: anyNamed('token'), user: tUserModel));
       });
 
+      test('should cache user when call is successful', () async {
+        when(mockRemoteDataSource.login(tUserModel))
+            .thenAnswer((_) async => response);
+
+        await repository.login(tUser);
+
+        verify(mockRemoteDataSource.login(tUserModel));
+        verify(mockLocalDataSource.cacheUser(tUserModel));
+      });
+
       test('should return invalid credentials', () async {
         when(mockRemoteDataSource.login(tUserModel))
             .thenAnswer((_) async => InvalidCredentials());
