@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework import status
-from api.models import Class, User, Text
+from api.models import Class, User, Text, School
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APITestCase
 
@@ -9,7 +9,9 @@ class TestCRUDText(APITestCase):
         self.text_url = reverse('create-text')
         user = User.objects.create_user(username="usertest", password="123456", email="user@test.com", role=1)
         self.token = Token.objects.create(user=user)
-        class_ = Class.objects.create(tutor=user, grade=7, title='Turma do Ideal')
+        school = School.objects.create(name='Escola Municipal', city='Belem', neighbourhood='Cremacao', 
+                                            state='PA', zip_code=66087600, modality=0, creator=user)
+        class_ = Class.objects.create(tutor=user, grade=7, title='Turma do Ideal', school=school)
         self.text_data = {
             "title": "Trecho de O Alquimista",
             "body": "Lorem ipsum lorem 3",
@@ -19,8 +21,7 @@ class TestCRUDText(APITestCase):
             "title":"Trecho de Sertao Veredas",
         }
         text = Text.objects.create(title='Texto 2', body='Lorem ipsum', _class=class_)
-        self.text_id = text.id
-        self.update_delete_url = reverse('update-delete-text', kwargs={'pk': self.text_id})
+        self.update_delete_url = reverse('update-delete-text', kwargs={'pk': text.id})
 
 
     def test_create_text_without_authorization(self):

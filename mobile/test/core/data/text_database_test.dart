@@ -121,17 +121,18 @@ void main() {
     });
 
     test(
-        "should return 1 indicating that a row was deleted when the input is a valid pk",
+        "shouldn't throw an exception when the input is a valid pk",
         () async {
-      final deleted = await database.deleteText(tValidTextPk1);
-      expect(deleted, 1);
+      await database.deleteText(tValidTextPk1);
+      equals(true);
     });
 
     test(
-        "should return 0 indicating that no rows were deleted when the input is an invalid pk",
+        "should throw an exception when the input is an invalid pk",
         () async {
-      final deleted = await database.deleteText(tInvalidTextPk);
-      expect(deleted, 0);
+      expect(() => database.deleteText(tInvalidTextPk), throwsA(const
+      TypeMatcher<SqliteException>()));
+      
     });
   });
 

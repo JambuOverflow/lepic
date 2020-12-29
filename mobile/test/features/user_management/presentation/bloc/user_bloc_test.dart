@@ -6,7 +6,7 @@ import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/create_user_use_case.dart';
 import 'package:mobile/features/user_management/domain/use_cases/update_user_use_case.dart';
 import 'package:mobile/features/user_management/domain/use_cases/user_params.dart';
-import 'package:mobile/features/user_management/presentation/bloc/bloc/user_bloc.dart';
+import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
 

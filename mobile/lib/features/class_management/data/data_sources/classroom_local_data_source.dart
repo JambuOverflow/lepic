@@ -23,10 +23,15 @@ abstract class ClassroomLocalDataSource {
   /// Throws [CacheException] if something wrong happens.
   Future<ClassroomModel> cacheNewClassroom(ClassroomModel classroomModel);
 
-  /// Updated in cache the [Classroom] passed.
+  /// Updates in cache the [Classroom] passed.
   ///
   /// Throws [CacheException] if [Clasroom] is not cached.
   Future<ClassroomModel> updateCachedClassroom(ClassroomModel classroomModel);
+
+  /// Updates in cache the [Classroom] passed if the [Classroom] already exists.
+  /// Creates the [Classroom] if it does not yet exists.
+  /// Throws [CacheException] if something wrong happens.
+  Future<ClassroomModel> cacheClassroom(ClassroomModel classroomModel);
 }
 
 class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
@@ -57,7 +62,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
     try {
       var done = await this.database.deleteClassroom(pk);
       if (done != 1) {
-        throw SqliteException(787, "The table don't have this entry");
+        throw SqliteException(787, "The table doesn't have this entry");
       }
     } on SqliteException {
       throw CacheException();
@@ -72,6 +77,22 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
       return await this.database.getClassrooms(tutorId);
     } on SqliteException {
       throw CacheException();
+    }
+  }
+
+  @override
+  Future<ClassroomModel> cacheClassroom(ClassroomModel classroomModel) async {
+    bool classroomExists;
+    if (classroomModel.localId == null) {
+      classroomExists = false;
+    } else {
+      classroomExists =
+          await this.database.classroomExists(classroomModel.localId);
+    }
+    if (classroomExists) {
+      return updateCachedClassroom(classroomModel);
+    } else {
+      return cacheNewClassroom(classroomModel);
     }
   }
 

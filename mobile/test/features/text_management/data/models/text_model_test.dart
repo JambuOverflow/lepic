@@ -10,7 +10,7 @@ import '../../../../core/fixtures/fixture_reader.dart';
 void main() {
   final tTextModel = TextModel(title: '1', localId: 2, body: "A", classId: 3);
 
-  final tTextEntity = Text(title: '1', localId: 2, body: "A", classId: 3);
+  final tTextEntity = MyText(title: '1', localId: 2, body: "A", classId: 3);
 
   group("from json", () {
     test("should return a valid Text model", () async {
@@ -29,7 +29,7 @@ void main() {
       final expectedMap = {
         "local_id": 2,
         "title": '1',
-        "body": "A", 
+        "body": "A",
         "class_id": 3
       };
 

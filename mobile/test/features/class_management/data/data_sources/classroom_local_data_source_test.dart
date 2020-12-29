@@ -47,6 +47,7 @@ Future<void> main() {
       ClassroomModel(tutorId: 1, grade: 1, name: "A", localId: 1);
 
   final tClassroomCompanion1 = tClassroomInputModel1.toCompanion(true);
+  final tClassroomCompanionPk1 = tClassroomModel1.toCompanion(true);
 
   final tClassroomModels = [tClassroomInputModel1, tClassroomInputModel2];
 
@@ -115,8 +116,7 @@ Future<void> main() {
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getClassrooms(tValidPk))
-          .thenAnswer((_) async => []);
+      when(mockDatabase.getClassrooms(tValidPk)).thenAnswer((_) async => []);
 
       final result =
           await classroomLocalDataSourceImpl.getClassroomsFromCache(tUserModel);
@@ -139,23 +139,59 @@ Future<void> main() {
 
   group("updateClassroom", () {
     test("should correctly update a cached classroom", () async {
-      when(mockDatabase.updateClassroom(tClassroomModel1)).
-        thenAnswer((_) async => true);
+      when(mockDatabase.updateClassroom(tClassroomModel1))
+          .thenAnswer((_) async => true);
 
       await classroomLocalDataSourceImpl
           .updateCachedClassroom(tClassroomModel1);
       verify(mockDatabase.updateClassroom(tClassroomModel1));
     });
 
-    test("should throw a cache expection if the update was not completed", () async {
-      when(mockDatabase.updateClassroom(tClassroomModel1)).
-        thenAnswer((_) async => false);
+    test("should throw a cache expection if the update was not completed",
+        () async {
+      when(mockDatabase.updateClassroom(tClassroomModel1))
+          .thenAnswer((_) async => false);
 
       expect(
           () async => await classroomLocalDataSourceImpl
               .updateCachedClassroom(tClassroomModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
-    
+  });
+
+  group("cacheClassroom", () {
+    test("should correctly update a cached classroom", () async {
+      when(mockDatabase.updateClassroom(tClassroomModel1))
+          .thenAnswer((_) async => true);
+      when(mockDatabase.classroomExists(tClassroomModel1.localId))
+          .thenAnswer((_) async => true);
+
+      await classroomLocalDataSourceImpl.cacheClassroom(tClassroomModel1);
+      verify(mockDatabase.updateClassroom(tClassroomModel1));
+    });
+
+    test(
+        "should correctly cache and return a valid classroom when it does not have a localId",
+        () async {
+      when(mockDatabase.insertClassroom(tClassroomCompanion1))
+          .thenAnswer((_) async => tValidPk);
+      when(mockDatabase.classroomExists(tClassroomModel1.localId))
+          .thenAnswer((_) async => false);
+
+      await classroomLocalDataSourceImpl.cacheClassroom(tClassroomInputModel1);
+      verify(mockDatabase.insertClassroom(tClassroomCompanion1));
+    });
+
+    test(
+        "should correctly cache and return a valid classroom when it has an existing pk",
+        () async {
+      when(mockDatabase.insertClassroom(tClassroomCompanionPk1))
+          .thenAnswer((_) async => tValidPk);
+      when(mockDatabase.classroomExists(tClassroomModel1.localId))
+          .thenAnswer((_) async => false);
+
+      await classroomLocalDataSourceImpl.cacheClassroom(tClassroomModel1);
+      verify(mockDatabase.insertClassroom(tClassroomCompanionPk1));
+    });
   });
 }

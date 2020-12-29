@@ -13,19 +13,18 @@ class TextModels extends Table {
       .customConstraint('NOT NULL REFERENCES classroom_models(local_id)')();
 }
 
-Text textModelToEntity(TextModel model) {
-  return Text(
+MyText textModelToEntity(TextModel model) {
+  return MyText(
       localId: model.localId,
       title: model.title,
       body: model.body,
       classId: model.classId);
 }
 
-TextModel textEntityToModel(Text entity) {
+TextModel textEntityToModel(MyText entity) {
   return TextModel(
       localId: entity.localId,
       title: entity.title,
       body: entity.body,
       classId: entity.classId);
 }
-

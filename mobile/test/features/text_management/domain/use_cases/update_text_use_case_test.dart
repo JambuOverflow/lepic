@@ -17,7 +17,7 @@ void main() {
     useCase = UpdateText(repository: mockTextRepository);
   });
 
-  final tText = Text(
+  final tText = MyText(
     title: "Test Title",
     body: "Test Body",
     classId: 1,

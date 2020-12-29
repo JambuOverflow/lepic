@@ -69,9 +69,39 @@ class Database extends _$Database {
         .get();
   }
 
+  //returns true if the classroom exists, and false otherwise
+  Future<bool> classroomExists(int id) async {
+    final classroomModel = await (select(classroomModels)
+          ..where((t) => t.localId.equals(id)))
+        .getSingle();
+    return (classroomModel != null);
+  }
+
   ///Returns true if the class was updated, false otherwise
   Future<bool> updateClassroom(ClassroomModel entry) async {
     return update(classroomModels).replace(entry);
+  }
+
+  /// returns the pk of the added entry
+  Future<int> insertStudent(StudentModelsCompanion modelCompanion) async {
+    return into(studentModels).insert(modelCompanion);
+  }
+
+  ///Returns the number of deleted rows
+  Future<int> deleteStudent(int id) async {
+    return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
+  }
+
+  ///Returns a list of studentModels, and an empty list with the table is empty
+  Future<List<StudentModel>> getStudents(int classroomId) async {
+    return (select(studentModels)
+          ..where((t) => t.classroomId.equals(classroomId)))
+        .get();
+  }
+
+  ///Returns true if the student was updated, false otherwise
+  Future<bool> updateStudent(StudentModel entry) async {
+    return update(studentModels).replace(entry);
   }
 
   /// returns the pk of the added entry
@@ -79,9 +109,13 @@ class Database extends _$Database {
     return into(textModels).insert(textCompanion);
   }
 
-  ///Returns the number of deleted rows
-  Future<int> deleteText(int id) async {
-    return (delete(textModels)..where((t) => t.localId.equals(id))).go();
+  ///Throws a SqliteException if the entry is not found
+  Future<void> deleteText(int id) async {
+    var done =
+        await (delete(textModels)..where((t) => t.localId.equals(id))).go();
+    if (done != 1) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
   }
 
   ///Returns a list of textModels, and an empty list when the table is empty
