@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -38,7 +39,10 @@ void main() {
       localId: tValidTextPk2);
 
   final tValidUpdateTextModel = TextModel(
-      title: title, body: updateBody, classId: tValidClassroomPk, localId: tValidTextPk1);
+      title: title,
+      body: updateBody,
+      classId: tValidClassroomPk,
+      localId: tValidTextPk1);
 
   final tInvalidUpdateTextModel = TextModel(
       localId: tInvalidTextPk,
@@ -55,10 +59,26 @@ void main() {
     password: Value('123'),
   );
 
+  final zipCode = 1;
+  final Modality modality = Modality.public;
+  final String state = "PA";
+  final String city = "Belém";
+  final String neighborhood = "Nazaré";
+  final tValidSchoolCompanion = SchoolModel(
+    userId: 1,
+    name: "name",
+    zipCode: zipCode,
+    modality: modality,
+    state: state,
+    city: city,
+    neighborhood: neighborhood,
+  ).toCompanion(true);
+
   final tClassroomCompanion = ClassroomModelsCompanion(
     grade: Value(1),
     name: Value("varro"),
     tutorId: Value(1),
+    schoolId: Value(1),
   );
 
   Database database;
@@ -70,6 +90,7 @@ void main() {
     });
     database = Database(vmDatabase);
     await database.into(database.userModels).insert(tUserCompanion);
+    await database.into(database.schoolModels).insert(tValidSchoolCompanion);
     await database.into(database.classroomModels).insert(tClassroomCompanion);
   }
 
@@ -87,14 +108,13 @@ void main() {
 
       expect(pk, tValidTextPk1);
     });
-    
+
     test("should return a SQLite error", () async {
       expect(() => database.insertText(tInvalidTextCompanion),
           throwsA(TypeMatcher<SqliteException>()));
     });
-    
   });
-  
+
   group("deleteText", () {
     setUp(() async {
       await database.insertText(tValidTextCompanion);
@@ -106,7 +126,6 @@ void main() {
       final deleted = await database.deleteText(tValidTextPk1);
       expect(deleted, 1);
     });
-    
 
     test(
         "should return 0 indicating that no rows were deleted when the input is an invalid pk",
@@ -114,15 +133,13 @@ void main() {
       final deleted = await database.deleteText(tInvalidTextPk);
       expect(deleted, 0);
     });
-    
   });
-  
+
   group("getTexts", () {
     test("should return an empty list of texts", () async {
       final texts = await database.getTexts(tValidClassroomPk);
       expect(texts, []);
     });
-    
 
     test("should return a list with one text", () async {
       await database.insertText(tValidTextCompanion);
@@ -138,7 +155,6 @@ void main() {
       final texts = await database.getTexts(tValidClassroomPk);
       expect(texts, [tValidTextModel1, tValidTextModel2]);
     });
-    
   });
 
   group("getTexts", () {
@@ -150,13 +166,12 @@ void main() {
       final done = await database.updateText(tValidUpdateTextModel);
       expect(done, true);
     });
-  
+
     test("should return false when updating an invalid text", () async {
       final done = await database.updateText(tInvalidUpdateTextModel);
       expect(done, false);
     });
   });
-  
 }
 
 void closeDatabase(Database database) async {
