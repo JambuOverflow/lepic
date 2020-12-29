@@ -34,7 +34,7 @@ class IsTextCreator(permissions.BasePermission):
 
 class IsTeacher(permissions.BasePermission):
     """
-    Custom permission to allow only teachers to create schools.
+    Custom permission to allow only teachers.
     """
 
     def has_permission(self, request, view):
@@ -67,3 +67,12 @@ class IsTeacherOrReadOnlyAudioFile(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         # Write permissions are only allowed to the owner of the object.
         return obj.student._class.tutor == request.user
+
+class IsSupportProfessional(permissions.BasePermission):
+    """
+    Custom permission to allow only support professionals.
+    """
+
+    def has_permission(self, request, view):
+        # Permissions are only allowed to teachers.
+        return request.user.role == 1

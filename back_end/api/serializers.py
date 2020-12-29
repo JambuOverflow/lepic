@@ -20,29 +20,46 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SchoolSerializer(serializers.ModelSerializer):
     creator = serializers.ReadOnlyField(source='creator.username')
+    last_update = serializers.ReadOnlyField()
+
     class Meta:
         model = School
-        fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 'modality', 'creator']
+        fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 
+                  'modality', 'creator', 'local_id', 'deleted', 'last_update']
 
 
 class ClassSerializer(serializers.ModelSerializer):
     tutor = serializers.ReadOnlyField(source='tutor.username')
+    last_update = serializers.ReadOnlyField()
+
     class Meta:
         model = Class
-        fields = ['id', 'title', 'tutor', 'grade', 'school']
+        fields = ['id', 'title', 'tutor', 'grade', 'school', 'local_id',
+                  'deleted', 'last_update']
 
 
 class TextSerializer(serializers.ModelSerializer):
+    last_update = serializers.ReadOnlyField()
+
     class Meta:
         model = Text
-        fields = ['id', 'title', 'body', '_class']
+        fields = ['id', 'title', 'body', '_class', 'local_id', 'deleted', 
+                 'last_update']
+
         
 class StudentSerializer(serializers.ModelSerializer):
+    last_update = serializers.ReadOnlyField()
+
     class Meta:
         model = Student
-        fields = ['id', 'first_name', 'last_name', '_class']
+        fields = ['id', 'first_name', 'last_name', '_class', 'local_id', 
+                  'deleted', 'last_update']
+
 
 class AudioFileSerializer(serializers.ModelSerializer):
+    last_update = serializers.ReadOnlyField()
+
     class Meta:
         model = AudioFile
-        fields = ['id', 'title', 'file', 'student', 'text']
+        fields = ['id', 'title', 'file', 'student', 'text', 'local_id', 
+                  'deleted', 'last_update']
