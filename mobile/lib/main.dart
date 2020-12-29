@@ -6,6 +6,8 @@ import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart
 import 'package:mobile/features/user_management/presentation/bloc/user_bloc.dart';
 import 'package:moor/moor.dart';
 
+
+import 'core/data/serializer.dart';
 import 'core/presentation/pages/route_generator.dart';
 import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
@@ -15,7 +17,7 @@ const IS_IN_DEVELOPMENT = true;
 
 void main() async {
   // This setting overrides the default serializer to our custom one
-  moorRuntimeOptions.defaultSerializer = UserSerializer();
+  moorRuntimeOptions.defaultSerializer = Serializer();
   WidgetsFlutterBinding.ensureInitialized();
   await setUpLocator();
 

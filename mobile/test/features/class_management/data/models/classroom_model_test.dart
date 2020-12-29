@@ -9,9 +9,9 @@ import 'package:mobile/features/class_management/data/models/classroom_model.dar
 
 void main() {
   final tClassModel =
-      ClassroomModel(grade: 1, localId: 2, name: "A", tutorId: 3);
+      ClassroomModel(grade: 1, localId: 2, name: "A", tutorId: 3, schoolId: 1);
 
-  final tClassEntity = Classroom(grade: 1, id: 2, name: "A", tutorId: 3);
+  final tClassEntity = Classroom(grade: 1, id: 2, name: "A", tutorId: 3, schoolId: 1);
 
   final tClassCompanion = ClassroomModelsCompanion(grade: Value(1), name: Value("A"),
   tutorId: Value(3));
@@ -35,6 +35,7 @@ void main() {
         "grade": 1,
         "name": "A",
         "tutor_id": 3,
+        "school_id": 1,
       };
 
       expect(result, expectedMap);
