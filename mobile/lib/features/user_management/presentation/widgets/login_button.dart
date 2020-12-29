@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/features/user_management/presentation/bloc/auth_bloc.dart';
 
 import '../bloc/login_form_bloc.dart';
 import '../../../../core/presentation/extensions/snack_bar_extensions.dart';
@@ -27,6 +28,8 @@ class LoginButton extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.status == FormzStatus.submissionSuccess) {
+          BlocProvider.of<AuthBloc>(context).add(UserLoggedInEvent());
+
           Navigator.of(context).pushReplacementNamed('/home');
         } else if (state.status == FormzStatus.submissionFailure) {
           Scaffold.of(context).showServerFailureSnackBar(context);
