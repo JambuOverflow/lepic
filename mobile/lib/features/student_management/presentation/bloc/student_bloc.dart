@@ -29,7 +29,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     @required this.getStudents,
     @required this.deleteStudent,
     @required this.updateStudent,
-  }) : super(StudentNotLoaded());
+  }) : super(GettingStudents());
 
   @override
   Stream<StudentState> mapEventToState(
@@ -48,7 +48,13 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       CreateNewStudentEvent event) async* {
     yield CreatingStudent();
 
-    final student = _createStudentEntityFromEvent(event);
+    final classroomId = event.classroom;
+
+    final student = Student(
+      firstName: event.firstName,
+      lastName: event.lastName,
+      classroomId: classroomId.id,
+    );
 
     final studentEither = await createStudent(StudentParams(student: student));
 
@@ -61,25 +67,24 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Stream<StudentState> _updateStudentStates(UpdateStudentEvent event) async* {
     yield UpdatingStudent();
 
-    final student = _createStudentEntityFromEvent(event);
-    final studentEither = await updateStudent(StudentParams(student: student));
+    final failureOrStudent =
+        await updateStudent(StudentParams(student: event.student));
 
-    yield studentEither.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (updatedStudent) => StudentUpdated(student: updatedStudent),
+    yield failureOrStudent.fold(
+      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
+      (student) => StudentUpdated(updatedStudent: student),
     );
   }
 
   Stream<StudentState> _deleteStudentStates(DeleteStudentEvent event) async* {
     yield DeletingStudent();
 
-    final student = Student(id: event.id);
+    final failureOrSuccess =
+        await deleteStudent(StudentParams(student: event.student));
 
-    final deleteEither = await deleteStudent(StudentParams(student: student));
-
-    yield deleteEither.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (response) => StudentDeleted(),
+    yield failureOrSuccess.fold(
+      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
+      (_) => StudentDeleted(),
     );
   }
 
@@ -91,14 +96,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     yield getEither.fold(
       (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
       (students) => StudentsGot(students: students),
-    );
-  }
-
-  Student _createStudentEntityFromEvent(StudentManagementEvent event) {
-    return Student(
-      firstName: event.firstName,
-      lastName: event.lastName,
-      classroomId: classroom.id,
     );
   }
 
