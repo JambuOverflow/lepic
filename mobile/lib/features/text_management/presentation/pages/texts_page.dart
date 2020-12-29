@@ -15,50 +15,216 @@ class TextsPage extends StatefulWidget {
 
 class _TextsPageState extends State<TextsPage> {
   @override
-  Widget build(BuildContext context) {
-    final _bloc = BlocProvider.of<TextBloc>(context);
+  void initState() {
+    super.initState();
+    BlocProvider.of<TextBloc>(context).add(GetTextsEvent());
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Texts')),
-      drawer: DrawerOverlay(),
-      body: ListView.builder(
-          // itemCount: 0,
-          // itemBuilder: (context, index) {
-          //   final text = _bloc.getTexts;
-          //   return ItemText(text);
-          // },
-          ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/add_text');
-        },
+      appBar: AppBar(
+        title: const Text('My students'),
       ),
+      body: Center(
+        child: BlocListener<TextBloc, TextState>(
+          listener: (context, state) {
+            if (state is Error) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                ),
+              );
+            }
+          },
+          child: _blocBuilder(),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.add,
+        ),
+        elevation: 10,
+        onPressed: () => _modalAdd(context: context),
+      ),
+    );
+  }
+
+  _blocBuilder() {
+    return BlocBuilder<TextBloc, TextState>(
+      builder: (context, state) {
+        if (state is GettingTexts) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state is TextsGot) {
+          return Column(
+            children: <Widget>[
+              Text("Total texts:${state.texts.length}"),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.texts.length,
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: UniqueKey(),
+                      background: Container(
+                        color: Colors.blue,
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          '${state.texts[index].title}',
+                        ),
+                        trailing: Wrap(
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(
+                                Icons.edit,
+                              ),
+                              onPressed: () => _modalUpdate(
+                                text: state.texts[index],
+                                context: context,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onDismissed: (DismissDirection direction) {
+                        BlocProvider.of<TextBloc>(context)
+                            .add(DeleteTextEvent(text: state.texts[index]));
+
+                        // Then show a snackbar.
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                          "student ${state.texts[index].title} deleted",
+                        )));
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        } else if (state is Error) {
+          return Center(child: Text("Error"));
+        }
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'No data',
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
-class ItemText extends StatelessWidget {
-  final MyText _text;
-  ItemText(this._text);
+_modalAdd({BuildContext context}) {
+  String _title;
+  String _body;
+  showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('Create new text'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextFormField(
+                  onChanged: (newTitle) => _title = newTitle,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Title',
+                  ),
+                ),
+                TextFormField(
+                  onChanged: (newBody) => _body = newBody,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Body',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            FlatButton(
+              onPressed: () {
+                BlocProvider.of<TextBloc>(context).add(CreateTextEvent(
+                  classroom: null,
+                  body: _body,
+                  title: _title,
+                ));
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(_text.title.toString()),
-        subtitle: Text(_text.classId.toString()),
-        trailing: IconButton(
-          icon: Icon(Icons.arrow_forward),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => TextDetailPage(_text),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+                Navigator.pop(context);
+              },
+              child: Text('Add text'),
+            ),
+          ],
+        );
+      });
+}
+
+_modalUpdate({MyText text, BuildContext context}) {
+  var _title = text.title;
+  var _body = text.body;
+  showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text("Edit text"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextFormField(
+                  initialValue: text.title,
+                  onChanged: (newTitle) => _title = newTitle,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '${text.title}',
+                  ),
+                ),
+                TextFormField(
+                  initialValue: text.body,
+                  onChanged: (newBody) => _body = newBody,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: '${text.body}',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            FlatButton(
+              onPressed: () {
+                BlocProvider.of<TextBloc>(context).add(UpdateTextEvent(
+                  body: _body,
+                  title: _title,
+                  classroom: null,
+                  oldText: text,
+                ));
+                Navigator.pop(context);
+              },
+              child: Text('Edit'),
+            ),
+          ],
+        );
+      });
 }
