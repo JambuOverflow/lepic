@@ -34,8 +34,12 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<void> cacheUser(UserModel user) async {
-    final userJsonString = user.toJsonString();
-    await secureStorage.write(key: loggedInUserKey, value: userJsonString);
+    final userJsonString = user.toJson();
+
+    await secureStorage.write(
+      key: loggedInUserKey,
+      value: json.encode(userJsonString),
+    );
   }
 
   @override
@@ -43,7 +47,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     try {
       final jsonStringModel = await secureStorage.read(key: loggedInUserKey);
 
-      final jsonModel = jsonDecode(jsonStringModel);
+      final jsonModel = json.decode(jsonStringModel);
 
       return UserModel.fromJson(jsonModel);
     } catch (_) {
