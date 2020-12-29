@@ -24,8 +24,8 @@ class SchoolSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = School
-        fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 'modality', 'creator', 
-                  'local_id', 'deleted', 'last_update']
+        fields = ['id', 'name', 'city', 'neighbourhood', 'state', 'zip_code', 
+                  'modality', 'creator', 'local_id', 'deleted', 'last_update']
 
 
 class ClassSerializer(serializers.ModelSerializer):
@@ -48,9 +48,12 @@ class TextSerializer(serializers.ModelSerializer):
 
         
 class StudentSerializer(serializers.ModelSerializer):
+    last_update = serializers.ReadOnlyField()
+
     class Meta:
         model = Student
-        fields = ['id', 'first_name', 'last_name', '_class']
+        fields = ['id', 'first_name', 'last_name', '_class', 'local_id', 
+                  'deleted', 'last_update']
 
 
 class AudioFileSerializer(serializers.ModelSerializer):
