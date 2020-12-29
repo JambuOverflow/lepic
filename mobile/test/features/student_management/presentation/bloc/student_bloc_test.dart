@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 
@@ -29,24 +28,25 @@ void main() {
   MockDeleteStudentEventUseCase mockdeleteStudent;
   MockGetStudentsEventUseCase mockGetStudent;
 
-  setUp(() {
-    mockCreateNewStudent = MockCreateStudentUseCase();
-    mockUpdateStudent = MockUpdateStudentEventUseCase();
-    mockdeleteStudent = MockDeleteStudentEventUseCase();
-    mockGetStudent = MockGetStudentsEventUseCase();
-    bloc = StudentBloc(
-        createStudent: mockCreateNewStudent,
-        getStudents: mockGetStudent,
-        deleteStudent: mockdeleteStudent,
-        updateStudent: mockUpdateStudent);
-  });
-
   final tClassroom = Classroom(
     grade: 1,
     id: 001,
     tutorId: 01,
     name: "class name",
   );
+
+  setUp(() {
+    mockCreateNewStudent = MockCreateStudentUseCase();
+    mockUpdateStudent = MockUpdateStudentEventUseCase();
+    mockdeleteStudent = MockDeleteStudentEventUseCase();
+    mockGetStudent = MockGetStudentsEventUseCase();
+    bloc = StudentBloc(
+        classroom: tClassroom,
+        createStudent: mockCreateNewStudent,
+        getStudents: mockGetStudent,
+        deleteStudent: mockdeleteStudent,
+        updateStudent: mockUpdateStudent);
+  });
 
   final tStudent = Student(
     firstName: 'joãozinho',
@@ -60,11 +60,9 @@ void main() {
 
   final String tFirstName = 'joãozinho';
   final String tLastName = 'da Silva';
-  final int tId = 1;
-  final int tClassroomId = 001;
 
   test('initial state should be [StudentNotLoaded]', () {
-    expect(bloc.state, StudentNotLoaded());
+    expect(bloc.state, GettingStudents());
   });
 
   group('createNewStudent', () {
@@ -80,10 +78,9 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(CreateNewStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
+        classroom: tClassroom,
       ));
     });
 
@@ -91,7 +88,7 @@ void main() {
         'should emit [CreatingStudent, Error] when student create is unsuccessful',
         () async {
       when(mockCreateNewStudent(StudentParams(student: tStudent)))
-          .thenAnswer((_) async => Left(ServerFailure()));
+          .thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         CreatingStudent(),
@@ -100,36 +97,37 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(CreateNewStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
+        classroom: tClassroom,
       ));
     });
   });
 
   group('updateStudent', () {
-    test('''should emit [UpdatingStudent, StudentUpdated] when update 
+    test('''should emit [UpdatingStudent, StudentUpdated] when update
     is successful''', () async {
       when(mockUpdateStudent(any)).thenAnswer(
         (_) async => Right(tStudent),
       );
 
-      final expected = [UpdatingStudent(), StudentUpdated(student: tStudent)];
+      final expected = [
+        UpdatingStudent(),
+        StudentUpdated(updatedStudent: tStudent)
+      ];
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
+        student: tStudent,
       ));
     });
 
-    test('''should emit [UpdatingStudent, Error] when student creation 
+    test('''should emit [UpdatingStudent, Error] when student creation
     is unsuccessful''', () {
       when(mockUpdateStudent(any))
-          .thenAnswer((_) async => Left(ServerFailure()));
+          .thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         UpdatingStudent(),
@@ -138,10 +136,9 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
+        firstName: tFirstName,
+        lastName: tLastName,
+        student: tStudent,
       ));
     });
   });
@@ -157,15 +154,13 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteStudentEvent(
-        tId,
-      ));
+      bloc.add(DeleteStudentEvent(student: tStudent));
     });
 
     test('''Should emit [DeletingStudent, Error] when delete is
         unsuccessful''', () {
       when(mockdeleteStudent(any))
-          .thenAnswer((_) async => Left(ServerFailure()));
+          .thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         DeletingStudent(),
@@ -173,13 +168,11 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteStudentEvent(
-        tId,
-      ));
+      bloc.add(DeleteStudentEvent(student: tStudent));
     });
   });
 
-  group('''Read a student list''', () {
+  group('''getStudents''', () {
     test(
         '''Should emit [GettingStudents, StudentGot] when get a student list''',
         () {
@@ -188,15 +181,10 @@ void main() {
 
       final expected = [
         GettingStudents(),
-        StudentGot(students: tList),
+        StudentsGot(students: tList),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
-      ));
+      bloc.add(GetStudentsEvent());
     });
 
     test(
@@ -209,12 +197,7 @@ void main() {
         Error(message: 'Not able to get student list'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentEvent(
-        tFirstName,
-        tLastName,
-        tId,
-        tClassroomId,
-      ));
+      bloc.add(GetStudentsEvent());
     });
   });
 }

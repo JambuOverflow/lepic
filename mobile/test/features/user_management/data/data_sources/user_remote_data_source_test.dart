@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_remote_data_source.dart';
@@ -32,7 +33,7 @@ void main() {
     mockHttpClient = MockHttpClient();
     dataSource = UserRemoteDataSourceImpl(client: mockHttpClient);
 
-    moorRuntimeOptions.defaultSerializer = UserSerializer();
+    moorRuntimeOptions.defaultSerializer = Serializer();
   });
 
   group('createUser', () {

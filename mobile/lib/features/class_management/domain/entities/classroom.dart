@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class Classroom extends Equatable {
   final int tutorId;
+  final int schoolId;
   final int id;
   final int grade;
   final String name;
@@ -15,6 +16,7 @@ class Classroom extends Equatable {
     @required this.tutorId,
     @required this.grade,
     @required this.name,
+    @required this.schoolId,
     this.id,
     this.deleted,
     this.lastUpdated,
@@ -27,6 +29,7 @@ class Classroom extends Equatable {
         grade,
         name,
         id,
+        schoolId,
         deleted,
         lastUpdated,
         clientLastUpdated,

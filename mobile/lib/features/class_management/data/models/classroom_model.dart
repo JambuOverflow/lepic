@@ -15,28 +15,31 @@ class ClassroomModels extends Table {
   @JsonKey("tutor_id")
   IntColumn get tutorId =>
       integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
+  @JsonKey("school_id")
+  IntColumn get schoolId => integer()
+      .customConstraint("NOT NULL REFERENCES school_models(local_id)")();
 }
 
 Classroom classroomModelToEntity(ClassroomModel model) {
   return Classroom(
-    id: model.localId,
-    grade: model.grade,
-    name: model.name,
-    tutorId: model.tutorId,
-    deleted: model.deleted,
-    lastUpdated: model.lastUpdated,
-    clientLastUpdated: model.clientLastUpdated,
-  );
+      id: model.localId,
+      grade: model.grade,
+      name: model.name,
+      tutorId: model.tutorId,
+      deleted: model.deleted,
+      lastUpdated: model.lastUpdated,
+      clientLastUpdated: model.clientLastUpdated,
+      schoolId: model.schoolId);
 }
 
 ClassroomModel classroomEntityToModel(Classroom entity) {
   return ClassroomModel(
-    localId: entity.id,
-    grade: entity.grade,
-    name: entity.name,
-    tutorId: entity.tutorId,
-    lastUpdated: entity.lastUpdated,
-    deleted: entity.deleted,
-    clientLastUpdated: entity.clientLastUpdated,
-  );
+      localId: entity.id,
+      grade: entity.grade,
+      name: entity.name,
+      tutorId: entity.tutorId,
+      lastUpdated: entity.lastUpdated,
+      deleted: entity.deleted,
+      clientLastUpdated: entity.clientLastUpdated,
+      schoolId: entity.schoolId);
 }

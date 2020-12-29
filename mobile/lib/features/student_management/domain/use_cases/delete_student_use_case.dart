@@ -6,7 +6,7 @@ import 'package:mobile/features/student_management/domain/entities/student.dart'
 import 'package:mobile/features/student_management/domain/repositories/student_repository.dart';
 import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
 
-class DeleteStudent implements UseCase<Student, StudentParams> {
+class DeleteStudent implements UseCase<void, StudentParams> {
   final StudentRepository repository;
 
   DeleteStudent({@required this.repository});

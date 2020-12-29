@@ -32,11 +32,12 @@ class TextUpdated extends TextState {
   TextUpdated({@required this.text});
 }
 
-class GettingTextList extends TextState {}
+class GettingTexts extends TextState {}
 
-class GotTextList extends TextState {
+class TextsGot extends TextState {
   final List<MyText> texts;
-  GotTextList({@required this.texts});
+  
+  TextsGot({@required this.texts});
 }
 
 class Error extends TextState {

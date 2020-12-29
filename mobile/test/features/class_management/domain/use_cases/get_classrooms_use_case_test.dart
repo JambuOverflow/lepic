@@ -4,6 +4,7 @@ import 'package:mobile/features/class_management/domain/entities/classroom.dart'
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
 import 'package:mobile/features/class_management/domain/use_cases/get_classrooms_use_case.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:mobile/features/user_management/domain/use_cases/user_params.dart';
 import 'package:mockito/mockito.dart';
 
 class MockClassroomRepository extends Mock implements ClassroomRepository {}
@@ -36,7 +37,7 @@ void main() {
     when(mockClassroomRepository.getClassrooms(tUser))
         .thenAnswer((_) async => Right(tEmptyClassrooms));
 
-    final result = await useCase(UserParams(tUser));
+    final result = await useCase(UserParams(user: tUser));
 
     expect(result, Right(tEmptyClassrooms));
     verify(mockClassroomRepository.getClassrooms(tUser));
@@ -47,7 +48,7 @@ void main() {
     when(mockClassroomRepository.getClassrooms(tUser))
         .thenAnswer((_) async => Right(tTwoClassrooms));
 
-    final result = await useCase(UserParams(tUser));
+    final result = await useCase(UserParams(user: tUser));
 
     expect(result, Right(tTwoClassrooms));
     verify(mockClassroomRepository.getClassrooms(tUser));

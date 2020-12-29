@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -7,6 +8,7 @@ import 'package:matcher/matcher.dart';
 
 void main() {
   final tValidClassroomPk1 = 1;
+  final tValidSchoolPk1 = 1;
   final tValidClassroomPk2 = 2;
   final tInvalidClassroomPk = 2;
   final tValidUserPk = 1;
@@ -14,6 +16,11 @@ void main() {
   final grade = 1;
   final name = "A";
   final updateName = "B";
+  final zipCode = 1;
+  final Modality modality = Modality.public;
+  final String state = "PA";
+  final String city = "Belém";
+  final String neighborhood = "Nazaré";
 
   final tValidClassCompanion = ClassroomModelsCompanion(
     grade: Value(grade),
@@ -22,6 +29,7 @@ void main() {
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
+    schoolId: Value(tValidSchoolPk1),
   );
 
   final tDeletedClassCompanion = ClassroomModelsCompanion(
@@ -31,6 +39,7 @@ void main() {
     deleted: Value(true),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
+    schoolId: Value(tValidSchoolPk1),
   );
 
   final tInvalidClassCompanion = ClassroomModelsCompanion(
@@ -40,6 +49,7 @@ void main() {
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
+    schoolId: Value(tValidSchoolPk1),
   );
 
   final tValidClassModel1 = ClassroomModel(
@@ -50,6 +60,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
+    schoolId: tValidSchoolPk1,
   );
 
   final tValidClassModel2 = ClassroomModel(
@@ -60,6 +71,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
+    schoolId: tValidSchoolPk1,
   );
 
   final tValidUpdateClassModel = ClassroomModel(
@@ -69,7 +81,8 @@ void main() {
       localId: tValidClassroomPk1,
       deleted: false,
       lastUpdated: DateTime(2020),
-      clientLastUpdated: DateTime(2020));
+      clientLastUpdated: DateTime(2020),
+      schoolId: tValidSchoolPk1);
 
   final tInvalidUpdateClassModel = ClassroomModel(
     localId: tInvalidClassroomPk,
@@ -79,6 +92,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
+    schoolId: tValidSchoolPk1,
   );
 
   final tClassModel2018 = ClassroomModel(
@@ -88,6 +102,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2018),
     clientLastUpdated: DateTime(2018),
+    schoolId: tValidSchoolPk1,
   );
 
   final tClassModel2019 = ClassroomModel(
@@ -97,6 +112,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2019),
     clientLastUpdated: DateTime(2019),
+    schoolId: tValidSchoolPk1,
   );
 
   final tClassModel2020 = ClassroomModel(
@@ -106,6 +122,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
+    schoolId: tValidSchoolPk1,
   );
 
   final tUserCompanion = UserModelsCompanion(
@@ -117,6 +134,16 @@ void main() {
     password: Value("1234"),
   );
 
+  final tValidSchoolCompanion = SchoolModelsCompanion(
+    name: Value(name),
+    zipCode: Value(zipCode),
+    modality: Value(modality),
+    state: Value(state),
+    city: Value(city),
+    neighborhood: Value(neighborhood),
+    userId: Value(tValidUserPk),
+  );
+
   Database database;
   VmDatabase vmDatabase;
 
@@ -126,6 +153,7 @@ void main() {
     });
     database = Database(vmDatabase);
     await database.into(database.userModels).insert(tUserCompanion);
+    await database.into(database.schoolModels).insert(tValidSchoolCompanion);
   }
 
   setUp(() async {

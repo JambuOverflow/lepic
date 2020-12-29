@@ -454,6 +454,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
   final DateTime clientLastUpdated;
   final bool deleted;
   final int tutorId;
+  final int schoolId;
   ClassroomModel(
       {@required this.localId,
       @required this.grade,
@@ -461,7 +462,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       @required this.lastUpdated,
       @required this.clientLastUpdated,
       @required this.deleted,
-      @required this.tutorId});
+      @required this.tutorId,
+      @required this.schoolId});
   factory ClassroomModel.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -483,6 +485,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}deleted']),
       tutorId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}tutor_id']),
+      schoolId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}school_id']),
     );
   }
   @override
@@ -509,6 +513,9 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     if (!nullToAbsent || tutorId != null) {
       map['tutor_id'] = Variable<int>(tutorId);
     }
+    if (!nullToAbsent || schoolId != null) {
+      map['school_id'] = Variable<int>(schoolId);
+    }
     return map;
   }
 
@@ -532,6 +539,9 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       tutorId: tutorId == null && nullToAbsent
           ? const Value.absent()
           : Value(tutorId),
+      schoolId: schoolId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(schoolId),
     );
   }
 
@@ -547,6 +557,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           serializer.fromJson<DateTime>(json['client_last_updated']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       tutorId: serializer.fromJson<int>(json['tutor_id']),
+      schoolId: serializer.fromJson<int>(json['school_id']),
     );
   }
   @override
@@ -560,6 +571,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       'client_last_updated': serializer.toJson<DateTime>(clientLastUpdated),
       'deleted': serializer.toJson<bool>(deleted),
       'tutor_id': serializer.toJson<int>(tutorId),
+      'school_id': serializer.toJson<int>(schoolId),
     };
   }
 
@@ -570,7 +582,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           DateTime lastUpdated,
           DateTime clientLastUpdated,
           bool deleted,
-          int tutorId}) =>
+          int tutorId,
+          int schoolId}) =>
       ClassroomModel(
         localId: localId ?? this.localId,
         grade: grade ?? this.grade,
@@ -579,6 +592,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
         clientLastUpdated: clientLastUpdated ?? this.clientLastUpdated,
         deleted: deleted ?? this.deleted,
         tutorId: tutorId ?? this.tutorId,
+        schoolId: schoolId ?? this.schoolId,
       );
   @override
   String toString() {
@@ -589,7 +603,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           ..write('lastUpdated: $lastUpdated, ')
           ..write('clientLastUpdated: $clientLastUpdated, ')
           ..write('deleted: $deleted, ')
-          ..write('tutorId: $tutorId')
+          ..write('tutorId: $tutorId, ')
+          ..write('schoolId: $schoolId')
           ..write(')'))
         .toString();
   }
@@ -603,8 +618,10 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
               name.hashCode,
               $mrjc(
                   lastUpdated.hashCode,
-                  $mrjc(clientLastUpdated.hashCode,
-                      $mrjc(deleted.hashCode, tutorId.hashCode)))))));
+                  $mrjc(
+                      clientLastUpdated.hashCode,
+                      $mrjc(deleted.hashCode,
+                          $mrjc(tutorId.hashCode, schoolId.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -615,7 +632,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           other.lastUpdated == this.lastUpdated &&
           other.clientLastUpdated == this.clientLastUpdated &&
           other.deleted == this.deleted &&
-          other.tutorId == this.tutorId);
+          other.tutorId == this.tutorId &&
+          other.schoolId == this.schoolId);
 }
 
 class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
@@ -626,6 +644,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   final Value<DateTime> clientLastUpdated;
   final Value<bool> deleted;
   final Value<int> tutorId;
+  final Value<int> schoolId;
   const ClassroomModelsCompanion({
     this.localId = const Value.absent(),
     this.grade = const Value.absent(),
@@ -634,6 +653,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     this.clientLastUpdated = const Value.absent(),
     this.deleted = const Value.absent(),
     this.tutorId = const Value.absent(),
+    this.schoolId = const Value.absent(),
   });
   ClassroomModelsCompanion.insert({
     this.localId = const Value.absent(),
@@ -643,12 +663,14 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     @required DateTime clientLastUpdated,
     @required bool deleted,
     @required int tutorId,
+    @required int schoolId,
   })  : grade = Value(grade),
         name = Value(name),
         lastUpdated = Value(lastUpdated),
         clientLastUpdated = Value(clientLastUpdated),
         deleted = Value(deleted),
-        tutorId = Value(tutorId);
+        tutorId = Value(tutorId),
+        schoolId = Value(schoolId);
   static Insertable<ClassroomModel> custom({
     Expression<int> localId,
     Expression<int> grade,
@@ -657,6 +679,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     Expression<DateTime> clientLastUpdated,
     Expression<bool> deleted,
     Expression<int> tutorId,
+    Expression<int> schoolId,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
@@ -666,6 +689,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       if (clientLastUpdated != null) 'client_last_updated': clientLastUpdated,
       if (deleted != null) 'deleted': deleted,
       if (tutorId != null) 'tutor_id': tutorId,
+      if (schoolId != null) 'school_id': schoolId,
     });
   }
 
@@ -676,7 +700,8 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       Value<DateTime> lastUpdated,
       Value<DateTime> clientLastUpdated,
       Value<bool> deleted,
-      Value<int> tutorId}) {
+      Value<int> tutorId,
+      Value<int> schoolId}) {
     return ClassroomModelsCompanion(
       localId: localId ?? this.localId,
       grade: grade ?? this.grade,
@@ -685,6 +710,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       clientLastUpdated: clientLastUpdated ?? this.clientLastUpdated,
       deleted: deleted ?? this.deleted,
       tutorId: tutorId ?? this.tutorId,
+      schoolId: schoolId ?? this.schoolId,
     );
   }
 
@@ -712,6 +738,9 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     if (tutorId.present) {
       map['tutor_id'] = Variable<int>(tutorId.value);
     }
+    if (schoolId.present) {
+      map['school_id'] = Variable<int>(schoolId.value);
+    }
     return map;
   }
 
@@ -724,7 +753,8 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
           ..write('lastUpdated: $lastUpdated, ')
           ..write('clientLastUpdated: $clientLastUpdated, ')
           ..write('deleted: $deleted, ')
-          ..write('tutorId: $tutorId')
+          ..write('tutorId: $tutorId, ')
+          ..write('schoolId: $schoolId')
           ..write(')'))
         .toString();
   }
@@ -817,9 +847,26 @@ class $ClassroomModelsTable extends ClassroomModels
         $customConstraints: 'NOT NULL REFERENCES user_models(local_id)');
   }
 
+  final VerificationMeta _schoolIdMeta = const VerificationMeta('schoolId');
+  GeneratedIntColumn _schoolId;
   @override
-  List<GeneratedColumn> get $columns =>
-      [localId, grade, name, lastUpdated, clientLastUpdated, deleted, tutorId];
+  GeneratedIntColumn get schoolId => _schoolId ??= _constructSchoolId();
+  GeneratedIntColumn _constructSchoolId() {
+    return GeneratedIntColumn('school_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES school_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        localId,
+        grade,
+        name,
+        lastUpdated,
+        clientLastUpdated,
+        deleted,
+        tutorId,
+        schoolId
+      ];
   @override
   $ClassroomModelsTable get asDslTable => this;
   @override
@@ -874,6 +921,12 @@ class $ClassroomModelsTable extends ClassroomModels
           tutorId.isAcceptableOrUnknown(data['tutor_id'], _tutorIdMeta));
     } else if (isInserting) {
       context.missing(_tutorIdMeta);
+    }
+    if (data.containsKey('school_id')) {
+      context.handle(_schoolIdMeta,
+          schoolId.isAcceptableOrUnknown(data['school_id'], _schoolIdMeta));
+    } else if (isInserting) {
+      context.missing(_schoolIdMeta);
     }
     return context;
   }
@@ -1472,6 +1525,489 @@ class $TextModelsTable extends TextModels
   }
 }
 
+class SchoolModel extends DataClass implements Insertable<SchoolModel> {
+  final int localId;
+  final int zipCode;
+  final Modality modality;
+  final String state;
+  final String city;
+  final String neighborhood;
+  final String name;
+  final int userId;
+  SchoolModel(
+      {@required this.localId,
+      @required this.zipCode,
+      @required this.modality,
+      @required this.state,
+      @required this.city,
+      @required this.neighborhood,
+      @required this.name,
+      @required this.userId});
+  factory SchoolModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return SchoolModel(
+      localId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      zipCode:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}zip_code']),
+      modality: $SchoolModelsTable.$converter0.mapToDart(
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}modality'])),
+      state:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}state']),
+      city: stringType.mapFromDatabaseResponse(data['${effectivePrefix}city']),
+      neighborhood: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}neighborhood']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      userId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int>(localId);
+    }
+    if (!nullToAbsent || zipCode != null) {
+      map['zip_code'] = Variable<int>(zipCode);
+    }
+    if (!nullToAbsent || modality != null) {
+      final converter = $SchoolModelsTable.$converter0;
+      map['modality'] = Variable<int>(converter.mapToSql(modality));
+    }
+    if (!nullToAbsent || state != null) {
+      map['state'] = Variable<String>(state);
+    }
+    if (!nullToAbsent || city != null) {
+      map['city'] = Variable<String>(city);
+    }
+    if (!nullToAbsent || neighborhood != null) {
+      map['neighborhood'] = Variable<String>(neighborhood);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<int>(userId);
+    }
+    return map;
+  }
+
+  SchoolModelsCompanion toCompanion(bool nullToAbsent) {
+    return SchoolModelsCompanion(
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
+      zipCode: zipCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(zipCode),
+      modality: modality == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modality),
+      state:
+          state == null && nullToAbsent ? const Value.absent() : Value(state),
+      city: city == null && nullToAbsent ? const Value.absent() : Value(city),
+      neighborhood: neighborhood == null && nullToAbsent
+          ? const Value.absent()
+          : Value(neighborhood),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      userId:
+          userId == null && nullToAbsent ? const Value.absent() : Value(userId),
+    );
+  }
+
+  factory SchoolModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return SchoolModel(
+      localId: serializer.fromJson<int>(json['local_id']),
+      zipCode: serializer.fromJson<int>(json['zip_code']),
+      modality: serializer.fromJson<Modality>(json['modality']),
+      state: serializer.fromJson<String>(json['state']),
+      city: serializer.fromJson<String>(json['city']),
+      neighborhood: serializer.fromJson<String>(json['neighborhood']),
+      name: serializer.fromJson<String>(json['name']),
+      userId: serializer.fromJson<int>(json['user_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'local_id': serializer.toJson<int>(localId),
+      'zip_code': serializer.toJson<int>(zipCode),
+      'modality': serializer.toJson<Modality>(modality),
+      'state': serializer.toJson<String>(state),
+      'city': serializer.toJson<String>(city),
+      'neighborhood': serializer.toJson<String>(neighborhood),
+      'name': serializer.toJson<String>(name),
+      'user_id': serializer.toJson<int>(userId),
+    };
+  }
+
+  SchoolModel copyWith(
+          {int localId,
+          int zipCode,
+          Modality modality,
+          String state,
+          String city,
+          String neighborhood,
+          String name,
+          int userId}) =>
+      SchoolModel(
+        localId: localId ?? this.localId,
+        zipCode: zipCode ?? this.zipCode,
+        modality: modality ?? this.modality,
+        state: state ?? this.state,
+        city: city ?? this.city,
+        neighborhood: neighborhood ?? this.neighborhood,
+        name: name ?? this.name,
+        userId: userId ?? this.userId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SchoolModel(')
+          ..write('localId: $localId, ')
+          ..write('zipCode: $zipCode, ')
+          ..write('modality: $modality, ')
+          ..write('state: $state, ')
+          ..write('city: $city, ')
+          ..write('neighborhood: $neighborhood, ')
+          ..write('name: $name, ')
+          ..write('userId: $userId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
+      $mrjc(
+          zipCode.hashCode,
+          $mrjc(
+              modality.hashCode,
+              $mrjc(
+                  state.hashCode,
+                  $mrjc(
+                      city.hashCode,
+                      $mrjc(neighborhood.hashCode,
+                          $mrjc(name.hashCode, userId.hashCode))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is SchoolModel &&
+          other.localId == this.localId &&
+          other.zipCode == this.zipCode &&
+          other.modality == this.modality &&
+          other.state == this.state &&
+          other.city == this.city &&
+          other.neighborhood == this.neighborhood &&
+          other.name == this.name &&
+          other.userId == this.userId);
+}
+
+class SchoolModelsCompanion extends UpdateCompanion<SchoolModel> {
+  final Value<int> localId;
+  final Value<int> zipCode;
+  final Value<Modality> modality;
+  final Value<String> state;
+  final Value<String> city;
+  final Value<String> neighborhood;
+  final Value<String> name;
+  final Value<int> userId;
+  const SchoolModelsCompanion({
+    this.localId = const Value.absent(),
+    this.zipCode = const Value.absent(),
+    this.modality = const Value.absent(),
+    this.state = const Value.absent(),
+    this.city = const Value.absent(),
+    this.neighborhood = const Value.absent(),
+    this.name = const Value.absent(),
+    this.userId = const Value.absent(),
+  });
+  SchoolModelsCompanion.insert({
+    this.localId = const Value.absent(),
+    @required int zipCode,
+    @required Modality modality,
+    @required String state,
+    @required String city,
+    @required String neighborhood,
+    @required String name,
+    @required int userId,
+  })  : zipCode = Value(zipCode),
+        modality = Value(modality),
+        state = Value(state),
+        city = Value(city),
+        neighborhood = Value(neighborhood),
+        name = Value(name),
+        userId = Value(userId);
+  static Insertable<SchoolModel> custom({
+    Expression<int> localId,
+    Expression<int> zipCode,
+    Expression<int> modality,
+    Expression<String> state,
+    Expression<String> city,
+    Expression<String> neighborhood,
+    Expression<String> name,
+    Expression<int> userId,
+  }) {
+    return RawValuesInsertable({
+      if (localId != null) 'local_id': localId,
+      if (zipCode != null) 'zip_code': zipCode,
+      if (modality != null) 'modality': modality,
+      if (state != null) 'state': state,
+      if (city != null) 'city': city,
+      if (neighborhood != null) 'neighborhood': neighborhood,
+      if (name != null) 'name': name,
+      if (userId != null) 'user_id': userId,
+    });
+  }
+
+  SchoolModelsCompanion copyWith(
+      {Value<int> localId,
+      Value<int> zipCode,
+      Value<Modality> modality,
+      Value<String> state,
+      Value<String> city,
+      Value<String> neighborhood,
+      Value<String> name,
+      Value<int> userId}) {
+    return SchoolModelsCompanion(
+      localId: localId ?? this.localId,
+      zipCode: zipCode ?? this.zipCode,
+      modality: modality ?? this.modality,
+      state: state ?? this.state,
+      city: city ?? this.city,
+      neighborhood: neighborhood ?? this.neighborhood,
+      name: name ?? this.name,
+      userId: userId ?? this.userId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localId.present) {
+      map['local_id'] = Variable<int>(localId.value);
+    }
+    if (zipCode.present) {
+      map['zip_code'] = Variable<int>(zipCode.value);
+    }
+    if (modality.present) {
+      final converter = $SchoolModelsTable.$converter0;
+      map['modality'] = Variable<int>(converter.mapToSql(modality.value));
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (city.present) {
+      map['city'] = Variable<String>(city.value);
+    }
+    if (neighborhood.present) {
+      map['neighborhood'] = Variable<String>(neighborhood.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SchoolModelsCompanion(')
+          ..write('localId: $localId, ')
+          ..write('zipCode: $zipCode, ')
+          ..write('modality: $modality, ')
+          ..write('state: $state, ')
+          ..write('city: $city, ')
+          ..write('neighborhood: $neighborhood, ')
+          ..write('name: $name, ')
+          ..write('userId: $userId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SchoolModelsTable extends SchoolModels
+    with TableInfo<$SchoolModelsTable, SchoolModel> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $SchoolModelsTable(this._db, [this._alias]);
+  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
+  GeneratedIntColumn _localId;
+  @override
+  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
+  GeneratedIntColumn _constructLocalId() {
+    return GeneratedIntColumn('local_id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _zipCodeMeta = const VerificationMeta('zipCode');
+  GeneratedIntColumn _zipCode;
+  @override
+  GeneratedIntColumn get zipCode => _zipCode ??= _constructZipCode();
+  GeneratedIntColumn _constructZipCode() {
+    return GeneratedIntColumn(
+      'zip_code',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _modalityMeta = const VerificationMeta('modality');
+  GeneratedIntColumn _modality;
+  @override
+  GeneratedIntColumn get modality => _modality ??= _constructModality();
+  GeneratedIntColumn _constructModality() {
+    return GeneratedIntColumn(
+      'modality',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _stateMeta = const VerificationMeta('state');
+  GeneratedTextColumn _state;
+  @override
+  GeneratedTextColumn get state => _state ??= _constructState();
+  GeneratedTextColumn _constructState() {
+    return GeneratedTextColumn(
+      'state',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _cityMeta = const VerificationMeta('city');
+  GeneratedTextColumn _city;
+  @override
+  GeneratedTextColumn get city => _city ??= _constructCity();
+  GeneratedTextColumn _constructCity() {
+    return GeneratedTextColumn(
+      'city',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _neighborhoodMeta =
+      const VerificationMeta('neighborhood');
+  GeneratedTextColumn _neighborhood;
+  @override
+  GeneratedTextColumn get neighborhood =>
+      _neighborhood ??= _constructNeighborhood();
+  GeneratedTextColumn _constructNeighborhood() {
+    return GeneratedTextColumn(
+      'neighborhood',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn(
+      'name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  GeneratedIntColumn _userId;
+  @override
+  GeneratedIntColumn get userId => _userId ??= _constructUserId();
+  GeneratedIntColumn _constructUserId() {
+    return GeneratedIntColumn('user_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES user_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [localId, zipCode, modality, state, city, neighborhood, name, userId];
+  @override
+  $SchoolModelsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'school_models';
+  @override
+  final String actualTableName = 'school_models';
+  @override
+  VerificationContext validateIntegrity(Insertable<SchoolModel> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_id')) {
+      context.handle(_localIdMeta,
+          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
+    }
+    if (data.containsKey('zip_code')) {
+      context.handle(_zipCodeMeta,
+          zipCode.isAcceptableOrUnknown(data['zip_code'], _zipCodeMeta));
+    } else if (isInserting) {
+      context.missing(_zipCodeMeta);
+    }
+    context.handle(_modalityMeta, const VerificationResult.success());
+    if (data.containsKey('state')) {
+      context.handle(
+          _stateMeta, state.isAcceptableOrUnknown(data['state'], _stateMeta));
+    } else if (isInserting) {
+      context.missing(_stateMeta);
+    }
+    if (data.containsKey('city')) {
+      context.handle(
+          _cityMeta, city.isAcceptableOrUnknown(data['city'], _cityMeta));
+    } else if (isInserting) {
+      context.missing(_cityMeta);
+    }
+    if (data.containsKey('neighborhood')) {
+      context.handle(
+          _neighborhoodMeta,
+          neighborhood.isAcceptableOrUnknown(
+              data['neighborhood'], _neighborhoodMeta));
+    } else if (isInserting) {
+      context.missing(_neighborhoodMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(_userIdMeta,
+          userId.isAcceptableOrUnknown(data['user_id'], _userIdMeta));
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localId};
+  @override
+  SchoolModel map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return SchoolModel.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $SchoolModelsTable createAlias(String alias) {
+    return $SchoolModelsTable(_db, alias);
+  }
+
+  static TypeConverter<Modality, int> $converter0 =
+      const EnumIndexConverter<Modality>(Modality.values);
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserModelsTable _userModels;
@@ -1484,9 +2020,12 @@ abstract class _$Database extends GeneratedDatabase {
       _studentModels ??= $StudentModelsTable(this);
   $TextModelsTable _textModels;
   $TextModelsTable get textModels => _textModels ??= $TextModelsTable(this);
+  $SchoolModelsTable _schoolModels;
+  $SchoolModelsTable get schoolModels =>
+      _schoolModels ??= $SchoolModelsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [userModels, classroomModels, studentModels, textModels];
+      [userModels, classroomModels, studentModels, textModels, schoolModels];
 }

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -58,6 +59,21 @@ void main() {
     password: Value('123'),
   );
 
+  final zipCode = 1;
+  final Modality modality = Modality.public;
+  final String state = "PA";
+  final String city = "Belém";
+  final String neighborhood = "Nazaré";
+  final tValidSchoolCompanion = SchoolModel(
+    userId: 1,
+    name: "name",
+    zipCode: zipCode,
+    modality: modality,
+    state: state,
+    city: city,
+    neighborhood: neighborhood,
+  ).toCompanion(true);
+
   final tClassroomCompanion = ClassroomModelsCompanion(
     grade: Value(1),
     name: Value("varro"),
@@ -65,6 +81,8 @@ void main() {
     lastUpdated: Value(DateTime.now()),
     clientLastUpdated: Value(DateTime.now()),
     deleted: Value(false),
+    
+    schoolId: Value(1),
   );
 
   Database database;
@@ -76,6 +94,7 @@ void main() {
     });
     database = Database(vmDatabase);
     await database.into(database.userModels).insert(tUserCompanion);
+    await database.into(database.schoolModels).insert(tValidSchoolCompanion);
     await database.into(database.classroomModels).insert(tClassroomCompanion);
   }
 

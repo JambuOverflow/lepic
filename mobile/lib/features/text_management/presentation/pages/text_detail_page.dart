@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/classroom.dart';
+import 'package:mobile/features/text_management/domain/entities/text.dart';
 
-class ClassDetailPage extends StatelessWidget {
-  final Classroom _schoolClass;
+class TextDetailPage extends StatelessWidget {
+  final MyText _text;
 
-  ClassDetailPage(this._schoolClass);
+  TextDetailPage(this._text);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_schoolClass.name.toString()),
+        title: Text(_text.title.toString()),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: choiceAction,
             itemBuilder: (BuildContext context) {
-              return Constants.choices.map((String choice) {
-                return PopupMenuItem<String>(
-                  child: Text(choice),
-                  value: choice,
-                );
-              }).toList();
+              return Constants.choices.map(
+                (String choice) {
+                  return PopupMenuItem<String>(
+                    child: Text(choice),
+                    value: choice,
+                  );
+                },
+              ).toList();
             },
           ),
         ],
@@ -29,9 +31,9 @@ class ClassDetailPage extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            Text(_schoolClass.grade.toString()),
-            Text(_schoolClass.tutorId.toString()),
-            Text(_schoolClass.id.toString()),
+            Text(_text.body.toString()),
+            Text(_text.classId.toString()),
+            Text(_text.localId.toString()),
           ],
         ),
       ),
@@ -49,15 +51,15 @@ class PopupMenuOption extends StatelessWidget {
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<MenuOption>>[
           PopupMenuItem(
-            child: Text('Assign student'),
+            child: Text('Assign text'),
             value: MenuOption.Assign,
           ),
           PopupMenuItem(
-            child: Text('Edit class'),
+            child: Text('Edit text'),
             value: MenuOption.Edit,
           ),
           PopupMenuItem(
-            child: Text('Remove class'),
+            child: Text('Remove text'),
             value: MenuOption.Remove,
           ),
         ];
@@ -67,9 +69,9 @@ class PopupMenuOption extends StatelessWidget {
 }
 
 class Constants {
-  static const String assign = 'Assign Student';
-  static const String edit = 'Edit class';
-  static const String remove = 'Remove class';
+  static const String assign = 'Assign text';
+  static const String edit = 'Edit text';
+  static const String remove = 'Remove text';
 
   static const List<String> choices = <String>[
     assign,
@@ -81,13 +83,13 @@ class Constants {
 void choiceAction(String choice) {
   switch (choice) {
     case Constants.assign:
-      print('add student');
+      print('add text');
       break;
     case Constants.edit:
-      print('edit list');
+      print('edit text');
       break;
     case Constants.remove:
-      print('remove this class');
+      print('remove this text');
       break;
     default:
       print('error');
