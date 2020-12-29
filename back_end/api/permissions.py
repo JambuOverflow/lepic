@@ -39,7 +39,7 @@ class IsTeacher(permissions.BasePermission):
 
     def has_permission(self, request, view):
         # Permissions are only allowed to teachers.
-        return request.user.role == 0
+        return request.user.role in [0, 1]
 
 
 class IsCreator(permissions.BasePermission):

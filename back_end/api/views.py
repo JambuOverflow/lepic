@@ -1,12 +1,10 @@
 import json
-
 from rest_framework import generics, mixins, status, permissions, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
-
 from django.http import JsonResponse, Http404
 from django.db import IntegrityError
 from django.urls import reverse
@@ -19,11 +17,13 @@ from django.contrib.auth.tokens import default_token_generator, PasswordResetTok
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
 from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer, SchoolSerializer
 from .models import Text, Class, User, Student, AudioFile, School
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, IsCreator, IsTeacher
 from .utils import EmailThread
+from datetime import datetime
+from django.shortcuts import get_object_or_404
+
 
 class EmailVerification(generics.GenericAPIView):
     """
@@ -45,6 +45,7 @@ class EmailVerification(generics.GenericAPIView):
             return Response({'detail': 'Your email was successfully verified!'}, status=status.HTTP_200_OK)
         else:
             return Response({'detail': 'Your email was not successfully verified, please check your verification link.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ForgotMyPassword(generics.GenericAPIView):
     """
@@ -76,6 +77,7 @@ class ForgotMyPassword(generics.GenericAPIView):
         else:
             return Response({'error_message': 'This email is not registered in our database, please send an email already registered'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class ResetPassword(generics.GenericAPIView):
     """
     Verifies the token and user id validity, and if are valid, reset the user password to the given one inside the request body.
@@ -95,6 +97,7 @@ class ResetPassword(generics.GenericAPIView):
                             'user': { 'password': user.password } }, status=status.HTTP_200_OK)
         else:
             return Response({'error_message': 'Your password was not successfully reseted, please check your reset link.'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserList(generics.ListCreateAPIView):
     """
@@ -127,6 +130,7 @@ class UserList(generics.ListCreateAPIView):
             return Response({"email": ["user with this email address already exists."],
                             'exception_message': exception}, status.HTTP_400_BAD_REQUEST)
 
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.initial_data['email'] = serializer.initial_data['email'].lower()
@@ -158,27 +162,55 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class ClassCreate(generics.ListCreateAPIView):
     """
     List classes of authenticated user or create a new class.
+    EX: GET or POST /api/classes/
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ClassSerializer
-    
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
     def get_queryset(self):
-        user = self.request.user
-        return Class.objects.filter(tutor=user)
-    
+        user = self.request.user   
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return Class.objects.filter(tutor=user, deleted=0, 
+                                        last_update__gte=last_sync)
+        return Class.objects.filter(tutor=user, deleted=0)
+
+
     def perform_create(self, serializer):
-        serializer.save(tutor=self.request.user)
+        serializer.save(tutor=self.request.user, last_update=datetime.now())
 
 
-class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
+class ClassDetail(generics.RetrieveUpdateAPIView):
     """
     Retrieve, update or delete a class instance of authenticated tutor.
-    EX: GET or PUT or DELETE /api/classes/<int:pk>/
+    EX: GET or PUT or DELETE /api/classes/<int:local_id>/
     """
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsClassTutor]
+    
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+
+        filter = {'local_id': self.kwargs['local_id'],
+                  'tutor': self.request.user}
+
+        obj = get_object_or_404(queryset, **filter)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now())
 
 
 class TextList(generics.ListCreateAPIView):
@@ -215,20 +247,51 @@ class SchoolList(generics.ListCreateAPIView):
     serializer_class = SchoolSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsTeacher]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+    def get_queryset(self):
+        user = self.request.user   
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return School.objects.filter(creator=user, deleted=0, 
+                                         last_update__gte=last_sync)
+        return School.objects.filter(creator=user, deleted=0)
                           
+
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(creator=self.request.user, last_update=datetime.now())
 
 
-class SchoolDetail(generics.RetrieveUpdateDestroyAPIView):
+class SchoolDetail(generics.RetrieveUpdateAPIView):
     """
     Retrieve, update or delete a text instance.
-    EX: GET or PUT or DELETE /api/schools/<int:pk>/
+    EX: GET or PUT or PATCH /api/schools/<int:local_id>/
     """
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsCreator]
+
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+
+        filter = {'local_id': self.kwargs['local_id'],
+                  'creator': self.request.user}
+
+        obj = get_object_or_404(queryset, **filter)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now())
     
     
 class StudentList(generics.ListCreateAPIView):
@@ -263,6 +326,7 @@ class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
     queryset = Student.objects.all()
 
+
 class AudioFileList(generics.ListCreateAPIView):
     """
     List all audio file instances or create a new audio file instance.
@@ -277,10 +341,11 @@ class AudioFileList(generics.ListCreateAPIView):
         student_class = Student.objects.filter(id=self.request.data['student']).values_list('_class', flat=True)
         class_tutor = Class.objects.filter(id=student_class[0]).values_list('tutor', flat=True)
         if(self.request.user.id in class_tutor):
-            serializer.save()
+            serializer.save(last_update=datetime.now())
         else:
             raise PermissionDenied("You do not have the permission to upload students audio files from another class",
         'permission_denied')
+
         
 class AudioFileDetail(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -291,3 +356,6 @@ class AudioFileDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated,IsTeacherOrReadOnlyAudioFile]
     serializer_class = AudioFileSerializer
     queryset = AudioFile.objects.all()
+
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now())
