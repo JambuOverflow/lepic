@@ -451,11 +451,13 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
   final int grade;
   final String name;
   final int tutorId;
+  final int schoolId;
   ClassroomModel(
       {@required this.localId,
       @required this.grade,
       @required this.name,
-      @required this.tutorId});
+      @required this.tutorId,
+      @required this.schoolId});
   factory ClassroomModel.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -469,6 +471,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
       tutorId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}tutor_id']),
+      schoolId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}school_id']),
     );
   }
   @override
@@ -486,6 +490,9 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     if (!nullToAbsent || tutorId != null) {
       map['tutor_id'] = Variable<int>(tutorId);
     }
+    if (!nullToAbsent || schoolId != null) {
+      map['school_id'] = Variable<int>(schoolId);
+    }
     return map;
   }
 
@@ -500,6 +507,9 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       tutorId: tutorId == null && nullToAbsent
           ? const Value.absent()
           : Value(tutorId),
+      schoolId: schoolId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(schoolId),
     );
   }
 
@@ -511,6 +521,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       grade: serializer.fromJson<int>(json['grade']),
       name: serializer.fromJson<String>(json['name']),
       tutorId: serializer.fromJson<int>(json['tutor_id']),
+      schoolId: serializer.fromJson<int>(json['school_id']),
     );
   }
   @override
@@ -521,15 +532,18 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       'grade': serializer.toJson<int>(grade),
       'name': serializer.toJson<String>(name),
       'tutor_id': serializer.toJson<int>(tutorId),
+      'school_id': serializer.toJson<int>(schoolId),
     };
   }
 
-  ClassroomModel copyWith({int localId, int grade, String name, int tutorId}) =>
+  ClassroomModel copyWith(
+          {int localId, int grade, String name, int tutorId, int schoolId}) =>
       ClassroomModel(
         localId: localId ?? this.localId,
         grade: grade ?? this.grade,
         name: name ?? this.name,
         tutorId: tutorId ?? this.tutorId,
+        schoolId: schoolId ?? this.schoolId,
       );
   @override
   String toString() {
@@ -537,14 +551,17 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           ..write('localId: $localId, ')
           ..write('grade: $grade, ')
           ..write('name: $name, ')
-          ..write('tutorId: $tutorId')
+          ..write('tutorId: $tutorId, ')
+          ..write('schoolId: $schoolId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(localId.hashCode,
-      $mrjc(grade.hashCode, $mrjc(name.hashCode, tutorId.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
+      $mrjc(grade.hashCode,
+          $mrjc(name.hashCode, $mrjc(tutorId.hashCode, schoolId.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -552,7 +569,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           other.localId == this.localId &&
           other.grade == this.grade &&
           other.name == this.name &&
-          other.tutorId == this.tutorId);
+          other.tutorId == this.tutorId &&
+          other.schoolId == this.schoolId);
 }
 
 class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
@@ -560,31 +578,37 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   final Value<int> grade;
   final Value<String> name;
   final Value<int> tutorId;
+  final Value<int> schoolId;
   const ClassroomModelsCompanion({
     this.localId = const Value.absent(),
     this.grade = const Value.absent(),
     this.name = const Value.absent(),
     this.tutorId = const Value.absent(),
+    this.schoolId = const Value.absent(),
   });
   ClassroomModelsCompanion.insert({
     this.localId = const Value.absent(),
     @required int grade,
     @required String name,
     @required int tutorId,
+    @required int schoolId,
   })  : grade = Value(grade),
         name = Value(name),
-        tutorId = Value(tutorId);
+        tutorId = Value(tutorId),
+        schoolId = Value(schoolId);
   static Insertable<ClassroomModel> custom({
     Expression<int> localId,
     Expression<int> grade,
     Expression<String> name,
     Expression<int> tutorId,
+    Expression<int> schoolId,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
       if (grade != null) 'grade': grade,
       if (name != null) 'name': name,
       if (tutorId != null) 'tutor_id': tutorId,
+      if (schoolId != null) 'school_id': schoolId,
     });
   }
 
@@ -592,12 +616,14 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       {Value<int> localId,
       Value<int> grade,
       Value<String> name,
-      Value<int> tutorId}) {
+      Value<int> tutorId,
+      Value<int> schoolId}) {
     return ClassroomModelsCompanion(
       localId: localId ?? this.localId,
       grade: grade ?? this.grade,
       name: name ?? this.name,
       tutorId: tutorId ?? this.tutorId,
+      schoolId: schoolId ?? this.schoolId,
     );
   }
 
@@ -616,6 +642,9 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     if (tutorId.present) {
       map['tutor_id'] = Variable<int>(tutorId.value);
     }
+    if (schoolId.present) {
+      map['school_id'] = Variable<int>(schoolId.value);
+    }
     return map;
   }
 
@@ -625,7 +654,8 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
           ..write('localId: $localId, ')
           ..write('grade: $grade, ')
           ..write('name: $name, ')
-          ..write('tutorId: $tutorId')
+          ..write('tutorId: $tutorId, ')
+          ..write('schoolId: $schoolId')
           ..write(')'))
         .toString();
   }
@@ -678,8 +708,18 @@ class $ClassroomModelsTable extends ClassroomModels
         $customConstraints: 'NOT NULL REFERENCES user_models(local_id)');
   }
 
+  final VerificationMeta _schoolIdMeta = const VerificationMeta('schoolId');
+  GeneratedIntColumn _schoolId;
   @override
-  List<GeneratedColumn> get $columns => [localId, grade, name, tutorId];
+  GeneratedIntColumn get schoolId => _schoolId ??= _constructSchoolId();
+  GeneratedIntColumn _constructSchoolId() {
+    return GeneratedIntColumn('school_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES school_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [localId, grade, name, tutorId, schoolId];
   @override
   $ClassroomModelsTable get asDslTable => this;
   @override
@@ -712,6 +752,12 @@ class $ClassroomModelsTable extends ClassroomModels
           tutorId.isAcceptableOrUnknown(data['tutor_id'], _tutorIdMeta));
     } else if (isInserting) {
       context.missing(_tutorIdMeta);
+    }
+    if (data.containsKey('school_id')) {
+      context.handle(_schoolIdMeta,
+          schoolId.isAcceptableOrUnknown(data['school_id'], _schoolIdMeta));
+    } else if (isInserting) {
+      context.missing(_schoolIdMeta);
     }
     return context;
   }

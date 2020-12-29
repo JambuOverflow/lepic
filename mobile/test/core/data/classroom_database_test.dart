@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -7,6 +8,7 @@ import 'package:matcher/matcher.dart';
 
 void main() {
   final tValidClassroomPk1 = 1;
+  final tValidSchoolPk1 = 1;
   final tValidClassroomPk2 = 2;
   final tInvalidClassroomPk = 2;
   final tValidUserPk = 1;
@@ -14,36 +16,57 @@ void main() {
   final grade = 1;
   final name = "A";
   final updateName = "B";
+  final zipCode = 1;
+  final Modality modality = Modality.public;
+  final String state = "PA";
+  final String city = "Belém";
+  final String neighborhood = "Nazaré";
 
   final tValidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(grade), name: Value(name), tutorId: Value(tValidUserPk));
+      grade: Value(grade), name: Value(name), tutorId: Value(tValidUserPk),
+      schoolId: Value(tValidSchoolPk1));
 
   final tInvalidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(grade), name: Value(name), tutorId: Value(tInvalidUserPk));
+      grade: Value(grade), name: Value(name), tutorId: Value(tInvalidUserPk),
+      schoolId: Value(tValidSchoolPk1));
+
+  final tValidSchoolCompanion = SchoolModel(
+    userId: tValidUserPk,
+    name: name,
+    zipCode: zipCode,
+    modality: modality,
+    state: state,
+    city: city,
+    neighborhood: neighborhood,
+  ).toCompanion(true);
 
   final tValidClassModel1 = ClassroomModel(
       grade: grade,
       name: name,
       tutorId: tValidUserPk,
-      localId: tValidClassroomPk1);
+      localId: tValidClassroomPk1,
+      schoolId: tValidSchoolPk1);
 
   final tValidClassModel2 = ClassroomModel(
       grade: grade,
       name: name,
       tutorId: tValidUserPk,
-      localId: tValidClassroomPk2);
+      localId: tValidClassroomPk2,
+      schoolId: tValidSchoolPk1);
 
   final tValidUpdateClassModel = ClassroomModel(
       grade: grade,
       name: updateName,
       tutorId: tValidUserPk,
-      localId: tValidClassroomPk1);
+      localId: tValidClassroomPk1,
+      schoolId: tValidSchoolPk1);
 
   final tInvalidUpdateClassModel = ClassroomModel(
       localId: tInvalidClassroomPk,
       grade: grade,
       name: updateName,
-      tutorId: tValidUserPk);
+      tutorId: tValidUserPk,
+      schoolId: tValidSchoolPk1);
 
   final tUserCompanion = UserModelsCompanion(
     firstName: Value("cana"),
@@ -63,6 +86,7 @@ void main() {
     });
     database = Database(vmDatabase);
     await database.into(database.userModels).insert(tUserCompanion);
+    await database.into(database.schoolModels).insert(tValidSchoolCompanion);
   }
 
   setUp(() async {
