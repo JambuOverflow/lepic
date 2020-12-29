@@ -6,12 +6,10 @@
 */
 import 'dart:io';
 import 'dart:convert';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import "package:http/http.dart" as http;
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import '../../../../core/network/response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -30,6 +28,21 @@ class SyncClassroom {
     @required this.secureStorage,
     @required this.classroomLocalDataSourceImpl,
   });
+
+  Future<Response> sync() async {
+    Response pullResponse = await this.pull();
+    if (pullResponse is UnsuccessfulResponse) {
+      return pullResponse;
+    }
+
+    Response pushResponse = await this.push();
+    if (pushResponse is UnsuccessfulResponse) {
+      return pushResponse;
+    }
+
+    this.lastSyncTime = DateTime.now().toUtc();
+    return SuccessfulResponse();
+  }
 
   // Gets from server the classrooms that were updated synce last time
   Future<http.Response> getServerUpdated(
