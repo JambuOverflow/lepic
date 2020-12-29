@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
+
+const String loggedInUserKey = 'loggedInUser';
 
 abstract class UserLocalDataSource {
   /// Gets the cached [UserModel].
@@ -40,7 +44,10 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<UserModel> getLoggedInUser() async {
-    final model = await database.activeUser;
+    final jsonStringModel = await secureStorage.read(key: loggedInUserKey);
+    final jsonModel = jsonDecode(jsonStringModel);
+
+    final model = UserModel.fromJson(jsonModel);
 
     if (model != null)
       return model;

@@ -3,8 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
+import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
+import 'package:moor/moor.dart';
 
 class MockDatabase extends Mock implements Database {}
 
@@ -33,9 +35,14 @@ void main() {
     );
   });
 
-  group('getStoredUser', () {
-    test('should return User from database when there is one stored', () async {
-      when(mockDatabase.activeUser).thenAnswer((_) async => tUserModel);
+  group('getLoggedInUser', () {
+    moorRuntimeOptions.defaultSerializer = UserSerializer();
+
+    test('should return User from shared prefs when there is one stored',
+        () async {
+      final userModelString = tUserModel.toJsonString();
+      when(mockSecureStorage.read(key: loggedInUserKey))
+          .thenAnswer((_) async => userModelString);
 
       final result = await dataSource.getLoggedInUser();
 
@@ -43,7 +50,8 @@ void main() {
     });
 
     test('should throw a CacheException when User is not stored', () async {
-      when(mockDatabase.activeUser).thenReturn(null);
+      when(mockSecureStorage.read(key: anyNamed('key')))
+          .thenThrow(CacheException());
 
       final call = dataSource.getLoggedInUser;
 
