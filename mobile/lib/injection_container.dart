@@ -2,6 +2,8 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
+import 'package:mobile/features/user_management/domain/use_cases/retrieve_token_use_case.dart';
+import 'package:mobile/features/user_management/presentation/bloc/auth_bloc.dart';
 import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
 import 'package:mobile/features/user_management/presentation/bloc/signup_form_bloc.dart';
 import 'core/data/database.dart';
@@ -26,6 +28,8 @@ void setUpLocator() {
   si.init();
   ti.init();
 
+  getIt.registerLazySingleton(() => AuthBloc(getLoggedInUserCase: getIt()));
+
   getIt.registerFactory(() => SignupFormBloc(createNewUser: getIt()));
   getIt.registerFactory(() => LoginFormBloc(loginCase: getIt()));
 
@@ -33,6 +37,7 @@ void setUpLocator() {
   getIt.registerLazySingleton(() => LoginCase(repository: getIt()));
   getIt.registerLazySingleton(() => UpdateUserCase(repository: getIt()));
   getIt.registerLazySingleton(() => GetLoggedInUserCase(repository: getIt()));
+  getIt.registerLazySingleton(() => RetrieveTokenUseCase(repository: getIt()));
 
   getIt.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(

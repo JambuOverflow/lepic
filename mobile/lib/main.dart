@@ -8,6 +8,7 @@ import 'package:moor/moor.dart';
 import 'core/presentation/pages/route_generator.dart';
 import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
+import 'features/user_management/presentation/bloc/auth_bloc.dart';
 import 'injection_container.dart';
 
 const IS_IN_DEVELOPMENT = true;
@@ -19,12 +20,16 @@ void main() async {
   await setUpLocator();
 
   runApp(
-    MultiBlocProvider(providers: [
-      BlocProvider<ClassroomBloc>(
-          create: (_) => GetIt.instance<ClassroomBloc>()),
-      BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
-      BlocProvider<TextBloc>(create: (_) => GetIt.instance<TextBloc>()),
-    ], child: MyApp()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(create: (_) => GetIt.instance<AuthBloc>()),
+        BlocProvider<ClassroomBloc>(
+            create: (_) => GetIt.instance<ClassroomBloc>()),
+        BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
+        BlocProvider<TextBloc>(create: (_) => GetIt.instance<TextBloc>()),
+      ],
+      child: MyApp(),
+    ),
   );
 }
 
