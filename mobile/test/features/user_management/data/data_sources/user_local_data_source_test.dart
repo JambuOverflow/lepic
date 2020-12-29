@@ -51,8 +51,7 @@ void main() {
 
     test('should throw a CacheException when User is not stored', () async {
       when(mockSecureStorage.read(key: anyNamed('key')))
-          .thenThrow(CacheException());
-
+          .thenAnswer((_) async => null);
       final call = dataSource.getLoggedInUser;
 
       expect(() => call(), throwsA(isA<CacheException>()));
@@ -113,7 +112,7 @@ void main() {
 
     test('should throw cache exception when key is not present', () async {
       when(mockSecureStorage.read(key: anyNamed('key')))
-          .thenThrow(CacheException());
+          .thenAnswer((_) => null);
 
       final call = dataSource.retrieveToken;
 

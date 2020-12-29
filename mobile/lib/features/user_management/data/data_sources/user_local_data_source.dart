@@ -44,15 +44,15 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<UserModel> getLoggedInUser() async {
-    final jsonStringModel = await secureStorage.read(key: loggedInUserKey);
-    final jsonModel = jsonDecode(jsonStringModel);
+    try {
+      final jsonStringModel = await secureStorage.read(key: loggedInUserKey);
 
-    final model = UserModel.fromJson(jsonModel);
+      final jsonModel = jsonDecode(jsonStringModel);
 
-    if (model != null)
-      return model;
-    else
+      return UserModel.fromJson(jsonModel);
+    } catch (_) {
       throw CacheException();
+    }
   }
 
   @override
