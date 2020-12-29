@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/network/response.dart';
+import 'package:mobile/core/network/url.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_remote_data_source.dart';
 import 'package:mockito/mockito.dart';
@@ -33,8 +34,7 @@ void main() {
   final validResponsePush =
       http.Response(fixture("server_classrooms_push"), 200);
   final invalidResponse = http.Response("", 401);
-  Uri uri;
-  Map<String, String> queryParameters;
+  String uri;
 
   final headers = {
     HttpHeaders.contentTypeHeader: "application/json",
@@ -53,22 +53,20 @@ void main() {
     syncClassroom = SyncClassroom(
         client: mockClient,
         secureStorage: mockSecureStorage,
-        classroomLocalDataSourceImpl: mockClassroomLocalDataSourceIml);
-    queryParameters = {'last_sync_time': syncClassroom.lastSyncTime.toString()};
-    uri = Uri.http(API_URL, 'api/classes/', queryParameters);
+        classroomLocalDataSourceImpl: mockClassroomLocalDataSourceIml,
+        api_url: API_URL);
+    uri = API_URL + 'classes/' + "?last_sync=${syncClassroom.lastSyncTime.toString()}";
   });
 
   group('getServerUpdated', () {
     test('should return a correct response from the server', () async {
       when(mockClient.get(uri, headers: headers))
           .thenAnswer((_) async => validResponse);
-      //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
 
       final response = await syncClassroom.getServerUpdated(
           syncClassroom.lastSyncTime.toString(), token);
 
       verify(mockClient.get(uri, headers: headers));
-      //verify(mockSecureStorage.read(key: "token"));
       expect(response, validResponse);
     });
 
@@ -88,7 +86,7 @@ void main() {
 
   group('postClassroom', () {
     test('should return a correct response from the server', () async {
-      final url = API_URL + '/api/classes/';
+      final url = API_URL + 'classes/';
       final body = json.encode(model1.toJson());
       when(mockClient.post(url, headers: headers, body: body))
           .thenAnswer((_) async => validResponse);
@@ -107,7 +105,7 @@ void main() {
     });
 
     test('should throw a server exception', () async {
-      final url = API_URL + '/api/classes/';
+      final url = API_URL + 'classes/';
       final body = json.encode(model1.toJson());
       when(mockClient.post(url, headers: headers, body: body))
           .thenAnswer((_) async => invalidResponse);
@@ -122,7 +120,7 @@ void main() {
 
   group('putClassroom', () {
     test('should return a correct response from the server', () async {
-      final url = API_URL + '/api/classes/';
+      final url = API_URL + 'classes/';
       final body = json.encode(model1.toJson());
       when(mockClient.put(url, headers: headers, body: body))
           .thenAnswer((_) async => validResponse);
@@ -141,7 +139,7 @@ void main() {
     });
 
     test('should throw a server exception', () async {
-      final url = API_URL + '/api/classes/';
+      final url = API_URL + 'classes/';
       final body = json.encode(model1.toJson());
       when(mockClient.put(url, headers: headers, body: body))
           .thenAnswer((_) async => invalidResponse);
@@ -186,7 +184,7 @@ void main() {
 
   group('getClassroomsInServer', () {
     test('should throw an exception', () async {
-      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      final uriLocal = API_URL +  'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => invalidResponse);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -198,7 +196,7 @@ void main() {
     });
 
     test('should return an empty list', () async {
-      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      final uriLocal = API_URL +  'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => validResponse);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -211,7 +209,7 @@ void main() {
     });
 
     test('should return a list with models', () async {
-      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      final uriLocal = API_URL +  'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => validResponseWithContent);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -226,7 +224,7 @@ void main() {
 
   group('push', () {
     test('should return a wrong response from the server', () async {
-      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      final uriLocal = API_URL +  'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => invalidResponse);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -237,8 +235,8 @@ void main() {
     });
 
     test('should send a put and a post to the server', () async {
-      final urlLocal = API_URL + '/api/classes/';
-      final uriLocal = Uri.http(API_URL, 'api/classes/');
+      final urlLocal = API_URL + 'classes/';
+      final uriLocal = API_URL +  'classes/';
 
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => validResponsePush);
@@ -256,7 +254,7 @@ void main() {
       final response = await syncClassroom.push();
 
       expect(response, SuccessfulResponse());
-      
+
       verifyInOrder([
         mockClient.put(urlLocal,
             headers: headers, body: json.encode(model1.toJson())),

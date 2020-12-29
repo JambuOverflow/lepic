@@ -6,6 +6,7 @@ import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/network/response.dart';
+import 'package:mobile/core/network/url.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_remote_data_source.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
@@ -31,7 +32,7 @@ void main() {
 
   setUp(() {
     mockHttpClient = MockHttpClient();
-    dataSource = UserRemoteDataSourceImpl(client: mockHttpClient);
+    dataSource = UserRemoteDataSourceImpl(client: mockHttpClient, api_url: API_URL);
 
     moorRuntimeOptions.defaultSerializer = Serializer();
   });

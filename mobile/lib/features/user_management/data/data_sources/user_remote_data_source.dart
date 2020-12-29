@@ -29,12 +29,12 @@ abstract class UserRemoteDataSource {
 }
 
 /// Localhost - 10.0.2.2 is the address on an android emulator
-const API_URL = 'https://lepic-django.herokuapp.com/api/';
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   final http.Client client;
+  final String api_url;
 
-  UserRemoteDataSourceImpl({@required this.client});
+  UserRemoteDataSourceImpl({@required this.client, @required this.api_url});
 
   @override
   Future<Response> createUser(UserModel user) async {
@@ -42,7 +42,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     try {
       final http.Response response = await client.post(
-        API_URL + 'users/',
+        api_url + 'users/',
         body: json.encode(jsonUser),
         headers: {HttpHeaders.contentTypeHeader: "application/json"},
       );
@@ -67,7 +67,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     try {
       final http.Response response = await client.patch(
-        API_URL + 'users/' + user.localId.toString(),
+        api_url + 'users/' + user.localId.toString(),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Token " + token,
@@ -88,7 +88,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   Future<Response> login(UserModel user) async {
     try {
       final http.Response response = await client.post(
-        API_URL + 'token-auth/',
+        api_url + 'token-auth/',
         body: jsonEncode({
           "username": user.email,
           "password": user.password,

@@ -14,20 +14,22 @@ import 'package:mobile/features/class_management/data/data_sources/classroom_loc
 import '../../../../core/network/response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-const API_URL = 'lepic-django.herokuapp.com';
-
 class SyncClassroom {
   final http.Client client;
   final FlutterSecureStorage secureStorage;
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
-  final url = API_URL + "/api/classes/";
+  final String api_url;
   DateTime lastSyncTime = DateTime.now().toUtc();
 
-  SyncClassroom({
-    @required this.client,
-    @required this.secureStorage,
-    @required this.classroomLocalDataSourceImpl,
-  });
+  SyncClassroom(
+      {@required this.client,
+      @required this.secureStorage,
+      @required this.classroomLocalDataSourceImpl,
+      @required this.api_url});
+
+  String getUrl() {
+    return this.api_url + "classes/";
+  }
 
   Future<Response> sync() async {
     Response pullResponse = await this.pull();
@@ -47,15 +49,12 @@ class SyncClassroom {
   // Gets from server the classrooms that were updated synce last time
   Future<http.Response> getServerUpdated(
       String lastSyncTime, String token) async {
-    Uri uri;
+    String url = getUrl();
     if (lastSyncTime != "") {
-      final queryParameters = {'last_sync_time': lastSyncTime};
-      uri = Uri.http(API_URL, 'api/classes/', queryParameters);
-    } else {
-      uri = Uri.http(API_URL, 'api/classes/');
+      url = url + "?last_sync=${lastSyncTime}";
     }
     final headers = getHeaders(token);
-    final response = await this.client.get(uri, headers: headers);
+    final response = await this.client.get(url, headers: headers);
 
     return response;
   }
@@ -142,7 +141,7 @@ class SyncClassroom {
 
   Future<void> putClassroom(ClassroomModel element, String token) async {
     final headers = getHeaders(token);
-    final localUrl = this.url;
+    final localUrl = this.getUrl();
     final body = json.encode(element.toJson());
     final http.Response response = await this.client.put(
           localUrl,
@@ -156,7 +155,7 @@ class SyncClassroom {
 
   Future<void> postClassroom(ClassroomModel element, String token) async {
     final headers = getHeaders(token);
-    final localUrl = this.url;
+    final localUrl = this.getUrl();
     final body = json.encode(element.toJson());
 
     final http.Response response = await this.client.post(
