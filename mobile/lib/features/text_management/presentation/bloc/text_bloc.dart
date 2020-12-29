@@ -19,19 +19,19 @@ part 'text_event.dart';
 part 'text_state.dart';
 
 class TextBloc extends Bloc<TextEvent, TextState> {
-  final List<MyText> texts = [];
-
+  final Classroom classroom;
   final CreateText createText;
   final UpdateText updateText;
   final GetTexts getTexts;
   final DeleteText deleteText;
 
   TextBloc({
+    @required this.classroom,
     @required this.createText,
     @required this.updateText,
     @required this.deleteText,
     @required this.getTexts,
-  }) : super(TextInitial());
+  }) : super(GettingTexts());
 
   @override
   Stream<TextState> mapEventToState(TextEvent event) async* {
@@ -47,7 +47,11 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _createNewTextState(CreateTextEvent event) async* {
     yield CreatingText();
 
-    final text = _createTextEntityFromEvent(event);
+    final text = MyText(
+      body: event.body,
+      classId: event.classroom.id,
+      title: event.title,
+    );
 
     final failureOrText = await createText(TextParams(text: text));
 
@@ -59,9 +63,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
     yield UpdatingText();
 
-    final text = _updateTextEntityFromEvent(event);
-
-    final failureOrText = await updateText(TextParams(text: text));
+    final failureOrText = await updateText(TextParams(text: event.oldText));
 
     yield failureOrText.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
@@ -71,12 +73,10 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _deleteTextState(DeleteTextEvent event) async* {
     yield DeletingText();
 
-    final text = MyText(localId: event.localId);
-
-    final failureOrSuccess = await deleteText(TextParams(text: text));
+    final failureOrSuccess = await deleteText(TextParams(text: event.text));
 
     yield failureOrSuccess.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
       (_) => TextDeleted(),
     );
   }
@@ -84,32 +84,12 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _getTextsState(GetTextsEvent event) async* {
     yield GettingTexts();
 
-    final failureOrTexts = await getTexts(
-      ClassroomParams(classroom: event.classroom),
-    );
+    final failureOrTexts =
+        await getTexts(ClassroomParams(classroom: classroom));
 
     yield failureOrTexts.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (texts) {
-        texts = texts;
-        return TextsGot(texts: texts);
-      },
-    );
-  }
-
-  MyText _createTextEntityFromEvent(CreateTextEvent event) {
-    return MyText(
-      title: event.title,
-      body: event.body,
-      classId: event.classroom.id,
-    );
-  }
-
-  MyText _updateTextEntityFromEvent(UpdateTextEvent event) {
-    return MyText(
-      title: event.title ?? event.oldText.title,
-      body: event.body ?? event.oldText.body,
-      classId: event.oldText.classId,
+      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
+      (texts) => TextsGot(texts: texts),
     );
   }
 
@@ -117,6 +97,8 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     switch (failure.runtimeType) {
       case ServerFailure:
         return 'Could not reach server';
+      case CacheFailure:
+        return 'Error on local storage';
       default:
         return 'Unexpected Error';
     }

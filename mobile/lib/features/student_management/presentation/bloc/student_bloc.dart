@@ -48,12 +48,10 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       CreateNewStudentEvent event) async* {
     yield CreatingStudent();
 
-    final classroomId = event.classroom;
-
     final student = Student(
       firstName: event.firstName,
       lastName: event.lastName,
-      classroomId: classroomId.id,
+      classroomId: event.classroom.id,
     );
 
     final studentEither = await createStudent(StudentParams(student: student));
@@ -94,7 +92,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     final getEither = await getStudents(ClassroomParams(classroom: classroom));
 
     yield getEither.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
+      (failure) => Error(message: _mapFailureToMessage(failure)),
       (students) => StudentsGot(students: students),
     );
   }

@@ -22,12 +22,12 @@ class _TextsPageState extends State<TextsPage> {
       appBar: AppBar(title: Text('Texts')),
       drawer: DrawerOverlay(),
       body: ListView.builder(
-        itemCount: _bloc.texts.length,
-        itemBuilder: (context, index) {
-          final text = _bloc.texts[index];
-          return ItemText(text);
-        },
-      ),
+          // itemCount: 0,
+          // itemBuilder: (context, index) {
+          //   final text = _bloc.getTexts;
+          //   return ItemText(text);
+          // },
+          ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {

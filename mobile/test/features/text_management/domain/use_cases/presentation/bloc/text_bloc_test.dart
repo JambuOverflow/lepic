@@ -27,6 +27,13 @@ void main() {
   MockDeleteTextEventUseCase mockDeleteText;
   MockGetTextEventUseCase mockGetText;
 
+  final tClassroom = Classroom(
+    grade: 1,
+    id: 001,
+    tutorId: 01,
+    name: "class name",
+  );
+
   setUp(() {
     mockCreateNewText = MockCreateTextUseCase();
     mockUpdateText = MockUpdateTextEventUseCase();
@@ -38,6 +45,7 @@ void main() {
       updateText: mockUpdateText,
       deleteText: mockDeleteText,
       getTexts: mockGetText,
+      classroom: tClassroom,
     );
   });
 
@@ -51,24 +59,18 @@ void main() {
   final tTextList = List<MyText>();
   tTextList.add(tText);
 
-  final tClassroom = Classroom(
-    tutorId: 010,
-    grade: 001,
-    name: 'textClassroomName',
-  );
-
   final String tTitle = 'Title';
   final String tBody =
       'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie';
   final int tLocalId = 001;
 
   test('initial state should be [TextInitial]', () {
-    expect(bloc.state, TextInitial());
+    expect(bloc.state, GettingTexts());
   });
 
   group('CreateNewText', () {
     test(
-        '''should emit [CreatingTest, TestCreated] when text creation is successful''',
+        '''should emit [CreatingText, TextCreated] when text creation is successful''',
         () {
       when(mockCreateNewText(any)).thenAnswer((_) async => Right(tText));
 
@@ -79,16 +81,16 @@ void main() {
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(CreateTextEvent(
-        title: tTitle,
-        body: tBody,
         classroom: tClassroom,
+        body: tBody,
+        title: tTitle,
       ));
     });
 
-    test('''should emit [CreatingTest, Error] when text could not be created''',
+    test('''should emit [CreatingText, Error] when text could not be created''',
         () {
       when(mockCreateNewText(any))
-          .thenAnswer((_) async => Left(ServerFailure()));
+          .thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         CreatingText(),
@@ -105,7 +107,7 @@ void main() {
   });
 
   group('updateText', () {
-    test('''should emit [UpdatingText, TextUpdated] when a Text update 
+    test('''should emit [UpdatingText, TextUpdated] when a Text update
     is successful''', () async {
       when(mockUpdateText(any)).thenAnswer(
         (_) async => Right(tText),
@@ -121,20 +123,26 @@ void main() {
         title: tTitle,
         body: tBody,
         oldText: tText,
+        classroom: tClassroom,
       ));
     });
 
-    test('''should emit [UpdatingStudent, Error] when text update 
+    test('''should emit [UpdatingText, Error] when text update
     is unsuccessful''', () {
-      when(mockUpdateText(any)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockUpdateText(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         UpdatingText(),
-        Error(message: 'Not able to update a text')
+        Error(message: 'Not able to update the text')
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateTextEvent(title: tTitle, body: tBody, oldText: tText));
+      bloc.add(UpdateTextEvent(
+        title: tTitle,
+        body: tBody,
+        oldText: tText,
+        classroom: tClassroom,
+      ));
     });
   });
 
@@ -149,20 +157,20 @@ void main() {
         TextDeleted(),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteTextEvent(localId: tLocalId));
+      bloc.add(DeleteTextEvent(text: tText));
     });
 
     test(
-        '''Should emit [DeletingClassroom, Error] when a text could not be deleted successfully''',
+        '''Should emit [DeletingText, Error] when a text could not be deleted successfully''',
         () {
-      when(mockDeleteText(any)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockDeleteText(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         DeletingText(),
         Error(message: 'could not delete this text'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteTextEvent(localId: tLocalId));
+      bloc.add(DeleteTextEvent(text: tText));
     });
   });
 
@@ -178,20 +186,20 @@ void main() {
         TextsGot(texts: tTextList),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetTextsEvent(classroom: tClassroom));
+      bloc.add(GetTextsEvent());
     });
 
     test(
         '''Should emit [GettingTextList, Error] when could not get a text list''',
         () {
-      when(mockGetText(any)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockGetText(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         GettingTexts(),
         Error(message: 'Not able to get student list'),
       ];
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetTextsEvent(classroom: tClassroom));
+      bloc.add(GetTextsEvent());
     });
   });
 }
