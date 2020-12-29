@@ -22,7 +22,7 @@ class SyncClassroom {
   final http.Client client;
   final FlutterSecureStorage secureStorage;
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
-  final url = API_URL + "/api/classes";
+  final url = API_URL + "/api/classes/";
   DateTime lastSyncTime = DateTime.now().toUtc();
 
   SyncClassroom({
@@ -32,7 +32,8 @@ class SyncClassroom {
   });
 
   // Gets from server the classrooms that were updated synce last time
-  Future<http.Response> getServerUpdated(String lastSyncTime) async {
+  Future<http.Response> getServerUpdated(
+      String lastSyncTime, String token) async {
     Uri uri;
     if (lastSyncTime != "") {
       final queryParameters = {'last_sync_time': lastSyncTime};
@@ -40,13 +41,13 @@ class SyncClassroom {
     } else {
       uri = Uri.http(API_URL, 'api/classes/');
     }
-    final headers = await getHeaders();
+    final headers = getHeaders(token);
+    final response = await this.client.get(uri, headers: headers);
 
-    return await this.client.get(uri, headers: headers);
+    return response;
   }
 
-  Future<Map<String, String>> getHeaders() async {
-    String token = await getToken();
+  Map<String, String> getHeaders(String token) {
     return {
       HttpHeaders.contentTypeHeader: "application/json",
       HttpHeaders.authorizationHeader: "token ${token}",
@@ -59,8 +60,10 @@ class SyncClassroom {
   }
 
   Future<Response> pull() async {
+    final token = await getToken();
     final lastSyncTimeString = this.lastSyncTime.toString();
-    http.Response response = await this.getServerUpdated(lastSyncTimeString);
+    http.Response response =
+        await this.getServerUpdated(lastSyncTimeString, token);
 
     if (response.statusCode == 401) {
       return UnsuccessfulResponse(message: response.body);
@@ -75,33 +78,33 @@ class SyncClassroom {
     return SuccessfulResponse();
   }
 
-  bool isInCollection(
-    ClassroomModel model,
-    List<ClassroomModel> collection,
-  ) {
-    collection.forEach((element) {
+  bool isInCollection(ClassroomModel model, List<ClassroomModel> collection) {
+    bool result = false;
+    for (ClassroomModel element in collection) {
       if (element.localId == model.localId) {
-        return true;
+        result = true;
+        break;
       }
-    });
-    return false;
+    }
+    return result;
   }
 
   Future<Response> push() async {
     List<ClassroomModel> classroomsToPush = await this
         .classroomLocalDataSourceImpl
         .getClassroomsSinceLastSync(this.lastSyncTime);
+    final token = await getToken();
 
     try {
-      List<ClassroomModel> classroomsInServer = await getClassroomsInServer();
-
+      List<ClassroomModel> classroomsInServer =
+          await getClassroomsInServer(token);
+      bool inServer;
       classroomsToPush.forEach((element) async {
-        bool inServer;
         inServer = this.isInCollection(element, classroomsInServer);
         if (inServer) {
-          putClassroom(element);
+          await putClassroom(element, token);
         } else {
-          postClassroom(element);
+          await postClassroom(element, token);
         }
       });
     } on ServerException {
@@ -110,8 +113,8 @@ class SyncClassroom {
     return SuccessfulResponse();
   }
 
-  Future<List<ClassroomModel>> getClassroomsInServer() async {
-    http.Response response = await this.getServerUpdated("");
+  Future<List<ClassroomModel>> getClassroomsInServer(String token) async {
+    http.Response response = await this.getServerUpdated("", token);
     if (response.statusCode == 200) {
       Iterable objects = json.decode(response.body);
       List<ClassroomModel> classroomsInServer = [];
@@ -124,26 +127,29 @@ class SyncClassroom {
     }
   }
 
-  Future<void> putClassroom(ClassroomModel element) async {
+  Future<void> putClassroom(ClassroomModel element, String token) async {
+    final headers = getHeaders(token);
+    final localUrl = this.url;
+    final body = json.encode(element.toJson());
     final http.Response response = await this.client.put(
-          this.url,
-          headers: await getHeaders(),
-          body: json.encode(
-            element.toJson(),
-          ),
+          localUrl,
+          headers: headers,
+          body: body,
         );
     if (response.statusCode != 200) {
       throw ServerException();
     }
   }
 
-  Future<void> postClassroom(ClassroomModel element) async {
+  Future<void> postClassroom(ClassroomModel element, String token) async {
+    final headers = getHeaders(token);
+    final localUrl = this.url;
+    final body = json.encode(element.toJson());
+
     final http.Response response = await this.client.post(
-          this.url,
-          headers: await getHeaders(),
-          body: json.encode(
-            element.toJson(),
-          ),
+          localUrl,
+          headers: headers,
+          body: body,
         );
     if (response.statusCode != 200) {
       throw ServerException();
