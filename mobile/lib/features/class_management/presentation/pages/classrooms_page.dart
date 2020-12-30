@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/presentation/widgets/drawer_overlay.dart';
 import '../bloc/classroom_bloc.dart';
 
 class ClassroomsPage extends StatefulWidget {
@@ -16,8 +15,9 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Classes')),
-      drawer: DrawerOverlay(),
+      appBar: AppBar(
+        actions: [FakeAppBarButtons()],
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
@@ -65,6 +65,24 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class FakeAppBarButtons extends StatelessWidget {
+  const FakeAppBarButtons({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.filter_alt_rounded),
+        SizedBox(width: 16),
+        Icon(Icons.search_rounded),
+        SizedBox(width: 16),
+      ],
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/core/presentation/bloc/bottom_navigation_bloc.dart';
 import 'package:mobile/core/utils/input_converter.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
 import 'package:mobile/features/user_management/domain/use_cases/logout_use_case.dart';
@@ -37,6 +38,7 @@ void setUpLocator() {
     ),
   );
 
+  getIt.registerLazySingleton(() => BottomNavigationBloc());
   getIt.registerFactory(() => SignupFormBloc(createNewUser: getIt()));
   getIt.registerFactory(() => LoginFormBloc(loginCase: getIt()));
 
