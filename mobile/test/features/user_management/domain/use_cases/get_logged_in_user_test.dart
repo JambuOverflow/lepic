@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/repositories/user_repository.dart';
 import 'package:mobile/features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
