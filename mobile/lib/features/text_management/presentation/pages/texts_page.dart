@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/presentation/widgets/drawer_overlay.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
 import '../../domain/entities/text.dart';
 import 'text_detail_page.dart';
-import '../../../user_management/presentation/widgets/drawer_overlay.dart';
 
 class TextsPage extends StatefulWidget {
   TextsPage({Key key}) : super(key: key);
