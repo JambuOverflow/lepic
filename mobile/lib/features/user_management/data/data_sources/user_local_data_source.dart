@@ -20,6 +20,8 @@ abstract class UserLocalDataSource {
     @required UserModel user,
   });
 
+  Future<void> logout();
+
   Future<String> retrieveToken(UserModel user);
 }
 
@@ -73,5 +75,11 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       return token;
     else
       throw CacheException();
+  }
+
+  @override
+  Future<void> logout() {
+    // TODO: implement logout
+    throw UnimplementedError();
   }
 }
