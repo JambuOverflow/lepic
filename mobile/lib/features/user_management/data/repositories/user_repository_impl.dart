@@ -56,6 +56,12 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
+  Future<Either<Failure, void>> logout() {
+    // TODO: implement logout
+    throw UnimplementedError();
+  }
+
+  @override
   Future<Either<Failure, String>> retrieveToken(User user) async {
     try {
       final userModel = _toModel(user);
@@ -91,9 +97,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   Future _getCompleteUserAndCacheIt(TokenResponse response) async {
-    final completeUserModel =
-        await remoteDataSource.getUser(response.token);
-    
+    final completeUserModel = await remoteDataSource.getUser(response.token);
+
     await localDataSource.cacheUser(completeUserModel);
   }
 
