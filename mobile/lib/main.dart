@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/core/presentation/bloc/bottom_navigation_bloc.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:moor/moor.dart';
@@ -25,6 +26,8 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider<BottomNavigationBloc>(
+            create: (_) => GetIt.instance<BottomNavigationBloc>()),
         BlocProvider<AuthBloc>(create: (_) => authBloc),
         BlocProvider<ClassroomBloc>(
             create: (_) => GetIt.instance<ClassroomBloc>()),
