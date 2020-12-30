@@ -50,7 +50,10 @@ void main() {
       and user is logged in''',
       build: () => setUpUserAndReturnBloc(),
       act: (bloc) => bloc.add(AppStartedEvent()),
-      expect: [AuthState(user: tUser, status: AuthStatus.authenticated)],
+      expect: [
+        AuthState(status: AuthStatus.authenticating),
+        AuthState(user: tUser, status: AuthStatus.authenticated),
+      ],
     );
 
     blocTest(
@@ -58,7 +61,10 @@ void main() {
       started and user is not logged in''',
       build: () => setUpNoUserAndReturnBloc(),
       act: (bloc) => bloc.add(AppStartedEvent()),
-      expect: [AuthState(user: null, status: AuthStatus.unauthenticated)],
+      expect: [
+        AuthState(status: AuthStatus.authenticating),
+        AuthState(user: null, status: AuthStatus.unauthenticated),
+      ],
     );
   });
 
@@ -68,7 +74,10 @@ void main() {
       user logged in''',
       build: () => setUpUserAndReturnBloc(),
       act: (bloc) => bloc.add(UserLoggedInEvent()),
-      expect: [AuthState(user: tUser, status: AuthStatus.authenticated)],
+      expect: [
+        AuthState(status: AuthStatus.authenticating),
+        AuthState(user: tUser, status: AuthStatus.authenticated),
+      ],
     );
 
     blocTest(
@@ -76,7 +85,10 @@ void main() {
       user logged in but no user was found''',
       build: () => setUpNoUserAndReturnBloc(),
       act: (bloc) => bloc.add(UserLoggedInEvent()),
-      expect: [AuthState(user: null, status: AuthStatus.error)],
+      expect: [
+        AuthState(status: AuthStatus.authenticating),
+        AuthState(user: null, status: AuthStatus.error),
+      ],
     );
   });
 
@@ -85,7 +97,10 @@ void main() {
       'should emit state with no user and unauthenticated when user logs out',
       build: () => authBloc,
       act: (bloc) => bloc.add(UserLoggedOutEvent()),
-      expect: [AuthState(user: null, status: AuthStatus.unauthenticated)],
+      expect: [
+        AuthState(status: AuthStatus.authenticating),
+        AuthState(user: null, status: AuthStatus.unauthenticated),
+      ],
     );
   });
 }

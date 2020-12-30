@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
-import 'package:mobile/features/user_management/domain/use_cases/retrieve_token_use_case.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -22,13 +21,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEvent event,
   ) async* {
     if (event is AppStartedEvent) {
-      print('AppStartedEvent');
+      yield _copyWithAuthenticating();
       yield* _eitherCheckAuthenticationOrFail();
     } else if (event is UserLoggedInEvent) {
-      print('UserLoggedInEvent');
+      yield _copyWithAuthenticating();
+      await Future.delayed(Duration(seconds: 5));
       yield* _eitherAuthenticateOrFail();
     } else if (event is UserLoggedOutEvent) {
-      print('UserLoggedOutEvent');
+      yield _copyWithAuthenticating();
       yield _copyWithUnauthenticated();
     }
   }
@@ -61,6 +61,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthState _copyWithUnauthenticated() =>
       state.copyWith(user: null, status: AuthStatus.unauthenticated);
+
+  AuthState _copyWithAuthenticating() =>
+      state.copyWith(status: AuthStatus.authenticating);
 
   AuthState _copyWithError() =>
       state.copyWith(user: null, status: AuthStatus.error);
