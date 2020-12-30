@@ -2,13 +2,13 @@
     {
         "local_id": 1,
         "grade": 1,
-        "name": "A",
+        "title": "A",
         "tutor_id": 1
     },
     {
     "local_id": 2,
     "grade": 1,
-    "name": "B",
+    "title": "B",
     "tutor_id": 1
 }
 ]

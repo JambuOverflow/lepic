@@ -39,23 +39,23 @@ Future<void> main() {
   final tUserModel = userEntityToModel(tUser);
 
   final tClassroomInputModel1 =
-      ClassroomModel(tutorId: 1, grade: 1, name: "A", localId: null);
+      ClassroomModel(tutorId: 1, grade: 1, title: "A", localId: null);
   final tClassroomInputModel2 =
-      ClassroomModel(tutorId: 1, grade: 1, name: "B", localId: null);
+      ClassroomModel(tutorId: 1, grade: 1, title: "B", localId: null);
 
   final lastSync = DateTime(2020);
 
   final tClassroomModel1 = ClassroomModel(
     tutorId: 1,
     grade: 1,
-    name: "A",
+    title: "A",
     localId: 1,
     deleted: false,
   );
   final tClassroomModel1Deleted = ClassroomModel(
     tutorId: 1,
     grade: 1,
-    name: "A",
+    title: "A",
     localId: 1,
     deleted: true,
   );

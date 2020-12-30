@@ -6,7 +6,7 @@ class ClassroomModels extends Table {
   @JsonKey("local_id")
   IntColumn get localId => integer().autoIncrement()();
   IntColumn get grade => integer()();
-  TextColumn get name => text()();
+  TextColumn get title => text()();
   @JsonKey("last_updated")
   DateTimeColumn get lastUpdated => dateTime()();
   @JsonKey("client_last_updated")
@@ -24,7 +24,7 @@ Classroom classroomModelToEntity(ClassroomModel model) {
   return Classroom(
       id: model.localId,
       grade: model.grade,
-      name: model.name,
+      name: model.title,
       tutorId: model.tutorId,
       deleted: model.deleted,
       lastUpdated: model.lastUpdated,
@@ -36,7 +36,7 @@ ClassroomModel classroomEntityToModel(Classroom entity) {
   return ClassroomModel(
       localId: entity.id,
       grade: entity.grade,
-      name: entity.name,
+      title: entity.name,
       tutorId: entity.tutorId,
       lastUpdated: entity.lastUpdated,
       deleted: entity.deleted,

@@ -24,7 +24,7 @@ void main() {
 
   final tValidClassCompanion = ClassroomModelsCompanion(
     grade: Value(grade),
-    name: Value(name),
+    title: Value(name),
     tutorId: Value(tValidUserPk),
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
@@ -34,7 +34,7 @@ void main() {
 
   final tDeletedClassCompanion = ClassroomModelsCompanion(
     grade: Value(grade),
-    name: Value(name),
+    title: Value(name),
     tutorId: Value(tValidUserPk),
     deleted: Value(true),
     lastUpdated: Value(DateTime(2020)),
@@ -44,7 +44,7 @@ void main() {
 
   final tInvalidClassCompanion = ClassroomModelsCompanion(
     grade: Value(grade),
-    name: Value(name),
+    title: Value(name),
     tutorId: Value(tInvalidUserPk),
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
@@ -54,7 +54,7 @@ void main() {
 
   final tValidClassModel1 = ClassroomModel(
     grade: grade,
-    name: name,
+    title: name,
     tutorId: tValidUserPk,
     localId: tValidClassroomPk1,
     deleted: false,
@@ -65,7 +65,7 @@ void main() {
 
   final tValidClassModel2 = ClassroomModel(
     grade: grade,
-    name: name,
+    title: name,
     tutorId: tValidUserPk,
     localId: tValidClassroomPk2,
     deleted: false,
@@ -76,7 +76,7 @@ void main() {
 
   final tValidUpdateClassModel = ClassroomModel(
       grade: grade,
-      name: updateName,
+      title: updateName,
       tutorId: tValidUserPk,
       localId: tValidClassroomPk1,
       deleted: false,
@@ -87,7 +87,7 @@ void main() {
   final tInvalidUpdateClassModel = ClassroomModel(
     localId: tInvalidClassroomPk,
     grade: grade,
-    name: updateName,
+    title: updateName,
     tutorId: tValidUserPk,
     deleted: false,
     lastUpdated: DateTime(2020),
@@ -97,7 +97,7 @@ void main() {
 
   final tClassModel2018 = ClassroomModel(
     grade: grade,
-    name: updateName,
+    title: updateName,
     tutorId: tValidUserPk,
     deleted: false,
     lastUpdated: DateTime(2018),
@@ -107,7 +107,7 @@ void main() {
 
   final tClassModel2019 = ClassroomModel(
     grade: grade,
-    name: updateName,
+    title: updateName,
     tutorId: tValidUserPk,
     deleted: false,
     lastUpdated: DateTime(2019),
@@ -117,7 +117,7 @@ void main() {
 
   final tClassModel2020 = ClassroomModel(
     grade: grade,
-    name: updateName,
+    title: updateName,
     tutorId: tValidUserPk,
     deleted: false,
     lastUpdated: DateTime(2020),

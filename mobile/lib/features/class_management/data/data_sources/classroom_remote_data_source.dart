@@ -153,18 +153,16 @@ class SyncClassroom {
     }
   }
 
-  Future<void> postClassroom(ClassroomModel element, String token) async {
+  Future<http.Response> postClassroom(ClassroomModel element, String token) async {
     final headers = getHeaders(token);
     final localUrl = this.getUrl();
-    final body = json.encode(element.toJson());
+    final body = json.encode([element.toJson()]);
 
     final http.Response response = await this.client.post(
           localUrl,
           headers: headers,
           body: body,
         );
-    if (response.statusCode != 200) {
-      throw ServerException();
-    }
+    return response;
   }
 }

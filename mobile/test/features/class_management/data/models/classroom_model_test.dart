@@ -14,7 +14,7 @@ void main() {
   final tClassModel = ClassroomModel(
     grade: 1,
     localId: 2,
-    name: "A",
+    title: "A",
     tutorId: 3,
     deleted: false,
     lastUpdated: time,
@@ -50,7 +50,7 @@ void main() {
       final expectedMap = {
         "local_id": 2,
         "grade": 1,
-        "name": "A",
+        "title": "A",
         "last_updated": 1514768460000,
         "client_last_updated": 1514768460000,
         "deleted": false,

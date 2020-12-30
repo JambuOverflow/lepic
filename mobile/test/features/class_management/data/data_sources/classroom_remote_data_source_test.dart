@@ -41,10 +41,10 @@ void main() {
     HttpHeaders.authorizationHeader: "token cleidson",
   };
 
-  final model1 = ClassroomModel(localId: 1, grade: 1, name: "A", tutorId: 1);
+  final model1 = ClassroomModel(localId: 1, grade: 1, title: "A", tutorId: 1);
   final model1Server =
-      ClassroomModel(localId: 1, grade: 1, name: "C", tutorId: 1);
-  final model2 = ClassroomModel(localId: 2, grade: 1, name: "B", tutorId: 1);
+      ClassroomModel(localId: 1, grade: 1, title: "C", tutorId: 1);
+  final model2 = ClassroomModel(localId: 2, grade: 1, title: "B", tutorId: 1);
 
   setUp(() async {
     mockClient = MockClient();

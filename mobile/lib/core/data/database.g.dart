@@ -449,7 +449,7 @@ class $UserModelsTable extends UserModels
 class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
   final int localId;
   final int grade;
-  final String name;
+  final String title;
   final DateTime lastUpdated;
   final DateTime clientLastUpdated;
   final bool deleted;
@@ -458,7 +458,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
   ClassroomModel(
       {@required this.localId,
       @required this.grade,
-      @required this.name,
+      @required this.title,
       @required this.lastUpdated,
       @required this.clientLastUpdated,
       @required this.deleted,
@@ -476,7 +476,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
       grade: intType.mapFromDatabaseResponse(data['${effectivePrefix}grade']),
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      title:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
       lastUpdated: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}last_updated']),
       clientLastUpdated: dateTimeType.mapFromDatabaseResponse(
@@ -498,8 +499,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     if (!nullToAbsent || grade != null) {
       map['grade'] = Variable<int>(grade);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
     }
     if (!nullToAbsent || lastUpdated != null) {
       map['last_updated'] = Variable<DateTime>(lastUpdated);
@@ -526,7 +527,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           : Value(localId),
       grade:
           grade == null && nullToAbsent ? const Value.absent() : Value(grade),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
       lastUpdated: lastUpdated == null && nullToAbsent
           ? const Value.absent()
           : Value(lastUpdated),
@@ -551,7 +553,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     return ClassroomModel(
       localId: serializer.fromJson<int>(json['local_id']),
       grade: serializer.fromJson<int>(json['grade']),
-      name: serializer.fromJson<String>(json['name']),
+      title: serializer.fromJson<String>(json['title']),
       lastUpdated: serializer.fromJson<DateTime>(json['last_updated']),
       clientLastUpdated:
           serializer.fromJson<DateTime>(json['client_last_updated']),
@@ -566,7 +568,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     return <String, dynamic>{
       'local_id': serializer.toJson<int>(localId),
       'grade': serializer.toJson<int>(grade),
-      'name': serializer.toJson<String>(name),
+      'title': serializer.toJson<String>(title),
       'last_updated': serializer.toJson<DateTime>(lastUpdated),
       'client_last_updated': serializer.toJson<DateTime>(clientLastUpdated),
       'deleted': serializer.toJson<bool>(deleted),
@@ -578,7 +580,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
   ClassroomModel copyWith(
           {int localId,
           int grade,
-          String name,
+          String title,
           DateTime lastUpdated,
           DateTime clientLastUpdated,
           bool deleted,
@@ -587,7 +589,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       ClassroomModel(
         localId: localId ?? this.localId,
         grade: grade ?? this.grade,
-        name: name ?? this.name,
+        title: title ?? this.title,
         lastUpdated: lastUpdated ?? this.lastUpdated,
         clientLastUpdated: clientLastUpdated ?? this.clientLastUpdated,
         deleted: deleted ?? this.deleted,
@@ -599,7 +601,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     return (StringBuffer('ClassroomModel(')
           ..write('localId: $localId, ')
           ..write('grade: $grade, ')
-          ..write('name: $name, ')
+          ..write('title: $title, ')
           ..write('lastUpdated: $lastUpdated, ')
           ..write('clientLastUpdated: $clientLastUpdated, ')
           ..write('deleted: $deleted, ')
@@ -615,7 +617,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       $mrjc(
           grade.hashCode,
           $mrjc(
-              name.hashCode,
+              title.hashCode,
               $mrjc(
                   lastUpdated.hashCode,
                   $mrjc(
@@ -628,7 +630,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       (other is ClassroomModel &&
           other.localId == this.localId &&
           other.grade == this.grade &&
-          other.name == this.name &&
+          other.title == this.title &&
           other.lastUpdated == this.lastUpdated &&
           other.clientLastUpdated == this.clientLastUpdated &&
           other.deleted == this.deleted &&
@@ -639,7 +641,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
 class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   final Value<int> localId;
   final Value<int> grade;
-  final Value<String> name;
+  final Value<String> title;
   final Value<DateTime> lastUpdated;
   final Value<DateTime> clientLastUpdated;
   final Value<bool> deleted;
@@ -648,7 +650,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   const ClassroomModelsCompanion({
     this.localId = const Value.absent(),
     this.grade = const Value.absent(),
-    this.name = const Value.absent(),
+    this.title = const Value.absent(),
     this.lastUpdated = const Value.absent(),
     this.clientLastUpdated = const Value.absent(),
     this.deleted = const Value.absent(),
@@ -658,14 +660,14 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   ClassroomModelsCompanion.insert({
     this.localId = const Value.absent(),
     @required int grade,
-    @required String name,
+    @required String title,
     @required DateTime lastUpdated,
     @required DateTime clientLastUpdated,
     @required bool deleted,
     @required int tutorId,
     @required int schoolId,
   })  : grade = Value(grade),
-        name = Value(name),
+        title = Value(title),
         lastUpdated = Value(lastUpdated),
         clientLastUpdated = Value(clientLastUpdated),
         deleted = Value(deleted),
@@ -674,7 +676,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   static Insertable<ClassroomModel> custom({
     Expression<int> localId,
     Expression<int> grade,
-    Expression<String> name,
+    Expression<String> title,
     Expression<DateTime> lastUpdated,
     Expression<DateTime> clientLastUpdated,
     Expression<bool> deleted,
@@ -684,7 +686,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
       if (grade != null) 'grade': grade,
-      if (name != null) 'name': name,
+      if (title != null) 'title': title,
       if (lastUpdated != null) 'last_updated': lastUpdated,
       if (clientLastUpdated != null) 'client_last_updated': clientLastUpdated,
       if (deleted != null) 'deleted': deleted,
@@ -696,7 +698,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   ClassroomModelsCompanion copyWith(
       {Value<int> localId,
       Value<int> grade,
-      Value<String> name,
+      Value<String> title,
       Value<DateTime> lastUpdated,
       Value<DateTime> clientLastUpdated,
       Value<bool> deleted,
@@ -705,7 +707,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     return ClassroomModelsCompanion(
       localId: localId ?? this.localId,
       grade: grade ?? this.grade,
-      name: name ?? this.name,
+      title: title ?? this.title,
       lastUpdated: lastUpdated ?? this.lastUpdated,
       clientLastUpdated: clientLastUpdated ?? this.clientLastUpdated,
       deleted: deleted ?? this.deleted,
@@ -723,8 +725,8 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     if (grade.present) {
       map['grade'] = Variable<int>(grade.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
     }
     if (lastUpdated.present) {
       map['last_updated'] = Variable<DateTime>(lastUpdated.value);
@@ -749,7 +751,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     return (StringBuffer('ClassroomModelsCompanion(')
           ..write('localId: $localId, ')
           ..write('grade: $grade, ')
-          ..write('name: $name, ')
+          ..write('title: $title, ')
           ..write('lastUpdated: $lastUpdated, ')
           ..write('clientLastUpdated: $clientLastUpdated, ')
           ..write('deleted: $deleted, ')
@@ -786,13 +788,13 @@ class $ClassroomModelsTable extends ClassroomModels
     );
   }
 
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
-  GeneratedTextColumn _name;
+  final VerificationMeta _titleMeta = const VerificationMeta('title');
+  GeneratedTextColumn _title;
   @override
-  GeneratedTextColumn get name => _name ??= _constructName();
-  GeneratedTextColumn _constructName() {
+  GeneratedTextColumn get title => _title ??= _constructTitle();
+  GeneratedTextColumn _constructTitle() {
     return GeneratedTextColumn(
-      'name',
+      'title',
       $tableName,
       false,
     );
@@ -860,7 +862,7 @@ class $ClassroomModelsTable extends ClassroomModels
   List<GeneratedColumn> get $columns => [
         localId,
         grade,
-        name,
+        title,
         lastUpdated,
         clientLastUpdated,
         deleted,
@@ -888,11 +890,11 @@ class $ClassroomModelsTable extends ClassroomModels
     } else if (isInserting) {
       context.missing(_gradeMeta);
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('title')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+          _titleMeta, title.isAcceptableOrUnknown(data['title'], _titleMeta));
     } else if (isInserting) {
-      context.missing(_nameMeta);
+      context.missing(_titleMeta);
     }
     if (data.containsKey('last_updated')) {
       context.handle(
