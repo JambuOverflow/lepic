@@ -324,6 +324,26 @@ void main() {
     });
   });
 
+  group('logout', () {
+    test('should return null if logout was successful', () async {
+      when(mockLocalDataSource.logout()).thenAnswer((_) async => null);
+
+      final result = await repository.logout();
+
+      expect(result, Right(null));
+      verify(mockLocalDataSource.logout());
+    });
+
+    test('should return Failure if logout was unsuccessful', () async {
+      when(mockLocalDataSource.logout()).thenThrow(CacheException());
+
+      final result = await repository.logout();
+
+      expect(result, Left(CacheFailure()));
+      verify(mockLocalDataSource.logout());
+    });
+  });
+
   group('retrieveToken', () {
     final String tToken = 'aASj24s4#sf';
 
