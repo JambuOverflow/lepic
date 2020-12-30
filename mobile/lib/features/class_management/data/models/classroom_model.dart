@@ -30,13 +30,28 @@ Classroom classroomModelToEntity(ClassroomModel model) {
 }
 
 ClassroomModel classroomEntityToModel(Classroom entity) {
+  bool deleted;
+  DateTime lastUpdated;
+
+  if (entity.deleted == null) {
+    deleted = false;
+  } else {
+    deleted = entity.deleted;
+  }
+
+  if (entity.lastUpdated == null) {
+    lastUpdated = DateTime(0).toUtc();
+  } else {
+    lastUpdated = entity.lastUpdated;
+  }
+
   return ClassroomModel(
     localId: entity.id,
     grade: entity.grade,
     name: entity.name,
     tutorId: entity.tutorId,
-    lastUpdated: entity.lastUpdated,
-    deleted: entity.deleted,
+    lastUpdated: lastUpdated,
+    deleted: deleted,
     clientLastUpdated: entity.clientLastUpdated,
   );
 }
