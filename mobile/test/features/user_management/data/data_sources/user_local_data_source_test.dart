@@ -109,4 +109,15 @@ void main() {
       verify(mockSecureStorage.read(key: anyNamed('key')));
     });
   });
+
+  group('logout', () {
+    test('should delete stored token and stored user from secure storage',
+        () async {
+      when(mockSecureStorage.deleteAll()).thenAnswer((_) async => null);
+
+      await dataSource.logout();
+
+      verify(mockSecureStorage.deleteAll());
+    });
+  });
 }
