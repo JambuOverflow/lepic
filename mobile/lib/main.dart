@@ -19,10 +19,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setUpLocator();
 
+  final authBloc = await GetIt.instance<AuthBloc>();
+  authBloc.add(AppStartedEvent());
+
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<AuthBloc>(create: (_) => GetIt.instance<AuthBloc>()),
+        BlocProvider<AuthBloc>(create: (_) => authBloc),
         BlocProvider<ClassroomBloc>(
             create: (_) => GetIt.instance<ClassroomBloc>()),
         BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
@@ -46,7 +49,10 @@ class MyApp extends StatelessWidget {
           textTheme: ButtonTextTheme.primary,
         ),
       ),
-      initialRoute: '/login',
+      initialRoute: BlocProvider.of<AuthBloc>(context).state.status ==
+              AuthStatus.authenticated
+          ? '/home'
+          : '/login',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
