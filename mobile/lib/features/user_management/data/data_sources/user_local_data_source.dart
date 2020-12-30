@@ -1,17 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 
+const String loggedInUserKey = 'loggedInUser';
+
 abstract class UserLocalDataSource {
   /// Gets the cached [UserModel].
   ///
   /// Throws [CacheException] if there's no cached [UserModel].
-  Future<UserModel> getStoredUser();
+  Future<UserModel> getLoggedInUser();
 
   Future<void> cacheUser(UserModel user);
 
-  Future<void> storeTokenSecurely(String token);
+  Future<void> storeTokenSecurely({
+    @required String token,
+    @required UserModel user,
+  });
+
+  Future<void> logout();
+
+  Future<String> retrieveToken(UserModel user);
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -24,27 +35,48 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   });
 
   @override
-  Future<int> cacheUser(UserModel user) {
-    if (database.activeUser == null)
-      return database.insertUser(user);
-    else {
-      database.updateUser(user);
-      return Future.value(user.localId);
+  Future<void> cacheUser(UserModel user) async {
+    final userJsonString = user.toJson();
+
+    await secureStorage.write(
+      key: loggedInUserKey,
+      value: json.encode(userJsonString),
+    );
+  }
+
+  @override
+  Future<UserModel> getLoggedInUser() async {
+    try {
+      final jsonStringModel = await secureStorage.read(key: loggedInUserKey);
+
+      final jsonModel = json.decode(jsonStringModel);
+
+      return UserModel.fromJson(jsonModel);
+    } catch (_) {
+      throw CacheException();
     }
   }
 
   @override
-  Future<UserModel> getStoredUser() async {
-    final model = await database.activeUser;
+  Future<void> storeTokenSecurely({
+    @required String token,
+    @required UserModel user,
+  }) async {
+    final userId = user.localId.toString();
+    return await secureStorage.write(key: userId, value: token);
+  }
 
-    if (model != null)
-      return model;
+  @override
+  Future<String> retrieveToken(UserModel user) {
+    final key = user.localId.toString();
+    final token = secureStorage.read(key: key);
+
+    if (token != null)
+      return token;
     else
       throw CacheException();
   }
 
   @override
-  Future<void> storeTokenSecurely(String token) async {
-    return await secureStorage.write(key: 'token', value: token);
-  }
+  Future<void> logout() => secureStorage.deleteAll();
 }

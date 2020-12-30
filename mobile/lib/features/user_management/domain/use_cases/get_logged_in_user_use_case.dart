@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../core/error/failures.dart';
@@ -7,17 +6,12 @@ import '../../../../core/use_cases/use_case.dart';
 import '../entities/user.dart';
 import '../repositories/user_repository.dart';
 
-class GetStoredUserCase extends UseCase<User, NoParams> {
+class GetLoggedInUserCase extends UseCase<User, NoParams> {
   final UserRepository repository;
 
-  GetStoredUserCase({@required this.repository});
+  GetLoggedInUserCase({@required this.repository});
 
   @override
   Future<Either<Failure, User>> call(params) async =>
-      await repository.getStoredUser();
-}
-
-class NoParams extends Equatable {
-  @override
-  List<Object> get props => [NoParams];
+      await repository.getLoggedInUser();
 }
