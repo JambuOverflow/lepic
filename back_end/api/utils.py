@@ -1,5 +1,6 @@
 import threading
 
+
 class EmailThread(threading.Thread):
     def __init__(self, email):
         self.email = email
