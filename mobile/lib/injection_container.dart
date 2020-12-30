@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/core/utils/input_converter.dart';
 import 'package:mobile/features/user_management/domain/use_cases/login.dart';
 import 'package:mobile/features/user_management/domain/use_cases/logout_use_case.dart';
 import 'package:mobile/features/user_management/domain/use_cases/retrieve_token_use_case.dart';
@@ -66,4 +67,6 @@ void setUpLocator() {
   getIt.registerLazySingleton(() => FlutterSecureStorage());
   getIt.registerLazySingleton(() => http.Client());
   getIt.registerLazySingleton(() => DataConnectionChecker());
+
+  getIt.registerLazySingleton(() => InputConverter());
 }
