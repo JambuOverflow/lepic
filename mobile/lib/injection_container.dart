@@ -17,6 +17,7 @@ import 'features/user_management/domain/use_cases/create_user_use_case.dart';
 import 'features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
 import 'features/user_management/domain/use_cases/update_user_use_case.dart';
 import 'package:http/http.dart' as http;
+import 'package:clock/clock.dart';
 import 'core/network/network_info.dart';
 
 import 'class_injection_container.dart' as ci;
@@ -69,4 +70,5 @@ void setUpLocator() {
   getIt.registerLazySingleton(() => DataConnectionChecker());
 
   getIt.registerLazySingleton(() => InputConverter());
+  getIt.registerFactory(() => Clock());
 }
