@@ -73,6 +73,6 @@ class IsSupportProfessional(permissions.BasePermission):
     Custom permission to allow only support professionals.
     """
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         # Permissions are only allowed to teachers.
         return request.user.role == 1
