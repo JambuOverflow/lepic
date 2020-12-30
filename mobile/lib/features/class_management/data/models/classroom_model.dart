@@ -7,6 +7,11 @@ class ClassroomModels extends Table {
   IntColumn get localId => integer().autoIncrement()();
   IntColumn get grade => integer()();
   TextColumn get name => text()();
+  @JsonKey("last_updated")
+  DateTimeColumn get lastUpdated => dateTime()();
+  @JsonKey("client_last_updated")
+  DateTimeColumn get clientLastUpdated => dateTime()();
+  BoolColumn get deleted => boolean()();
   @JsonKey("tutor_id")
   IntColumn get tutorId =>
       integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
@@ -14,17 +19,24 @@ class ClassroomModels extends Table {
 
 Classroom classroomModelToEntity(ClassroomModel model) {
   return Classroom(
-      id: model.localId,
-      grade: model.grade,
-      name: model.name,
-      tutorId: model.tutorId);
+    id: model.localId,
+    grade: model.grade,
+    name: model.name,
+    tutorId: model.tutorId,
+    deleted: model.deleted,
+    lastUpdated: model.lastUpdated,
+    clientLastUpdated: model.clientLastUpdated,
+  );
 }
 
 ClassroomModel classroomEntityToModel(Classroom entity) {
   return ClassroomModel(
-      localId: entity.id,
-      grade: entity.grade,
-      name: entity.name,
-      tutorId: entity.tutorId);
+    localId: entity.id,
+    grade: entity.grade,
+    name: entity.name,
+    tutorId: entity.tutorId,
+    lastUpdated: entity.lastUpdated,
+    deleted: entity.deleted,
+    clientLastUpdated: entity.clientLastUpdated,
+  );
 }
-

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:moor/moor.dart';
 import 'dart:io';
+import 'package:clock/clock.dart';
 
 import '../../main.dart';
 
@@ -28,6 +29,7 @@ LazyDatabase openConnection() {
 
 @UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
 class Database extends _$Database {
+  final clock = Clock();
   Database(QueryExecutor e) : super(e);
   Database.customExecutor(QueryExecutor executor) : super(executor);
 
@@ -49,14 +51,11 @@ class Database extends _$Database {
     return into(classroomModels).insert(modelCompanion);
   }
 
-  ///Returns the number of deleted rows
-  Future<int> deleteClassroom(int id) async {
-    return (delete(classroomModels)..where((t) => t.localId.equals(id))).go();
-  }
-
-  ///Returns a list of classroomModels, and an empty list when the table is empty
+  ///Returns a list of classroomModels that weren't deleted,
+  /// and an empty list when the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
-    return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId)))
+    return (select(classroomModels)
+          ..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
         .get();
   }
 
@@ -68,9 +67,12 @@ class Database extends _$Database {
     return (classroomModel != null);
   }
 
-  ///Returns true if the class was updated, false otherwise
-  Future<bool> updateClassroom(ClassroomModel entry) async {
-    return update(classroomModels).replace(entry);
+  ///Throws an exception if the table doesn't contain the entry
+  Future<void> updateClassroom(ClassroomModel entry) async {
+    var done = await update(classroomModels).replace(entry);
+    if (!done) {
+      throw SqliteException(787, "The table does not contain this entry");
+    }
   }
 
   /// returns the pk of the added entry

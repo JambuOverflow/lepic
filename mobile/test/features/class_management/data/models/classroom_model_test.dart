@@ -2,19 +2,34 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 
 void main() {
-  final tClassModel =
-      ClassroomModel(grade: 1, localId: 2, name: "A", tutorId: 3);
+    moorRuntimeOptions.defaultSerializer = Serializer();
+  final time = DateTime.utc(2018, 1, 1, 1, 1);
+  final tClassModel = ClassroomModel(
+    grade: 1,
+    localId: 2,
+    name: "A",
+    tutorId: 3,
+    deleted: false,
+    lastUpdated: time,
+    clientLastUpdated: time,
+  );
 
-  final tClassEntity = Classroom(grade: 1, id: 2, name: "A", tutorId: 3);
-
-  final tClassCompanion = ClassroomModelsCompanion(grade: Value(1), name: Value("A"),
-  tutorId: Value(3));
+  final tClassEntity = Classroom(
+    grade: 1,
+    id: 2,
+    name: "A",
+    tutorId: 3,
+    deleted: false,
+    lastUpdated: time,
+    clientLastUpdated: time,
+  );
 
   group("from json", () {
     test("should return a valid Classroom model", () async {
@@ -34,6 +49,9 @@ void main() {
         "local_id": 2,
         "grade": 1,
         "name": "A",
+        "last_updated": 1514768460000,
+        "client_last_updated": 1514768460000,
+        "deleted": false,
         "tutor_id": 3,
       };
 
@@ -56,5 +74,4 @@ void main() {
       expect(result, tClassModel);
     });
   });
-
 }

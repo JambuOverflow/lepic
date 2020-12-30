@@ -52,7 +52,13 @@ void main() {
       localId: tInvalidStudentPk);
 
   final tClassCompanion = ClassroomModelsCompanion(
-      name: Value("A"), grade: Value(1), tutorId: Value(1));
+    name: Value("A"),
+    grade: Value(1),
+    tutorId: Value(1),
+    lastUpdated: Value(DateTime.now()),
+    clientLastUpdated: Value(DateTime.now()),
+    deleted: Value(false),
+  );
 
   final tUserCompanion = UserModelsCompanion(
     firstName: Value('v'),

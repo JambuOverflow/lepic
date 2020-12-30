@@ -43,8 +43,20 @@ Future<void> main() {
   final tClassroomInputModel2 =
       ClassroomModel(tutorId: 1, grade: 1, name: "B", localId: null);
 
-  final tClassroomModel1 =
-      ClassroomModel(tutorId: 1, grade: 1, name: "A", localId: 1);
+  final tClassroomModel1 = ClassroomModel(
+    tutorId: 1,
+    grade: 1,
+    name: "A",
+    localId: 1,
+    deleted: false,
+  );
+  final tClassroomModel1Deleted = ClassroomModel(
+    tutorId: 1,
+    grade: 1,
+    name: "A",
+    localId: 1,
+    deleted: true,
+  );
 
   final tClassroomCompanion1 = tClassroomInputModel1.toCompanion(true);
   final tClassroomCompanionPk1 = tClassroomModel1.toCompanion(true);
@@ -84,17 +96,19 @@ Future<void> main() {
 
   group("deleteClassroom", () {
     test("should correctly delete a cached classroom", () async {
-      when(mockDatabase.deleteClassroom(tValidPk)).thenAnswer((_) async => 1);
+      when(mockDatabase.updateClassroom(tClassroomModel1Deleted))
+          .thenAnswer((_) async => null);
 
       await classroomLocalDataSourceImpl
           .deleteClassroomFromCache(tClassroomModel1);
-      verify(mockDatabase.deleteClassroom(tValidPk));
+      verify(mockDatabase.updateClassroom(tClassroomModel1Deleted));
     });
 
     test(
         "should throw CacheException when trying to delete an ivalid classroom",
         () {
-      when(mockDatabase.deleteClassroom(tValidPk)).thenAnswer((_) async => 0);
+      when(mockDatabase.updateClassroom(tClassroomModel1Deleted))
+          .thenThrow((SqliteException(787, "")));
       expect(
           () async => await classroomLocalDataSourceImpl
               .deleteClassroomFromCache(tClassroomModel1),
@@ -140,7 +154,7 @@ Future<void> main() {
   group("updateClassroom", () {
     test("should correctly update a cached classroom", () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
-          .thenAnswer((_) async => true);
+          .thenAnswer((_) async => null);
 
       await classroomLocalDataSourceImpl
           .updateCachedClassroom(tClassroomModel1);
@@ -150,7 +164,7 @@ Future<void> main() {
     test("should throw a cache expection if the update was not completed",
         () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
-          .thenAnswer((_) async => false);
+          .thenThrow(SqliteException(787, ""));
 
       expect(
           () async => await classroomLocalDataSourceImpl
