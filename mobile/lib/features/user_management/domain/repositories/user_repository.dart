@@ -10,5 +10,5 @@ abstract class UserRepository {
   Future<Either<Failure, Response>> updateUser(User user, String token);
   Future<Either<Failure, Response>> login(User user);
   Future<Either<Failure, void>> logout();
-  Future<Either<Failure, String>> retrieveToken(User user);
+  Future<Either<Failure, String>> retrieveToken();
 }

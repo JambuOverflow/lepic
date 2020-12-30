@@ -93,7 +93,7 @@ void main() {
       when(mockSecureStorage.read(key: anyNamed('key')))
           .thenAnswer((_) async => token);
 
-      final expected = await dataSource.retrieveToken(tUserModel);
+      final expected = await dataSource.retrieveToken();
 
       expect(expected, token);
       verify(mockSecureStorage.read(key: anyNamed('key')));
@@ -105,7 +105,7 @@ void main() {
 
       final call = dataSource.retrieveToken;
 
-      expect(() => call(tUserModel), throwsA(isA<CacheException>()));
+      expect(() => call(), throwsA(isA<CacheException>()));
       verify(mockSecureStorage.read(key: anyNamed('key')));
     });
   });

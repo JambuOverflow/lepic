@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/presentation/widgets/drawer_overlay.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/presentation/widgets/input_fields/role_dropdown_input_field.dart';
-import '../widgets/drawer_overlay.dart';
 
 class UpdateUser extends StatefulWidget {
   @override
