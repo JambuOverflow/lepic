@@ -23,6 +23,7 @@ from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreat
 from .utils import EmailThread
 from datetime import datetime
 from django.shortcuts import get_object_or_404
+import pytz
 
 
 class EmailVerification(generics.GenericAPIView):
@@ -187,7 +188,7 @@ class ClassCreate(generics.ListCreateAPIView):
 
 
     def perform_create(self, serializer):
-        serializer.save(tutor=self.request.user, last_update=datetime.now())
+        serializer.save(tutor=self.request.user, last_update=datetime.now(tz=pytz.utc))
 
 
 class ClassDetail(generics.RetrieveUpdateAPIView):
@@ -208,7 +209,7 @@ class ClassDetail(generics.RetrieveUpdateAPIView):
 
     
     def perform_update(self, serializer):
-        serializer.save(last_update=datetime.now())
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 
 class TextList(generics.ListCreateAPIView):
@@ -240,7 +241,7 @@ class TextList(generics.ListCreateAPIView):
 
 
     def perform_create(self, serializer):
-        serializer.save(last_update=datetime.now())
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 
 
@@ -262,7 +263,7 @@ class TextDetail(generics.RetrieveUpdateAPIView):
 
     
     def perform_update(self, serializer):
-        serializer.save(last_update=datetime.now())
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 
 class SchoolList(generics.ListCreateAPIView):
@@ -294,7 +295,7 @@ class SchoolList(generics.ListCreateAPIView):
                           
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user, last_update=datetime.now())
+        serializer.save(creator=self.request.user, last_update=datetime.now(tz=pytz.utc))
 
 
 class SchoolDetail(generics.RetrieveUpdateAPIView):
@@ -315,7 +316,7 @@ class SchoolDetail(generics.RetrieveUpdateAPIView):
 
     
     def perform_update(self, serializer):
-        serializer.save(last_update=datetime.now())
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
     
     
 class StudentList(generics.ListCreateAPIView):
@@ -346,12 +347,13 @@ class StudentList(generics.ListCreateAPIView):
 
 
     def perform_create(self, serializer):
-        class_tutor = Class.objects.filter(id=self.request.data['_class']).values_list('tutor', flat=True)
-        if(self.request.user.id in class_tutor):
-            serializer.save(last_update=datetime.now())
-        else:
-            raise PermissionDenied("You do not have the permission to create a student account with " +
-        "a class where you are not the teacher", 'permission_denied')
+        for class_ in self.request.data:
+            class_tutor = Class.objects.filter(id=class_['_class']).values_list('tutor', flat=True)
+            if(self.request.user.id in class_tutor):
+                serializer.save(last_update=datetime.now(tz=pytz.utc))
+            else:
+                raise PermissionDenied("You do not have the permission to create a student account with " +
+            "a class where you are not the teacher", 'permission_denied')
 
 
 class StudentDetail(generics.RetrieveUpdateAPIView):
@@ -372,7 +374,7 @@ class StudentDetail(generics.RetrieveUpdateAPIView):
 
     
     def perform_update(self, serializer):
-        serializer.save(last_update=datetime.now())
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 
 class AudioFileList(generics.ListCreateAPIView):
@@ -387,7 +389,7 @@ class AudioFileList(generics.ListCreateAPIView):
     serializer_class = AudioFileSerializer
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, many=True)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -396,6 +398,7 @@ class AudioFileList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         last_sync = self.request.query_params.get('last_sync')
+
         if last_sync:
             return AudioFile.objects.filter(deleted=0, last_update__gte=last_sync)
         return AudioFile.objects.filter(deleted=0)
@@ -405,7 +408,7 @@ class AudioFileList(generics.ListCreateAPIView):
         student_class = Student.objects.filter(id=self.request.data['student']).values_list('_class', flat=True)
         class_tutor = Class.objects.filter(id=student_class[0]).values_list('tutor', flat=True)
         if(self.request.user.id in class_tutor):
-            serializer.save(last_update=datetime.now())
+            serializer.save(last_update=datetime.now(tz=pytz.utc))
         else:
             raise PermissionDenied("You do not have the permission to upload students audio files from another class",
         'permission_denied')
@@ -430,4 +433,4 @@ class AudioFileDetail(generics.RetrieveUpdateAPIView):
 
     
     def perform_update(self, serializer):
-        serializer.save(last_update=datetime.now())
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
