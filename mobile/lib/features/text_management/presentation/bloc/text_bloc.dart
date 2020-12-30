@@ -63,7 +63,12 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
     yield UpdatingText();
 
-    final failureOrText = await updateText(TextParams(text: event.oldText));
+    final myUpdatedText = MyText(
+      body: event.body,
+      title: event.title,
+      classId: event.classroom.id,
+    );
+    final failureOrText = await updateText(TextParams(text: myUpdatedText));
 
     yield failureOrText.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
@@ -76,7 +81,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     final failureOrSuccess = await deleteText(TextParams(text: event.text));
 
     yield failureOrSuccess.fold(
-      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
+      (failure) => Error(message: _mapFailureToMessage(failure)),
       (_) => TextDeleted(),
     );
   }
