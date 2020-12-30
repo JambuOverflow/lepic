@@ -25,7 +25,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _eitherCheckAuthenticationOrFail();
     } else if (event is UserLoggedInEvent) {
       yield _copyWithAuthenticating();
-      await Future.delayed(Duration(seconds: 5));
       yield* _eitherAuthenticateOrFail();
     } else if (event is UserLoggedOutEvent) {
       yield _copyWithAuthenticating();
