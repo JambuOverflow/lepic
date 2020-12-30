@@ -5,7 +5,6 @@ import 'package:mobile/core/network/response.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
-import 'package:http/http.dart' as http;
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../data_sources/user_local_data_source.dart';
@@ -65,10 +64,9 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, String>> retrieveToken(User user) async {
+  Future<Either<Failure, String>> retrieveToken() async {
     try {
-      final userModel = _toModel(user);
-      final token = await localDataSource.retrieveToken(userModel);
+      final token = await localDataSource.retrieveToken();
 
       return Right(token);
     } on CacheException {

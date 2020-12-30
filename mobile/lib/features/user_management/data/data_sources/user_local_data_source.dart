@@ -22,7 +22,7 @@ abstract class UserLocalDataSource {
 
   Future<void> logout();
 
-  Future<String> retrieveToken(UserModel user);
+  Future<String> retrieveToken();
 }
 
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -67,9 +67,8 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   }
 
   @override
-  Future<String> retrieveToken(UserModel user) {
-    final key = user.localId.toString();
-    final token = secureStorage.read(key: key);
+  Future<String> retrieveToken() {
+    final token = secureStorage.read(key: 'token');
 
     if (token != null)
       return token;

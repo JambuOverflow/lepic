@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
@@ -349,21 +348,20 @@ void main() {
 
     test('should get token from local cache when the user token exists',
         () async {
-      when(mockLocalDataSource.retrieveToken(any))
-          .thenAnswer((_) async => tToken);
+      when(mockLocalDataSource.retrieveToken()).thenAnswer((_) async => tToken);
 
-      final result = await repository.retrieveToken(tUser);
+      final result = await repository.retrieveToken();
 
-      verify(mockLocalDataSource.retrieveToken(tUserModel));
+      verify(mockLocalDataSource.retrieveToken());
       expect(result, Right(tToken));
     });
 
     test('should throw cache failure when there is not cached token', () async {
-      when(mockLocalDataSource.retrieveToken(any)).thenThrow(CacheException());
+      when(mockLocalDataSource.retrieveToken()).thenThrow(CacheException());
 
-      final result = await repository.retrieveToken(tUser);
+      final result = await repository.retrieveToken();
 
-      verify(mockLocalDataSource.retrieveToken(tUserModel));
+      verify(mockLocalDataSource.retrieveToken());
       expect(result, Left(CacheFailure()));
     });
   });
