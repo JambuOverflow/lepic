@@ -3,17 +3,22 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:mobile/features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
+
+import '../../../../core/use_cases/use_case.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/use_cases/get_logged_in_user_use_case.dart';
+import '../../domain/use_cases/logout_use_case.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetLoggedInUserCase getLoggedInUserCase;
+  final LogoutCase logoutCase;
 
   AuthBloc({
     @required this.getLoggedInUserCase,
+    @required this.logoutCase,
   }) : super(AuthState());
 
   @override
@@ -28,7 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _eitherAuthenticateOrFail();
     } else if (event is UserLoggedOutEvent) {
       yield _copyWithAuthenticating();
-      yield _copyWithUnauthenticated();
+      yield* _eitherLogoutOrFail();
     }
   }
 
@@ -52,6 +57,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (loggedInUser) => loggedInUser == null
           ? _copyWithUnauthenticated()
           : _copyWithAuthenticated(loggedInUser),
+    );
+  }
+
+  Stream<AuthState> _eitherLogoutOrFail() async* {
+    final eitherLoggedOut = await logoutCase(NoParams());
+
+    yield eitherLoggedOut.fold(
+      (failure) => _copyWithError(),
+      (_) => _copyWithUnauthenticated(),
     );
   }
 

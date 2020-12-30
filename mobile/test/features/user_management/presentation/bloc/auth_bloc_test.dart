@@ -1,16 +1,22 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
+import 'package:mobile/features/user_management/domain/use_cases/logout_use_case.dart';
 import 'package:mobile/features/user_management/presentation/bloc/auth_bloc.dart';
 import 'package:mockito/mockito.dart';
 
 class MockGetLoggedInUserCase extends Mock implements GetLoggedInUserCase {}
 
+class MockLogoutCase extends Mock implements LogoutCase {}
+
 void main() {
   AuthBloc authBloc;
   MockGetLoggedInUserCase mockGetLoggedInUserCase;
+  MockLogoutCase mockLogoutCase;
 
   final tUser = User(
     firstName: 'v',
@@ -22,9 +28,11 @@ void main() {
 
   setUp(() {
     mockGetLoggedInUserCase = MockGetLoggedInUserCase();
+    mockLogoutCase = MockLogoutCase();
 
     authBloc = AuthBloc(
       getLoggedInUserCase: mockGetLoggedInUserCase,
+      logoutCase: mockLogoutCase,
     );
   });
 
@@ -95,11 +103,28 @@ void main() {
   group('userLoggedOut', () {
     blocTest(
       'should emit state with no user and unauthenticated when user logs out',
-      build: () => authBloc,
+      build: () {
+        when(mockLogoutCase(any)).thenAnswer((_) async => Right(null));
+        return authBloc;
+      },
       act: (bloc) => bloc.add(UserLoggedOutEvent()),
       expect: [
         AuthState(status: AuthStatus.authenticating),
         AuthState(user: null, status: AuthStatus.unauthenticated),
+      ],
+    );
+
+    blocTest(
+      '''should emit state with no user and error status when 
+      user logged out failed''',
+      build: () {
+        when(mockLogoutCase(any)).thenAnswer((_) async => Left(CacheFailure()));
+        return authBloc;
+      },
+      act: (bloc) => bloc.add(UserLoggedOutEvent()),
+      expect: [
+        AuthState(status: AuthStatus.authenticating),
+        AuthState(user: null, status: AuthStatus.error),
       ],
     );
   });
