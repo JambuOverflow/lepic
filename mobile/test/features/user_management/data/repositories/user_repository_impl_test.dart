@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
@@ -77,24 +76,24 @@ void main() {
     });
   }
 
-  group('getStoredUser', () {
+  group('getLoggedInUser', () {
     test('should get User from local cache when there is cached data',
         () async {
-      when(mockLocalDataSource.getStoredUser())
+      when(mockLocalDataSource.getLoggedInUser())
           .thenAnswer((_) async => tUserModel);
 
-      final result = await repository.getStoredUser();
+      final result = await repository.getLoggedInUser();
 
-      verify(mockLocalDataSource.getStoredUser());
+      verify(mockLocalDataSource.getLoggedInUser());
       expect(result, Right<Failure, User>(tUser));
     });
 
     test('should throw cache failure when there is not cached data', () async {
-      when(mockLocalDataSource.getStoredUser()).thenThrow(CacheException());
+      when(mockLocalDataSource.getLoggedInUser()).thenThrow(CacheException());
 
-      final result = await repository.getStoredUser();
+      final result = await repository.getLoggedInUser();
 
-      verify(mockLocalDataSource.getStoredUser());
+      verify(mockLocalDataSource.getLoggedInUser());
       expect(result, Left(CacheFailure()));
     });
   });
@@ -246,7 +245,42 @@ void main() {
         await repository.login(tUser);
 
         verify(mockRemoteDataSource.login(tUserModel));
-        verify(mockLocalDataSource.storeTokenSecurely(any));
+        verify(mockLocalDataSource.storeTokenSecurely(
+            token: anyNamed('token'), user: tUserModel));
+      });
+
+      test('''should get user info from remote data soruce when
+       call is successful''', () async {
+        when(mockRemoteDataSource.login(tUserModel))
+            .thenAnswer((_) async => response);
+
+        await repository.login(tUser);
+
+        verify(mockRemoteDataSource.login(tUserModel));
+        verify(mockRemoteDataSource.getUser(any));
+      });
+
+      test('should cache remote user when call is successful', () async {
+        final completeUserModel = UserModel(
+          localId: 5,
+          firstName: 'as',
+          lastName: 'cd',
+          email: 'as@cd.com',
+          username: 'as@cd.com',
+          role: Role.researcher,
+          password: 'abc',
+        );
+
+        when(mockRemoteDataSource.login(tUserModel))
+            .thenAnswer((_) async => response);
+        when(mockRemoteDataSource.getUser(any))
+            .thenAnswer((_) async => completeUserModel);
+
+        await repository.login(tUser);
+
+        verify(mockRemoteDataSource.login(tUserModel));
+        verify(mockRemoteDataSource.getUser(any));
+        verify(mockLocalDataSource.cacheUser(completeUserModel));
       });
 
       test('should return invalid credentials', () async {
@@ -286,6 +320,49 @@ void main() {
 
         expect(result, Left(ServerFailure()));
       });
+    });
+  });
+
+  group('logout', () {
+    test('should return null if logout was successful', () async {
+      when(mockLocalDataSource.logout()).thenAnswer((_) async => null);
+
+      final result = await repository.logout();
+
+      expect(result, Right(null));
+      verify(mockLocalDataSource.logout());
+    });
+
+    test('should return Failure if logout was unsuccessful', () async {
+      when(mockLocalDataSource.logout()).thenThrow(CacheException());
+
+      final result = await repository.logout();
+
+      expect(result, Left(CacheFailure()));
+      verify(mockLocalDataSource.logout());
+    });
+  });
+
+  group('retrieveToken', () {
+    final String tToken = 'aASj24s4#sf';
+
+    test('should get token from local cache when the user token exists',
+        () async {
+      when(mockLocalDataSource.retrieveToken()).thenAnswer((_) async => tToken);
+
+      final result = await repository.retrieveToken();
+
+      verify(mockLocalDataSource.retrieveToken());
+      expect(result, Right(tToken));
+    });
+
+    test('should throw cache failure when there is not cached token', () async {
+      when(mockLocalDataSource.retrieveToken()).thenThrow(CacheException());
+
+      final result = await repository.retrieveToken();
+
+      verify(mockLocalDataSource.retrieveToken());
+      expect(result, Left(CacheFailure()));
     });
   });
 }

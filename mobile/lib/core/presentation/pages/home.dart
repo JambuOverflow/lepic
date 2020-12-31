@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/drawer_overlay.dart';
+import 'account_page.dart';
+import '../widgets/custom_bottom_navigation_bar.dart';
+import '../widgets/home_preview.dart';
+import '../../../features/class_management/presentation/pages/classrooms_page.dart';
+import '../../../features/text_management/presentation/pages/texts_page.dart';
+import '../bloc/bottom_navigation_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,10 +16,31 @@ class HomeScreen extends StatefulWidget {
 class _MyStatefulWidgetState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final bottomNavigationBloc = BlocProvider.of<BottomNavigationBloc>(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
-      body: Text("Home has no content, may become some sort of catalog"),
-      drawer: DrawerOverlay(),
+      body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
+        builder: (context, state) {
+          if (bottomNavigationBloc.state is CurrentPageIndexChanged) {
+            switch (bottomNavigationBloc.currentPageIndex) {
+              case 0:
+                return HomePreview();
+              case 1:
+                return ClassroomsPage();
+              case 2:
+                return TextsPage();
+              case 3:
+                return AccountPage();
+              default:
+                return null;
+            }
+          } else {
+            return HomePreview();
+          }
+        },
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(),
+      // drawer: DrawerOverlay(),
     );
   }
 }
