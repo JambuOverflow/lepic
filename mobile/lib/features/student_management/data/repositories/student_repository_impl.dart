@@ -13,8 +13,12 @@ import '../data_sources/student_local_data_source.dart';
 
 class StudentRepositoryImpl implements StudentRepository {
   final StudentLocalDataSource localDataSource;
+  final ClassroomEntityModelConverter classroomEntityModelConverter;
 
-  StudentRepositoryImpl({@required this.localDataSource});
+  StudentRepositoryImpl({
+    @required this.localDataSource,
+    @required this.classroomEntityModelConverter,
+  });
 
   @override
   Future<Either<Failure, Student>> createStudent(Student student) async {
@@ -55,7 +59,7 @@ class StudentRepositoryImpl implements StudentRepository {
   Future<Either<Failure, List<Student>>> _tryGetStudents(
       Classroom classroom) async {
     try {
-      var classroomModel = classroomEntityToModel(classroom);
+      var classroomModel = await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listStudentModel =
           await localDataSource.getStudentsFromCache(classroomModel);
       var listStudentEntity = [

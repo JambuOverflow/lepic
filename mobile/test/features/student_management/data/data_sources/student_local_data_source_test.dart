@@ -11,6 +11,7 @@ import 'package:mobile/core/network/network_info.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/data_sources/student_local_data_source.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -18,20 +19,23 @@ import 'package:matcher/matcher.dart';
 
 class MockDatabase extends Mock implements Database {}
 
+class MockUserLocalDataSourceImpl extends Mock
+    implements UserLocalDataSourceImpl {}
+
 Future<void> main() {
   MockDatabase mockDatabase;
   StudentLocalDataSourceImpl studentLocalDataSourceImpl;
+  ClassroomEntityModelConverter classroomEntityModelConverter;
+  MockUserLocalDataSourceImpl mockUserLocalDataSourceImpl;
+  ClassroomModel tClassroomModel;
 
   final tValidPk = 1;
 
   final tClassroom = Classroom(
     name: 'especial',
     grade: 1,
-    tutorId: 1,
     id: 1,
   );
-
-  final tClassroomModel = classroomEntityToModel(tClassroom);
 
   final tStudentInputModel1 = StudentModel(
       localId: null, classroomId: 1, firstName: 'vitor', lastName: 'cantinho');
@@ -46,6 +50,11 @@ Future<void> main() {
   final tStudentModels = [tStudentInputModel1, tStudentInputModel2];
 
   setUp(() async {
+    mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
+    classroomEntityModelConverter = ClassroomEntityModelConverter(
+      userLocalDataSourceImpl: mockUserLocalDataSourceImpl,
+    );
+    tClassroomModel = await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
     mockDatabase = MockDatabase();
 
     studentLocalDataSourceImpl = StudentLocalDataSourceImpl(
@@ -98,8 +107,8 @@ Future<void> main() {
       when(mockDatabase.getStudents(tValidPk))
           .thenAnswer((_) async => tStudentModels);
 
-      final result =
-          await studentLocalDataSourceImpl.getStudentsFromCache(tClassroomModel);
+      final result = await studentLocalDataSourceImpl
+          .getStudentsFromCache(tClassroomModel);
 
       verify(mockDatabase.getStudents(tValidPk));
       final testResult = listEquals(result, tStudentModels);
@@ -109,8 +118,8 @@ Future<void> main() {
     test("should correctly return an empty list", () async {
       when(mockDatabase.getClassrooms(tValidPk)).thenAnswer((_) async => []);
 
-      final result =
-          await studentLocalDataSourceImpl.getStudentsFromCache(tClassroomModel);
+      final result = await studentLocalDataSourceImpl
+          .getStudentsFromCache(tClassroomModel);
 
       verify(mockDatabase.getStudents(tValidPk));
       final testResult = listEquals(result, []);
@@ -133,8 +142,7 @@ Future<void> main() {
       when(mockDatabase.updateStudent(tStudentModel1))
           .thenAnswer((_) async => true);
 
-      await studentLocalDataSourceImpl
-          .updateCachedStudent(tStudentModel1);
+      await studentLocalDataSourceImpl.updateCachedStudent(tStudentModel1);
       verify(mockDatabase.updateStudent(tStudentModel1));
     });
 

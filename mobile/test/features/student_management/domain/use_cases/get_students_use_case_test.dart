@@ -18,7 +18,7 @@ void main() {
     useCase = GetStudents(repository: mockStudentRepository);
   });
 
-  final tClassroom = Classroom(tutorId: 1, grade: 1, name: "Dex", id: 1);
+  final tClassroom = Classroom(grade: 1, name: "Dex", id: 1);
 
   final tStudent1 =
       Student(firstName: '1', lastName: 'klinton', classroomId: 1, id: 2);

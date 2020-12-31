@@ -4,13 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
+import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 
+class MockUserLocalDataSourceImpl extends Mock
+    implements UserLocalDataSourceImpl {}
+
 void main() {
-    moorRuntimeOptions.defaultSerializer = Serializer();
+  moorRuntimeOptions.defaultSerializer = Serializer();
   final time = DateTime.utc(2018, 1, 1, 1, 1);
+  ClassroomEntityModelConverter classroomEntityModelConverter;
+  MockUserLocalDataSourceImpl mockUserLocalDataSourceImpl;
   final tClassModel = ClassroomModel(
     grade: 1,
     localId: 2,
@@ -25,11 +32,16 @@ void main() {
     grade: 1,
     id: 2,
     name: "A",
-    tutorId: 3,
     deleted: false,
     lastUpdated: time,
     clientLastUpdated: time,
   );
+
+  setUp(() {
+    mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
+    classroomEntityModelConverter = ClassroomEntityModelConverter(
+        userLocalDataSourceImpl: mockUserLocalDataSourceImpl);
+  });
 
   group("from json", () {
     test("should return a valid Classroom model", () async {
@@ -61,7 +73,8 @@ void main() {
 
   group('modelToEntity', () {
     test('should return a Classroom entity with proper data', () async {
-      final result = classroomModelToEntity(tClassModel);
+      final result =
+          classroomEntityModelConverter.classroomModelToEntity(tClassModel);
 
       expect(result, tClassEntity);
     });
@@ -69,7 +82,9 @@ void main() {
 
   group('entityToModel', () {
     test('should return a Classroom model with proper data', () async {
-      final result = classroomEntityToModel(tClassEntity);
+      when(mockUserLocalDataSourceImpl.getUserId()).thenAnswer((_) async => 3);
+      final result = await classroomEntityModelConverter
+          .classroomEntityToModel(tClassEntity);
 
       expect(result, tClassModel);
     });

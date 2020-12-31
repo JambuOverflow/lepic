@@ -1,12 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
@@ -17,10 +19,20 @@ class MockClassroomLocalDataSource extends Mock
 
 class MockClock extends Mock implements Clock {}
 
+class MockUserLocalDataSourceImpl extends Mock
+    implements UserLocalDataSourceImpl {}
+
 void main() {
   MockClassroomLocalDataSource mockLocalDataSource;
   MockClock mockClock;
   ClassroomRepositoryImpl repository;
+  ClassroomModel tClassroomModel;
+  UserModel tUserModel;
+  List<ClassroomModel> tClassroomsModels;
+  List<Classroom> tClassrooms;
+  ClassroomEntityModelConverter classroomEntityModelConverter;
+  MockUserLocalDataSourceImpl mockUserLocalDataSourceImpl;
+
   final nowTime = DateTime.now();
   final nowTimeUtc = nowTime.toUtc();
 
@@ -34,7 +46,6 @@ void main() {
   );
 
   final tClassroom = Classroom(
-    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,
@@ -43,19 +54,22 @@ void main() {
     clientLastUpdated: nowTimeUtc,
   );
 
-  final tClassroomModel = classroomEntityToModel(tClassroom);
-  final tUserModel = userEntityToModel(tUser);
-
-  final tClassroomsModels = [tClassroomModel, tClassroomModel];
-  final tClassrooms = [tClassroom, tClassroom];
-
-  setUp(() {
+  setUp(() async {
     mockLocalDataSource = MockClassroomLocalDataSource();
     mockClock = MockClock();
+    mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
+    classroomEntityModelConverter = ClassroomEntityModelConverter(
+        userLocalDataSourceImpl: mockUserLocalDataSourceImpl);
+    tClassroomModel = await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
+    tUserModel = userEntityToModel(tUser);
+
+    tClassroomsModels = [tClassroomModel, tClassroomModel];
+    tClassrooms = [tClassroom, tClassroom];
 
     repository = ClassroomRepositoryImpl(
       localDataSource: mockLocalDataSource,
       clock: mockClock,
+      clasrooomEntityModelConverter: classroomEntityModelConverter
     );
 
     when(mockClock.now()).thenAnswer((_) => nowTime);

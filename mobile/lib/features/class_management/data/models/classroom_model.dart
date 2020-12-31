@@ -1,5 +1,6 @@
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:moor/moor.dart';
 
 class ClassroomModels extends Table {
@@ -17,41 +18,47 @@ class ClassroomModels extends Table {
       integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
 }
 
-Classroom classroomModelToEntity(ClassroomModel model) {
-  return Classroom(
-    id: model.localId,
-    grade: model.grade,
-    name: model.name,
-    tutorId: model.tutorId,
-    deleted: model.deleted,
-    lastUpdated: model.lastUpdated,
-    clientLastUpdated: model.clientLastUpdated,
-  );
-}
+class ClassroomEntityModelConverter {
+  final UserLocalDataSourceImpl userLocalDataSourceImpl;
 
-ClassroomModel classroomEntityToModel(Classroom entity) {
-  bool deleted;
-  DateTime lastUpdated;
+  ClassroomEntityModelConverter({@required this.userLocalDataSourceImpl});
 
-  if (entity.deleted == null) {
-    deleted = false;
-  } else {
-    deleted = entity.deleted;
+  Classroom classroomModelToEntity(ClassroomModel model) {
+    return Classroom(
+      id: model.localId,
+      grade: model.grade,
+      name: model.name,
+      deleted: model.deleted,
+      lastUpdated: model.lastUpdated,
+      clientLastUpdated: model.clientLastUpdated,
+    );
   }
 
-  if (entity.lastUpdated == null) {
-    lastUpdated = DateTime(0).toUtc();
-  } else {
-    lastUpdated = entity.lastUpdated;
-  }
+  Future<ClassroomModel> classroomEntityToModel(Classroom entity) async {
+    bool deleted;
+    DateTime lastUpdated;
 
-  return ClassroomModel(
-    localId: entity.id,
-    grade: entity.grade,
-    name: entity.name,
-    tutorId: entity.tutorId,
-    lastUpdated: lastUpdated,
-    deleted: deleted,
-    clientLastUpdated: entity.clientLastUpdated,
-  );
+    if (entity.deleted == null) {
+      deleted = false;
+    } else {
+      deleted = entity.deleted;
+    }
+
+    if (entity.lastUpdated == null) {
+      lastUpdated = DateTime(0).toUtc();
+    } else {
+      lastUpdated = entity.lastUpdated;
+    }
+    final int userId = await userLocalDataSourceImpl.getUserId();
+
+    return ClassroomModel(
+      localId: entity.id,
+      grade: entity.grade,
+      name: entity.name,
+      tutorId: userId,
+      lastUpdated: lastUpdated,
+      deleted: deleted,
+      clientLastUpdated: entity.clientLastUpdated,
+    );
+  }
 }

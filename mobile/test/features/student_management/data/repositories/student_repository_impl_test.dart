@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
@@ -9,6 +10,7 @@ import 'package:mobile/features/student_management/data/data_sources/student_loc
 import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/student_management/data/repositories/student_repository_impl.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
@@ -16,12 +18,16 @@ import 'package:mockito/mockito.dart';
 class MockStudentLocalDataSource extends Mock
     implements StudentLocalDataSource {}
 
+class MockClassroomEntityModelConverter extends Mock
+    implements ClassroomEntityModelConverter {}
+
 void main() {
   MockStudentLocalDataSource mockLocalDataSource;
   StudentRepositoryImpl repository;
+  MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
+  ClassroomModel tClassroomModel;
 
   final tClassroom = Classroom(
-    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,
@@ -35,17 +41,21 @@ void main() {
   );
 
   final tStudentModel = studentEntityToModel(tStudent);
-  final tClassroomModel = classroomEntityToModel(tClassroom);
 
   final tStudentModels = [tStudentModel, tStudentModel];
   final tStudents = [tStudent, tStudent];
 
-  setUp(() {
+  setUp(() async {
+    mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
+    tClassroomModel = ClassroomModel(localId: 1, grade: 1, name: "A");
     mockLocalDataSource = MockStudentLocalDataSource();
 
     repository = StudentRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      classroomEntityModelConverter: mockClassroomEntityModelConverter,
     );
+    when(mockClassroomEntityModelConverter.classroomEntityToModel(tClassroom))
+        .thenAnswer((_) async => tClassroomModel);
   });
 
   group('createStudent', () {

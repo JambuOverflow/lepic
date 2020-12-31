@@ -76,6 +76,15 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       throw CacheException();
   }
 
+  Future<int> getUserId() async {
+    try {
+    final UserModel user = await getLoggedInUser();
+    return user.localId;
+    } catch (_) {
+      throw CacheException();
+    }
+  }
+
   @override
   Future<void> logout() => secureStorage.deleteAll();
 }

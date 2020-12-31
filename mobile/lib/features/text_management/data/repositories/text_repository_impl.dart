@@ -14,9 +14,11 @@ import '../data_sources/text_local_data_source.dart';
 
 class TextRepositoryImpl implements TextRepository {
   final TextLocalDataSource localDataSource;
+  final ClassroomEntityModelConverter classroomEntityModelConverter;
 
   TextRepositoryImpl({
     @required this.localDataSource,
+    @required this.classroomEntityModelConverter,
   });
 
   @override
@@ -74,7 +76,7 @@ class TextRepositoryImpl implements TextRepository {
   Future<Either<Failure, List<MyText>>> _tryGetTexts(
       Classroom classroom) async {
     try {
-      var classroomModel = classroomEntityToModel(classroom);
+      var classroomModel = await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listTextModel =
           await localDataSource.getTextsFromCache(classroomModel);
       var listTextEntity = [
