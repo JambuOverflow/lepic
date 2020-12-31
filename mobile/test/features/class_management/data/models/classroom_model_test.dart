@@ -19,7 +19,7 @@ void main() {
     deleted: false,
     lastUpdated: time,
     clientLastUpdated: time,
-    schoolId: 1,
+    school: 1,
   );
 
   final tClassEntity = Classroom(
@@ -55,7 +55,7 @@ void main() {
         "client_last_updated": 1514768460000,
         "deleted": false,
         "tutor_id": 3,
-        "school_id": 1,
+        "school": 1,
       };
 
       expect(result, expectedMap);

@@ -15,8 +15,7 @@ class ClassroomModels extends Table {
   @JsonKey("tutor_id")
   IntColumn get tutorId =>
       integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
-  @JsonKey("school_id")
-  IntColumn get schoolId => integer()
+  IntColumn get school => integer()
       .customConstraint("NOT NULL REFERENCES school_models(local_id)")();
 }
 
@@ -29,7 +28,7 @@ Classroom classroomModelToEntity(ClassroomModel model) {
       deleted: model.deleted,
       lastUpdated: model.lastUpdated,
       clientLastUpdated: model.clientLastUpdated,
-      schoolId: model.schoolId);
+      schoolId: model.school);
 }
 
 ClassroomModel classroomEntityToModel(Classroom entity) {
@@ -41,5 +40,5 @@ ClassroomModel classroomEntityToModel(Classroom entity) {
       lastUpdated: entity.lastUpdated,
       deleted: entity.deleted,
       clientLastUpdated: entity.clientLastUpdated,
-      schoolId: entity.schoolId);
+      school: entity.schoolId);
 }

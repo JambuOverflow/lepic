@@ -454,7 +454,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
   final DateTime clientLastUpdated;
   final bool deleted;
   final int tutorId;
-  final int schoolId;
+  final int school;
   ClassroomModel(
       {@required this.localId,
       @required this.grade,
@@ -463,7 +463,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       @required this.clientLastUpdated,
       @required this.deleted,
       @required this.tutorId,
-      @required this.schoolId});
+      @required this.school});
   factory ClassroomModel.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -486,8 +486,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}deleted']),
       tutorId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}tutor_id']),
-      schoolId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}school_id']),
+      school: intType.mapFromDatabaseResponse(data['${effectivePrefix}school']),
     );
   }
   @override
@@ -514,8 +513,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
     if (!nullToAbsent || tutorId != null) {
       map['tutor_id'] = Variable<int>(tutorId);
     }
-    if (!nullToAbsent || schoolId != null) {
-      map['school_id'] = Variable<int>(schoolId);
+    if (!nullToAbsent || school != null) {
+      map['school'] = Variable<int>(school);
     }
     return map;
   }
@@ -541,9 +540,8 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       tutorId: tutorId == null && nullToAbsent
           ? const Value.absent()
           : Value(tutorId),
-      schoolId: schoolId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(schoolId),
+      school:
+          school == null && nullToAbsent ? const Value.absent() : Value(school),
     );
   }
 
@@ -559,7 +557,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           serializer.fromJson<DateTime>(json['client_last_updated']),
       deleted: serializer.fromJson<bool>(json['deleted']),
       tutorId: serializer.fromJson<int>(json['tutor_id']),
-      schoolId: serializer.fromJson<int>(json['school_id']),
+      school: serializer.fromJson<int>(json['school']),
     );
   }
   @override
@@ -573,7 +571,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
       'client_last_updated': serializer.toJson<DateTime>(clientLastUpdated),
       'deleted': serializer.toJson<bool>(deleted),
       'tutor_id': serializer.toJson<int>(tutorId),
-      'school_id': serializer.toJson<int>(schoolId),
+      'school': serializer.toJson<int>(school),
     };
   }
 
@@ -585,7 +583,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           DateTime clientLastUpdated,
           bool deleted,
           int tutorId,
-          int schoolId}) =>
+          int school}) =>
       ClassroomModel(
         localId: localId ?? this.localId,
         grade: grade ?? this.grade,
@@ -594,7 +592,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
         clientLastUpdated: clientLastUpdated ?? this.clientLastUpdated,
         deleted: deleted ?? this.deleted,
         tutorId: tutorId ?? this.tutorId,
-        schoolId: schoolId ?? this.schoolId,
+        school: school ?? this.school,
       );
   @override
   String toString() {
@@ -606,7 +604,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           ..write('clientLastUpdated: $clientLastUpdated, ')
           ..write('deleted: $deleted, ')
           ..write('tutorId: $tutorId, ')
-          ..write('schoolId: $schoolId')
+          ..write('school: $school')
           ..write(')'))
         .toString();
   }
@@ -623,7 +621,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
                   $mrjc(
                       clientLastUpdated.hashCode,
                       $mrjc(deleted.hashCode,
-                          $mrjc(tutorId.hashCode, schoolId.hashCode))))))));
+                          $mrjc(tutorId.hashCode, school.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -635,7 +633,7 @@ class ClassroomModel extends DataClass implements Insertable<ClassroomModel> {
           other.clientLastUpdated == this.clientLastUpdated &&
           other.deleted == this.deleted &&
           other.tutorId == this.tutorId &&
-          other.schoolId == this.schoolId);
+          other.school == this.school);
 }
 
 class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
@@ -646,7 +644,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
   final Value<DateTime> clientLastUpdated;
   final Value<bool> deleted;
   final Value<int> tutorId;
-  final Value<int> schoolId;
+  final Value<int> school;
   const ClassroomModelsCompanion({
     this.localId = const Value.absent(),
     this.grade = const Value.absent(),
@@ -655,7 +653,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     this.clientLastUpdated = const Value.absent(),
     this.deleted = const Value.absent(),
     this.tutorId = const Value.absent(),
-    this.schoolId = const Value.absent(),
+    this.school = const Value.absent(),
   });
   ClassroomModelsCompanion.insert({
     this.localId = const Value.absent(),
@@ -665,14 +663,14 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     @required DateTime clientLastUpdated,
     @required bool deleted,
     @required int tutorId,
-    @required int schoolId,
+    @required int school,
   })  : grade = Value(grade),
         title = Value(title),
         lastUpdated = Value(lastUpdated),
         clientLastUpdated = Value(clientLastUpdated),
         deleted = Value(deleted),
         tutorId = Value(tutorId),
-        schoolId = Value(schoolId);
+        school = Value(school);
   static Insertable<ClassroomModel> custom({
     Expression<int> localId,
     Expression<int> grade,
@@ -681,7 +679,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     Expression<DateTime> clientLastUpdated,
     Expression<bool> deleted,
     Expression<int> tutorId,
-    Expression<int> schoolId,
+    Expression<int> school,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
@@ -691,7 +689,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       if (clientLastUpdated != null) 'client_last_updated': clientLastUpdated,
       if (deleted != null) 'deleted': deleted,
       if (tutorId != null) 'tutor_id': tutorId,
-      if (schoolId != null) 'school_id': schoolId,
+      if (school != null) 'school': school,
     });
   }
 
@@ -703,7 +701,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       Value<DateTime> clientLastUpdated,
       Value<bool> deleted,
       Value<int> tutorId,
-      Value<int> schoolId}) {
+      Value<int> school}) {
     return ClassroomModelsCompanion(
       localId: localId ?? this.localId,
       grade: grade ?? this.grade,
@@ -712,7 +710,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
       clientLastUpdated: clientLastUpdated ?? this.clientLastUpdated,
       deleted: deleted ?? this.deleted,
       tutorId: tutorId ?? this.tutorId,
-      schoolId: schoolId ?? this.schoolId,
+      school: school ?? this.school,
     );
   }
 
@@ -740,8 +738,8 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
     if (tutorId.present) {
       map['tutor_id'] = Variable<int>(tutorId.value);
     }
-    if (schoolId.present) {
-      map['school_id'] = Variable<int>(schoolId.value);
+    if (school.present) {
+      map['school'] = Variable<int>(school.value);
     }
     return map;
   }
@@ -756,7 +754,7 @@ class ClassroomModelsCompanion extends UpdateCompanion<ClassroomModel> {
           ..write('clientLastUpdated: $clientLastUpdated, ')
           ..write('deleted: $deleted, ')
           ..write('tutorId: $tutorId, ')
-          ..write('schoolId: $schoolId')
+          ..write('school: $school')
           ..write(')'))
         .toString();
   }
@@ -849,12 +847,12 @@ class $ClassroomModelsTable extends ClassroomModels
         $customConstraints: 'NOT NULL REFERENCES user_models(local_id)');
   }
 
-  final VerificationMeta _schoolIdMeta = const VerificationMeta('schoolId');
-  GeneratedIntColumn _schoolId;
+  final VerificationMeta _schoolMeta = const VerificationMeta('school');
+  GeneratedIntColumn _school;
   @override
-  GeneratedIntColumn get schoolId => _schoolId ??= _constructSchoolId();
-  GeneratedIntColumn _constructSchoolId() {
-    return GeneratedIntColumn('school_id', $tableName, false,
+  GeneratedIntColumn get school => _school ??= _constructSchool();
+  GeneratedIntColumn _constructSchool() {
+    return GeneratedIntColumn('school', $tableName, false,
         $customConstraints: 'NOT NULL REFERENCES school_models(local_id)');
   }
 
@@ -867,7 +865,7 @@ class $ClassroomModelsTable extends ClassroomModels
         clientLastUpdated,
         deleted,
         tutorId,
-        schoolId
+        school
       ];
   @override
   $ClassroomModelsTable get asDslTable => this;
@@ -924,11 +922,11 @@ class $ClassroomModelsTable extends ClassroomModels
     } else if (isInserting) {
       context.missing(_tutorIdMeta);
     }
-    if (data.containsKey('school_id')) {
-      context.handle(_schoolIdMeta,
-          schoolId.isAcceptableOrUnknown(data['school_id'], _schoolIdMeta));
+    if (data.containsKey('school')) {
+      context.handle(_schoolMeta,
+          school.isAcceptableOrUnknown(data['school'], _schoolMeta));
     } else if (isInserting) {
-      context.missing(_schoolIdMeta);
+      context.missing(_schoolMeta);
     }
     return context;
   }

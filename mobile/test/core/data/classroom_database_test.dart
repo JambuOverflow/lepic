@@ -29,7 +29,7 @@ void main() {
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
-    schoolId: Value(tValidSchoolPk1),
+    school: Value(tValidSchoolPk1),
   );
 
   final tDeletedClassCompanion = ClassroomModelsCompanion(
@@ -39,7 +39,7 @@ void main() {
     deleted: Value(true),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
-    schoolId: Value(tValidSchoolPk1),
+    school: Value(tValidSchoolPk1),
   );
 
   final tInvalidClassCompanion = ClassroomModelsCompanion(
@@ -49,7 +49,7 @@ void main() {
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
-    schoolId: Value(tValidSchoolPk1),
+    school: Value(tValidSchoolPk1),
   );
 
   final tValidClassModel1 = ClassroomModel(
@@ -60,7 +60,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
-    schoolId: tValidSchoolPk1,
+    school: tValidSchoolPk1,
   );
 
   final tValidClassModel2 = ClassroomModel(
@@ -71,7 +71,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
-    schoolId: tValidSchoolPk1,
+    school: tValidSchoolPk1,
   );
 
   final tValidUpdateClassModel = ClassroomModel(
@@ -82,7 +82,7 @@ void main() {
       deleted: false,
       lastUpdated: DateTime(2020),
       clientLastUpdated: DateTime(2020),
-      schoolId: tValidSchoolPk1);
+      school: tValidSchoolPk1);
 
   final tInvalidUpdateClassModel = ClassroomModel(
     localId: tInvalidClassroomPk,
@@ -92,7 +92,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
-    schoolId: tValidSchoolPk1,
+    school: tValidSchoolPk1,
   );
 
   final tClassModel2018 = ClassroomModel(
@@ -102,7 +102,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2018),
     clientLastUpdated: DateTime(2018),
-    schoolId: tValidSchoolPk1,
+    school: tValidSchoolPk1,
   );
 
   final tClassModel2019 = ClassroomModel(
@@ -112,7 +112,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2019),
     clientLastUpdated: DateTime(2019),
-    schoolId: tValidSchoolPk1,
+    school: tValidSchoolPk1,
   );
 
   final tClassModel2020 = ClassroomModel(
@@ -122,7 +122,7 @@ void main() {
     deleted: false,
     lastUpdated: DateTime(2020),
     clientLastUpdated: DateTime(2020),
-    schoolId: tValidSchoolPk1,
+    school: tValidSchoolPk1,
   );
 
   final tUserCompanion = UserModelsCompanion(

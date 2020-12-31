@@ -141,19 +141,20 @@ class SyncClassroom {
 
   Future<void> putClassroom(ClassroomModel element, String token) async {
     final headers = getHeaders(token);
-    final localUrl = this.getUrl();
+    final localUrl = this.getUrl() + "${element.localId}/";
     final body = json.encode(element.toJson());
     final http.Response response = await this.client.put(
           localUrl,
           headers: headers,
           body: body,
         );
+    print(response.statusCode);
     if (response.statusCode != 200) {
-      throw ServerException();
+      throw ServerException(message: response.body);
     }
   }
 
-  Future<http.Response> postClassroom(ClassroomModel element, String token) async {
+  Future<void> postClassroom(ClassroomModel element, String token) async {
     final headers = getHeaders(token);
     final localUrl = this.getUrl();
     final body = json.encode([element.toJson()]);
@@ -163,6 +164,8 @@ class SyncClassroom {
           headers: headers,
           body: body,
         );
-    return response;
+    if (response.statusCode != 201) {
+      throw ServerException(message: response.body);
+    }
   }
 }
