@@ -6,7 +6,7 @@ import 'classroom_item.dart';
 class ClassroomListView extends StatelessWidget {
   final ClassroomsGot _state;
 
-  const ClassroomListView({Key key, ClassroomsGot state})
+  const ClassroomListView({Key key, @required ClassroomsGot state})
       : _state = state,
         super(key: key);
 

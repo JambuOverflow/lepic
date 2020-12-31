@@ -34,7 +34,10 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
             if (state is GettingClassrooms) {
               return Center(child: CircularProgressIndicator());
             } else if (state is ClassroomsGot) {
-              return ClassroomListView();
+              if (state.classrooms.isEmpty)
+                return Center(child: Text('Nothing here'));
+              else
+                return ClassroomListView(state: state);
             } else
               return Center(child: const Text('No data'));
           },
