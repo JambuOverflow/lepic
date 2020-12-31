@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import '../../../../core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -12,14 +12,14 @@ import 'package:clock/clock.dart';
 import '../data_sources/classroom_local_data_source.dart';
 
 class ClassroomRepositoryImpl implements ClassroomRepository {
+  final ClassroomEntityModelConverter clasrooomEntityModelConverter;
   final ClassroomLocalDataSource localDataSource;
   final Clock clock;
-  final ClassroomEntityModelConverter clasrooomEntityModelConverter;
 
   ClassroomRepositoryImpl({
     @required this.localDataSource,
     @required this.clock,
-    @required this.clasrooomEntityModelConverter
+    @required this.clasrooomEntityModelConverter,
   });
 
   Classroom updateClientLastUpdated(Classroom classroom) {
@@ -46,9 +46,11 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   Future<Either<Failure, Classroom>> _tryCacheClassroom(
       Classroom classroom) async {
     try {
-      final model = await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
+      final model =
+          await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
       final localModel = await localDataSource.cacheNewClassroom(model);
-      final localClassroom = clasrooomEntityModelConverter.classroomModelToEntity(localModel);
+      final localClassroom =
+          clasrooomEntityModelConverter.classroomModelToEntity(localModel);
       return Right(localClassroom);
     } on CacheException {
       return Left(CacheFailure());
@@ -63,7 +65,8 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
 
   Future<Either<Failure, void>> _tryDeleteClassroom(Classroom classroom) async {
     try {
-      var model = await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
+      var model =
+          await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
       await localDataSource.deleteClassroomFromCache(model);
     } on CacheException {
       return Left(CacheFailure());
@@ -81,7 +84,8 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
       var listClassroomModel =
           await localDataSource.getClassroomsFromCache(userModel);
       var listClassroomEntity = [
-        for (var model in listClassroomModel) clasrooomEntityModelConverter.classroomModelToEntity(model)
+        for (var model in listClassroomModel)
+          clasrooomEntityModelConverter.classroomModelToEntity(model)
       ];
       return Right(listClassroomEntity);
     } on CacheException {
@@ -99,9 +103,11 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   Future<Either<Failure, Classroom>> _tryUpdateClassroom(
       Classroom classroom) async {
     try {
-      var model = await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
+      var model =
+          await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
       var localModel = await localDataSource.updateCachedClassroom(model);
-      var localClassroom = clasrooomEntityModelConverter.classroomModelToEntity(localModel);
+      var localClassroom =
+          clasrooomEntityModelConverter.classroomModelToEntity(localModel);
       return Right(localClassroom);
     } on CacheException {
       return Left(CacheFailure());

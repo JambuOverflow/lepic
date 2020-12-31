@@ -2,17 +2,14 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/student_management/data/data_sources/student_local_data_source.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/student_management/data/repositories/student_repository_impl.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
-import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
-import 'package:mobile/features/user_management/data/models/user_model.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
 
 class MockStudentLocalDataSource extends Mock

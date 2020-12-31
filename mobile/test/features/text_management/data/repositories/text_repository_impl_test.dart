@@ -2,9 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
@@ -22,7 +22,6 @@ void main() {
   TextRepositoryImpl repository;
   ClassroomModel tClassroomModel;
   MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
-
 
   final tClassroom = Classroom(
     grade: 1,
@@ -45,8 +44,7 @@ void main() {
     mockLocalDataSource = MockTextLocalDataSource();
     mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
 
-    tClassroomModel = ClassroomModel(grade:1, localId: 1, name:"A");
-
+    tClassroomModel = ClassroomModel(grade: 1, localId: 1, name: "A");
 
     repository = TextRepositoryImpl(
       localDataSource: mockLocalDataSource,

@@ -2,10 +2,10 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
@@ -60,17 +60,17 @@ void main() {
     mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
     classroomEntityModelConverter = ClassroomEntityModelConverter(
         userLocalDataSource: mockUserLocalDataSourceImpl);
-    tClassroomModel = await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
+    tClassroomModel =
+        await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
     tUserModel = userEntityToModel(tUser);
 
     tClassroomsModels = [tClassroomModel, tClassroomModel];
     tClassrooms = [tClassroom, tClassroom];
 
     repository = ClassroomRepositoryImpl(
-      localDataSource: mockLocalDataSource,
-      clock: mockClock,
-      clasrooomEntityModelConverter: classroomEntityModelConverter
-    );
+        localDataSource: mockLocalDataSource,
+        clock: mockClock,
+        clasrooomEntityModelConverter: classroomEntityModelConverter);
 
     when(mockClock.now()).thenAnswer((_) => nowTime);
   });
