@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/student_management/data/data_sources/student_local_data_source.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
@@ -15,39 +13,48 @@ class MockDatabase extends Mock implements Database {}
 class MockUserLocalDataSourceImpl extends Mock
     implements UserLocalDataSourceImpl {}
 
-Future<void> main() {
+void main() {
   MockDatabase mockDatabase;
   StudentLocalDataSourceImpl studentLocalDataSourceImpl;
-  ClassroomEntityModelConverter classroomEntityModelConverter;
-  MockUserLocalDataSourceImpl mockUserLocalDataSourceImpl;
-  ClassroomModel tClassroomModel;
+
+  final tClassroomModel = ClassroomModel(
+    localId: 1,
+    grade: 7,
+    name: 'Science Class',
+    lastUpdated: null,
+    clientLastUpdated: null,
+    deleted: null,
+    tutorId: 1,
+  );
 
   final tValidPk = 1;
 
-  final tClassroom = Classroom(
-    name: 'especial',
-    grade: 1,
-    id: 1,
+  final tStudentInputModel1 = StudentModel(
+    localId: null,
+    classroomId: 1,
+    firstName: 'vitor',
+    lastName: 'cantinho',
   );
 
-  final tStudentInputModel1 = StudentModel(
-      localId: null, classroomId: 1, firstName: 'vitor', lastName: 'cantinho');
   final tStudentInputModel2 = StudentModel(
-      localId: null, classroomId: 1, firstName: 'rena', lastName: 'cu');
+    localId: null,
+    classroomId: 1,
+    firstName: 'rena',
+    lastName: 'pupunha',
+  );
 
   final tStudentModel1 = StudentModel(
-      localId: 1, classroomId: 1, firstName: 'vitor', lastName: 'cantinho');
+    localId: 1,
+    classroomId: 1,
+    firstName: 'vitor',
+    lastName: 'cantinho',
+  );
 
   final tStudentCompanion1 = tStudentInputModel1.toCompanion(true);
 
   final tStudentModels = [tStudentInputModel1, tStudentInputModel2];
 
   setUp(() async {
-    mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
-    classroomEntityModelConverter = ClassroomEntityModelConverter(
-      userLocalDataSource: mockUserLocalDataSourceImpl,
-    );
-    tClassroomModel = await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
     mockDatabase = MockDatabase();
 
     studentLocalDataSourceImpl = StudentLocalDataSourceImpl(
