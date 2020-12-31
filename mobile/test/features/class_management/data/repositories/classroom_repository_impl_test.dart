@@ -22,16 +22,18 @@ class MockClock extends Mock implements Clock {}
 class MockUserLocalDataSourceImpl extends Mock
     implements UserLocalDataSourceImpl {}
 
+class MockClassroomEntityModelConverter extends Mock
+    implements ClassroomEntityModelConverter {}
+
 void main() {
+  MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
   MockClassroomLocalDataSource mockLocalDataSource;
   MockClock mockClock;
   ClassroomRepositoryImpl repository;
-  ClassroomModel tClassroomModel;
+
   UserModel tUserModel;
   List<ClassroomModel> tClassroomsModels;
   List<Classroom> tClassrooms;
-  ClassroomEntityModelConverter classroomEntityModelConverter;
-  MockUserLocalDataSourceImpl mockUserLocalDataSourceImpl;
 
   final nowTime = DateTime.now();
   final nowTimeUtc = nowTime.toUtc();
@@ -54,23 +56,36 @@ void main() {
     clientLastUpdated: nowTimeUtc,
   );
 
+  final tClassroomModel = ClassroomModel(
+    localId: 1,
+    tutorId: 1,
+    grade: 1,
+    name: "A",
+    deleted: false,
+    lastUpdated: nowTimeUtc,
+    clientLastUpdated: nowTimeUtc,
+  );
+
   setUp(() async {
+    mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
     mockLocalDataSource = MockClassroomLocalDataSource();
     mockClock = MockClock();
-    mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
-    classroomEntityModelConverter = ClassroomEntityModelConverter(
-        userLocalDataSource: mockUserLocalDataSourceImpl);
-    tClassroomModel =
-        await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
     tUserModel = userEntityToModel(tUser);
 
     tClassroomsModels = [tClassroomModel, tClassroomModel];
     tClassrooms = [tClassroom, tClassroom];
 
     repository = ClassroomRepositoryImpl(
-        localDataSource: mockLocalDataSource,
-        clock: mockClock,
-        clasrooomEntityModelConverter: classroomEntityModelConverter);
+      localDataSource: mockLocalDataSource,
+      clock: mockClock,
+      clasrooomEntityModelConverter: mockClassroomEntityModelConverter,
+    );
+
+    when(mockClassroomEntityModelConverter.classroomEntityToModel(any))
+        .thenAnswer((_) async => tClassroomModel);
+
+    when(mockClassroomEntityModelConverter.classroomModelToEntity(any))
+        .thenAnswer((_) => tClassroom);
 
     when(mockClock.now()).thenAnswer((_) => nowTime);
   });
