@@ -13,6 +13,8 @@ abstract class UserLocalDataSource {
   /// Throws [CacheException] if there's no cached [UserModel].
   Future<UserModel> getLoggedInUser();
 
+  Future<int> getUserId();
+
   Future<void> cacheUser(UserModel user);
 
   Future<void> storeTokenSecurely({

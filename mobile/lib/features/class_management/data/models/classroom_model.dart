@@ -19,9 +19,9 @@ class ClassroomModels extends Table {
 }
 
 class ClassroomEntityModelConverter {
-  final UserLocalDataSourceImpl userLocalDataSourceImpl;
+  final UserLocalDataSource userLocalDataSource;
 
-  ClassroomEntityModelConverter({@required this.userLocalDataSourceImpl});
+  ClassroomEntityModelConverter({@required this.userLocalDataSource});
 
   Classroom classroomModelToEntity(ClassroomModel model) {
     return Classroom(
@@ -49,7 +49,7 @@ class ClassroomEntityModelConverter {
     } else {
       lastUpdated = entity.lastUpdated;
     }
-    final int userId = await userLocalDataSourceImpl.getUserId();
+    final int userId = await userLocalDataSource.getUserId();
 
     return ClassroomModel(
       localId: entity.id,

@@ -52,7 +52,7 @@ Future<void> main() {
   setUp(() async {
     mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
     classroomEntityModelConverter = ClassroomEntityModelConverter(
-      userLocalDataSourceImpl: mockUserLocalDataSourceImpl,
+      userLocalDataSource: mockUserLocalDataSourceImpl,
     );
     tClassroomModel = await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
     mockDatabase = MockDatabase();

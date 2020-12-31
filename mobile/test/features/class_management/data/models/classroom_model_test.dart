@@ -40,7 +40,7 @@ void main() {
   setUp(() {
     mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
     classroomEntityModelConverter = ClassroomEntityModelConverter(
-        userLocalDataSourceImpl: mockUserLocalDataSourceImpl);
+        userLocalDataSource: mockUserLocalDataSourceImpl);
   });
 
   group("from json", () {

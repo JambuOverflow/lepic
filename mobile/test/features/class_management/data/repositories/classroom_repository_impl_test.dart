@@ -59,7 +59,7 @@ void main() {
     mockClock = MockClock();
     mockUserLocalDataSourceImpl = MockUserLocalDataSourceImpl();
     classroomEntityModelConverter = ClassroomEntityModelConverter(
-        userLocalDataSourceImpl: mockUserLocalDataSourceImpl);
+        userLocalDataSource: mockUserLocalDataSourceImpl);
     tClassroomModel = await classroomEntityModelConverter.classroomEntityToModel(tClassroom);
     tUserModel = userEntityToModel(tUser);
 
