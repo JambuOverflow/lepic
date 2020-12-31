@@ -55,9 +55,17 @@ void main() {
     localId: 001,
     classId: 010,
   );
+  
+  final tOtherText = MyText(
+    title: 'Title',
+    body: 'ifsdvjspijcekmdkcsie',
+    localId: 001,
+    classId: 010,
+  );
 
   final tTextList = List<MyText>();
   tTextList.add(tText);
+  tTextList.add(tOtherText);
 
   final String tTitle = 'Title';
   final String tBody =
@@ -119,12 +127,13 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateTextEvent(
-        title: tTitle,
-        body: tBody,
-        oldText: tText,
-        classroom: tClassroom,
-      ));
+      bloc.add(
+        UpdateTextEvent(
+          title: tOtherText.title,
+          body: tOtherText.body,
+          oldText: tText,
+        ),
+      );
     });
 
     test('''should emit [UpdatingText, Error] when text update
@@ -141,7 +150,6 @@ void main() {
         title: tTitle,
         body: tBody,
         oldText: tText,
-        classroom: tClassroom,
       ));
     });
   });
