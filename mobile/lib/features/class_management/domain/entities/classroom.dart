@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class Classroom extends Equatable {
-  final int tutorId;
   final int id;
   final int grade;
   final String name;
@@ -12,7 +11,6 @@ class Classroom extends Equatable {
   final DateTime clientLastUpdated;
 
   Classroom({
-    @required this.tutorId,
     @required this.grade,
     @required this.name,
     this.id,
@@ -23,7 +21,6 @@ class Classroom extends Equatable {
 
   @override
   List<Object> get props => [
-        tutorId,
         grade,
         name,
         id,
