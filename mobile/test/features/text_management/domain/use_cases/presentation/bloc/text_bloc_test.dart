@@ -118,12 +118,12 @@ void main() {
     test('''should emit [UpdatingText, TextUpdated] when a Text update
     is successful''', () async {
       when(mockUpdateText(any)).thenAnswer(
-        (_) async => Right(tText),
+        (_) async => Right(tOtherText),
       );
 
       final expected = [
         UpdatingText(),
-        TextUpdated(text: tText),
+        TextUpdated(text: tOtherText),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
