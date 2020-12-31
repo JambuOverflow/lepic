@@ -24,6 +24,7 @@ class ClassroomForm extends StatelessWidget {
               labelText: 'Class name',
             ),
           ),
+          SizedBox(height: 16),
           TextFormField(
             controller: _gradeController,
             decoration: InputDecoration(
