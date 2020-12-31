@@ -78,8 +78,8 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   Future<int> getUserId() async {
     try {
-    final UserModel user = await getLoggedInUser();
-    return user.localId;
+      final UserModel user = await getLoggedInUser();
+      return user.localId;
     } catch (_) {
       throw CacheException();
     }
