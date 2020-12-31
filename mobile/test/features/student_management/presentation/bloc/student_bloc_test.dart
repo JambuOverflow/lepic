@@ -54,6 +54,13 @@ void main() {
     id: 1,
     classroomId: 001,
   );
+  
+  final tUpdatedStudent = Student(
+    firstName: 'Julinho',
+    lastName: 'da Silva',
+    id: 1,
+    classroomId: 011,
+  );
 
   final tList = List<Student>();
   tList.add(tStudent);
@@ -108,18 +115,18 @@ void main() {
     test('''should emit [UpdatingStudent, StudentUpdated] when update
     is successful''', () async {
       when(mockUpdateStudent(any)).thenAnswer(
-        (_) async => Right(tStudent),
+        (_) async => Right(tUpdatedStudent),
       );
 
       final expected = [
         UpdatingStudent(),
-        StudentUpdated(updatedStudent: tStudent)
+        StudentUpdated(updatedStudent: tUpdatedStudent)
       ];
 
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(UpdateStudentEvent(
-        firstName: tFirstName,
-        lastName: tLastName,
+        firstName: tUpdatedStudent.firstName,
+        lastName: tUpdatedStudent.lastName,
         student: tStudent,
       ));
     });
