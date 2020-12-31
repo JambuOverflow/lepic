@@ -12,7 +12,7 @@ class GuestLoginButton extends StatelessWidget {
         'Login as guest',
         style: TextStyle(fontSize: 16),
       ),
-      onPressed: () => Navigator.of(context).pushNamed('/guest'),
+      onPressed: null,
     );
   }
 }

@@ -4,7 +4,6 @@ import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart
 
 import '../../domain/entities/text.dart';
 import 'text_detail_page.dart';
-import '../../../user_management/presentation/widgets/drawer_overlay.dart';
 
 class TextsPage extends StatefulWidget {
   TextsPage({Key key}) : super(key: key);
@@ -24,7 +23,7 @@ class _TextsPageState extends State<TextsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My students'),
+        title: const Text('Texts'),
       ),
       body: Center(
         child: BlocListener<TextBloc, TextState>(

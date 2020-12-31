@@ -1,8 +1,8 @@
 part of 'signup_form_bloc.dart';
 
 class SignupFormState extends Equatable {
-  final NameInput firstName;
-  final NameInput lastName;
+  final NotEmptyInput firstName;
+  final NotEmptyInput lastName;
   final EmailInput email;
   final PasswordInput password;
   final ConfirmPasswordInput confirmPassword;
@@ -10,8 +10,8 @@ class SignupFormState extends Equatable {
   final FormzStatus status;
 
   const SignupFormState({
-    this.firstName = const NameInput.pure(),
-    this.lastName = const NameInput.pure(),
+    this.firstName = const NotEmptyInput.pure(),
+    this.lastName = const NotEmptyInput.pure(),
     this.email = const EmailInput.pure(),
     this.password = const PasswordInput.pure(),
     this.confirmPassword = const ConfirmPasswordInput.pure(password: ''),
@@ -20,8 +20,8 @@ class SignupFormState extends Equatable {
   });
 
   SignupFormState copyWith({
-    final NameInput firstName,
-    final NameInput lastName,
+    final NotEmptyInput firstName,
+    final NotEmptyInput lastName,
     final EmailInput email,
     final PasswordInput password,
     final ConfirmPasswordInput confirmPassword,

@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:moor/moor.dart';
 import 'dart:io';
+import 'package:clock/clock.dart';
 
 import '../../main.dart';
 
@@ -28,6 +29,7 @@ LazyDatabase openConnection() {
 
 @UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
 class Database extends _$Database {
+  final clock = Clock();
   Database(QueryExecutor e) : super(e);
   Database.customExecutor(QueryExecutor executor) : super(executor);
 
@@ -44,23 +46,21 @@ class Database extends _$Database {
     return into(userModels).insert(model);
   }
 
-  /// returns the pk of the added entry
+  /// Returns the primary key (pk) of the added entry
   Future<int> insertClassroom(ClassroomModelsCompanion modelCompanion) async {
     return into(classroomModels).insert(modelCompanion);
   }
 
-  ///Returns the number of deleted rows
-  Future<int> deleteClassroom(int id) async {
-    return (delete(classroomModels)..where((t) => t.localId.equals(id))).go();
-  }
-
-  ///Returns a list of classroomModels, and an empty list when the table is empty
+  /// Returns a list of [ClassroomModel] that weren't deleted
+  ///
+  /// Returns an empty list when the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
-    return (select(classroomModels)..where((t) => t.tutorId.equals(tutorId)))
+    return (select(classroomModels)
+          ..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
         .get();
   }
 
-  //returns true if the classroom exists, and false otherwise
+  /// Returns true if the classroom exists, and false otherwise
   Future<bool> classroomExists(int id) async {
     final classroomModel = await (select(classroomModels)
           ..where((t) => t.localId.equals(id)))
@@ -68,39 +68,44 @@ class Database extends _$Database {
     return (classroomModel != null);
   }
 
-  ///Returns true if the class was updated, false otherwise
-  Future<bool> updateClassroom(ClassroomModel entry) async {
-    return update(classroomModels).replace(entry);
+  /// Throws [SqliteException] if the table doesn't contain the entry
+  Future<void> updateClassroom(ClassroomModel entry) async {
+    var done = await update(classroomModels).replace(entry);
+    if (!done) {
+      throw SqliteException(787, "The table does not contain this entry");
+    }
   }
 
-  /// returns the pk of the added entry
+  /// Returns the primary key (pk) of the added entry
   Future<int> insertStudent(StudentModelsCompanion modelCompanion) async {
     return into(studentModels).insert(modelCompanion);
   }
 
-  ///Returns the number of deleted rows
+  /// Returns the number of deleted rows
   Future<int> deleteStudent(int id) async {
     return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
   }
 
-  ///Returns a list of studentModels, and an empty list with the table is empty
+  /// Returns a List of [StudentModel]
+  ///
+  /// Returns an empty list if the table is empty
   Future<List<StudentModel>> getStudents(int classroomId) async {
     return (select(studentModels)
           ..where((t) => t.classroomId.equals(classroomId)))
         .get();
   }
 
-  ///Returns true if the student was updated, false otherwise
+  /// Returns true if the student was updated, false otherwise
   Future<bool> updateStudent(StudentModel entry) async {
     return update(studentModels).replace(entry);
   }
 
-  /// returns the pk of the added entry
+  /// Returns the primary key (pk) of the added entry
   Future<int> insertText(TextModelsCompanion textCompanion) async {
     return into(textModels).insert(textCompanion);
   }
 
-  ///Throws a SqliteException if the entry is not found
+  /// Throws [SqliteException] if the entry is not found
   Future<void> deleteText(int id) async {
     var done =
         await (delete(textModels)..where((t) => t.localId.equals(id))).go();
@@ -109,13 +114,13 @@ class Database extends _$Database {
     }
   }
 
-  ///Returns a list of textModels, and an empty list when the table is empty
+  /// Returns a list of [TextModel]
   Future<List<TextModel>> getTexts(int classroomId) async {
     return (select(textModels)..where((t) => t.classId.equals(classroomId)))
         .get();
   }
 
-  ///Returns true if the text was updated, false otherwise
+  /// Returns true if the text was updated, false otherwise
   Future<bool> updateText(TextModel entry) async {
     return update(textModels).replace(entry);
   }

@@ -19,7 +19,7 @@ class SyncClassroom {
   final http.Client client;
   final FlutterSecureStorage secureStorage;
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
-  DateTime lastSyncTime = DateTime.now();
+  DateTime lastSyncTime = DateTime.now().toUtc();
 
   SyncClassroom({
     @required this.client,

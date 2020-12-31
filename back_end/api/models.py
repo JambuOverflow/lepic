@@ -10,7 +10,7 @@ class User(AbstractUser):
     )
 
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES)
-    email = models.EmailField(('email address'), unique=True)
+    email = models.EmailField('email address', unique=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -44,6 +44,7 @@ class Class(models.Model):
     def __str__(self):
         return self.title
 
+
 class Text(models.Model):
     title = models.CharField(max_length=50)
     body = models.CharField(max_length=1000)
@@ -52,6 +53,7 @@ class Text(models.Model):
     def __str__(self):
         return self.title
 
+
 class Student(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -59,6 +61,7 @@ class Student(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
+
 
 class AudioFile(models.Model):
     title = models.CharField(max_length=200)

@@ -10,13 +10,19 @@ import 'package:mobile/features/class_management/domain/entities/classroom.dart'
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
+import 'package:clock/clock.dart';
 
 class MockClassroomLocalDataSource extends Mock
     implements ClassroomLocalDataSource {}
 
+class MockClock extends Mock implements Clock {}
+
 void main() {
   MockClassroomLocalDataSource mockLocalDataSource;
+  MockClock mockClock;
   ClassroomRepositoryImpl repository;
+  final nowTime = DateTime.now();
+  final nowTimeUtc = nowTime.toUtc();
 
   final tUser = User(
     firstName: 'v',
@@ -32,6 +38,9 @@ void main() {
     grade: 1,
     name: "A",
     id: 1,
+    deleted: false,
+    lastUpdated: nowTimeUtc,
+    clientLastUpdated: nowTimeUtc,
   );
 
   final tClassroomModel = classroomEntityToModel(tClassroom);
@@ -42,10 +51,14 @@ void main() {
 
   setUp(() {
     mockLocalDataSource = MockClassroomLocalDataSource();
+    mockClock = MockClock();
 
     repository = ClassroomRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      clock: mockClock,
     );
+
+    when(mockClock.now()).thenAnswer((_) => nowTime);
   });
 
   group('createClassroom', () {
