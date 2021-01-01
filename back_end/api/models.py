@@ -9,7 +9,6 @@ class User(AbstractUser):
         (2, 'researcher'),
     )
 
-    local_id = models.PositiveIntegerField()
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES)
     email = models.EmailField('email address', unique=True)
 
