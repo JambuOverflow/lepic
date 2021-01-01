@@ -16,6 +16,7 @@ class MockDatabase extends Mock implements Database {}
 Future<void> main() {
   MockDatabase mockDatabase;
   TextLocalDataSourceImpl textLocalDataSourceImpl;
+  ClassroomModel tClassroomModel;
 
   final tValidPk = 1;
 
@@ -23,18 +24,14 @@ Future<void> main() {
     grade: 1,
     name: "A",
     id: 1,
-    tutorId: 1,
   );
-
-  final tClassroomModel = classroomEntityToModel(tClassroom);
 
   final tTextInputModel1 =
       TextModel(classId: 1, title: '1', body: "A", localId: null);
   final tTextInputModel2 =
       TextModel(classId: 1, title: '2', body: "B", localId: null);
 
-  final tTextModel1 =
-      TextModel(classId: 1, title: '1', body: "A", localId: 1);
+  final tTextModel1 = TextModel(classId: 1, title: '1', body: "A", localId: 1);
 
   final tTextCompanion1 = tTextInputModel1.toCompanion(true);
 
@@ -42,6 +39,7 @@ Future<void> main() {
 
   setUp(() async {
     mockDatabase = MockDatabase();
+    tClassroomModel = ClassroomModel(grade:1, name:"A", localId: 1);
 
     textLocalDataSourceImpl = TextLocalDataSourceImpl(
       database: mockDatabase,
@@ -53,20 +51,19 @@ Future<void> main() {
       when(mockDatabase.insertText(tTextCompanion1))
           .thenAnswer((_) async => tValidPk);
 
-      final result = await textLocalDataSourceImpl
-          .cacheNewText(tTextInputModel1);
+      final result =
+          await textLocalDataSourceImpl.cacheNewText(tTextInputModel1);
       verify(mockDatabase.insertText(tTextCompanion1));
       expect(result, tTextModel1);
     });
 
-    test(
-        "should throw CacheException when trying to insert an invalid text",
+    test("should throw CacheException when trying to insert an invalid text",
         () {
       when(mockDatabase.insertText(tTextCompanion1))
           .thenThrow(SqliteException(787, ""));
       expect(
-          () async => await textLocalDataSourceImpl
-              .cacheNewText(tTextInputModel1),
+          () async =>
+              await textLocalDataSourceImpl.cacheNewText(tTextInputModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
@@ -75,18 +72,17 @@ Future<void> main() {
     test("should correctly delete a cached text", () async {
       when(mockDatabase.deleteText(tValidPk)).thenAnswer((_) async => 1);
 
-      await textLocalDataSourceImpl
-          .deleteTextFromCache(tTextModel1);
+      await textLocalDataSourceImpl.deleteTextFromCache(tTextModel1);
       verify(mockDatabase.deleteText(tValidPk));
     });
 
-    test(
-        "should throw CacheException when trying to delete an ivalid text",
+    test("should throw CacheException when trying to delete an ivalid text",
         () {
-      when(mockDatabase.deleteText(tValidPk)).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.deleteText(tValidPk))
+          .thenThrow(SqliteException(787, ""));
       expect(
-          () async => await textLocalDataSourceImpl
-              .deleteTextFromCache(tTextModel1),
+          () async =>
+              await textLocalDataSourceImpl.deleteTextFromCache(tTextModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
@@ -105,8 +101,7 @@ Future<void> main() {
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getTexts(tValidPk))
-          .thenAnswer((_) async => []);
+      when(mockDatabase.getTexts(tValidPk)).thenAnswer((_) async => []);
 
       final result =
           await textLocalDataSourceImpl.getTextsFromCache(tClassroomModel);
@@ -117,35 +112,31 @@ Future<void> main() {
     });
 
     test("should throw a CacheException", () async {
-      when(mockDatabase.getTexts(tValidPk))
-          .thenThrow(SqliteException(787, ""));
+      when(mockDatabase.getTexts(tValidPk)).thenThrow(SqliteException(787, ""));
 
       expect(
-          () async => await textLocalDataSourceImpl
-              .getTextsFromCache(tClassroomModel),
+          () async =>
+              await textLocalDataSourceImpl.getTextsFromCache(tClassroomModel),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
 
   group("updateText", () {
     test("should correctly update a cached text", () async {
-      when(mockDatabase.updateText(tTextModel1)).
-        thenAnswer((_) async => true);
+      when(mockDatabase.updateText(tTextModel1)).thenAnswer((_) async => true);
 
-      await textLocalDataSourceImpl
-          .updateCachedText(tTextModel1);
+      await textLocalDataSourceImpl.updateCachedText(tTextModel1);
       verify(mockDatabase.updateText(tTextModel1));
     });
 
-    test("should throw a cache expection if the update was not completed", () async {
-      when(mockDatabase.updateText(tTextModel1)).
-        thenAnswer((_) async => false);
+    test("should throw a cache expection if the update was not completed",
+        () async {
+      when(mockDatabase.updateText(tTextModel1)).thenAnswer((_) async => false);
 
       expect(
-          () async => await textLocalDataSourceImpl
-              .updateCachedText(tTextModel1),
+          () async =>
+              await textLocalDataSourceImpl.updateCachedText(tTextModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
-    
   });
 }

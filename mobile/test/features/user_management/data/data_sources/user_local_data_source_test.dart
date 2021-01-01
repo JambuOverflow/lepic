@@ -120,4 +120,17 @@ void main() {
       verify(mockSecureStorage.deleteAll());
     });
   });
+
+  group('getUserId', () {
+    test('should get userId',
+        () async {
+      final userModelString = tUserModel.toJsonString();
+      when(mockSecureStorage.read(key: loggedInUserKey))
+          .thenAnswer((_) async => userModelString);
+
+      final result = await dataSource.getUserId();
+
+      expect(result, 1);
+    });
+  });
 }

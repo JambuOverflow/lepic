@@ -66,7 +66,6 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
         final loggedUser = authBloc.state.user;
 
         final classroom = Classroom(
-          tutorId: loggedUser.id,
           grade: grade,
           name: event.name,
         );

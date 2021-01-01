@@ -1,6 +1,5 @@
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
@@ -46,6 +45,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
       bool nullToAbsent = true;
       final classCompanion = classroomModel.toCompanion(nullToAbsent);
       final classPk = await this.database.insertClassroom(classCompanion);
+
       return classroomModel.copyWith(localId: classPk, deleted: false);
     } on SqliteException {
       throw CacheException();
