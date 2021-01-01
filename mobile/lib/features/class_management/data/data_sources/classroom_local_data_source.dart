@@ -90,9 +90,9 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
           await this.database.classroomExists(classroomModel.localId);
     }
     if (classroomExists) {
-      return updateCachedClassroom(classroomModel);
+      return await updateCachedClassroom(classroomModel);
     } else {
-      return cacheNewClassroom(classroomModel);
+      return await cacheNewClassroom(classroomModel);
     }
   }
 

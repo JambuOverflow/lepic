@@ -19,7 +19,7 @@ class SyncClassroom {
   final FlutterSecureStorage secureStorage;
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
   final String api_url;
-  DateTime lastSyncTime = DateTime.now().toUtc();
+  DateTime lastSyncTime = DateTime(2010).toUtc();
 
   SyncClassroom(
       {@required this.client,
@@ -84,8 +84,17 @@ class SyncClassroom {
     Iterable objects = json.decode(response.body);
 
     objects.forEach((element) async {
-      ClassroomModel model = ClassroomModel.fromJson(element);
-      this.classroomLocalDataSourceImpl.cacheClassroom(model);
+      ClassroomModel model = ClassroomModel(
+        localId: element['local_id'],
+        grade: element['grade'],
+        title: element['title'],
+        lastUpdated: DateTime.parse(element['last_update']),
+        school: element['school'],
+        tutorId: 1,
+        deleted: element['deleted'],
+        clientLastUpdated: DateTime.now().toUtc()
+      );
+      await this.classroomLocalDataSourceImpl.cacheClassroom(model);
     });
     return SuccessfulResponse();
   }
