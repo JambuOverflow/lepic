@@ -164,10 +164,10 @@ void main() {
   group('get', () {
     test('should return a list of classrooms when getClassrooms is called',
         () async {
-      when(mockLocalDataSource.getClassroomsFromCache(tUserModel))
+      when(mockLocalDataSource.getClassroomsFromCache())
           .thenAnswer((_) async => tClassroomsModels);
 
-      final result = await repository.getClassrooms(tUser);
+      final result = await repository.getClassrooms();
       final List<Classroom> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tClassrooms);
@@ -176,10 +176,10 @@ void main() {
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getClassroomsFromCache(tUserModel))
+      when(mockLocalDataSource.getClassroomsFromCache())
           .thenThrow(CacheException());
 
-      final result = await repository.getClassrooms(tUser);
+      final result = await repository.getClassrooms();
 
       expect(result, Left(CacheFailure()));
     });

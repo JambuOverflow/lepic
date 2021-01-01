@@ -5,11 +5,10 @@ from .models import Class, User, School, Text, Student, AudioFile
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True)
-    local_id = serializers.IntegerField(required=True)
 
     class Meta:
         model = User
-        fields = ['id', 'local_id', 'first_name', 'last_name', 'username',
+        fields = ['id', 'first_name', 'last_name', 'username',
                   'email', 'password', 'role']
 
     def create(self, validated_data):

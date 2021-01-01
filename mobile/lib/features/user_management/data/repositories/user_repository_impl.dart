@@ -139,7 +139,7 @@ class UserRepositoryImpl implements UserRepository {
 
   User _toEntity(UserModel model) {
     return User(
-      localId: model.localId,
+      localId: model.id,
       firstName: model.firstName,
       lastName: model.lastName,
       email: model.email,
@@ -150,7 +150,7 @@ class UserRepositoryImpl implements UserRepository {
 
   UserModel _toModel(User entity) {
     return UserModel(
-      localId: entity.localId,
+      id: entity.localId,
       firstName: entity.firstName,
       lastName: entity.lastName,
       email: entity.email,

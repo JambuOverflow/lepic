@@ -64,7 +64,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     @required String token,
     @required UserModel user,
   }) async {
-    final userId = user.localId.toString();
+    final userId = user.id.toString();
     return await secureStorage.write(key: userId, value: token);
   }
 
@@ -81,7 +81,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
   Future<int> getUserId() async {
     try {
       final UserModel user = await getLoggedInUser();
-      return user.localId;
+      return user.id;
     } catch (_) {
       throw CacheException();
     }

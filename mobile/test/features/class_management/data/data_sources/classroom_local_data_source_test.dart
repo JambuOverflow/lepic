@@ -3,30 +3,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
-import 'package:mobile/features/user_management/data/models/user_model.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
 import 'package:matcher/matcher.dart';
 
 class MockDatabase extends Mock implements Database {}
 
+class MockUserLocalDataSource extends Mock implements UserLocalDataSource {}
+
 Future<void> main() {
   MockDatabase mockDatabase;
+  MockUserLocalDataSource mockUserLocalDataSource;
   ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
 
   final tValidPk = 1;
-
-  final tUser = User(
-    firstName: 'v',
-    lastName: 'c',
-    email: 'v@g.com',
-    role: Role.teacher,
-    password: '123',
-    id: 1,
-  );
-
-  final tUserModel = userEntityToModel(tUser);
 
   final tClassroomInputModel1 =
       ClassroomModel(tutorId: 1, grade: 1, name: "A", localId: null);
@@ -54,11 +45,15 @@ Future<void> main() {
   final tClassroomModels = [tClassroomInputModel1, tClassroomInputModel2];
 
   setUp(() async {
+    mockUserLocalDataSource = MockUserLocalDataSource();
     mockDatabase = MockDatabase();
 
     classroomLocalDataSourceImpl = ClassroomLocalDataSourceImpl(
       database: mockDatabase,
+      userLocalDataSource: mockUserLocalDataSource,
     );
+
+    when(mockUserLocalDataSource.getUserId()).thenAnswer((_) async => 1);
   });
 
   group("cacheClassroom", () {
@@ -112,7 +107,7 @@ Future<void> main() {
           .thenAnswer((_) async => tClassroomModels);
 
       final result =
-          await classroomLocalDataSourceImpl.getClassroomsFromCache(tUserModel);
+          await classroomLocalDataSourceImpl.getClassroomsFromCache();
 
       verify(mockDatabase.getClassrooms(tValidPk));
       final testResult = listEquals(result, tClassroomModels);
@@ -123,7 +118,7 @@ Future<void> main() {
       when(mockDatabase.getClassrooms(tValidPk)).thenAnswer((_) async => []);
 
       final result =
-          await classroomLocalDataSourceImpl.getClassroomsFromCache(tUserModel);
+          await classroomLocalDataSourceImpl.getClassroomsFromCache();
 
       verify(mockDatabase.getClassrooms(tValidPk));
       final testResult = listEquals(result, []);
@@ -135,8 +130,8 @@ Future<void> main() {
           .thenThrow(SqliteException(787, ""));
 
       expect(
-          () async => await classroomLocalDataSourceImpl
-              .getClassroomsFromCache(tUserModel),
+          () async =>
+              await classroomLocalDataSourceImpl.getClassroomsFromCache(),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
