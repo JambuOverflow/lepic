@@ -8,6 +8,9 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: ./back_end
 
     runs-on: ubuntu-latest
     strategy:
