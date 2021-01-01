@@ -18,6 +18,7 @@ class ClassroomListView extends StatelessWidget {
         Expanded(
           child: ListView.builder(
             shrinkWrap: true,
+            itemCount: _state.classrooms.length,
             itemBuilder: (context, index) {
               return Dismissible(
                 key: UniqueKey(),
