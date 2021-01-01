@@ -67,22 +67,20 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     try {
       var model =
           await clasrooomEntityModelConverter.classroomEntityToModel(classroom);
-      await localDataSource.deleteClassroomFromCache(model);
+      return Right(await localDataSource.deleteClassroomFromCache(model));
     } on CacheException {
       return Left(CacheFailure());
     }
   }
 
   @override
-  Future<Either<Failure, List<Classroom>>> getClassrooms(User user) async {
-    return await _tryGetClassrooms(user);
+  Future<Either<Failure, List<Classroom>>> getClassrooms() async {
+    return await _tryGetClassrooms();
   }
 
-  Future<Either<Failure, List<Classroom>>> _tryGetClassrooms(User user) async {
+  Future<Either<Failure, List<Classroom>>> _tryGetClassrooms() async {
     try {
-      var userModel = userEntityToModel(user);
-      var listClassroomModel =
-          await localDataSource.getClassroomsFromCache(userModel);
+      var listClassroomModel = await localDataSource.getClassroomsFromCache();
       var listClassroomEntity = [
         for (var model in listClassroomModel)
           clasrooomEntityModelConverter.classroomModelToEntity(model)

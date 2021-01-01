@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
 import 'package:mobile/features/class_management/domain/repositories/classroom_repository.dart';
@@ -33,14 +34,19 @@ void init() {
     () => ClassroomRepositoryImpl(
       localDataSource: sl(),
       clock: sl(),
+      clasrooomEntityModelConverter: sl(),
     ),
   );
 
   sl.registerLazySingleton<ClassroomLocalDataSource>(
     () => ClassroomLocalDataSourceImpl(
       database: sl(),
+      userLocalDataSource: sl(),
     ),
   );
 
+  sl.registerLazySingleton(
+    () => ClassroomEntityModelConverter(userLocalDataSource: sl()),
+  );
   sl.registerLazySingleton(() => Clock());
 }
