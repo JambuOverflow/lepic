@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../bloc/classroom_bloc.dart';
+import 'package:mobile/features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'update_classroom_dialog.dart';
 
 class ClassroomItem extends StatelessWidget {

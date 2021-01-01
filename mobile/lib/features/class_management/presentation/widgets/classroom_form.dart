@@ -26,6 +26,7 @@ class ClassroomForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           TextFormField(
+            keyboardType: TextInputType.number,
             controller: _gradeController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),

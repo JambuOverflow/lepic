@@ -14,7 +14,7 @@ class CreateClassroomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create classroom'),
+      title: Text('Create Classroom'),
       content: ClassroomForm(
         nameController: _nameController,
         gradeController: _gradeController,
