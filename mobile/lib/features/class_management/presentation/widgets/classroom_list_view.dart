@@ -4,26 +4,24 @@ import 'package:mobile/features/class_management/presentation/bloc/classroom_blo
 import 'classroom_item.dart';
 
 class ClassroomListView extends StatelessWidget {
-  final ClassroomsGot _state;
-
-  const ClassroomListView({Key key, @required ClassroomsGot state})
-      : _state = state,
-        super(key: key);
+  const ClassroomListView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<ClassroomBloc>(context);
+    
     return Column(
       children: <Widget>[
-        Text("Total classes:${_state.classrooms.length}"),
+        Text("Total classes:${bloc.classrooms.length}"),
         Expanded(
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: _state.classrooms.length,
+            itemCount: bloc.classrooms.length,
             itemBuilder: (context, index) {
               return Dismissible(
                 key: UniqueKey(),
                 background: Container(),
-                child: ClassroomItem(index: index, state: _state),
+                child: ClassroomItem(index: index),
                 onDismissed: (_) {
                   emitDeleteClassroomEvent(context: context, index: index);
                   showDeletedClassroomSnackBar(context, index);
@@ -40,7 +38,7 @@ class ClassroomListView extends StatelessWidget {
       {@required BuildContext context, @required int index}) {
     BlocProvider.of<ClassroomBloc>(context).add(
       DeleteClassroomEvent(
-        classroom: _state.classrooms[index],
+        classroom: BlocProvider.of<ClassroomBloc>(context).classrooms[index],
       ),
     );
   }
@@ -49,7 +47,7 @@ class ClassroomListView extends StatelessWidget {
     Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "student ${_state.classrooms[index].name} deleted",
+          "student ${BlocProvider.of<ClassroomBloc>(context).classrooms[index].name} deleted",
         ),
       ),
     );

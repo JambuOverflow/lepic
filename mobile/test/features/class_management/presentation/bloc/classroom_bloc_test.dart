@@ -54,7 +54,7 @@ void main() {
   });
 
   test('initial state should be GettingClassroom', () {
-    expect(bloc.state, GettingClassrooms());
+    expect(bloc.state, ClassroomsLoadInProgress());
   });
 
   test('should emit [Error] when user is not authenticated', () {
@@ -63,7 +63,7 @@ void main() {
     final expected = Error(message: 'User not authenticated');
 
     expectLater(bloc, emits(expected));
-    bloc.add(GetClassroomsEvent());
+    bloc.add(LoadClassroomsEvent());
   });
 
   final tUser = User(
@@ -79,6 +79,11 @@ void main() {
     grade: 1,
     name: 'className',
   );
+
+  final List<Classroom> tClassrooms = [
+    tClassroom,
+    Classroom(grade: 7, name: 'no name'),
+  ];
 
   final tGradeString = tClassroom.grade.toString();
   final tGradeParsed = tClassroom.grade;
@@ -125,6 +130,7 @@ void main() {
         setUpMockInputConverterSuccess();
         setUpMockAuthAuthenticated();
 
+        when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
         when(createClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
         bloc.add(CreateClassroomEvent(
@@ -138,15 +144,16 @@ void main() {
       },
     );
 
-    test('''should emit [CreatingClassroom, ClassroomCreated] when
+    test('''should emit [CreatingClassroom, ClassroomsLoaded] when
         classroom creation is successful''', () async {
       setUpMockInputConverterSuccess();
       setUpMockAuthAuthenticated();
+      when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
       when(createClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
       final expected = [
         CreatingClassroom(),
-        ClassroomCreated(newClassroom: tClassroom),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -160,11 +167,12 @@ void main() {
         classroom creation is successful''', () async {
       setUpMockInputConverterSuccess();
       setUpMockAuthAuthenticated();
+
       when(createClassroom(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         CreatingClassroom(),
-        Error(message: 'could not create a classroom'),
+        Error(message: 'Unexpected Error'),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -192,15 +200,16 @@ void main() {
   });
 
   group('deleteClassroom', () {
-    test('''should emit [DeletingClassroom, ClassroomDeleted] when
+    test('''should emit [DeletingClassroom, ClassroomsLoaded] when
         classroom creation is successful''', () async {
       setUpMockAuthAuthenticated();
 
+      when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
       when(deleteClassroom(any)).thenAnswer((_) async => Right(null));
 
       final expected = [
         DeletingClassroom(),
-        ClassroomDeleted(),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -239,16 +248,17 @@ void main() {
   });
 
   group('updateClassroom', () {
-    test('''should emit [UpdatingClassrooom, ClassroomUpdated] when
+    test('''should emit [UpdatingClassrooom, ClassroomsLoaded] when
          classroom update is successful''', () async {
       setUpMockAuthAuthenticated();
       setUpMockInputConverterSuccess();
 
+      when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
       when(updateClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
       final expected = [
         UpdatingClassroom(),
-        ClassroomUpdated(updatedClassroom: tClassroom),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -278,24 +288,19 @@ void main() {
   });
 
   group('''getClassrooms''', () {
-    final List<Classroom> tClassrooms = [
-      tClassroom,
-      Classroom( grade: 7, name: 'no name'),
-    ];
-
-    test('''Should emit [Gettingclassrooms, classroomGot] when
+    test('''Should emit [Gettingclassrooms, ClassroomsLoaded] when
          get a classroom list''', () {
       setUpMockAuthAuthenticated();
 
       when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
 
       final expected = [
-        GettingClassrooms(),
-        ClassroomsGot(classrooms: tClassrooms),
+        ClassroomsLoadInProgress(),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetClassroomsEvent());
+      bloc.add(LoadClassroomsEvent());
     });
 
     test('''Should emit [Gettingclassrooms, Error] when could not 
@@ -305,12 +310,12 @@ void main() {
       when(getClassrooms(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
-        GettingClassrooms(),
+        ClassroomsLoadInProgress(),
         Error(message: 'Not able to get classroom list'),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetClassroomsEvent());
+      bloc.add(LoadClassroomsEvent());
     });
   });
 }

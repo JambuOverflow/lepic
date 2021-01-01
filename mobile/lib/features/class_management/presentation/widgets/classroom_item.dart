@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'package:mobile/features/class_management/presentation/pages/classroom_detail_page.dart';
 import 'update_classroom_dialog.dart';
 
 class ClassroomItem extends StatelessWidget {
   final int index;
-  final ClassroomsGot state;
 
-  const ClassroomItem({Key key, this.index, this.state}) : super(key: key);
+  const ClassroomItem({Key key, this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<ClassroomBloc>(context);
+
     return GestureDetector(
       child: ListTile(
         title: Hero(
-          tag: state.classrooms[index].id,
+          tag: bloc.classrooms[index].name,
           child: Text(
-            'Class: ${state.classrooms[index].name}',
+            'Class: ${bloc.classrooms[index].name}',
           ),
         ),
         subtitle: Hero(
-          tag: state.classrooms[index].grade,
+          tag: bloc.classrooms[index].name,
           child: Text(
-            'Grade: ${state.classrooms[index].grade}',
+            'Grade: ${bloc.classrooms[index].grade}',
           ),
         ),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ClassroomDetailPage(
-              classroom: state.classrooms[index],
+              classroom: bloc.classrooms[index],
             ),
           ),
         ),
@@ -40,7 +42,7 @@ class ClassroomItem extends StatelessWidget {
                 barrierDismissible: true,
                 context: context,
                 builder: (_) => UpdateClassroomDialog(
-                  classroom: state.classrooms[index],
+                  classroom: bloc.classrooms[index],
                 ),
               ),
             ),
