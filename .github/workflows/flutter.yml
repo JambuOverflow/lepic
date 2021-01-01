@@ -39,4 +39,4 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         working-directory: ./mobile
-        run: flutter test/
+        run: flutter test
