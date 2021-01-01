@@ -66,7 +66,7 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   @override
   Future<List<ClassroomModel>> getClassroomsFromCache(
       UserModel userModel) async {
-    final tutorId = userModel.localId;
+    final tutorId = userModel.id;
     try {
       return await this.database.getClassrooms(tutorId);
     } on SqliteException {

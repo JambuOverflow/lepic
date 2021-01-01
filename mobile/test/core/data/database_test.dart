@@ -10,7 +10,7 @@ void main() {
   final tValidPrimaryKey = 1;
 
   final tUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'v',
     lastName: 'c',
     email: 'v@g.com',
@@ -20,7 +20,7 @@ void main() {
   );
 
   final tUpdatedUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'v',
     lastName: 's',
     email: 'vs@g.com',

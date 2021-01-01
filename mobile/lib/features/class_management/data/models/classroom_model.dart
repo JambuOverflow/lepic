@@ -11,6 +11,5 @@ class ClassroomModels extends Table {
   DateTimeColumn get clientLastUpdated => dateTime()();
   BoolColumn get deleted => boolean()();
   @JsonKey("tutor_id")
-  IntColumn get tutorId =>
-      integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
+  IntColumn get tutorId => integer()();
 }

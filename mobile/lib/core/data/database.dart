@@ -35,7 +35,7 @@ class Database extends _$Database {
 
   Future<UserModel> get activeUser => select(userModels).getSingle();
   Future<UserModel> userById(int id) {
-    return (select(userModels)..where((t) => t.localId.equals(id))).getSingle();
+    return (select(userModels)..where((t) => t.id.equals(id))).getSingle();
   }
 
   Future<bool> updateUser(UserModel model) async {
@@ -126,5 +126,5 @@ class Database extends _$Database {
   }
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 }
