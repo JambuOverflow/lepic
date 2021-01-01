@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/features/class_management/presentation/bloc/classroom_bloc.dart';
+import 'package:mobile/features/class_management/presentation/pages/classroom_detail_page.dart';
 import 'update_classroom_dialog.dart';
 
 class ClassroomItem extends StatelessWidget {
@@ -10,26 +11,41 @@ class ClassroomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        '${state.classrooms[index].name}',
-      ),
-      subtitle: Text(
-        '${state.classrooms[index].grade}',
-      ),
-      trailing: Wrap(
-        children: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () => showDialog(
-              barrierDismissible: true,
-              context: context,
-              builder: (_) => UpdateClassroomDialog(
-                classroom: state.classrooms[index],
-              ),
+    return GestureDetector(
+      child: ListTile(
+        title: Hero(
+          tag: state.classrooms[index].id,
+          child: Text(
+            'Class: ${state.classrooms[index].name}',
+          ),
+        ),
+        subtitle: Hero(
+          tag: state.classrooms[index].grade,
+          child: Text(
+            'Grade: ${state.classrooms[index].grade}',
+          ),
+        ),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ClassroomDetailPage(
+              classroom: state.classrooms[index],
             ),
           ),
-        ],
+        ),
+        trailing: Wrap(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () => showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (_) => UpdateClassroomDialog(
+                  classroom: state.classrooms[index],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
