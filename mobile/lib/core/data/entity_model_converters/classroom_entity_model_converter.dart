@@ -35,6 +35,7 @@ class ClassroomEntityModelConverter {
     } else {
       lastUpdated = entity.lastUpdated;
     }
+
     final int userId = await userLocalDataSource.getUserId();
 
     return ClassroomModel(
