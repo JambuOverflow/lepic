@@ -4,7 +4,6 @@ import 'package:mobile/features/class_management/presentation/widgets/classroom_
 import 'package:mobile/features/class_management/presentation/widgets/create_classroom_dialog.dart';
 import '../bloc/classroom_bloc.dart';
 
-
 class ClassroomsPage extends StatefulWidget {
   @override
   _ClassroomsPageState createState() => _ClassroomsPageState();
@@ -14,7 +13,7 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ClassroomBloc>(context).add(GetClassroomsEvent());
+    BlocProvider.of<ClassroomBloc>(context).add(LoadClassroomsEvent());
   }
 
   @override
@@ -31,13 +30,10 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
             }
           },
           builder: (context, state) {
-            if (state is GettingClassrooms) {
+            if (state is ClassroomsLoadInProgress) {
               return Center(child: CircularProgressIndicator());
-            } else if (state is ClassroomsGot) {
-              if (state.classrooms.isEmpty)
-                return Center(child: Text('Nothing here'));
-              else
-                return ClassroomListView(state: state);
+            } else if (state is ClassroomsLoaded) {
+              return ClassroomListView();
             } else
               return Center(child: const Text('No data'));
           },

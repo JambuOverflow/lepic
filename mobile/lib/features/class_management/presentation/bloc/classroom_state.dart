@@ -33,16 +33,9 @@ class ClassroomUpdated extends ClassroomState {
   List<Object> get props => [updatedClassroom];
 }
 
-class GettingClassrooms extends ClassroomState {}
+class ClassroomsLoadInProgress extends ClassroomState {}
 
-class ClassroomsGot extends ClassroomState {
-  final List<Classroom> classrooms;
-
-  ClassroomsGot({@required this.classrooms});
-
-  @override
-  List<Object> get props => [classrooms];
-}
+class ClassroomsLoaded extends ClassroomState {}
 
 class Error extends ClassroomState {
   final String message;
