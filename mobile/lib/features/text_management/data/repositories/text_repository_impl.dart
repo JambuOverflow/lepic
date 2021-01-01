@@ -1,10 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
@@ -14,9 +12,11 @@ import '../data_sources/text_local_data_source.dart';
 
 class TextRepositoryImpl implements TextRepository {
   final TextLocalDataSource localDataSource;
+  final ClassroomEntityModelConverter classroomEntityModelConverter;
 
   TextRepositoryImpl({
     @required this.localDataSource,
+    @required this.classroomEntityModelConverter,
   });
 
   @override
@@ -74,7 +74,8 @@ class TextRepositoryImpl implements TextRepository {
   Future<Either<Failure, List<MyText>>> _tryGetTexts(
       Classroom classroom) async {
     try {
-      var classroomModel = classroomEntityToModel(classroom);
+      var classroomModel =
+          await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listTextModel =
           await localDataSource.getTextsFromCache(classroomModel);
       var listTextEntity = [

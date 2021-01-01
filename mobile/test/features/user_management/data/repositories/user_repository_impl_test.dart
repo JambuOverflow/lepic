@@ -46,7 +46,7 @@ void main() {
     );
 
     tUserModel = UserModel(
-      localId: 1,
+      id: 1,
       firstName: 'v',
       lastName: 'c',
       email: 'v@g.com',
@@ -262,7 +262,7 @@ void main() {
 
       test('should cache remote user when call is successful', () async {
         final completeUserModel = UserModel(
-          localId: 5,
+          id: 5,
           firstName: 'as',
           lastName: 'cd',
           email: 'as@cd.com',

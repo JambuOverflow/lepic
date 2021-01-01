@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/core/presentation/widgets/drawer_overlay.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
 import '../../domain/entities/text.dart';
@@ -20,7 +19,6 @@ class _TextsPageState extends State<TextsPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text('Texts')),
-      drawer: DrawerOverlay(),
       body: ListView.builder(
         itemCount: _bloc.texts.length,
         itemBuilder: (context, index) {

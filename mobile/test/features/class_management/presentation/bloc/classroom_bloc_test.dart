@@ -76,7 +76,6 @@ void main() {
   );
 
   final tClassroom = Classroom(
-    tutorId: tUser.localId,
     grade: 1,
     name: 'className',
   );
@@ -281,7 +280,7 @@ void main() {
   group('''getClassrooms''', () {
     final List<Classroom> tClassrooms = [
       tClassroom,
-      Classroom(tutorId: tUser.localId, grade: 7, name: 'no name'),
+      Classroom( grade: 7, name: 'no name'),
     ];
 
     test('''Should emit [Gettingclassrooms, classroomGot] when

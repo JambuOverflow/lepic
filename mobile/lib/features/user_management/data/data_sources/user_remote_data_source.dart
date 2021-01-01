@@ -73,7 +73,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     try {
       final http.Response response = await client.patch(
-        API_URL + 'users/' + user.localId.toString(),
+        API_URL + 'users/' + user.id.toString(),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Token " + token,

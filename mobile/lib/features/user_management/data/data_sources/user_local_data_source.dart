@@ -13,6 +13,8 @@ abstract class UserLocalDataSource {
   /// Throws [CacheException] if there's no cached [UserModel].
   Future<UserModel> getLoggedInUser();
 
+  Future<int> getUserId();
+
   Future<void> cacheUser(UserModel user);
 
   Future<void> storeTokenSecurely({
@@ -62,7 +64,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
     @required String token,
     @required UserModel user,
   }) async {
-    final userId = user.localId.toString();
+    final userId = user.id.toString();
     return await secureStorage.write(key: userId, value: token);
   }
 
@@ -74,6 +76,15 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       return token;
     else
       throw CacheException();
+  }
+
+  Future<int> getUserId() async {
+    try {
+      final UserModel user = await getLoggedInUser();
+      return user.id;
+    } catch (_) {
+      throw CacheException();
+    }
   }
 
   @override

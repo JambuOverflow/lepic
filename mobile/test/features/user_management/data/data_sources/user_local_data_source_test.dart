@@ -18,7 +18,7 @@ void main() {
   MockSecureStorage mockSecureStorage;
 
   UserModel tUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'ab',
     lastName: 'c',
     email: 'ab@g.com',
@@ -62,7 +62,7 @@ void main() {
     test('should override the User in the secure storage', () async {
       final userJsonString = tUserModel.toJsonString();
       when(mockSecureStorage.write(key: loggedInUserKey, value: userJsonString))
-          .thenAnswer((_) async => tUserModel.localId);
+          .thenAnswer((_) async => tUserModel.id);
 
       await dataSource.cacheUser(tUserModel);
 
@@ -82,7 +82,7 @@ void main() {
 
       await dataSource.storeTokenSecurely(token: token, user: tUserModel);
 
-      final key = tUserModel.localId.toString();
+      final key = tUserModel.id.toString();
       verify(mockSecureStorage.write(key: key, value: token));
     });
   });
@@ -118,6 +118,19 @@ void main() {
       await dataSource.logout();
 
       verify(mockSecureStorage.deleteAll());
+    });
+  });
+
+  group('getUserId', () {
+    test('should get userId',
+        () async {
+      final userModelString = tUserModel.toJsonString();
+      when(mockSecureStorage.read(key: loggedInUserKey))
+          .thenAnswer((_) async => userModelString);
+
+      final result = await dataSource.getUserId();
+
+      expect(result, 1);
     });
   });
 }

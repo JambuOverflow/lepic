@@ -1,9 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
@@ -13,12 +14,16 @@ import 'package:mockito/mockito.dart';
 
 class MockTextLocalDataSource extends Mock implements TextLocalDataSource {}
 
+class MockClassroomEntityModelConverter extends Mock
+    implements ClassroomEntityModelConverter {}
+
 void main() {
   MockTextLocalDataSource mockLocalDataSource;
   TextRepositoryImpl repository;
+  ClassroomModel tClassroomModel;
+  MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
 
   final tClassroom = Classroom(
-    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,
@@ -31,17 +36,22 @@ void main() {
   );
 
   final tTextModel = textEntityToModel(tText);
-  final tClassroomModel = classroomEntityToModel(tClassroom);
 
   final tTextsModels = [tTextModel, tTextModel];
   final tTexts = [tText, tText];
 
   setUp(() {
     mockLocalDataSource = MockTextLocalDataSource();
+    mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
+
+    tClassroomModel = ClassroomModel(grade: 1, localId: 1, name: "A");
 
     repository = TextRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      classroomEntityModelConverter: mockClassroomEntityModelConverter,
     );
+    when(mockClassroomEntityModelConverter.classroomEntityToModel(tClassroom))
+        .thenAnswer((_) async => tClassroomModel);
   });
 
   group('createText', () {

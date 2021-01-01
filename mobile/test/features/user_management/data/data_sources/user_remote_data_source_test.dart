@@ -20,7 +20,7 @@ void main() {
   MockHttpClient mockHttpClient;
 
   final tUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'ab',
     lastName: 'c',
     email: 'abc@g.com',
@@ -77,7 +77,7 @@ void main() {
 
   group('updateUser', () {
     final tUserUpdatedModel = UserModel(
-      localId: 1,
+      id: 1,
       firstName: 'ab',
       lastName: 'c',
       email: 'a@g.com',
