@@ -1,4 +1,3 @@
-
 import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/moor.dart';
@@ -8,9 +7,10 @@ class Serializer extends ValueSerializer {
   T fromJson<T>(json) {
     if (T == Role)
       return Role.values[json] as T;
-    else if (T == DateTime)
-      return DateTime.fromMillisecondsSinceEpoch(json, isUtc: true) as T;
-    else if (T == Modality)
+    else if (T == DateTime) {
+      final DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(json, isUtc: true);
+      return dateTime as T;
+    } else if (T == Modality)
       return Modality.values[json] as T;
     else if (json == 'set to null')
       return null;

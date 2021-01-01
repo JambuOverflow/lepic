@@ -3,6 +3,8 @@
         "local_id": 1,
         "grade": 1,
         "title": "C",
-        "tutor_id": 1
+        "tutor_id": 1,
+        "last_update": "2010-01-01 03:00:00.000Z",
+        "deleted": false
     }
 ]

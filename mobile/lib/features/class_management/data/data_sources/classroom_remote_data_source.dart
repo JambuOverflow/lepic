@@ -13,25 +13,67 @@ import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import '../../../../core/network/response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:clock/clock.dart';
 
-class SyncClassroom {
+abstract class ClassroomRemoteDataSource {
+  /// Returns the url of the object
+  String getUrl();
+
+  /// Does a pull and push
+  Future<Response> synchronize();
+
+  /// Gets a response from the server with the objects
+  /// that have 'last_update' > lastSyncTime
+  Future<http.Response> getServerUpdated(String lastSyncTime, String token);
+
+  /// Returns the headers of requests
+  Map<String, String> getHeaders(String token);
+
+  /// Gets the user token
+  Future<String> getToken();
+
+  /// update outdated client objects
+  Future<Response> pull();
+
+  /// update outdated server objects
+  Future<Response> push();
+
+  /// converts server format to classroomModel
+  ClassroomModel serverJsonToClassroomModel(element);
+
+  /// Checks if model localId is in collection
+  isInCollection(ClassroomModel model, List<ClassroomModel> collection);
+
+  /// Gets all classrooms form server
+  Future<List<ClassroomModel>> getClassroomsInServer(String token);
+
+  /// Sends a put request to the server
+  Future<void> putClassroom(ClassroomModel element, String token);
+
+  /// Sends a post request to the server
+  Future<void> postClassroom(ClassroomModel element, String token);
+}
+
+class ClassroomRemoteDataSourceImpl extends ClassroomRemoteDataSource {
   final http.Client client;
   final FlutterSecureStorage secureStorage;
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
   final String api_url;
+  final Clock clock;
   DateTime lastSyncTime = DateTime(2010).toUtc();
 
-  SyncClassroom(
+  ClassroomRemoteDataSourceImpl(
       {@required this.client,
       @required this.secureStorage,
       @required this.classroomLocalDataSourceImpl,
-      @required this.api_url});
+      @required this.api_url,
+      @required this.clock});
 
   String getUrl() {
     return this.api_url + "classes/";
   }
 
-  Future<Response> sync() async {
+  Future<Response> synchronize() async {
     Response pullResponse = await this.pull();
     if (pullResponse is UnsuccessfulResponse) {
       return pullResponse;
@@ -42,7 +84,7 @@ class SyncClassroom {
       return pushResponse;
     }
 
-    this.lastSyncTime = DateTime.now().toUtc();
+    this.lastSyncTime = clock.now().toUtc();
     return SuccessfulResponse();
   }
 
@@ -81,22 +123,34 @@ class SyncClassroom {
       return UnsuccessfulResponse(message: response.body);
     }
 
-    Iterable objects = json.decode(response.body);
+    final body = response.body;
+    Iterable objects = json.decode(body);
 
-    objects.forEach((element) async {
-      ClassroomModel model = ClassroomModel(
-        localId: element['local_id'],
-        grade: element['grade'],
-        title: element['title'],
-        lastUpdated: DateTime.parse(element['last_update']),
-        school: element['school'],
-        tutorId: 1,
-        deleted: element['deleted'],
-        clientLastUpdated: DateTime.now().toUtc()
-      );
-      await this.classroomLocalDataSourceImpl.cacheClassroom(model);
-    });
+    for (var element in objects) {
+      ClassroomModel model = serverJsonToClassroomModel(element);
+      await classroomLocalDataSourceImpl.cacheClassroom(model);
+    }
     return SuccessfulResponse();
+  }
+
+  ClassroomModel serverJsonToClassroomModel(element) {
+    final int localId = element['local_id'];
+    final int grade = element['grade'];
+    final String title = element['title'];
+    final DateTime lastUpdated = DateTime.parse(element['last_update']);
+    final int school = element['school'];
+    final bool deleted = element['deleted'];
+    final DateTime clientLastUpdated = clock.now().toUtc();
+    ClassroomModel model = ClassroomModel(
+        localId: localId,
+        grade: grade,
+        title: title,
+        lastUpdated: lastUpdated,
+        school: school,
+        tutorId: 1,
+        deleted: deleted,
+        clientLastUpdated: clientLastUpdated);
+    return model;
   }
 
   bool isInCollection(ClassroomModel model, List<ClassroomModel> collection) {
@@ -120,14 +174,14 @@ class SyncClassroom {
       List<ClassroomModel> classroomsInServer =
           await getClassroomsInServer(token);
       bool inServer;
-      classroomsToPush.forEach((element) async {
+      for (var element in classroomsToPush) {
         inServer = this.isInCollection(element, classroomsInServer);
         if (inServer) {
           await putClassroom(element, token);
         } else {
           await postClassroom(element, token);
         }
-      });
+      }
     } on ServerException {
       return UnsuccessfulResponse(message: "Error when pushing");
     }
@@ -139,9 +193,10 @@ class SyncClassroom {
     if (response.statusCode == 200) {
       Iterable objects = json.decode(response.body);
       List<ClassroomModel> classroomsInServer = [];
-      objects.forEach((element) {
-        classroomsInServer.add(ClassroomModel.fromJson(element));
-      });
+      for (var element in objects) {
+        ClassroomModel model = serverJsonToClassroomModel(element);
+        classroomsInServer.add(model);
+      }
       return classroomsInServer;
     } else {
       throw ServerException();
@@ -157,7 +212,6 @@ class SyncClassroom {
           headers: headers,
           body: body,
         );
-    print(response.statusCode);
     if (response.statusCode != 200) {
       throw ServerException(message: response.body);
     }

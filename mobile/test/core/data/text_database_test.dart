@@ -76,13 +76,13 @@ void main() {
 
   final tClassroomCompanion = ClassroomModelsCompanion(
     grade: Value(1),
-    name: Value("varro"),
+    title: Value("varro"),
     tutorId: Value(1),
     lastUpdated: Value(DateTime.now()),
     clientLastUpdated: Value(DateTime.now()),
     deleted: Value(false),
     
-    schoolId: Value(1),
+    school: Value(1),
   );
 
   Database database;

@@ -17,8 +17,7 @@ import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
-
-import '../../../../fixture/fixture_reader.dart';
+import 'package:clock/clock.dart';
 
 class MockSecureStorage extends Mock implements FlutterSecureStorage {}
 
@@ -27,7 +26,7 @@ void main() {
   UserRemoteDataSourceImpl userRemoteDataSourceImpl;
   MockSecureStorage mockSecureStorage;
   ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
-  SyncClassroom syncClassroom;
+  ClassroomRemoteDataSourceImpl syncClassroom;
   String url;
   String token;
   final userModel = UserModel(
@@ -82,6 +81,48 @@ void main() {
       clientLastUpdated: DateTime(2020).toUtc(),
       school: 1);
 
+  final classroomToDelete = ClassroomModel(
+      tutorId: 1,
+      grade: 3,
+      title: "A",
+      localId: 3,
+      deleted: false,
+      lastUpdated: DateTime(2020).toUtc(),
+      clientLastUpdated: DateTime(2020).toUtc(),
+      school: 1);
+
+  final clientUpdateClasstoom = ClassroomModel(
+      tutorId: 1,
+      grade: 2,
+      title: "B",
+      localId: 2,
+      deleted: false,
+      lastUpdated: DateTime(2020).toUtc(),
+      clientLastUpdated: DateTime(2020).toUtc(),
+      school: 1);
+
+  final clientNewClasstoom = ClassroomModel(
+      tutorId: 1,
+      grade: 4,
+      title: "A",
+      localId: 4,
+      deleted: false,
+      lastUpdated: DateTime(2020).toUtc(),
+      clientLastUpdated: DateTime(2020).toUtc(),
+      school: 1);
+
+  final clientDeleteClasstoom = ClassroomModel(
+      tutorId: 1,
+      grade: 4,
+      title: "A",
+      localId: 4,
+      deleted: true,
+      lastUpdated: DateTime(2020).toUtc(),
+      clientLastUpdated: DateTime(2020).toUtc(),
+      school: 1);
+
+  DateTime clientPushTime;
+
   Database database;
   VmDatabase vmDatabase;
 
@@ -105,11 +146,12 @@ void main() {
       database: database,
     );
 
-    syncClassroom = SyncClassroom(
+    syncClassroom = ClassroomRemoteDataSourceImpl(
       client: client,
       secureStorage: mockSecureStorage,
       classroomLocalDataSourceImpl: classroomLocalDataSourceImpl,
       api_url: url,
+      clock: Clock(),
     );
 
     database.insertUser(userModel);
@@ -125,7 +167,7 @@ void main() {
   });
 
   group('createAccount', () {
-    test('should return a correct response from the server', () async {
+    test('should return a correct response from the server x', () async {
       final response = await userRemoteDataSourceImpl.createUser(userModel);
 
       expect(response, SuccessfulResponse());
@@ -133,7 +175,7 @@ void main() {
   });
 
   group('createSchool', () {
-    test('should return a correct response from the server', () async {
+    test('should return a correct response from the server c', () async {
       Response response = await userRemoteDataSourceImpl.login(userModel);
 
       token = (response as TokenResponse).token;
@@ -178,7 +220,7 @@ void main() {
   });
 
   group('PutClassroom', () {
-    test('should run without a exception response from the server', () async {
+    test('should run without a exception response from the server b', () async {
       Response response = await userRemoteDataSourceImpl.login(userModel);
       token = (response as TokenResponse).token;
       try {
@@ -252,16 +294,20 @@ void main() {
     setUp(() async {
       await database.getClassrooms(1);
       await database.insertClassroom(tClassroomModel.toCompanion(true));
+      await database.insertClassroom(classroomToDelete.toCompanion(true));
     });
 
-    test('should run without a exception response from the server', () async {
+    test("""should update a outdated classroom in client, create a new 
+    classroom that was created in server and delete a classroom that was deleted
+    in server""", () async {
       // arrange
       Response response = await userRemoteDataSourceImpl.login(userModel);
       token = (response as TokenResponse).token;
       when(mockSecureStorage.read(key: 'token')).thenAnswer((_) async => token);
-      await database.getClassrooms(1);
-
-      //await syncClassroom.postClassroom(newClassroomServer, token);
+      await syncClassroom.postClassroom(newClassroomServer, token);
+      await syncClassroom.postClassroom(classroomToDelete, token);
+      await syncClassroom.putClassroom(
+          classroomToDelete.copyWith(deleted: true), token);
 
       // run
       Response pullResponse = await syncClassroom.pull();
@@ -269,6 +315,7 @@ void main() {
       expect(pullResponse, SuccessfulResponse());
       final List<ClassroomModel> classroomModels =
           await classroomLocalDataSourceImpl.getClassroomsFromCache(userModel);
+      expect(classroomModels.length, 2);
       expect(classroomModels[0].localId, tClassroomModelPut.localId);
       expect(classroomModels[0].grade, tClassroomModelPut.grade);
       expect(classroomModels[0].school, tClassroomModelPut.school);
@@ -284,6 +331,52 @@ void main() {
       expect(classroomModels[1].grade, newClassroomServer.grade);
       equals(classroomModels[1].clientLastUpdated.isBefore(DateTime.now()));
       equals(classroomModels[1].lastUpdated.isBefore(DateTime.now()));
+    });
+  });
+
+  group('push', () {
+    setUp(() async {
+      await database.getClassrooms(1);
+      clientPushTime = DateTime.now().toUtc();
+      await database.insertClassroom(newClassroomServer.toCompanion(true));
+      await database.updateClassroom(
+          clientUpdateClasstoom.copyWith(clientLastUpdated: clientPushTime));
+      await database.insertClassroom(clientNewClasstoom
+          .copyWith(clientLastUpdated: clientPushTime)
+          .toCompanion(true));
+    });
+
+    test("""should update a outdated classroom in client, create a new 
+    classroom that was created in server and delete a classroom that was deleted
+    in server""", () async {
+      // arrange
+      Response response = await userRemoteDataSourceImpl.login(userModel);
+      token = (response as TokenResponse).token;
+      when(mockSecureStorage.read(key: 'token')).thenAnswer((_) async => token);
+
+      // run
+      syncClassroom.lastSyncTime = clientPushTime;
+      Response pullResponse = await syncClassroom.push();
+
+      expect(pullResponse, SuccessfulResponse());
+      final List<ClassroomModel> classroomModels =
+          await classroomLocalDataSourceImpl.getClassroomsFromCache(userModel);
+      final http.Response getResponse = await syncClassroom.getServerUpdated(
+          clientPushTime.toString(), token);
+      Iterable objects = json.decode(getResponse.body);
+
+      expect(objects.length, 2);
+      var i = 0;
+      for (var element in objects) {
+        expect(classroomModels[i].localId, element['local_id']);
+        expect(classroomModels[i].grade, element['grade']);
+        expect(classroomModels[i].school, element['school']);
+        expect(classroomModels[i].deleted, element['deleted']);
+        expect(classroomModels[i].grade, element['grade']);
+        equals(DateTime.parse(element['last_update']).isBefore(DateTime.now()));
+        equals(DateTime.parse(element['last_update']).isAfter(clientPushTime));
+        i += 1;
+      }
     });
   });
 }

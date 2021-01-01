@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/exceptions.dart';
+import 'package:mobile/core/network/response.dart';
+import 'package:mobile/features/class_management/data/data_sources/classroom_remote_data_source.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/core/error/failures.dart';
@@ -13,10 +15,12 @@ import '../data_sources/classroom_local_data_source.dart';
 
 class ClassroomRepositoryImpl implements ClassroomRepository {
   final ClassroomLocalDataSource localDataSource;
+  final ClassroomRemoteDataSource remoteDataSource;
   final Clock clock;
 
   ClassroomRepositoryImpl({
     @required this.localDataSource,
+    @required this.remoteDataSource,
     @required this.clock,
   });
 
@@ -32,6 +36,7 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
       lastUpdated: classroom.lastUpdated,
       clientLastUpdated: lastUpdated,
       deleted: classroom.deleted,
+      schoolId: classroom.schoolId,
     );
   }
 
@@ -105,5 +110,15 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
     } on CacheException {
       return Left(CacheFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, void>> syncClassrooms() async {
+    final Response response = await remoteDataSource.synchronize();
+    if (response is UnsuccessfulResponse) {
+      final UnsuccessfulResponse unsuccessfulResponse =
+          (response as UnsuccessfulResponse);
+      return Left(ServerFailure(message: unsuccessfulResponse.message));
+    } 
   }
 }

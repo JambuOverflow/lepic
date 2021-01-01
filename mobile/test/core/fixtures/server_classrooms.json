@@ -3,12 +3,14 @@
         "local_id": 1,
         "grade": 1,
         "title": "A",
-        "tutor_id": 1
+        "last_update": "2010-01-01 03:00:00.000Z",
+        "deleted": false
     },
     {
     "local_id": 2,
     "grade": 1,
     "title": "B",
-    "tutor_id": 1
+    "last_update": "2010-01-01 03:00:00.000Z",
+    "deleted": false
 }
 ]

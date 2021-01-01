@@ -12,7 +12,7 @@ import 'package:mobile/features/class_management/data/data_sources/classroom_rem
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:matcher/matcher.dart';
-
+import 'package:clock/clock.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -22,11 +22,14 @@ class MockClassroomLocalDataSourceIml extends Mock
 
 class MockSecureStorage extends Mock implements FlutterSecureStorage {}
 
+class MockClock extends Mock implements Clock {}
+
 void main() {
   MockClient mockClient;
-  SyncClassroom syncClassroom;
+  ClassroomRemoteDataSourceImpl syncClassroom;
   MockSecureStorage mockSecureStorage;
   MockClassroomLocalDataSourceIml mockClassroomLocalDataSourceIml;
+  MockClock mockClock;
   final token = "cleidson";
   final validResponse = http.Response("[]", 200);
   final validResponseWithContent =
@@ -41,21 +44,50 @@ void main() {
     HttpHeaders.authorizationHeader: "token cleidson",
   };
 
-  final model1 = ClassroomModel(localId: 1, grade: 1, title: "A", tutorId: 1);
-  final model1Server =
-      ClassroomModel(localId: 1, grade: 1, title: "C", tutorId: 1);
-  final model2 = ClassroomModel(localId: 2, grade: 1, title: "B", tutorId: 1);
+  final lastUpdated = DateTime(2010).toUtc();
+
+  final model1 = ClassroomModel(
+    localId: 1,
+    grade: 1,
+    title: "A",
+    tutorId: 1,
+    deleted: false,
+    lastUpdated: lastUpdated,
+    clientLastUpdated: lastUpdated,
+  );
+  final model1Server = ClassroomModel(
+    localId: 1,
+    grade: 1,
+    title: "C",
+    tutorId: 1,
+    deleted: false,
+    lastUpdated: lastUpdated,
+    clientLastUpdated: lastUpdated,
+  );
+  final model2 = ClassroomModel(
+    localId: 2,
+    grade: 1,
+    title: "B",
+    tutorId: 1,
+    deleted: false,
+    lastUpdated: lastUpdated,
+    clientLastUpdated: lastUpdated,
+  );
 
   setUp(() async {
     mockClient = MockClient();
     mockSecureStorage = MockSecureStorage();
     mockClassroomLocalDataSourceIml = MockClassroomLocalDataSourceIml();
-    syncClassroom = SyncClassroom(
+    mockClock = MockClock();
+    syncClassroom = ClassroomRemoteDataSourceImpl(
         client: mockClient,
         secureStorage: mockSecureStorage,
         classroomLocalDataSourceImpl: mockClassroomLocalDataSourceIml,
+        clock: mockClock,
         api_url: API_URL);
-    uri = API_URL + 'classes/' + "?last_sync=${syncClassroom.lastSyncTime.toString()}";
+    uri = API_URL +
+        'classes/' +
+        "?last_sync=${syncClassroom.lastSyncTime.toString()}";
   });
 
   group('getServerUpdated', () {
@@ -87,9 +119,9 @@ void main() {
   group('postClassroom', () {
     test('should return a correct response from the server', () async {
       final url = API_URL + 'classes/';
-      final body = json.encode(model1.toJson());
+      final body = json.encode([model1.toJson()]);
       when(mockClient.post(url, headers: headers, body: body))
-          .thenAnswer((_) async => validResponse);
+          .thenAnswer((_) async => http.Response("", 201));
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
 
       await syncClassroom.postClassroom(model1, token);
@@ -106,7 +138,7 @@ void main() {
 
     test('should throw a server exception', () async {
       final url = API_URL + 'classes/';
-      final body = json.encode(model1.toJson());
+      final body = json.encode([model1.toJson()]);
       when(mockClient.post(url, headers: headers, body: body))
           .thenAnswer((_) async => invalidResponse);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -120,10 +152,10 @@ void main() {
 
   group('putClassroom', () {
     test('should return a correct response from the server', () async {
-      final url = API_URL + 'classes/';
+      final url = API_URL + 'classes/' + "${model1.localId}/";
       final body = json.encode(model1.toJson());
       when(mockClient.put(url, headers: headers, body: body))
-          .thenAnswer((_) async => validResponse);
+          .thenAnswer((_) async => http.Response("", 200));
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
 
       await syncClassroom.putClassroom(model1, token);
@@ -139,7 +171,7 @@ void main() {
     });
 
     test('should throw a server exception', () async {
-      final url = API_URL + 'classes/';
+      final url = API_URL + 'classes/' + "${model1.localId}/";
       final body = json.encode(model1.toJson());
       when(mockClient.put(url, headers: headers, body: body))
           .thenAnswer((_) async => invalidResponse);
@@ -161,6 +193,7 @@ void main() {
       when(mockClassroomLocalDataSourceIml.cacheClassroom(model2))
           .thenAnswer((_) async => model2);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
+      when(mockClock.now()).thenAnswer((_) => lastUpdated);
 
       final response = await syncClassroom.pull();
 
@@ -184,7 +217,7 @@ void main() {
 
   group('getClassroomsInServer', () {
     test('should throw an exception', () async {
-      final uriLocal = API_URL +  'classes/';
+      final uriLocal = API_URL + 'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => invalidResponse);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -196,7 +229,7 @@ void main() {
     });
 
     test('should return an empty list', () async {
-      final uriLocal = API_URL +  'classes/';
+      final uriLocal = API_URL + 'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => validResponse);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -209,9 +242,10 @@ void main() {
     });
 
     test('should return a list with models', () async {
-      final uriLocal = API_URL +  'classes/';
+      final uriLocal = API_URL + 'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => validResponseWithContent);
+      when(mockClock.now()).thenAnswer((_) => lastUpdated);
       //when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
 
       final output = await syncClassroom.getClassroomsInServer(token);
@@ -224,7 +258,7 @@ void main() {
 
   group('push', () {
     test('should return a wrong response from the server', () async {
-      final uriLocal = API_URL +  'classes/';
+      final uriLocal = API_URL + 'classes/';
       when(mockClient.get(uriLocal, headers: headers))
           .thenAnswer((_) async => invalidResponse);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
@@ -235,31 +269,32 @@ void main() {
     });
 
     test('should send a put and a post to the server', () async {
+      final urlLocalPut = API_URL + 'classes/' + "${model1.localId}/";
       final urlLocal = API_URL + 'classes/';
-      final uriLocal = API_URL +  'classes/';
 
-      when(mockClient.get(uriLocal, headers: headers))
+      when(mockClient.get(urlLocal, headers: headers))
           .thenAnswer((_) async => validResponsePush);
       when(mockClassroomLocalDataSourceIml
               .getClassroomsSinceLastSync(syncClassroom.lastSyncTime))
           .thenAnswer((_) async => [model1, model2]);
       when(mockSecureStorage.read(key: "token")).thenAnswer((_) async => token);
-      when(mockClient.put(urlLocal,
+      when(mockClient.put(urlLocalPut,
               headers: headers, body: json.encode(model1.toJson())))
-          .thenAnswer((_) async => validResponse);
+          .thenAnswer((_) async => http.Response("", 200));
       when(mockClient.post(urlLocal,
-              headers: headers, body: json.encode(model2.toJson())))
-          .thenAnswer((_) async => validResponse);
+              headers: headers, body: json.encode([model2.toJson()])))
+          .thenAnswer((_) async => http.Response("", 201));
+      when(mockClock.now()).thenAnswer((_) => lastUpdated);
 
       final response = await syncClassroom.push();
 
       expect(response, SuccessfulResponse());
 
       verifyInOrder([
-        mockClient.put(urlLocal,
+        mockClient.put(urlLocalPut,
             headers: headers, body: json.encode(model1.toJson())),
         mockClient.post(urlLocal,
-            headers: headers, body: json.encode(model2.toJson()))
+            headers: headers, body: json.encode([model2.toJson()]))
       ]);
     });
   });

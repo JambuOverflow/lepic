@@ -63,7 +63,7 @@ class Database extends _$Database {
   ///Returns a list of classroomModels that weren't deleted,
   /// and an empty list when the table is empty
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
-    return (select(classroomModels)
+    return await (select(classroomModels)
           ..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
         .get();
   }

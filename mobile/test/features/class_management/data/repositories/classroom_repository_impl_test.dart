@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
+import 'package:mobile/features/class_management/data/data_sources/classroom_remote_data_source.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
@@ -12,13 +14,19 @@ import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
 import 'package:clock/clock.dart';
 
+import '../../../user_management/data/repositories/user_repository_impl_test.dart';
+
 class MockClassroomLocalDataSource extends Mock
     implements ClassroomLocalDataSource {}
+
+class MockClassroomRemoteDataSource extends Mock
+    implements ClassroomRemoteDataSourceImpl {}
 
 class MockClock extends Mock implements Clock {}
 
 void main() {
   MockClassroomLocalDataSource mockLocalDataSource;
+  MockClassroomRemoteDataSource mockRemoteDataSource;
   MockClock mockClock;
   ClassroomRepositoryImpl repository;
   final nowTime = DateTime.now();
@@ -52,9 +60,11 @@ void main() {
   setUp(() {
     mockLocalDataSource = MockClassroomLocalDataSource();
     mockClock = MockClock();
+    mockRemoteDataSource = MockClassroomRemoteDataSource();
 
     repository = ClassroomRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      remoteDataSource: mockRemoteDataSource,
       clock: mockClock,
     );
 
@@ -153,6 +163,27 @@ void main() {
       final result = await repository.getClassrooms(tUser);
 
       expect(result, Left(CacheFailure()));
+    });
+  });
+
+  group('syncClassrooms', () {
+    test('should return a list of classrooms when getClassrooms is called',
+        () async {
+      when(mockRemoteDataSource.synchronize())
+          .thenAnswer((_) async => SuccessfulResponse());
+
+      await repository.syncClassrooms();
+      equals(true);
+    });
+
+    test('should return a CacheFailure when a CacheException is throw',
+        () async {
+      when(mockRemoteDataSource.synchronize())
+          .thenAnswer((_) async => UnsuccessfulResponse(message: "d"));
+
+      final result = await repository.syncClassrooms();
+
+      expect(result, Left(ServerFailure(message: "d")));
     });
   });
 }
