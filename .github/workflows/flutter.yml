@@ -1,4 +1,4 @@
-name: Dart
+name: Flutter
 
 on:
   push:
@@ -39,4 +39,9 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         working-directory: ./mobile
-        run: flutter test test
+        run: flutter test --coverage test
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
