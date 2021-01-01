@@ -1,7 +1,7 @@
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 
@@ -11,7 +11,7 @@ abstract class ClassroomLocalDataSource {
   /// Returns an empty list if no [Classroom] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<ClassroomModel>> getClassroomsFromCache(UserModel userModel);
+  Future<List<ClassroomModel>> getClassroomsFromCache();
 
   /// Deletes the [Classroom] passed.
   ///
@@ -36,8 +36,12 @@ abstract class ClassroomLocalDataSource {
 
 class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   final Database database;
+  final UserLocalDataSource userLocalDataSource;
 
-  ClassroomLocalDataSourceImpl({@required this.database});
+  ClassroomLocalDataSourceImpl({
+    @required this.database,
+    @required this.userLocalDataSource,
+  });
 
   @override
   Future<ClassroomModel> cacheNewClassroom(
@@ -46,11 +50,8 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
       bool nullToAbsent = true;
       final classCompanion = classroomModel.toCompanion(nullToAbsent);
       final classPk = await this.database.insertClassroom(classCompanion);
-      return ClassroomModel(
-          grade: classroomModel.grade,
-          tutorId: classroomModel.tutorId,
-          name: classroomModel.name,
-          localId: classPk);
+
+      return classroomModel.copyWith(localId: classPk, deleted: false);
     } on SqliteException {
       throw CacheException();
     }
@@ -58,22 +59,19 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
 
   @override
   Future<void> deleteClassroomFromCache(ClassroomModel classroomModel) async {
-    var pk = classroomModel.localId;
+    ClassroomModel deletedClassroomModel =
+        classroomModel.copyWith(deleted: true);
     try {
-      var done = await this.database.deleteClassroom(pk);
-      if (done != 1) {
-        throw SqliteException(787, "The table doesn't have this entry");
-      }
+      await this.database.updateClassroom(deletedClassroomModel);
     } on SqliteException {
       throw CacheException();
     }
   }
 
   @override
-  Future<List<ClassroomModel>> getClassroomsFromCache(
-      UserModel userModel) async {
-    final tutorId = userModel.localId;
+  Future<List<ClassroomModel>> getClassroomsFromCache() async {
     try {
+      final tutorId = await userLocalDataSource.getUserId();
       return await this.database.getClassrooms(tutorId);
     } on SqliteException {
       throw CacheException();
@@ -99,10 +97,10 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   @override
   Future<ClassroomModel> updateCachedClassroom(
       ClassroomModel classroomModel) async {
-    bool updated = await this.database.updateClassroom(classroomModel);
-    if (updated) {
+    try {
+      await this.database.updateClassroom(classroomModel);
       return classroomModel;
-    } else {
+    } on SqliteException {
       throw CacheException();
     }
   }

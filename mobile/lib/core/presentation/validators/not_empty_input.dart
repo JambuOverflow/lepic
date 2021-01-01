@@ -8,5 +8,5 @@ class NotEmptyInput extends FormzInput<String, NotEmptyValidationError> {
 
   @override
   NotEmptyValidationError validator(String value) =>
-      value != '' ? null : NotEmptyValidationError.empty;
+      value.isNotEmpty ? null : NotEmptyValidationError.empty;
 }

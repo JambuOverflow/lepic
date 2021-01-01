@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -13,8 +13,12 @@ import '../data_sources/student_local_data_source.dart';
 
 class StudentRepositoryImpl implements StudentRepository {
   final StudentLocalDataSource localDataSource;
+  final ClassroomEntityModelConverter classroomEntityModelConverter;
 
-  StudentRepositoryImpl({@required this.localDataSource});
+  StudentRepositoryImpl({
+    @required this.localDataSource,
+    @required this.classroomEntityModelConverter,
+  });
 
   @override
   Future<Either<Failure, Student>> createStudent(Student student) async {
@@ -55,7 +59,7 @@ class StudentRepositoryImpl implements StudentRepository {
   Future<Either<Failure, List<Student>>> _tryGetStudents(
       Classroom classroom) async {
     try {
-      var classroomModel = classroomEntityToModel(classroom);
+      var classroomModel = await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listStudentModel =
           await localDataSource.getStudentsFromCache(classroomModel);
       var listStudentEntity = [

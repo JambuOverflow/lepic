@@ -1,22 +1,42 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
+import 'package:clock/clock.dart';
 
 class MockClassroomLocalDataSource extends Mock
     implements ClassroomLocalDataSource {}
 
+class MockClock extends Mock implements Clock {}
+
+class MockUserLocalDataSourceImpl extends Mock
+    implements UserLocalDataSourceImpl {}
+
+class MockClassroomEntityModelConverter extends Mock
+    implements ClassroomEntityModelConverter {}
+
 void main() {
+  MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
   MockClassroomLocalDataSource mockLocalDataSource;
+  MockClock mockClock;
   ClassroomRepositoryImpl repository;
+
+  UserModel tUserModel;
+  List<ClassroomModel> tClassroomsModels;
+  List<Classroom> tClassrooms;
+
+  final nowTime = DateTime.now();
+  final nowTimeUtc = nowTime.toUtc();
 
   final tUser = User(
     firstName: 'v',
@@ -28,24 +48,46 @@ void main() {
   );
 
   final tClassroom = Classroom(
-    tutorId: 1,
     grade: 1,
     name: "A",
     id: 1,
+    deleted: false,
+    lastUpdated: nowTimeUtc,
+    clientLastUpdated: nowTimeUtc,
   );
 
-  final tClassroomModel = classroomEntityToModel(tClassroom);
-  final tUserModel = userEntityToModel(tUser);
+  final tClassroomModel = ClassroomModel(
+    localId: 1,
+    tutorId: 1,
+    grade: 1,
+    name: "A",
+    deleted: false,
+    lastUpdated: nowTimeUtc,
+    clientLastUpdated: nowTimeUtc,
+  );
 
-  final tClassroomsModels = [tClassroomModel, tClassroomModel];
-  final tClassrooms = [tClassroom, tClassroom];
-
-  setUp(() {
+  setUp(() async {
+    mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
     mockLocalDataSource = MockClassroomLocalDataSource();
+    mockClock = MockClock();
+    tUserModel = userEntityToModel(tUser);
+
+    tClassroomsModels = [tClassroomModel, tClassroomModel];
+    tClassrooms = [tClassroom, tClassroom];
 
     repository = ClassroomRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      clock: mockClock,
+      clasrooomEntityModelConverter: mockClassroomEntityModelConverter,
     );
+
+    when(mockClassroomEntityModelConverter.classroomEntityToModel(any))
+        .thenAnswer((_) async => tClassroomModel);
+
+    when(mockClassroomEntityModelConverter.classroomModelToEntity(any))
+        .thenAnswer((_) => tClassroom);
+
+    when(mockClock.now()).thenAnswer((_) => nowTime);
   });
 
   group('createClassroom', () {
@@ -122,10 +164,10 @@ void main() {
   group('get', () {
     test('should return a list of classrooms when getClassrooms is called',
         () async {
-      when(mockLocalDataSource.getClassroomsFromCache(tUserModel))
+      when(mockLocalDataSource.getClassroomsFromCache())
           .thenAnswer((_) async => tClassroomsModels);
 
-      final result = await repository.getClassrooms(tUser);
+      final result = await repository.getClassrooms();
       final List<Classroom> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tClassrooms);
@@ -134,10 +176,10 @@ void main() {
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getClassroomsFromCache(tUserModel))
+      when(mockLocalDataSource.getClassroomsFromCache())
           .thenThrow(CacheException());
 
-      final result = await repository.getClassrooms(tUser);
+      final result = await repository.getClassrooms();
 
       expect(result, Left(CacheFailure()));
     });

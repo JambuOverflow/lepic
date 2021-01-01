@@ -7,57 +7,44 @@ abstract class TextEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class _TextManagementEvent extends TextEvent {
-
+abstract class _TextManagementEvent extends TextEvent {
   final String title;
   final String body;
-  final int localId;
-  final int classId;
 
   _TextManagementEvent(
     this.title,
     this.body,
-    this.localId,
-    this.classId,
   );
 }
 
-class CreateNewTextEvent extends _TextManagementEvent {
-  CreateNewTextEvent(
+class CreateTextEvent extends _TextManagementEvent {
+  final Classroom classroom;
+
+  CreateTextEvent({
     String title,
-    String body,
-    int localId,
-    int classId,
-  ) : super(title, body, localId, classId);
+    @required String body,
+    @required this.classroom,
+  }) : super(title, body);
 }
 
 class UpdateTextEvent extends _TextManagementEvent {
-  UpdateTextEvent(
+  final MyText oldText;
+
+  UpdateTextEvent({
     String title,
     String body,
-    int localId,
-    int classId,
-  ) : super(title, body, localId, classId);
+    @required this.oldText,
+  }) : super(title, body);
 }
 
 class DeleteTextEvent extends TextEvent {
   final int localId;
 
-  DeleteTextEvent(
-    this.localId,
-  );
+  DeleteTextEvent({@required this.localId});
 }
 
-class GetTextEvent extends TextEvent {
-  final String title;
-  final String body;
-  final int localId;
-  final int classId;
+class GetTextsEvent extends TextEvent {
+  final Classroom classroom;
 
-  GetTextEvent(
-    this.title,
-    this.body,
-    this.localId,
-    this.classId,
-  );
+  GetTextsEvent({@required this.classroom});
 }

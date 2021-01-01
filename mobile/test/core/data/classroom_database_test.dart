@@ -10,40 +10,75 @@ void main() {
   final tValidClassroomPk2 = 2;
   final tInvalidClassroomPk = 2;
   final tValidUserPk = 1;
-  final tInvalidUserPk = 2;
   final grade = 1;
   final name = "A";
   final updateName = "B";
 
   final tValidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(grade), name: Value(name), tutorId: Value(tValidUserPk));
+    grade: Value(grade),
+    name: Value(name),
+    tutorId: Value(tValidUserPk),
+    deleted: Value(false),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
 
+  final tDeletedClassCompanion = ClassroomModelsCompanion(
+    grade: Value(grade),
+    name: Value(name),
+    tutorId: Value(tValidUserPk),
+    deleted: Value(true),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
+
+  // No User
   final tInvalidClassCompanion = ClassroomModelsCompanion(
-      grade: Value(grade), name: Value(name), tutorId: Value(tInvalidUserPk));
+    grade: Value(grade),
+    name: Value(name),
+    deleted: Value(false),
+    lastUpdated: Value(DateTime(2020)),
+    clientLastUpdated: Value(DateTime(2020)),
+  );
 
   final tValidClassModel1 = ClassroomModel(
-      grade: grade,
-      name: name,
-      tutorId: tValidUserPk,
-      localId: tValidClassroomPk1);
+    grade: grade,
+    name: name,
+    tutorId: tValidUserPk,
+    localId: tValidClassroomPk1,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
   final tValidClassModel2 = ClassroomModel(
-      grade: grade,
-      name: name,
-      tutorId: tValidUserPk,
-      localId: tValidClassroomPk2);
+    grade: grade,
+    name: name,
+    tutorId: tValidUserPk,
+    localId: tValidClassroomPk2,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
   final tValidUpdateClassModel = ClassroomModel(
       grade: grade,
       name: updateName,
       tutorId: tValidUserPk,
-      localId: tValidClassroomPk1);
+      localId: tValidClassroomPk1,
+      deleted: false,
+      lastUpdated: DateTime(2020),
+      clientLastUpdated: DateTime(2020));
 
   final tInvalidUpdateClassModel = ClassroomModel(
-      localId: tInvalidClassroomPk,
-      grade: grade,
-      name: updateName,
-      tutorId: tValidUserPk);
+    localId: tInvalidClassroomPk,
+    grade: grade,
+    name: updateName,
+    tutorId: tValidUserPk,
+    deleted: false,
+    lastUpdated: DateTime(2020),
+    clientLastUpdated: DateTime(2020),
+  );
 
   final tUserCompanion = UserModelsCompanion(
     firstName: Value("cana"),
@@ -80,29 +115,9 @@ void main() {
       expect(pk, tValidClassroomPk1);
     });
 
-    test("should return a SQLite error", () async {
+    test("should return a SQLite error when tutorID is absent", () async {
       expect(() => database.insertClassroom(tInvalidClassCompanion),
-          throwsA(TypeMatcher<SqliteException>()));
-    });
-  });
-
-  group("deleteClassroom", () {
-    setUp(() async {
-      await database.insertClassroom(tValidClassCompanion);
-    });
-
-    test(
-        "should return 1 indicating that a row was deleted when the input is a valid pk",
-        () async {
-      final deleted = await database.deleteClassroom(tValidClassroomPk1);
-      expect(deleted, 1);
-    });
-
-    test(
-        "should return 0 indicating that no rows were deleted when the input is an invalid pk",
-        () async {
-      final deleted = await database.deleteClassroom(tInvalidClassroomPk);
-      expect(deleted, 0);
+          throwsA(TypeMatcher<InvalidDataException>()));
     });
   });
 
@@ -114,6 +129,14 @@ void main() {
 
     test("should return a list with one classroom", () async {
       await database.insertClassroom(tValidClassCompanion);
+
+      final classrooms = await database.getClassrooms(tValidUserPk);
+      expect(classrooms, [tValidClassModel1]);
+    });
+
+    test("should return a list with one valid classroom", () async {
+      await database.insertClassroom(tValidClassCompanion);
+      await database.insertClassroom(tDeletedClassCompanion);
 
       final classrooms = await database.getClassrooms(tValidUserPk);
       expect(classrooms, [tValidClassModel1]);
@@ -133,14 +156,14 @@ void main() {
       await database.insertClassroom(tValidClassCompanion);
     });
 
-    test("should return true when updating a valid classroom", () async {
-      final done = await database.updateClassroom(tValidUpdateClassModel);
-      expect(done, true);
+    test("should return nothing when updating a valid classroom", () async {
+      await database.updateClassroom(tValidUpdateClassModel);
     });
 
-    test("should return false when updating an invalid classroom", () async {
-      final done = await database.updateClassroom(tInvalidUpdateClassModel);
-      expect(done, false);
+    test("should throw a SqlException when updating an invalid classroom",
+        () async {
+      expect(() => database.updateClassroom(tInvalidUpdateClassModel),
+          throwsA(TypeMatcher<SqliteException>()));
     });
   });
 

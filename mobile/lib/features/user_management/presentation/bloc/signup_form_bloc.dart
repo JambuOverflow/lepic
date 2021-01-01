@@ -5,14 +5,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:formz/formz.dart';
 import 'package:mobile/core/network/response.dart';
-import 'package:mobile/core/presentation/validators/role_input.dart';
 
+import '../../../../core/presentation/validators/role_input.dart';
+import '../../../../core/presentation/validators/not_empty_input.dart';
 import '../../domain/use_cases/user_params.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/use_cases/create_user_use_case.dart';
 import '../../../../core/presentation/validators/confirm_password_input.dart';
 import '../../../../core/presentation/validators/email_input.dart';
-import '../../../../core/presentation/validators/name_input.dart';
 import '../../../../core/presentation/validators/password_input.dart';
 
 part 'signup_form_event.dart';
@@ -28,29 +28,30 @@ class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
     SignupFormEvent event,
   ) async* {
     if (event is FirstNameChanged) {
-      final firstName = NameInput.dirty(event.firstName);
+      final firstName = NotEmptyInput.dirty(event.firstName);
 
       yield state.copyWith(
         firstName:
-            firstName.valid ? firstName : NameInput.pure(event.firstName),
+            firstName.valid ? firstName : NotEmptyInput.pure(event.firstName),
         status: _validateOnState(firstName: firstName),
       );
     } else if (event is FirstNameUnfocused) {
-      final firstName = NameInput.dirty(state.firstName.value);
+      final firstName = NotEmptyInput.dirty(state.firstName.value);
 
       yield state.copyWith(
         firstName: firstName,
         status: _validateOnState(firstName: firstName),
       );
     } else if (event is LastNameChanged) {
-      final lastName = NameInput.dirty(event.lastName);
+      final lastName = NotEmptyInput.dirty(event.lastName);
 
       yield state.copyWith(
-        lastName: lastName.valid ? lastName : NameInput.pure(event.lastName),
+        lastName:
+            lastName.valid ? lastName : NotEmptyInput.pure(event.lastName),
         status: _validateOnState(lastName: lastName),
       );
     } else if (event is LastNameUnfocused) {
-      final lastName = NameInput.dirty(state.lastName.value);
+      final lastName = NotEmptyInput.dirty(state.lastName.value);
 
       yield state.copyWith(
         lastName: lastName,
@@ -159,8 +160,8 @@ class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
     );
 
     return state.copyWith(
-      firstName: NameInput.dirty(state.firstName.value),
-      lastName: NameInput.dirty(state.lastName.value),
+      firstName: NotEmptyInput.dirty(state.firstName.value),
+      lastName: NotEmptyInput.dirty(state.lastName.value),
       email: EmailInput.dirty(state.email.value),
       password: PasswordInput.dirty(state.password.value),
       confirmPassword: dirtyConfirmPassword,
@@ -170,8 +171,8 @@ class SignupFormBloc extends Bloc<SignupFormEvent, SignupFormState> {
   }
 
   FormzStatus _validateOnState({
-    NameInput firstName,
-    NameInput lastName,
+    NotEmptyInput firstName,
+    NotEmptyInput lastName,
     EmailInput email,
     PasswordInput password,
     RoleInput role,

@@ -5,7 +5,6 @@ import 'package:mobile/core/network/response.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
-import 'package:http/http.dart' as http;
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 import '../data_sources/user_local_data_source.dart';
@@ -42,7 +41,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, User>> getStoredUser() async {
+  Future<Either<Failure, User>> getLoggedInUser() async {
     return await _tryGetLocalUser();
   }
 
@@ -55,12 +54,39 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      return Right(await localDataSource.logout());
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> retrieveToken() async {
+    try {
+      final token = await localDataSource.retrieveToken();
+
+      return Right(token);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
   Future<Either<Failure, Response>> _tryLoginUser(User user) async {
     try {
-      final response = await remoteDataSource.login(_toModel(user));
+      final userModel = _toModel(user);
+      final response = await remoteDataSource.login(userModel);
 
       if (response is TokenResponse) {
-        await localDataSource.storeTokenSecurely(response.token);
+        await localDataSource.storeTokenSecurely(
+          token: response.token,
+          user: userModel,
+        );
+
+        await _getCompleteUserAndCacheIt(response);
+
         return Right(response);
       } else if (response is InvalidCredentials) {
         return Right(response);
@@ -69,6 +95,12 @@ class UserRepositoryImpl implements UserRepository {
     } on ServerException {
       return Left(ServerFailure());
     }
+  }
+
+  Future _getCompleteUserAndCacheIt(TokenResponse response) async {
+    final completeUserModel = await remoteDataSource.getUser(response.token);
+
+    await localDataSource.cacheUser(completeUserModel);
   }
 
   Future<Either<Failure, Response>> _tryUpdateUserAndCacheIt(
@@ -96,7 +128,7 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Either<Failure, User>> _tryGetLocalUser() async {
     try {
-      final localUser = await localDataSource.getStoredUser();
+      final localUser = await localDataSource.getLoggedInUser();
       User user = _toEntity(localUser);
 
       return Right(user);
@@ -107,7 +139,7 @@ class UserRepositoryImpl implements UserRepository {
 
   User _toEntity(UserModel model) {
     return User(
-      localId: model.localId,
+      localId: model.id,
       firstName: model.firstName,
       lastName: model.lastName,
       email: model.email,
@@ -118,7 +150,7 @@ class UserRepositoryImpl implements UserRepository {
 
   UserModel _toModel(User entity) {
     return UserModel(
-      localId: entity.localId,
+      id: entity.localId,
       firstName: entity.firstName,
       lastName: entity.lastName,
       email: entity.email,

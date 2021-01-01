@@ -10,13 +10,14 @@ class User(AbstractUser):
     )
 
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES)
-    email = models.EmailField(('email address'), unique=True)
+    email = models.EmailField('email address', unique=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
 
 class School(models.Model):
+    local_id = models.PositiveIntegerField()
     name = models.CharField(max_length=100)
     city = models.CharField(max_length=30)
     neighbourhood = models.CharField(max_length=30)
@@ -39,6 +40,7 @@ class School(models.Model):
 
 
 class Class(models.Model):
+    local_id = models.PositiveIntegerField()
     tutor = models.ForeignKey(User, on_delete=models.CASCADE)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
     grade = models.IntegerField()
@@ -52,6 +54,7 @@ class Class(models.Model):
 
 
 class Text(models.Model):
+    local_id = models.PositiveIntegerField()
     title = models.CharField(max_length=50)
     body = models.CharField(max_length=1000)
     _class = models.ForeignKey(Class, on_delete=models.CASCADE)
@@ -64,6 +67,7 @@ class Text(models.Model):
 
 
 class Student(models.Model):
+    local_id = models.PositiveIntegerField()
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     _class = models.ForeignKey(Class, on_delete=models.CASCADE)
@@ -76,6 +80,7 @@ class Student(models.Model):
 
 
 class AudioFile(models.Model):
+    local_id = models.PositiveIntegerField()
     title = models.CharField(max_length=200)
     text = models.ForeignKey(Text, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)

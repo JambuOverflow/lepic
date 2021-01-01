@@ -39,37 +39,40 @@ class _SignupState extends State<Signup> {
       appBar: AppBar(
         title: Text('Sign Up'),
       ),
-      body:
-          BlocConsumer<SignupFormBloc, SignupFormState>(listener: (context, state) {
-        state.status == FormzStatus.submissionInProgress
-            ? _ignoreTouch = true
-            : _ignoreTouch = false;
-      }, builder: (context, state) {
-        return IgnorePointer(
-          ignoring: _ignoreTouch,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: ListView(
-              children: <Widget>[
-                const SizedBox(height: 16),
-                FirstNameInputField(focusNode: _firstNameFocusNode),
-                const SizedBox(height: 16),
-                LastNameInputField(focusNode: _lastNameFocusNode),
-                const SizedBox(height: 16),
-                EmailInputField(focusNode: _emailFocusNode),
-                const SizedBox(height: 32),
-                PasswordInputField(focusNode: _passwordFocusNode),
-                const SizedBox(height: 16),
-                ConfirmPasswordInputField(focusNode: _confirmPasswordFocusNode),
-                const SizedBox(height: 32),
-                RoleDropdownInputField(focusNode: _confirmPasswordFocusNode),
-                const SizedBox(height: 16),
-                CreateUserButton(),
-              ],
+      body: BlocConsumer<SignupFormBloc, SignupFormState>(
+        listener: (context, state) {
+          state.status == FormzStatus.submissionInProgress
+              ? _ignoreTouch = true
+              : _ignoreTouch = false;
+        },
+        builder: (context, state) {
+          return IgnorePointer(
+            ignoring: _ignoreTouch,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ListView(
+                children: <Widget>[
+                  const SizedBox(height: 16),
+                  FirstNameInputField(focusNode: _firstNameFocusNode),
+                  const SizedBox(height: 16),
+                  LastNameInputField(focusNode: _lastNameFocusNode),
+                  const SizedBox(height: 16),
+                  EmailInputField(focusNode: _emailFocusNode),
+                  const SizedBox(height: 32),
+                  PasswordInputField(focusNode: _passwordFocusNode),
+                  const SizedBox(height: 16),
+                  ConfirmPasswordInputField(
+                      focusNode: _confirmPasswordFocusNode),
+                  const SizedBox(height: 32),
+                  RoleDropdownInputField(focusNode: _confirmPasswordFocusNode),
+                  const SizedBox(height: 16),
+                  CreateUserButton(),
+                ],
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 

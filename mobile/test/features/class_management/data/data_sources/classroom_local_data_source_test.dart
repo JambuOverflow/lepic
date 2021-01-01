@@ -1,50 +1,43 @@
-import 'dart:ffi';
-import 'dart:typed_data';
-
-import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/core/network/network_info.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
-import 'package:mobile/features/class_management/data/repositories/classroom_repository_impl.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/user_management/data/models/user_model.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
-import 'package:http/http.dart' as http;
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
 import 'package:matcher/matcher.dart';
 
 class MockDatabase extends Mock implements Database {}
 
+class MockUserLocalDataSource extends Mock implements UserLocalDataSource {}
+
 Future<void> main() {
   MockDatabase mockDatabase;
+  MockUserLocalDataSource mockUserLocalDataSource;
   ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
 
   final tValidPk = 1;
-
-  final tUser = User(
-    firstName: 'v',
-    lastName: 'c',
-    email: 'v@g.com',
-    role: Role.teacher,
-    password: '123',
-    id: 1,
-  );
-
-  final tUserModel = userEntityToModel(tUser);
 
   final tClassroomInputModel1 =
       ClassroomModel(tutorId: 1, grade: 1, name: "A", localId: null);
   final tClassroomInputModel2 =
       ClassroomModel(tutorId: 1, grade: 1, name: "B", localId: null);
 
-  final tClassroomModel1 =
-      ClassroomModel(tutorId: 1, grade: 1, name: "A", localId: 1);
+  final tClassroomModel1 = ClassroomModel(
+    tutorId: 1,
+    grade: 1,
+    name: "A",
+    localId: 1,
+    deleted: false,
+  );
+  final tClassroomModel1Deleted = ClassroomModel(
+    tutorId: 1,
+    grade: 1,
+    name: "A",
+    localId: 1,
+    deleted: true,
+  );
 
   final tClassroomCompanion1 = tClassroomInputModel1.toCompanion(true);
   final tClassroomCompanionPk1 = tClassroomModel1.toCompanion(true);
@@ -52,11 +45,15 @@ Future<void> main() {
   final tClassroomModels = [tClassroomInputModel1, tClassroomInputModel2];
 
   setUp(() async {
+    mockUserLocalDataSource = MockUserLocalDataSource();
     mockDatabase = MockDatabase();
 
     classroomLocalDataSourceImpl = ClassroomLocalDataSourceImpl(
       database: mockDatabase,
+      userLocalDataSource: mockUserLocalDataSource,
     );
+
+    when(mockUserLocalDataSource.getUserId()).thenAnswer((_) async => 1);
   });
 
   group("cacheClassroom", () {
@@ -84,17 +81,19 @@ Future<void> main() {
 
   group("deleteClassroom", () {
     test("should correctly delete a cached classroom", () async {
-      when(mockDatabase.deleteClassroom(tValidPk)).thenAnswer((_) async => 1);
+      when(mockDatabase.updateClassroom(tClassroomModel1Deleted))
+          .thenAnswer((_) async => null);
 
       await classroomLocalDataSourceImpl
           .deleteClassroomFromCache(tClassroomModel1);
-      verify(mockDatabase.deleteClassroom(tValidPk));
+      verify(mockDatabase.updateClassroom(tClassroomModel1Deleted));
     });
 
     test(
         "should throw CacheException when trying to delete an ivalid classroom",
         () {
-      when(mockDatabase.deleteClassroom(tValidPk)).thenAnswer((_) async => 0);
+      when(mockDatabase.updateClassroom(tClassroomModel1Deleted))
+          .thenThrow((SqliteException(787, "")));
       expect(
           () async => await classroomLocalDataSourceImpl
               .deleteClassroomFromCache(tClassroomModel1),
@@ -108,7 +107,7 @@ Future<void> main() {
           .thenAnswer((_) async => tClassroomModels);
 
       final result =
-          await classroomLocalDataSourceImpl.getClassroomsFromCache(tUserModel);
+          await classroomLocalDataSourceImpl.getClassroomsFromCache();
 
       verify(mockDatabase.getClassrooms(tValidPk));
       final testResult = listEquals(result, tClassroomModels);
@@ -119,7 +118,7 @@ Future<void> main() {
       when(mockDatabase.getClassrooms(tValidPk)).thenAnswer((_) async => []);
 
       final result =
-          await classroomLocalDataSourceImpl.getClassroomsFromCache(tUserModel);
+          await classroomLocalDataSourceImpl.getClassroomsFromCache();
 
       verify(mockDatabase.getClassrooms(tValidPk));
       final testResult = listEquals(result, []);
@@ -131,8 +130,8 @@ Future<void> main() {
           .thenThrow(SqliteException(787, ""));
 
       expect(
-          () async => await classroomLocalDataSourceImpl
-              .getClassroomsFromCache(tUserModel),
+          () async =>
+              await classroomLocalDataSourceImpl.getClassroomsFromCache(),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
@@ -140,7 +139,7 @@ Future<void> main() {
   group("updateClassroom", () {
     test("should correctly update a cached classroom", () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
-          .thenAnswer((_) async => true);
+          .thenAnswer((_) async => null);
 
       await classroomLocalDataSourceImpl
           .updateCachedClassroom(tClassroomModel1);
@@ -150,7 +149,7 @@ Future<void> main() {
     test("should throw a cache expection if the update was not completed",
         () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
-          .thenAnswer((_) async => false);
+          .thenThrow(SqliteException(787, ""));
 
       expect(
           () async => await classroomLocalDataSourceImpl

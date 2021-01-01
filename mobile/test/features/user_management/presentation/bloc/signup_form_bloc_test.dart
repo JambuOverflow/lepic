@@ -6,7 +6,7 @@ import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/presentation/validators/confirm_password_input.dart';
 import 'package:mobile/core/presentation/validators/email_input.dart';
-import 'package:mobile/core/presentation/validators/name_input.dart';
+import 'package:mobile/core/presentation/validators/not_empty_input.dart';
 import 'package:mobile/core/presentation/validators/password_input.dart';
 import 'package:mobile/core/presentation/validators/role_input.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
@@ -35,7 +35,7 @@ void main() {
       act: (bloc) => bloc.add(FirstNameChanged(firstName: tValidName)),
       expect: [
         SignupFormState(
-            firstName: NameInput.dirty(tValidName),
+            firstName: NotEmptyInput.dirty(tValidName),
             status: FormzStatus.invalid),
       ],
     );
@@ -46,7 +46,7 @@ void main() {
       act: (bloc) => bloc.add(FirstNameChanged(firstName: tInvalidName)),
       expect: [
         SignupFormState(
-            firstName: NameInput.pure(''), status: FormzStatus.invalid),
+            firstName: NotEmptyInput.pure(''), status: FormzStatus.invalid),
       ],
     );
 
@@ -56,7 +56,7 @@ void main() {
       act: (bloc) => bloc.add(FirstNameUnfocused()),
       expect: [
         SignupFormState(
-            firstName: NameInput.dirty(''), status: FormzStatus.invalid),
+            firstName: NotEmptyInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
   });
@@ -71,7 +71,8 @@ void main() {
       act: (bloc) => bloc.add(LastNameChanged(lastName: tValidName)),
       expect: [
         SignupFormState(
-            lastName: NameInput.dirty(tValidName), status: FormzStatus.invalid),
+            lastName: NotEmptyInput.dirty(tValidName),
+            status: FormzStatus.invalid),
       ],
     );
 
@@ -81,7 +82,7 @@ void main() {
       act: (bloc) => bloc.add(LastNameChanged(lastName: tInvalidName)),
       expect: [
         SignupFormState(
-            lastName: NameInput.pure(''), status: FormzStatus.invalid),
+            lastName: NotEmptyInput.pure(''), status: FormzStatus.invalid),
       ],
     );
 
@@ -91,7 +92,7 @@ void main() {
       act: (bloc) => bloc.add(LastNameUnfocused()),
       expect: [
         SignupFormState(
-            lastName: NameInput.dirty(''), status: FormzStatus.invalid),
+            lastName: NotEmptyInput.dirty(''), status: FormzStatus.invalid),
       ],
     );
   });
@@ -257,8 +258,8 @@ void main() {
       SignupFormBloc validBloc;
 
       final validFormState = SignupFormState(
-        firstName: NameInput.dirty(tFirstName),
-        lastName: NameInput.dirty(tLastName),
+        firstName: NotEmptyInput.dirty(tFirstName),
+        lastName: NotEmptyInput.dirty(tLastName),
         email: EmailInput.dirty(tEmail),
         password: PasswordInput.dirty(tPassword),
         confirmPassword: ConfirmPasswordInput.dirty(
@@ -359,8 +360,8 @@ void main() {
         },
         expect: [
           SignupFormState(
-            firstName: NameInput.dirty(),
-            lastName: NameInput.dirty(),
+            firstName: NotEmptyInput.dirty(),
+            lastName: NotEmptyInput.dirty(),
             email: EmailInput.dirty(),
             password: PasswordInput.dirty(),
             confirmPassword: ConfirmPasswordInput.dirty(
