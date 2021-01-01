@@ -40,7 +40,6 @@ void main() {
     state: Value(state),
     city: Value(city),
     neighborhood: Value(neighborhood),
-    userId: Value(tInvalidUserPk),
   );
 
   final tValidSchoolModel1 = SchoolModel(
@@ -115,7 +114,7 @@ void main() {
     await closeDatabase(database);
   });
 
-  group("insertClassroom", () {
+  group("insertSchool", () {
     test("should return the pk of a valid school when inserted", () async {
       final pk = await database.insertSchool(tValidSchoolCompanion);
 
@@ -124,7 +123,7 @@ void main() {
 
     test("should return a SQLite error", () async {
       expect(() => database.insertSchool(tInvalidSchoolCompanion),
-          throwsA(TypeMatcher<SqliteException>()));
+          throwsA(TypeMatcher<InvalidDataException>()));
     });
   });
 

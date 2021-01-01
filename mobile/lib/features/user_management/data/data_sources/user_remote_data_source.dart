@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/exceptions.dart';
+import 'package:mobile/core/network/url.dart';
 
 import '../../../../core/data/database.dart';
 import '../../../../core/network/response.dart';
@@ -26,6 +27,12 @@ abstract class UserRemoteDataSource {
   ///
   /// Throws a [ServerException] for all error codes.
   Future<Response> login(UserModel user);
+
+  /// Calls the http://localhost:8080/api/users/ endpoint
+  /// with a token for authentication.
+  ///
+  /// Throws a [ServerException] for all error codes.
+  Future<UserModel> getUser(String token);
 }
 
 /// Localhost - 10.0.2.2 is the address on an android emulator
@@ -67,7 +74,7 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
 
     try {
       final http.Response response = await client.patch(
-        api_url + 'users/' + user.localId.toString(),
+        API_URL + 'users/' + user.id.toString(),
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Token " + token,
@@ -115,6 +122,30 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     }
   }
 
+  @override
+  Future<UserModel> getUser(String token) async {
+    try {
+      final http.Response response = await client.get(
+        API_URL + 'users/',
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          HttpHeaders.authorizationHeader: "Token " + token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonUserModel = json.decode(response.body);
+        final userModel = UserModel.fromJson(jsonUserModel);
+
+        return userModel;
+      } else
+        throw ServerException();
+    } on Exception {
+      throw ServerException();
+    }
+  }
+
+  @override
   String _extractTokenFromResponse(http.Response response) {
     try {
       final token = jsonDecode(response.body)['token'];

@@ -20,8 +20,9 @@ class MockHttpClient extends Mock implements http.Client {}
 void main() {
   UserRemoteDataSourceImpl dataSource;
   MockHttpClient mockHttpClient;
+
   final tUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'ab',
     lastName: 'c',
     email: 'abc@g.com',
@@ -29,6 +30,8 @@ void main() {
     role: Role.teacher,
     password: 'x1y2',
   );
+
+  final tToken = fixture('token');
 
   setUp(() {
     mockHttpClient = MockHttpClient();
@@ -76,7 +79,7 @@ void main() {
 
   group('updateUser', () {
     final tUserUpdatedModel = UserModel(
-      localId: 1,
+      id: 1,
       firstName: 'ab',
       lastName: 'c',
       email: 'a@g.com',
@@ -109,7 +112,6 @@ void main() {
   });
 
   group('login', () {
-    final tToken = fixture('token');
     final tBody = jsonEncode({
       "username": tUserModel.email,
       "password": tUserModel.password,
@@ -154,6 +156,29 @@ void main() {
       final call = dataSource.login;
 
       expect(() => call(tUserModel), throwsA(isA<ServerException>()));
+    });
+  });
+
+  group('getUser', () {
+    test('''should perform a valid GET with auth token and receive 200 code
+        and user''', () async {
+      when(mockHttpClient.get(any, headers: anyNamed('headers'))).thenAnswer(
+        (_) async => http.Response(tUserModel.toJsonString(), 200),
+      );
+
+      final result = await dataSource.getUser(tToken);
+
+      expect(result, tUserModel);
+    });
+
+    test('''should throw server exception when a valid GET 
+        request receives an invalid token''', () async {
+      when(mockHttpClient.get(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async => http.Response('Unauthorized', 401));
+
+      final call = dataSource.getUser;
+
+      expect(() => call(tToken), throwsA(isA<ServerException>()));
     });
   });
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/school_entity_model_converter.dart';
 import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/features/school_management/data/models/school_model.dart';
 import 'package:mobile/features/school_management/domain/entities/school.dart';
@@ -59,22 +60,6 @@ void main() {
       };
 
       expect(result, expectedMap);
-    });
-  });
-
-  group('modelToEntity', () {
-    test('should return a School entity with proper data', () async {
-      final result = schoolModelToEntity(tSchoolModel);
-
-      expect(result, tSchoolEntity);
-    });
-  });
-
-  group('entityToModel', () {
-    test('should return a School model with proper data', () async {
-      final result = schoolEntityToModel(tSchoolEntity);
-
-      expect(result, tSchoolModel);
     });
   });
 }

@@ -9,6 +9,7 @@ import 'package:mobile/core/network/response.dart';
 import 'package:mobile/core/network/url.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_remote_data_source.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:matcher/matcher.dart';
@@ -24,12 +25,15 @@ class MockSecureStorage extends Mock implements FlutterSecureStorage {}
 
 class MockClock extends Mock implements Clock {}
 
+class MockUserLocalDataSource extends Mock implements UserLocalDataSource {}
+
 void main() {
   MockClient mockClient;
   ClassroomRemoteDataSourceImpl syncClassroom;
   MockSecureStorage mockSecureStorage;
   MockClassroomLocalDataSourceIml mockClassroomLocalDataSourceIml;
   MockClock mockClock;
+  MockUserLocalDataSource mockUserLocalDataSource;
   final token = "cleidson";
   final validResponse = http.Response("[]", 200);
   final validResponseWithContent =
@@ -79,15 +83,19 @@ void main() {
     mockSecureStorage = MockSecureStorage();
     mockClassroomLocalDataSourceIml = MockClassroomLocalDataSourceIml();
     mockClock = MockClock();
+    mockUserLocalDataSource = MockUserLocalDataSource();
     syncClassroom = ClassroomRemoteDataSourceImpl(
-        client: mockClient,
-        secureStorage: mockSecureStorage,
-        classroomLocalDataSourceImpl: mockClassroomLocalDataSourceIml,
-        clock: mockClock,
-        api_url: API_URL);
+      client: mockClient,
+      secureStorage: mockSecureStorage,
+      classroomLocalDataSourceImpl: mockClassroomLocalDataSourceIml,
+      clock: mockClock,
+      api_url: API_URL,
+      userLocalDataSource: mockUserLocalDataSource,
+    );
     uri = API_URL +
         'classes/' +
         "?last_sync=${syncClassroom.lastSyncTime.toString()}";
+    when(mockUserLocalDataSource.getUserId()).thenAnswer((_) async => 1);
   });
 
   group('getServerUpdated', () {

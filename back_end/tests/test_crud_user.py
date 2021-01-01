@@ -11,12 +11,26 @@ from api.models import User
 
 class TestCrudUser(APITestCase):
 
-    def test_list_users(self):
+    def test_get_user(self):
         self.client.credentials()
+
+        User.objects.create_user(username="takeshi@ufpa.br", email="takeshi@ufpa.br", password="arthur", role=0)
+        url = reverse('access-token')
+        data = {
+            "username": "takeshi@ufpa.br",
+            "password": "arthur"
+        }
+        response = self.client.post(url, data, format='json')
+        token = response.data['token']
+
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
+
         url = reverse('list-and-create-users')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual([], response.data)
+        self.assertTrue('email' in response.data)
+        self.assertTrue('role' in response.data)
+        self.assertTrue('first_name' in response.data)
 
     def test_create_user(self):
         self.client.credentials()

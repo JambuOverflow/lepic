@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/school_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
@@ -16,9 +18,13 @@ import 'package:mockito/mockito.dart';
 
 class MockSchoolLocalDataSource extends Mock implements SchoolLocalDataSource {}
 
+class MockSchoolEntityModelConverter extends Mock
+    implements SchoolEntityModelConverter {}
+
 void main() {
   MockSchoolLocalDataSource mockLocalDataSource;
   SchoolRepositoryImpl repository;
+  MockSchoolEntityModelConverter mockSchoolEntityModelConverter;
 
   final tUser = User(
     firstName: 'v',
@@ -40,7 +46,16 @@ void main() {
     neighborhood: 'D',
   );
 
-  final tSchoolModel = schoolEntityToModel(tSchool);
+  final tSchoolModel = SchoolModel(
+    localId: 1,
+    userId: 1,
+    name: "A",
+    zipCode: 0,
+    modality: Modality.public,
+    state: "B",
+    city: "C",
+    neighborhood: "D",
+  );
   final tUserModel = userEntityToModel(tUser);
 
   final tSchoolModels = [tSchoolModel, tSchoolModel];
@@ -48,10 +63,18 @@ void main() {
 
   setUp(() {
     mockLocalDataSource = MockSchoolLocalDataSource();
+    mockSchoolEntityModelConverter = MockSchoolEntityModelConverter();
 
     repository = SchoolRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      schoolEntityModelConverter: mockSchoolEntityModelConverter,
     );
+
+    when(mockSchoolEntityModelConverter.schoolEntityToModel(any))
+        .thenAnswer((_) async => tSchoolModel);
+
+    when(mockSchoolEntityModelConverter.schoolModelToEntity(any))
+        .thenAnswer((_) => tSchool);
   });
 
   group('createSchool', () {

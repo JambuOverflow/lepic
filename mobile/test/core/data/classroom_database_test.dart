@@ -12,7 +12,6 @@ void main() {
   final tValidClassroomPk2 = 2;
   final tInvalidClassroomPk = 2;
   final tValidUserPk = 1;
-  final tInvalidUserPk = 2;
   final grade = 1;
   final name = "A";
   final updateName = "B";
@@ -42,10 +41,10 @@ void main() {
     school: Value(tValidSchoolPk1),
   );
 
+  // No User
   final tInvalidClassCompanion = ClassroomModelsCompanion(
     grade: Value(grade),
     title: Value(name),
-    tutorId: Value(tInvalidUserPk),
     deleted: Value(false),
     lastUpdated: Value(DateTime(2020)),
     clientLastUpdated: Value(DateTime(2020)),
@@ -171,9 +170,9 @@ void main() {
       expect(pk, tValidClassroomPk1);
     });
 
-    test("should return a SQLite error", () async {
+    test("should return a SQLite error when tutorID is absent", () async {
       expect(() => database.insertClassroom(tInvalidClassCompanion),
-          throwsA(TypeMatcher<SqliteException>()));
+          throwsA(TypeMatcher<InvalidDataException>()));
     });
   });
 

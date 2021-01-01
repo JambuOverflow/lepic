@@ -11,6 +11,7 @@ import "package:http/http.dart" as http;
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/class_management/data/data_sources/classroom_local_data_source.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import '../../../../core/network/response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:clock/clock.dart';
@@ -39,7 +40,7 @@ abstract class ClassroomRemoteDataSource {
   Future<Response> push();
 
   /// converts server format to classroomModel
-  ClassroomModel serverJsonToClassroomModel(element);
+  Future<ClassroomModel> serverJsonToClassroomModel(element);
 
   /// Checks if model localId is in collection
   isInCollection(ClassroomModel model, List<ClassroomModel> collection);
@@ -60,6 +61,7 @@ class ClassroomRemoteDataSourceImpl extends ClassroomRemoteDataSource {
   final ClassroomLocalDataSourceImpl classroomLocalDataSourceImpl;
   final String api_url;
   final Clock clock;
+  final UserLocalDataSource userLocalDataSource;
   DateTime lastSyncTime = DateTime(2010).toUtc();
 
   ClassroomRemoteDataSourceImpl(
@@ -67,7 +69,8 @@ class ClassroomRemoteDataSourceImpl extends ClassroomRemoteDataSource {
       @required this.secureStorage,
       @required this.classroomLocalDataSourceImpl,
       @required this.api_url,
-      @required this.clock});
+      @required this.clock,
+      @required this.userLocalDataSource});
 
   String getUrl() {
     return this.api_url + "classes/";
@@ -127,13 +130,13 @@ class ClassroomRemoteDataSourceImpl extends ClassroomRemoteDataSource {
     Iterable objects = json.decode(body);
 
     for (var element in objects) {
-      ClassroomModel model = serverJsonToClassroomModel(element);
+      ClassroomModel model = await serverJsonToClassroomModel(element);
       await classroomLocalDataSourceImpl.cacheClassroom(model);
     }
     return SuccessfulResponse();
   }
 
-  ClassroomModel serverJsonToClassroomModel(element) {
+  Future<ClassroomModel> serverJsonToClassroomModel(element) async {
     final int localId = element['local_id'];
     final int grade = element['grade'];
     final String title = element['title'];
@@ -141,13 +144,15 @@ class ClassroomRemoteDataSourceImpl extends ClassroomRemoteDataSource {
     final int school = element['school'];
     final bool deleted = element['deleted'];
     final DateTime clientLastUpdated = clock.now().toUtc();
+    final userId = await userLocalDataSource.getUserId();
+
     ClassroomModel model = ClassroomModel(
         localId: localId,
         grade: grade,
         title: title,
         lastUpdated: lastUpdated,
         school: school,
-        tutorId: 1,
+        tutorId: userId,
         deleted: deleted,
         clientLastUpdated: clientLastUpdated);
     return model;
@@ -194,7 +199,7 @@ class ClassroomRemoteDataSourceImpl extends ClassroomRemoteDataSource {
       Iterable objects = json.decode(response.body);
       List<ClassroomModel> classroomsInServer = [];
       for (var element in objects) {
-        ClassroomModel model = serverJsonToClassroomModel(element);
+        ClassroomModel model = await serverJsonToClassroomModel(element);
         classroomsInServer.add(model);
       }
       return classroomsInServer;

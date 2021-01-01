@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/data/entity_model_converters/school_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -13,9 +14,11 @@ import '../data_sources/school_local_data_source.dart';
 
 class SchoolRepositoryImpl implements SchoolRepository {
   final SchoolLocalDataSource localDataSource;
+  final SchoolEntityModelConverter schoolEntityModelConverter;
 
   SchoolRepositoryImpl({
     @required this.localDataSource,
+    @required this.schoolEntityModelConverter
   });
 
   @override
@@ -25,9 +28,9 @@ class SchoolRepositoryImpl implements SchoolRepository {
 
   Future<Either<Failure, School>> _tryCacheSchool(School school) async {
     try {
-      var model = schoolEntityToModel(school);
+      var model = await schoolEntityModelConverter.schoolEntityToModel(school);
       var localModel = await localDataSource.cacheNewSchool(model);
-      var localSchool = schoolModelToEntity(localModel);
+      var localSchool = schoolEntityModelConverter.schoolModelToEntity(localModel);
       return Right(localSchool);
     } on CacheException {
       return Left(CacheFailure());
@@ -41,7 +44,7 @@ class SchoolRepositoryImpl implements SchoolRepository {
 
   Future<Either<Failure, void>> _tryDeleteSchool(School school) async {
     try {
-      var model = schoolEntityToModel(school);
+      var model = await schoolEntityModelConverter.schoolEntityToModel(school);
       await localDataSource.deleteSchoolFromCache(model);
     } on CacheException {
       return Left(CacheFailure());
@@ -59,7 +62,7 @@ class SchoolRepositoryImpl implements SchoolRepository {
       var listSchoolModel =
           await localDataSource.getSchoolsFromCache(userModel);
       var listSchoolEntity = [
-        for (var model in listSchoolModel) schoolModelToEntity(model)
+        for (var model in listSchoolModel) schoolEntityModelConverter.schoolModelToEntity(model)
       ];
       return Right(listSchoolEntity);
     } on CacheException {
@@ -74,9 +77,9 @@ class SchoolRepositoryImpl implements SchoolRepository {
 
   Future<Either<Failure, School>> _tryUpdateSchool(School school) async {
     try {
-      var model = schoolEntityToModel(school);
+      var model = await schoolEntityModelConverter.schoolEntityToModel(school);
       var localModel = await localDataSource.updateCachedSchool(model);
-      var localSchool = schoolModelToEntity(localModel);
+      var localSchool = schoolEntityModelConverter.schoolModelToEntity(localModel);
       return Right(localSchool);
     } on CacheException {
       return Left(CacheFailure());

@@ -1,10 +1,13 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
+import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mockito/mockito.dart';
+import 'package:moor/moor.dart';
 
 class MockDatabase extends Mock implements Database {}
 
@@ -16,7 +19,7 @@ void main() {
   MockSecureStorage mockSecureStorage;
 
   UserModel tUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'ab',
     lastName: 'c',
     email: 'ab@g.com',
@@ -33,58 +36,102 @@ void main() {
     );
   });
 
-  group('getStoredUser', () {
-    test('should return User from database when there is one stored', () async {
-      when(mockDatabase.activeUser).thenAnswer((_) async => tUserModel);
+  group('getLoggedInUser', () {
+    moorRuntimeOptions.defaultSerializer = Serializer();
 
-      final result = await dataSource.getStoredUser();
+    test('should return User from shared prefs when there is one stored',
+        () async {
+      final userModelString = tUserModel.toJsonString();
+      when(mockSecureStorage.read(key: loggedInUserKey))
+          .thenAnswer((_) async => userModelString);
+
+      final result = await dataSource.getLoggedInUser();
 
       expect(result, tUserModel);
     });
 
     test('should throw a CacheException when User is not stored', () async {
-      when(mockDatabase.activeUser).thenReturn(null);
-
-      final call = dataSource.getStoredUser;
+      when(mockSecureStorage.read(key: anyNamed('key')))
+          .thenAnswer((_) async => null);
+      final call = dataSource.getLoggedInUser;
 
       expect(() => call(), throwsA(isA<CacheException>()));
     });
   });
 
   group('cacheUser', () {
-    test(
-        'should cache the User in the database by calling insert user '
-        'when no user exists', () async {
-      when(mockDatabase.insertUser(tUserModel))
-          .thenAnswer((_) async => tUserModel.localId);
+    test('should override the User in the secure storage', () async {
+      final userJsonString = tUserModel.toJsonString();
+      when(mockSecureStorage.write(key: loggedInUserKey, value: userJsonString))
+          .thenAnswer((_) async => tUserModel.id);
 
-      final result = await dataSource.cacheUser(tUserModel);
+      await dataSource.cacheUser(tUserModel);
 
-      verify(mockDatabase.insertUser(tUserModel));
-      expect(result, tUserModel.localId);
-    });
-
-    test(
-        'should cache the User in the database by calling update user '
-        'when the user already exists', () async {
-      when(mockDatabase.activeUser).thenAnswer((_) async => tUserModel);
-      when(mockDatabase.updateUser(tUserModel)).thenAnswer((_) async => true);
-
-      final result = await dataSource.cacheUser(tUserModel);
-
-      verify(mockDatabase.updateUser(tUserModel));
-      expect(result, tUserModel.localId);
+      verify(mockSecureStorage.write(
+        key: loggedInUserKey,
+        value: userJsonString,
+      ));
     });
   });
 
   group('storeTokenSecurely', () {
+    final token = 'secret shh';
+
     test('should store token in the secure storage', () async {
-      when(mockSecureStorage.write(key: 'token', value: 'secret'))
+      when(mockSecureStorage.write(key: anyNamed('key'), value: token))
           .thenReturn(null);
 
-      await dataSource.storeTokenSecurely('secret');
-      
-      verify(mockSecureStorage.write(key: 'token', value: 'secret'));
+      await dataSource.storeTokenSecurely(token: token, user: tUserModel);
+
+      final key = tUserModel.id.toString();
+      verify(mockSecureStorage.write(key: key, value: token));
+    });
+  });
+
+  group('retrieveToken', () {
+    final token = 'secret shh';
+    test('should store token in the secure storage', () async {
+      when(mockSecureStorage.read(key: anyNamed('key')))
+          .thenAnswer((_) async => token);
+
+      final expected = await dataSource.retrieveToken();
+
+      expect(expected, token);
+      verify(mockSecureStorage.read(key: anyNamed('key')));
+    });
+
+    test('should throw cache exception when key is not present', () async {
+      when(mockSecureStorage.read(key: anyNamed('key')))
+          .thenAnswer((_) => null);
+
+      final call = dataSource.retrieveToken;
+
+      expect(() => call(), throwsA(isA<CacheException>()));
+      verify(mockSecureStorage.read(key: anyNamed('key')));
+    });
+  });
+
+  group('logout', () {
+    test('should delete stored token and stored user from secure storage',
+        () async {
+      when(mockSecureStorage.deleteAll()).thenAnswer((_) async => null);
+
+      await dataSource.logout();
+
+      verify(mockSecureStorage.deleteAll());
+    });
+  });
+
+  group('getUserId', () {
+    test('should get userId',
+        () async {
+      final userModelString = tUserModel.toJsonString();
+      when(mockSecureStorage.read(key: loggedInUserKey))
+          .thenAnswer((_) async => userModelString);
+
+      final result = await dataSource.getUserId();
+
+      expect(result, 1);
     });
   });
 }

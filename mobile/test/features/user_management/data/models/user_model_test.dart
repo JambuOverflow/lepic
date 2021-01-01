@@ -13,7 +13,7 @@ void main() {
   moorRuntimeOptions.defaultSerializer = Serializer();
 
   final tUserModel = UserModel(
-    localId: 1,
+    id: 1,
     firstName: 'ab',
     lastName: 'c',
     email: 'abc@g.com',
@@ -45,7 +45,7 @@ void main() {
       final result = tUserModel.toJson();
 
       final expectedMap = {
-        "local_id": 1,
+        "id": 1,
         "first_name": "ab",
         "last_name": "c",
         "email": "abc@g.com",

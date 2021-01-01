@@ -3,8 +3,7 @@ import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/moor.dart';
 
 class UserModels extends Table {
-  @JsonKey('local_id')
-  IntColumn get localId => integer().autoIncrement()();
+  IntColumn get id => integer().autoIncrement()();
   @JsonKey('first_name')
   TextColumn get firstName => text()();
   @JsonKey('last_name')
@@ -17,7 +16,7 @@ class UserModels extends Table {
 
 UserModel userEntityToModel(User entity) {
   return UserModel(
-      localId: entity.id,
+      id: entity.id,
       firstName: entity.firstName,
       lastName: entity.lastName,
       email: entity.email,

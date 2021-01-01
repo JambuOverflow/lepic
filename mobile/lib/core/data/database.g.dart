@@ -8,7 +8,7 @@ part of 'database.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
 class UserModel extends DataClass implements Insertable<UserModel> {
-  final int localId;
+  final int id;
   final String firstName;
   final String lastName;
   final String email;
@@ -16,7 +16,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   final Role role;
   final String password;
   UserModel(
-      {@required this.localId,
+      {@required this.id,
       @required this.firstName,
       @required this.lastName,
       @required this.email,
@@ -29,8 +29,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     return UserModel(
-      localId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       firstName: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}first_name']),
       lastName: stringType
@@ -48,8 +47,8 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (!nullToAbsent || localId != null) {
-      map['local_id'] = Variable<int>(localId);
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
     }
     if (!nullToAbsent || firstName != null) {
       map['first_name'] = Variable<String>(firstName);
@@ -75,9 +74,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
 
   UserModelsCompanion toCompanion(bool nullToAbsent) {
     return UserModelsCompanion(
-      localId: localId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(localId),
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       firstName: firstName == null && nullToAbsent
           ? const Value.absent()
           : Value(firstName),
@@ -100,7 +97,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return UserModel(
-      localId: serializer.fromJson<int>(json['local_id']),
+      id: serializer.fromJson<int>(json['id']),
       firstName: serializer.fromJson<String>(json['first_name']),
       lastName: serializer.fromJson<String>(json['last_name']),
       email: serializer.fromJson<String>(json['email']),
@@ -113,7 +110,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'local_id': serializer.toJson<int>(localId),
+      'id': serializer.toJson<int>(id),
       'first_name': serializer.toJson<String>(firstName),
       'last_name': serializer.toJson<String>(lastName),
       'email': serializer.toJson<String>(email),
@@ -124,7 +121,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   }
 
   UserModel copyWith(
-          {int localId,
+          {int id,
           String firstName,
           String lastName,
           String email,
@@ -132,7 +129,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
           Role role,
           String password}) =>
       UserModel(
-        localId: localId ?? this.localId,
+        id: id ?? this.id,
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         email: email ?? this.email,
@@ -143,7 +140,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   @override
   String toString() {
     return (StringBuffer('UserModel(')
-          ..write('localId: $localId, ')
+          ..write('id: $id, ')
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
           ..write('email: $email, ')
@@ -156,7 +153,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
 
   @override
   int get hashCode => $mrjf($mrjc(
-      localId.hashCode,
+      id.hashCode,
       $mrjc(
           firstName.hashCode,
           $mrjc(
@@ -169,7 +166,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is UserModel &&
-          other.localId == this.localId &&
+          other.id == this.id &&
           other.firstName == this.firstName &&
           other.lastName == this.lastName &&
           other.email == this.email &&
@@ -179,7 +176,7 @@ class UserModel extends DataClass implements Insertable<UserModel> {
 }
 
 class UserModelsCompanion extends UpdateCompanion<UserModel> {
-  final Value<int> localId;
+  final Value<int> id;
   final Value<String> firstName;
   final Value<String> lastName;
   final Value<String> email;
@@ -187,7 +184,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
   final Value<Role> role;
   final Value<String> password;
   const UserModelsCompanion({
-    this.localId = const Value.absent(),
+    this.id = const Value.absent(),
     this.firstName = const Value.absent(),
     this.lastName = const Value.absent(),
     this.email = const Value.absent(),
@@ -196,7 +193,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
     this.password = const Value.absent(),
   });
   UserModelsCompanion.insert({
-    this.localId = const Value.absent(),
+    this.id = const Value.absent(),
     @required String firstName,
     @required String lastName,
     @required String email,
@@ -210,7 +207,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
         role = Value(role),
         password = Value(password);
   static Insertable<UserModel> custom({
-    Expression<int> localId,
+    Expression<int> id,
     Expression<String> firstName,
     Expression<String> lastName,
     Expression<String> email,
@@ -219,7 +216,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
     Expression<String> password,
   }) {
     return RawValuesInsertable({
-      if (localId != null) 'local_id': localId,
+      if (id != null) 'id': id,
       if (firstName != null) 'first_name': firstName,
       if (lastName != null) 'last_name': lastName,
       if (email != null) 'email': email,
@@ -230,7 +227,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
   }
 
   UserModelsCompanion copyWith(
-      {Value<int> localId,
+      {Value<int> id,
       Value<String> firstName,
       Value<String> lastName,
       Value<String> email,
@@ -238,7 +235,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
       Value<Role> role,
       Value<String> password}) {
     return UserModelsCompanion(
-      localId: localId ?? this.localId,
+      id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       email: email ?? this.email,
@@ -251,8 +248,8 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (localId.present) {
-      map['local_id'] = Variable<int>(localId.value);
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
     }
     if (firstName.present) {
       map['first_name'] = Variable<String>(firstName.value);
@@ -279,7 +276,7 @@ class UserModelsCompanion extends UpdateCompanion<UserModel> {
   @override
   String toString() {
     return (StringBuffer('UserModelsCompanion(')
-          ..write('localId: $localId, ')
+          ..write('id: $id, ')
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
           ..write('email: $email, ')
@@ -296,12 +293,12 @@ class $UserModelsTable extends UserModels
   final GeneratedDatabase _db;
   final String _alias;
   $UserModelsTable(this._db, [this._alias]);
-  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
-  GeneratedIntColumn _localId;
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
   @override
-  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
-  GeneratedIntColumn _constructLocalId() {
-    return GeneratedIntColumn('local_id', $tableName, false,
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
@@ -379,7 +376,7 @@ class $UserModelsTable extends UserModels
 
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, firstName, lastName, email, username, role, password];
+      [id, firstName, lastName, email, username, role, password];
   @override
   $UserModelsTable get asDslTable => this;
   @override
@@ -391,9 +388,8 @@ class $UserModelsTable extends UserModels
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('local_id')) {
-      context.handle(_localIdMeta,
-          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
     if (data.containsKey('first_name')) {
       context.handle(_firstNameMeta,
@@ -430,7 +426,7 @@ class $UserModelsTable extends UserModels
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {localId};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   UserModel map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -843,8 +839,11 @@ class $ClassroomModelsTable extends ClassroomModels
   @override
   GeneratedIntColumn get tutorId => _tutorId ??= _constructTutorId();
   GeneratedIntColumn _constructTutorId() {
-    return GeneratedIntColumn('tutor_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES user_models(local_id)');
+    return GeneratedIntColumn(
+      'tutor_id',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _schoolMeta = const VerificationMeta('school');
@@ -1927,8 +1926,11 @@ class $SchoolModelsTable extends SchoolModels
   @override
   GeneratedIntColumn get userId => _userId ??= _constructUserId();
   GeneratedIntColumn _constructUserId() {
-    return GeneratedIntColumn('user_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES user_models(local_id)');
+    return GeneratedIntColumn(
+      'user_id',
+      $tableName,
+      false,
+    );
   }
 
   @override

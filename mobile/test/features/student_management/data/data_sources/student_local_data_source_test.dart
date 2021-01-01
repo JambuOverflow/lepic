@@ -1,45 +1,54 @@
-import 'dart:ffi';
-import 'dart:typed_data';
-
-import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/core/network/network_info.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/data_sources/student_local_data_source.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
 import 'package:matcher/matcher.dart';
 
 class MockDatabase extends Mock implements Database {}
 
-Future<void> main() {
+class MockUserLocalDataSourceImpl extends Mock
+    implements UserLocalDataSourceImpl {}
+
+void main() {
   MockDatabase mockDatabase;
   StudentLocalDataSourceImpl studentLocalDataSourceImpl;
 
-  final tValidPk = 1;
-
-  final tClassroom = Classroom(
-    name: 'especial',
-    grade: 1,
+  final tClassroomModel = ClassroomModel(
+    localId: 1,
+    grade: 7,
+    title: 'Science Class',
+    lastUpdated: null,
+    clientLastUpdated: null,
+    deleted: null,
     tutorId: 1,
-    id: 1,
   );
 
-  final tClassroomModel = classroomEntityToModel(tClassroom);
+  final tValidPk = 1;
 
   final tStudentInputModel1 = StudentModel(
-      localId: null, classroomId: 1, firstName: 'vitor', lastName: 'cantinho');
+    localId: null,
+    classroomId: 1,
+    firstName: 'vitor',
+    lastName: 'cantinho',
+  );
+
   final tStudentInputModel2 = StudentModel(
-      localId: null, classroomId: 1, firstName: 'rena', lastName: 'cu');
+    localId: null,
+    classroomId: 1,
+    firstName: 'rena',
+    lastName: 'pupunha',
+  );
 
   final tStudentModel1 = StudentModel(
-      localId: 1, classroomId: 1, firstName: 'vitor', lastName: 'cantinho');
+    localId: 1,
+    classroomId: 1,
+    firstName: 'vitor',
+    lastName: 'cantinho',
+  );
 
   final tStudentCompanion1 = tStudentInputModel1.toCompanion(true);
 
@@ -98,8 +107,8 @@ Future<void> main() {
       when(mockDatabase.getStudents(tValidPk))
           .thenAnswer((_) async => tStudentModels);
 
-      final result =
-          await studentLocalDataSourceImpl.getStudentsFromCache(tClassroomModel);
+      final result = await studentLocalDataSourceImpl
+          .getStudentsFromCache(tClassroomModel);
 
       verify(mockDatabase.getStudents(tValidPk));
       final testResult = listEquals(result, tStudentModels);
@@ -109,8 +118,8 @@ Future<void> main() {
     test("should correctly return an empty list", () async {
       when(mockDatabase.getClassrooms(tValidPk)).thenAnswer((_) async => []);
 
-      final result =
-          await studentLocalDataSourceImpl.getStudentsFromCache(tClassroomModel);
+      final result = await studentLocalDataSourceImpl
+          .getStudentsFromCache(tClassroomModel);
 
       verify(mockDatabase.getStudents(tValidPk));
       final testResult = listEquals(result, []);
@@ -133,8 +142,7 @@ Future<void> main() {
       when(mockDatabase.updateStudent(tStudentModel1))
           .thenAnswer((_) async => true);
 
-      await studentLocalDataSourceImpl
-          .updateCachedStudent(tStudentModel1);
+      await studentLocalDataSourceImpl.updateCachedStudent(tStudentModel1);
       verify(mockDatabase.updateStudent(tStudentModel1));
     });
 

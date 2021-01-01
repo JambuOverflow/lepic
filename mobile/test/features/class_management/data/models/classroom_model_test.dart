@@ -6,11 +6,11 @@ import 'package:mobile/core/data/serializer.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:moor/moor.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 
 void main() {
-    moorRuntimeOptions.defaultSerializer = Serializer();
+  moorRuntimeOptions.defaultSerializer = Serializer();
   final time = DateTime.utc(2018, 1, 1, 1, 1);
+
   final tClassModel = ClassroomModel(
     grade: 1,
     localId: 2,
@@ -26,7 +26,6 @@ void main() {
     grade: 1,
     id: 2,
     name: "A",
-    tutorId: 3,
     deleted: false,
     lastUpdated: time,
     clientLastUpdated: time,
@@ -59,22 +58,6 @@ void main() {
       };
 
       expect(result, expectedMap);
-    });
-  });
-
-  group('modelToEntity', () {
-    test('should return a Classroom entity with proper data', () async {
-      final result = classroomModelToEntity(tClassModel);
-
-      expect(result, tClassEntity);
-    });
-  });
-
-  group('entityToModel', () {
-    test('should return a Classroom model with proper data', () async {
-      final result = classroomEntityToModel(tClassEntity);
-
-      expect(result, tClassModel);
     });
   });
 }

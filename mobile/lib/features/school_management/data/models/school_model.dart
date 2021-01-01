@@ -1,4 +1,3 @@
-import 'package:mobile/core/data/database.dart';
 import 'package:mobile/features/school_management/domain/entities/school.dart';
 import 'package:moor/moor.dart';
 
@@ -13,30 +12,5 @@ class SchoolModels extends Table {
   TextColumn get neighborhood => text()();
   TextColumn get name => text()();
   @JsonKey("user_id")
-  IntColumn get userId =>
-      integer().customConstraint('NOT NULL REFERENCES user_models(local_id)')();
-}
-
-School schoolModelToEntity(SchoolModel model) {
-  return School(
-      id: model.localId,
-      zipCode: model.zipCode,
-      modality: model.modality,
-      state: model.state,
-      city: model.city,
-      neighborhood: model.neighborhood,
-      name: model.name,
-      userId: model.userId);
-}
-
-SchoolModel schoolEntityToModel(School entity) {
-  return SchoolModel(
-      localId: entity.id,
-      zipCode: entity.zipCode,
-      modality: entity.modality,
-      state: entity.state,
-      city: entity.city,
-      neighborhood: entity.neighborhood,
-      name: entity.name,
-      userId: entity.userId);
+  IntColumn get userId => integer()();
 }

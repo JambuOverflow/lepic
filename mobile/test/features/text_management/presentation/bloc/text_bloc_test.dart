@@ -52,7 +52,6 @@ void main() {
   tTextList.add(tText);
 
   final tClassroom = Classroom(
-    tutorId: 010,
     grade: 001,
     name: 'textClassroomName',
   );
