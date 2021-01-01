@@ -44,5 +44,5 @@ jobs:
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
-          github-token: ${{ secrets.CODECOV_TOKEN }}
-          path-to-lcov: ./mobile/coverage/lcov.info
+          base-path: ./mobile
+          github-token: ${{ secrets.github_token }}
