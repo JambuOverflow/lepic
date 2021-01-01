@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/class_management/presentation/widgets/classroom_list_view.dart';
+import 'package:mobile/features/class_management/presentation/widgets/create_classroom_dialog.dart';
 import '../bloc/classroom_bloc.dart';
 
-import 'widgets/classroom_list_view.dart';
-import 'widgets/create_classroom_dialog.dart';
 
 class ClassroomsPage extends StatefulWidget {
   @override
@@ -20,7 +20,7 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My classes')),
+      appBar: AppBar(title: const Text('My Classes')),
       body: Center(
         child: BlocConsumer<ClassroomBloc, ClassroomState>(
           listener: (context, state) {
