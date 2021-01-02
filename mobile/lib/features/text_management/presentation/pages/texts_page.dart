@@ -24,7 +24,7 @@ class _TextsPageState extends State<TextsPage> {
         itemCount: _bloc.texts.length,
         itemBuilder: (context, index) {
           final text = _bloc.texts[index];
-          return ItemText(text);
+          return TextItem(text);
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -37,27 +37,40 @@ class _TextsPageState extends State<TextsPage> {
   }
 }
 
-class ItemText extends StatelessWidget {
+class TextItem extends StatelessWidget {
   final MyText _text;
-  ItemText(this._text);
+  TextItem(this._text);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(_text.title.toString()),
-        subtitle: Text(_text.classId.toString()),
-        trailing: IconButton(
-          icon: Icon(Icons.arrow_forward),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => TextDetailPage(_text),
+    return GestureDetector(
+      child: Card(
+        child: ListTile(
+            title: Hero(
+              tag: 'title_${_text.title}',
+              child: Text(
+                _text.title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-            );
-          },
-        ),
+            ),
+            subtitle: Hero(
+              tag: 'body_${_text.body}',
+              child: Text(
+                _text.body,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+            ),
+            trailing: Icon(Icons.arrow_forward_ios)),
       ),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => TextDetailPage(_text),
+          ),
+        );
+      },
     );
   }
 }
