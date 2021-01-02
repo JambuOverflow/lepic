@@ -73,7 +73,7 @@ void main() {
     test('''should emit [TextsLoaded] when text creation is successful''', () {
       when(mockCreateNewText(any)).thenAnswer((_) async => Right(tText));
 
-      final expected = TextsLoaded();
+      final expected = TextsLoaded(tTextList);
 
       expectLater(bloc, emits(expected));
       bloc.add(CreateTextEvent(title: tTitle, body: tBody));
@@ -109,7 +109,7 @@ void main() {
         () async {
       when(mockUpdateText(any)).thenAnswer((_) async => Right(tText));
 
-      final expected = TextsLoaded();
+      final expected = TextsLoaded(tTextList);
 
       expectLater(bloc, emits(expected));
       bloc.add(UpdateTextEvent(
@@ -134,7 +134,7 @@ void main() {
     test('Should emit [TextsLoaded] when a text is deleted successfully', () {
       when(mockDeleteText(any)).thenAnswer((_) async => Right(Response));
 
-      final expected = TextsLoaded();
+      final expected = TextsLoaded(tTextList);
 
       expectLater(bloc, emits(expected));
       bloc.add(DeleteTextEvent(text: tText));
@@ -172,7 +172,7 @@ void main() {
 
       final expected = [
         TextsLoadInProgress(),
-        TextsLoaded(),
+        TextsLoaded(tTextList),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
