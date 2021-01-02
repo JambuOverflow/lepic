@@ -83,7 +83,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
       Either<Failure, dynamic> failureOrSuccess) async* {
     yield* failureOrSuccess.fold(
       (failure) async* {
-        Error(message: _mapFailureToMessage(failure));
+        yield Error(message: _mapFailureToMessage(failure));
       },
       (_) async* {
         yield* _loadAndReplaceClassrooms();
@@ -97,9 +97,13 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     final failureOrSuccess =
         await deleteClassroom(ClassroomParams(classroom: event.classroom));
 
-    yield failureOrSuccess.fold(
-      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
-      (_) => ClassroomDeleted(),
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(CacheFailure()));
+      },
+      (_) async* {
+        yield* _loadAndReplaceClassrooms();
+      },
     );
   }
 

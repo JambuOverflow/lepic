@@ -34,38 +34,6 @@ void main() {
   MockUpdateClassroom updateClassroom;
   MockGetClassrooms getClassrooms;
 
-  setUp(() {
-    mockInputConverter = MockInputConverter();
-    mockAuthBloc = MockAuthBloc();
-
-    createClassroom = MockCreateClassroom();
-    deleteClassroom = MockDeleteClassroom();
-    updateClassroom = MockUpdateClassroom();
-    getClassrooms = MockGetClassrooms();
-
-    bloc = ClassroomBloc(
-      authBloc: mockAuthBloc,
-      inputConverter: mockInputConverter,
-      updateClassroom: updateClassroom,
-      deleteClassroom: deleteClassroom,
-      createNewClassroom: createClassroom,
-      getClassrooms: getClassrooms,
-    );
-  });
-
-  test('initial state should be GettingClassroom', () {
-    expect(bloc.state, ClassroomsLoadInProgress());
-  });
-
-  test('should emit [Error] when user is not authenticated', () {
-    when(mockAuthBloc.state).thenReturn(AuthState(user: null));
-
-    final expected = Error(message: 'User not authenticated');
-
-    expectLater(bloc, emits(expected));
-    bloc.add(LoadClassroomsEvent());
-  });
-
   final tUser = User(
     localId: 1,
     firstName: 'Fulano',
@@ -87,6 +55,40 @@ void main() {
 
   final tGradeString = tClassroom.grade.toString();
   final tGradeParsed = tClassroom.grade;
+
+  setUp(() {
+    mockInputConverter = MockInputConverter();
+    mockAuthBloc = MockAuthBloc();
+
+    createClassroom = MockCreateClassroom();
+    deleteClassroom = MockDeleteClassroom();
+    updateClassroom = MockUpdateClassroom();
+    getClassrooms = MockGetClassrooms();
+
+    bloc = ClassroomBloc(
+      authBloc: mockAuthBloc,
+      inputConverter: mockInputConverter,
+      updateClassroom: updateClassroom,
+      deleteClassroom: deleteClassroom,
+      createNewClassroom: createClassroom,
+      getClassrooms: getClassrooms,
+    );
+
+    when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
+  });
+
+  test('initial state should be GettingClassroom', () {
+    expect(bloc.state, ClassroomsLoadInProgress());
+  });
+
+  test('should emit [Error] when user is not authenticated', () {
+    when(mockAuthBloc.state).thenReturn(AuthState(user: null));
+
+    final expected = Error(message: 'User not authenticated');
+
+    expectLater(bloc, emits(expected));
+    bloc.add(LoadClassroomsEvent());
+  });
 
   void setUpMockAuthAuthenticated() {
     when(mockAuthBloc.state).thenReturn(AuthState(
@@ -130,7 +132,6 @@ void main() {
         setUpMockInputConverterSuccess();
         setUpMockAuthAuthenticated();
 
-        when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
         when(createClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
         bloc.add(CreateClassroomEvent(
@@ -148,7 +149,7 @@ void main() {
         classroom creation is successful''', () async {
       setUpMockInputConverterSuccess();
       setUpMockAuthAuthenticated();
-      when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
+
       when(createClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
       final expected = [
@@ -204,7 +205,6 @@ void main() {
         classroom creation is successful''', () async {
       setUpMockAuthAuthenticated();
 
-      when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
       when(deleteClassroom(any)).thenAnswer((_) async => Right(null));
 
       final expected = [
@@ -253,7 +253,6 @@ void main() {
       setUpMockAuthAuthenticated();
       setUpMockInputConverterSuccess();
 
-      when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
       when(updateClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
       final expected = [
