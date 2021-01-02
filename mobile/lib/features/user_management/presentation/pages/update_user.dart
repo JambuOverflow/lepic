@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/presentation/widgets/drawer_overlay.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:mobile/features/user_management/presentation/widgets/input_fields/role_dropdown_input_field.dart';
 
@@ -24,7 +23,6 @@ class _UpdateUserStatefulWidgetState extends State<UpdateUser> {
       appBar: AppBar(
         title: Text('Edit User'),
       ),
-      drawer: DrawerOverlay(),
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: ListView(

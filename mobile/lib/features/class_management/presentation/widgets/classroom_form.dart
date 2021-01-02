@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ClassroomForm extends StatelessWidget {
   const ClassroomForm({
@@ -26,6 +27,11 @@ class ClassroomForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           TextFormField(
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(2),
+            ],
+            keyboardType: TextInputType.number,
             controller: _gradeController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),

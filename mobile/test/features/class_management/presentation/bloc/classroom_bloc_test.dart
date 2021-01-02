@@ -34,6 +34,28 @@ void main() {
   MockUpdateClassroom updateClassroom;
   MockGetClassrooms getClassrooms;
 
+  final tUser = User(
+    localId: 1,
+    firstName: 'Fulano',
+    lastName: 'de Tal',
+    email: 'aaa@email.com',
+    role: Role.teacher,
+    password: '123456',
+  );
+
+  final tClassroom = Classroom(
+    grade: 1,
+    name: 'className',
+  );
+
+  final List<Classroom> tClassrooms = [
+    tClassroom,
+    Classroom(grade: 7, name: 'no name'),
+  ];
+
+  final tGradeString = tClassroom.grade.toString();
+  final tGradeParsed = tClassroom.grade;
+
   setUp(() {
     mockInputConverter = MockInputConverter();
     mockAuthBloc = MockAuthBloc();
@@ -51,10 +73,12 @@ void main() {
       createNewClassroom: createClassroom,
       getClassrooms: getClassrooms,
     );
+
+    when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
   });
 
   test('initial state should be GettingClassroom', () {
-    expect(bloc.state, GettingClassrooms());
+    expect(bloc.state, ClassroomsLoadInProgress());
   });
 
   test('should emit [Error] when user is not authenticated', () {
@@ -63,25 +87,8 @@ void main() {
     final expected = Error(message: 'User not authenticated');
 
     expectLater(bloc, emits(expected));
-    bloc.add(GetClassroomsEvent());
+    bloc.add(LoadClassroomsEvent());
   });
-
-  final tUser = User(
-    localId: 1,
-    firstName: 'Fulano',
-    lastName: 'de Tal',
-    email: 'aaa@email.com',
-    role: Role.teacher,
-    password: '123456',
-  );
-
-  final tClassroom = Classroom(
-    grade: 1,
-    name: 'className',
-  );
-
-  final tGradeString = tClassroom.grade.toString();
-  final tGradeParsed = tClassroom.grade;
 
   void setUpMockAuthAuthenticated() {
     when(mockAuthBloc.state).thenReturn(AuthState(
@@ -138,15 +145,16 @@ void main() {
       },
     );
 
-    test('''should emit [CreatingClassroom, ClassroomCreated] when
+    test('''should emit [CreatingClassroom, ClassroomsLoaded] when
         classroom creation is successful''', () async {
       setUpMockInputConverterSuccess();
       setUpMockAuthAuthenticated();
+
       when(createClassroom(any)).thenAnswer((_) async => Right(tClassroom));
 
       final expected = [
         CreatingClassroom(),
-        ClassroomCreated(newClassroom: tClassroom),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -160,11 +168,12 @@ void main() {
         classroom creation is successful''', () async {
       setUpMockInputConverterSuccess();
       setUpMockAuthAuthenticated();
+
       when(createClassroom(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
         CreatingClassroom(),
-        Error(message: 'could not create a classroom'),
+        Error(message: 'Unexpected Error'),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -192,7 +201,7 @@ void main() {
   });
 
   group('deleteClassroom', () {
-    test('''should emit [DeletingClassroom, ClassroomDeleted] when
+    test('''should emit [DeletingClassroom, ClassroomsLoaded] when
         classroom creation is successful''', () async {
       setUpMockAuthAuthenticated();
 
@@ -200,7 +209,7 @@ void main() {
 
       final expected = [
         DeletingClassroom(),
-        ClassroomDeleted(),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -239,7 +248,28 @@ void main() {
   });
 
   group('updateClassroom', () {
-    test('''should emit [UpdatingClassrooom, ClassroomUpdated] when
+    test(
+      '''should call the InputConverter to validate and convert 
+      the string to an unsigned integer''',
+      () async {
+        setUpMockInputConverterSuccess();
+        setUpMockAuthAuthenticated();
+
+        when(updateClassroom(any)).thenAnswer((_) async => Right(tClassroom));
+
+        bloc.add(UpdateClassroomEvent(
+          classroom: tClassroom,
+          grade: tGradeString,
+          name: tClassroom.name,
+        ));
+
+        await untilCalled(mockInputConverter.stringToUnsignedInteger(any));
+
+        verify(mockInputConverter.stringToUnsignedInteger(tGradeString));
+      },
+    );
+
+    test('''should emit [UpdatingClassrooom, ClassroomsLoaded] when
          classroom update is successful''', () async {
       setUpMockAuthAuthenticated();
       setUpMockInputConverterSuccess();
@@ -248,7 +278,7 @@ void main() {
 
       final expected = [
         UpdatingClassroom(),
-        ClassroomUpdated(updatedClassroom: tClassroom),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
@@ -261,6 +291,26 @@ void main() {
     test('''should emit [Updating, Error] when
         classroom update is unsuccessful''', () async {
       setUpMockAuthAuthenticated();
+      setUpMockInputConverterSuccess();
+
+      when(updateClassroom(any)).thenAnswer((_) async => Left(CacheFailure()));
+
+      final expected = [
+        UpdatingClassroom(),
+        Error(message: 'deu ruim cantinho e agora?'),
+      ];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateClassroomEvent(
+        grade: tGradeString,
+        classroom: tClassroom,
+      ));
+    });
+
+    test('''should emit [Updating, Error] when
+        input convertion failed''', () async {
+      setUpMockAuthAuthenticated();
+      setUpMockInputConverterFailure();
 
       when(updateClassroom(any)).thenAnswer((_) async => Left(CacheFailure()));
 
@@ -278,24 +328,19 @@ void main() {
   });
 
   group('''getClassrooms''', () {
-    final List<Classroom> tClassrooms = [
-      tClassroom,
-      Classroom( grade: 7, name: 'no name'),
-    ];
-
-    test('''Should emit [Gettingclassrooms, classroomGot] when
+    test('''Should emit [Gettingclassrooms, ClassroomsLoaded] when
          get a classroom list''', () {
       setUpMockAuthAuthenticated();
 
       when(getClassrooms(any)).thenAnswer((_) async => Right(tClassrooms));
 
       final expected = [
-        GettingClassrooms(),
-        ClassroomsGot(classrooms: tClassrooms),
+        ClassroomsLoadInProgress(),
+        ClassroomsLoaded(),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetClassroomsEvent());
+      bloc.add(LoadClassroomsEvent());
     });
 
     test('''Should emit [Gettingclassrooms, Error] when could not 
@@ -305,12 +350,12 @@ void main() {
       when(getClassrooms(any)).thenAnswer((_) async => Left(CacheFailure()));
 
       final expected = [
-        GettingClassrooms(),
+        ClassroomsLoadInProgress(),
         Error(message: 'Not able to get classroom list'),
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetClassroomsEvent());
+      bloc.add(LoadClassroomsEvent());
     });
   });
 }

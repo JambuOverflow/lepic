@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
@@ -27,6 +28,8 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
   final UpdateClassroom updateClassroom;
   final GetClassrooms getClassrooms;
 
+  List<Classroom> classrooms = const <Classroom>[];
+
   ClassroomBloc({
     @required this.authBloc,
     @required this.inputConverter,
@@ -34,7 +37,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     @required this.deleteClassroom,
     @required this.createNewClassroom,
     @required this.getClassrooms,
-  }) : super(GettingClassrooms());
+  }) : super(ClassroomsLoadInProgress());
 
   @override
   Stream<ClassroomState> mapEventToState(
@@ -48,7 +51,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
       yield* _deleteClassStates(event);
     else if (event is UpdateClassroomEvent)
       yield* _updateStates(event);
-    else if (event is GetClassroomsEvent) yield* _getClassesStates(event);
+    else if (event is LoadClassroomsEvent) yield* _getClassesStates();
   }
 
   Stream<ClassroomState> _createClassStates(
@@ -68,20 +71,23 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
           name: event.name,
         );
 
-        yield* _eitherCreatedOrErrorState(classroom);
+        final failureOrClassroom =
+            await createNewClassroom(ClassroomParams(classroom: classroom));
+
+        yield* _eitherLoadedOrErrorState(failureOrClassroom);
       },
     );
   }
 
-  Stream<ClassroomState> _eitherCreatedOrErrorState(
-    Classroom classroom,
-  ) async* {
-    final failureOrClassroom =
-        await createNewClassroom(ClassroomParams(classroom: classroom));
-
-    yield failureOrClassroom.fold(
-      (failure) => Error(message: _mapFailureToMessage(failure)),
-      (response) => ClassroomCreated(newClassroom: response),
+  Stream<ClassroomState> _eitherLoadedOrErrorState(
+      Either<Failure, dynamic> failureOrSuccess) async* {
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(failure));
+      },
+      (_) async* {
+        yield* _loadAndReplaceClassrooms();
+      },
     );
   }
 
@@ -91,32 +97,57 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     final failureOrSuccess =
         await deleteClassroom(ClassroomParams(classroom: event.classroom));
 
-    yield failureOrSuccess.fold(
-      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
-      (_) => ClassroomDeleted(),
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(CacheFailure()));
+      },
+      (_) async* {
+        yield* _loadAndReplaceClassrooms();
+      },
     );
   }
 
   Stream<ClassroomState> _updateStates(UpdateClassroomEvent event) async* {
     yield UpdatingClassroom();
 
-    final failureOrClassroom =
-        await updateClassroom(ClassroomParams(classroom: event.classroom));
+    final inputEither = inputConverter.stringToUnsignedInteger(event.grade);
 
-    yield failureOrClassroom.fold(
-      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
-      (classroom) => ClassroomUpdated(updatedClassroom: classroom),
+    yield* inputEither.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(failure));
+      },
+      (grade) async* {
+        final updatedClassroom = Classroom(
+          grade: grade,
+          name: event.name,
+          id: event.classroom.id,
+        );
+
+        final failureOrClassroom = await updateClassroom(
+          ClassroomParams(classroom: updatedClassroom),
+        );
+
+        yield* _eitherLoadedOrErrorState(failureOrClassroom);
+      },
     );
   }
 
-  Stream<ClassroomState> _getClassesStates(GetClassroomsEvent event) async* {
-    yield GettingClassrooms();
+  Stream<ClassroomState> _getClassesStates() async* {
+    yield ClassroomsLoadInProgress();
 
+    yield* _loadAndReplaceClassrooms();
+  }
+
+  Stream<ClassroomState> _loadAndReplaceClassrooms() async* {
     final failureOrClassrooms = await getClassrooms(NoParams());
 
     yield failureOrClassrooms.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
-      (classrooms) => ClassroomsGot(classrooms: classrooms),
+      (classrooms) {
+        this.classrooms = classrooms;
+
+        return ClassroomsLoaded();
+      },
     );
   }
 
