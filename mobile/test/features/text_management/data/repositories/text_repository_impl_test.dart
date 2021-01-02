@@ -77,11 +77,13 @@ void main() {
   });
 
   group('delete', () {
-    test('should delete a text', () async {
+    test('should delete a text and return Right', () async {
       when(mockLocalDataSource.deleteTextFromCache(tTextModel))
-          .thenAnswer((_) async => _);
+          .thenAnswer((_) async => Right(null));
 
-      await repository.deleteText(tText);
+      final expected = await repository.deleteText(tText);
+
+      expect(expected, Right(null));
 
       verify(mockLocalDataSource.deleteTextFromCache(tTextModel));
       verifyNoMoreInteractions(mockLocalDataSource);
