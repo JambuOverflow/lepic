@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/class_management/presentation/widgets/classroom_list_view.dart';
+import 'package:mobile/features/class_management/presentation/widgets/create_classroom_dialog.dart';
 import '../bloc/classroom_bloc.dart';
-
-import 'widgets/classroom_list_view.dart';
-import 'widgets/create_classroom_dialog.dart';
 
 class ClassroomsPage extends StatefulWidget {
   @override
@@ -14,13 +13,13 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ClassroomBloc>(context).add(GetClassroomsEvent());
+    BlocProvider.of<ClassroomBloc>(context).add(LoadClassroomsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My classes')),
+      appBar: AppBar(title: const Text('My Classes')),
       body: Center(
         child: BlocConsumer<ClassroomBloc, ClassroomState>(
           listener: (context, state) {
@@ -31,13 +30,10 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
             }
           },
           builder: (context, state) {
-            if (state is GettingClassrooms) {
+            if (state is ClassroomsLoadInProgress) {
               return Center(child: CircularProgressIndicator());
-            } else if (state is ClassroomsGot) {
-              if (state.classrooms.isEmpty)
-                return Center(child: Text('Nothing here'));
-              else
-                return ClassroomListView(state: state);
+            } else if (state is ClassroomsLoaded) {
+              return ClassroomListView();
             } else
               return Center(child: const Text('No data'));
           },

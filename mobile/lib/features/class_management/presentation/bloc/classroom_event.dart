@@ -28,4 +28,4 @@ class DeleteClassroomEvent extends ClassroomEvent {
   DeleteClassroomEvent({@required this.classroom});
 }
 
-class GetClassroomsEvent extends ClassroomEvent {}
+class LoadClassroomsEvent extends ClassroomEvent {}
