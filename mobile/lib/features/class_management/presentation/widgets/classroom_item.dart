@@ -16,16 +16,13 @@ class ClassroomItem extends StatelessWidget {
     return GestureDetector(
       child: ListTile(
         title: Hero(
-          tag: bloc.classrooms[index].name,
+          tag: 'name_${bloc.classrooms[index].id}',
           child: Text(
-            'Class: ${bloc.classrooms[index].name}',
+            '${bloc.classrooms[index].name}',
           ),
         ),
-        subtitle: Hero(
-          tag: bloc.classrooms[index].name,
-          child: Text(
-            'Grade: ${bloc.classrooms[index].grade}',
-          ),
+        subtitle: Text(
+          'Grade: ${bloc.classrooms[index].grade}',
         ),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
