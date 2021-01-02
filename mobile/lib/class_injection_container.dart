@@ -49,5 +49,4 @@ void init() {
   sl.registerLazySingleton(
     () => ClassroomEntityModelConverter(userLocalDataSource: sl()),
   );
-  sl.registerLazySingleton(() => Clock());
 }

@@ -55,7 +55,12 @@ class RouteGenerator {
       case '/list_texts':
         return MaterialPageRoute(builder: (_) => TextsPage());
       case '/add_text':
-        return MaterialPageRoute(builder: (_) => TextEditingPage());
+        return MaterialPageRoute(builder: (_) {
+          final Map arguments = settings.arguments as Map;
+          final text = arguments != null ? arguments['textToEdit'] : null;
+
+          return TextEditingPage(textToEdit: text);
+        });
       case '/detail_class':
         return MaterialPageRoute(builder: (_) => ClassroomDetailPage());
 

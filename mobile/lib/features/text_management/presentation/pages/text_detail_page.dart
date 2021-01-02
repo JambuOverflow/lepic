@@ -22,7 +22,10 @@ class TextDetailPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
-        onPressed: () => Navigator.of(context).popAndPushNamed('/add_text'),
+        onPressed: () => Navigator.of(context).popAndPushNamed(
+          '/add_text',
+          arguments: {'textToEdit': _text},
+        ),
       ),
       body: Scrollbar(
         isAlwaysShown: true,

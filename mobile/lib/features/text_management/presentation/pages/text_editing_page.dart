@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
 import '../widgets/done_floating_action_button.dart';
@@ -14,6 +14,10 @@ class TextEditingPage extends StatelessWidget {
 
   final _scrollControler = ScrollController();
 
+  final MyText textToEdit;
+
+  TextEditingPage({Key key, this.textToEdit}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -22,12 +26,22 @@ class TextEditingPage extends StatelessWidget {
       appBar: BackgroundAppBar(title: 'Editing Text'),
       floatingActionButton: DoneFloatingActionButton(
         onPressed: () {
-          BlocProvider.of<TextBloc>(context).add(
-            CreateTextEvent(
-              title: _titleController.text,
-              body: _textController.text,
-            ),
-          );
+          if (textToEdit == null) {
+            BlocProvider.of<TextBloc>(context).add(
+              CreateTextEvent(
+                title: _titleController.text,
+                body: _textController.text,
+              ),
+            );
+          } else if (textToEdit != null) {
+            BlocProvider.of<TextBloc>(context).add(
+              UpdateTextEvent(
+                title: _titleController.text,
+                body: _textController.text,
+                oldText: textToEdit,
+              ),
+            );
+          }
 
           Navigator.of(context).pop();
         },
@@ -43,12 +57,18 @@ class TextEditingPage extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 32, right: 32),
-                child: TextTitleField(titleController: _titleController),
+                child: TextTitleField(
+                  titleController: _titleController,
+                  title: textToEdit != null ? textToEdit.title : null,
+                ),
               ),
               SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.only(left: 32, right: 32),
-                child: TextBodyField(textController: _textController),
+                child: TextBodyField(
+                  textController: _textController,
+                  body: textToEdit != null ? textToEdit.body : null,
+                ),
               ),
             ],
           ),
