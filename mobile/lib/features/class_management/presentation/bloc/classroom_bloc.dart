@@ -110,10 +110,26 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
   Stream<ClassroomState> _updateStates(UpdateClassroomEvent event) async* {
     yield UpdatingClassroom();
 
-    final failureOrClassroom =
-        await updateClassroom(ClassroomParams(classroom: event.classroom));
+    final inputEither = inputConverter.stringToUnsignedInteger(event.grade);
 
-    yield* _eitherLoadedOrErrorState(failureOrClassroom);
+    yield* inputEither.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(failure));
+      },
+      (grade) async* {
+        final updatedClassroom = Classroom(
+          grade: grade,
+          name: event.name,
+          id: event.classroom.id,
+        );
+
+        final failureOrClassroom = await updateClassroom(
+          ClassroomParams(classroom: updatedClassroom),
+        );
+
+        yield* _eitherLoadedOrErrorState(failureOrClassroom);
+      },
+    );
   }
 
   Stream<ClassroomState> _getClassesStates() async* {

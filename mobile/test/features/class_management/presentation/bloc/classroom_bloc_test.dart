@@ -248,6 +248,27 @@ void main() {
   });
 
   group('updateClassroom', () {
+    test(
+      '''should call the InputConverter to validate and convert 
+      the string to an unsigned integer''',
+      () async {
+        setUpMockInputConverterSuccess();
+        setUpMockAuthAuthenticated();
+
+        when(updateClassroom(any)).thenAnswer((_) async => Right(tClassroom));
+
+        bloc.add(UpdateClassroomEvent(
+          classroom: tClassroom,
+          grade: tGradeString,
+          name: tClassroom.name,
+        ));
+
+        await untilCalled(mockInputConverter.stringToUnsignedInteger(any));
+
+        verify(mockInputConverter.stringToUnsignedInteger(tGradeString));
+      },
+    );
+
     test('''should emit [UpdatingClassrooom, ClassroomsLoaded] when
          classroom update is successful''', () async {
       setUpMockAuthAuthenticated();
@@ -270,6 +291,26 @@ void main() {
     test('''should emit [Updating, Error] when
         classroom update is unsuccessful''', () async {
       setUpMockAuthAuthenticated();
+      setUpMockInputConverterSuccess();
+
+      when(updateClassroom(any)).thenAnswer((_) async => Left(CacheFailure()));
+
+      final expected = [
+        UpdatingClassroom(),
+        Error(message: 'deu ruim cantinho e agora?'),
+      ];
+
+      expectLater(bloc, emitsInOrder(expected));
+      bloc.add(UpdateClassroomEvent(
+        grade: tGradeString,
+        classroom: tClassroom,
+      ));
+    });
+
+    test('''should emit [Updating, Error] when
+        input convertion failed''', () async {
+      setUpMockAuthAuthenticated();
+      setUpMockInputConverterFailure();
 
       when(updateClassroom(any)).thenAnswer((_) async => Left(CacheFailure()));
 
