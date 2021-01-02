@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
@@ -27,20 +28,6 @@ void main() {
   MockDeleteTextEventUseCase mockDeleteText;
   MockGetTextEventUseCase mockGetText;
 
-  setUp(() {
-    mockCreateNewText = MockCreateTextUseCase();
-    mockUpdateText = MockUpdateTextEventUseCase();
-    mockDeleteText = MockDeleteTextEventUseCase();
-    mockGetText = MockGetTextEventUseCase();
-
-    bloc = TextBloc(
-      createText: mockCreateNewText,
-      updateText: mockUpdateText,
-      deleteText: mockDeleteText,
-      getTexts: mockGetText,
-    );
-  });
-
   final tText = MyText(
     title: 'Title',
     body: 'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie',
@@ -48,74 +35,83 @@ void main() {
     classId: 010,
   );
 
-  final tTextList = List<MyText>();
-  tTextList.add(tText);
+  final tTextList = <MyText>[tText];
 
   final tClassroom = Classroom(
     grade: 001,
     name: 'textClassroomName',
+    id: 3,
   );
+
+  setUp(() {
+    mockCreateNewText = MockCreateTextUseCase();
+    mockUpdateText = MockUpdateTextEventUseCase();
+    mockDeleteText = MockDeleteTextEventUseCase();
+    mockGetText = MockGetTextEventUseCase();
+
+    bloc = TextBloc(
+      classroom: tClassroom,
+      createText: mockCreateNewText,
+      updateText: mockUpdateText,
+      deleteText: mockDeleteText,
+      getTexts: mockGetText,
+    );
+
+    when(mockGetText(ClassroomParams(classroom: tClassroom)))
+        .thenAnswer((_) async => Right(tTextList));
+  });
 
   final String tTitle = 'Title';
   final String tBody =
       'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie';
-  final int tLocalId = 001;
 
   test('initial state should be [TextInitial]', () {
-    expect(bloc.state, TextInitial());
+    expect(bloc.state, TextsLoadInProgress());
   });
 
   group('CreateNewText', () {
-    test(
-        '''should emit [CreatingTest, TestCreated] when text creation is successful''',
-        () {
+    test('''should emit [TextsLoaded] when text creation is successful''', () {
       when(mockCreateNewText(any)).thenAnswer((_) async => Right(tText));
 
-      final expected = [
-        CreatingText(),
-        TextCreated(text: tText),
-      ];
+      final expected = TextsLoaded();
 
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateTextEvent(
-        title: tTitle,
-        body: tBody,
-        classroom: tClassroom,
-      ));
+      expectLater(bloc, emits(expected));
+      bloc.add(CreateTextEvent(title: tTitle, body: tBody));
     });
 
-    test('''should emit [CreatingTest, Error] when text could not be created''',
-        () {
+    blocTest(
+      'should update texts list after text creation',
+      build: () {
+        when(mockCreateNewText(any)).thenAnswer((_) async => Right(tText));
+        return bloc;
+      },
+      act: (bloc) {
+        bloc.add(CreateTextEvent(title: tTitle, body: tBody));
+        bloc.add(CreateTextEvent(title: tTitle, body: tBody));
+        bloc.add(CreateTextEvent(title: tTitle, body: tBody));
+      },
+      verify: (bloc) => bloc.texts.length == 3,
+    );
+
+    test('''should emit [Error] when text could not be created''', () {
       when(mockCreateNewText(any))
           .thenAnswer((_) async => Left(ServerFailure()));
 
-      final expected = [
-        CreatingText(),
-        Error(message: 'Could not create a text'),
-      ];
+      final expected = Error(message: 'Could not create text');
 
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateTextEvent(
-        title: tTitle,
-        body: tBody,
-        classroom: tClassroom,
-      ));
+      expectLater(bloc, emits(expected));
+      bloc.add(CreateTextEvent(title: tTitle, body: tBody));
     });
   });
 
   group('updateText', () {
-    test('''should emit [UpdatingText, TextUpdated] when a Text update 
-    is successful''', () async {
-      when(mockUpdateText(any)).thenAnswer(
-        (_) async => Right(tText),
-      );
+    test('should emit [TextsLoaded] when a Text update is successful',
+        () async {
+      when(mockUpdateText(any)).thenAnswer((_) async => Right(tText));
 
-      final expected = [
-        UpdatingText(),
-        TextUpdated(text: tText),
-      ];
+      final expected = TextsLoaded();
 
-      expectLater(bloc, emitsInOrder(expected));
+      expectLater(bloc, emits(expected));
       bloc.add(UpdateTextEvent(
         title: tTitle,
         body: tBody,
@@ -127,70 +123,72 @@ void main() {
     is unsuccessful''', () {
       when(mockUpdateText(any)).thenAnswer((_) async => Left(ServerFailure()));
 
-      final expected = [
-        UpdatingText(),
-        Error(message: 'Not able to update a text')
-      ];
+      final expected = Error(message: 'Not able to update a text');
 
-      expectLater(bloc, emitsInOrder(expected));
+      expectLater(bloc, emits(expected));
       bloc.add(UpdateTextEvent(title: tTitle, body: tBody, oldText: tText));
     });
   });
 
-  group('''Delete a given text''', () {
-    test(
-        '''Should emit [DeletingText, TextDeleted] when a text is deleted successfully''',
-        () {
+  group('Delete a given text', () {
+    test('Should emit [TextsLoaded] when a text is deleted successfully', () {
       when(mockDeleteText(any)).thenAnswer((_) async => Right(Response));
 
-      final expected = [
-        DeletingText(),
-        TextDeleted(),
-      ];
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteTextEvent(localId: tLocalId));
+      final expected = TextsLoaded();
+
+      expectLater(bloc, emits(expected));
+      bloc.add(DeleteTextEvent(text: tText));
     });
 
-    test(
-        '''Should emit [DeletingClassroom, Error] when a text could not be deleted successfully''',
+    blocTest(
+      'should update texts list after text deletion',
+      build: () {
+        when(mockCreateNewText(any)).thenAnswer((_) async => Right(tText));
+        when(mockDeleteText(any)).thenAnswer((_) async => Right(tText));
+        return bloc;
+      },
+      act: (bloc) {
+        bloc.add(CreateTextEvent(title: tTitle, body: tBody));
+        bloc.add(DeleteTextEvent(text: tText));
+      },
+      verify: (bloc) => bloc.texts.isEmpty,
+    );
+
+    test('Should emit [Error] when a text could not be deleted successfully',
         () {
       when(mockDeleteText(any)).thenAnswer((_) async => Left(ServerFailure()));
 
-      final expected = [
-        DeletingText(),
-        Error(message: 'could not delete this text'),
-      ];
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteTextEvent(localId: tLocalId));
+      final expected = Error(message: 'could not delete this text');
+
+      expectLater(bloc, emits(expected));
+      bloc.add(DeleteTextEvent(text: tText));
     });
   });
 
-  group('''Read a text list''', () {
-    test(
-        '''Should emit [GettingTextList, GotTextList] when get a student list''',
-        () {
+  group('Get texts', () {
+    test('Should emit [TextsLoaded] when texts loaded successfuly', () {
       when(mockGetText(ClassroomParams(classroom: tClassroom)))
           .thenAnswer((_) async => Right(tTextList));
 
       final expected = [
-        GettingTexts(),
-        TextsGot(texts: tTextList),
+        TextsLoadInProgress(),
+        TextsLoaded(),
       ];
+
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetTextsEvent(classroom: tClassroom));
+      bloc.add(GetTextsEvent());
     });
 
-    test(
-        '''Should emit [GettingTextList, Error] when could not get a text list''',
-        () {
+    test('Should emit [Error] when can not get the text list', () {
       when(mockGetText(any)).thenAnswer((_) async => Left(ServerFailure()));
 
       final expected = [
-        GettingTexts(),
+        TextsLoadInProgress(),
         Error(message: 'Not able to get student list'),
       ];
+
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetTextsEvent(classroom: tClassroom));
+      bloc.add(GetTextsEvent());
     });
   });
 }

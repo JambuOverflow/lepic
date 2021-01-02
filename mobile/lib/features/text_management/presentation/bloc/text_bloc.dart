@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../core/error/failures.dart';
 import '../../../class_management/domain/entities/classroom.dart';
 import '../../../class_management/domain/use_cases/classroom_params.dart';
+import '../../../../core/error/failures.dart';
 import '../../domain/entities/text.dart';
 import '../../domain/use_cases/create_text_use_case.dart';
 import '../../domain/use_cases/delete_text_use_case.dart';
@@ -19,7 +20,9 @@ part 'text_event.dart';
 part 'text_state.dart';
 
 class TextBloc extends Bloc<TextEvent, TextState> {
-  final List<MyText> texts = [];
+  List<MyText> texts = const <MyText>[];
+
+  final Classroom classroom;
 
   final CreateText createText;
   final UpdateText updateText;
@@ -27,89 +30,93 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   final DeleteText deleteText;
 
   TextBloc({
+    @required this.classroom,
     @required this.createText,
     @required this.updateText,
     @required this.deleteText,
     @required this.getTexts,
-  }) : super(TextInitial());
+  }) : super(TextsLoadInProgress());
 
   @override
   Stream<TextState> mapEventToState(TextEvent event) async* {
     if (event is CreateTextEvent)
-      yield* _createNewTextState(event);
+      yield* _createTextState(event);
     else if (event is UpdateTextEvent)
       yield* _updateTextState(event);
     else if (event is DeleteTextEvent)
       yield* _deleteTextState(event);
-    else if (event is GetTextsEvent) yield* _getTextsState(event);
+    else if (event is GetTextsEvent) yield* _getTextsState();
   }
 
-  Stream<TextState> _createNewTextState(CreateTextEvent event) async* {
-    yield CreatingText();
-
-    final text = _createTextEntityFromEvent(event);
-
-    final failureOrText = await createText(TextParams(text: text));
-
-    yield failureOrText.fold(
-        (failure) => Error(message: _mapFailureToMessage(failure)),
-        (newText) => TextCreated(text: newText));
-  }
-
-  Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
-    yield UpdatingText();
-
-    final text = _updateTextEntityFromEvent(event);
-
-    final failureOrText = await updateText(TextParams(text: text));
-
-    yield failureOrText.fold(
-        (failure) => Error(message: _mapFailureToMessage(failure)),
-        (updatedText) => TextUpdated(text: updatedText));
-  }
-
-  Stream<TextState> _deleteTextState(DeleteTextEvent event) async* {
-    yield DeletingText();
-
-    final text = MyText(localId: event.localId);
-
-    final failureOrSuccess = await deleteText(TextParams(text: text));
-
-    yield failureOrSuccess.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (_) => TextDeleted(),
-    );
-  }
-
-  Stream<TextState> _getTextsState(GetTextsEvent event) async* {
-    yield GettingTexts();
-
-    final failureOrTexts = await getTexts(
-      ClassroomParams(classroom: event.classroom),
+  Stream<TextState> _createTextState(CreateTextEvent event) async* {
+    final text = MyText(
+      title: event.title,
+      body: event.body,
+      classId: classroom.id,
     );
 
-    yield failureOrTexts.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (texts) {
-        texts = texts;
-        return TextsGot(texts: texts);
+    final failureOrSuccess = await createText(TextParams(text: text));
+
+    yield* _eitherLoadedOrErrorState(failureOrSuccess);
+  }
+
+  Stream<TextState> _eitherLoadedOrErrorState(
+    Either<Failure, dynamic> failureOrSuccess,
+  ) async* {
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(failure));
+      },
+      (_) async* {
+        yield* _loadAndReplaceClassrooms();
       },
     );
   }
 
-  MyText _createTextEntityFromEvent(CreateTextEvent event) {
-    return MyText(
-      title: event.title,
-      body: event.body,
-      classId: event.classroom.id,
+  Stream<TextState> _deleteTextState(DeleteTextEvent event) async* {
+    final failureOrSuccess = await deleteText(TextParams(text: event.text));
+
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(CacheFailure()));
+      },
+      (_) async* {
+        yield* _loadAndReplaceClassrooms();
+      },
     );
   }
 
-  MyText _updateTextEntityFromEvent(UpdateTextEvent event) {
-    return MyText(
-      title: event.title ?? event.oldText.title,
-      body: event.body ?? event.oldText.body,
-      classId: event.oldText.classId,
+  Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
+    final updatedText = MyText(
+      title: event.body,
+      body: event.title,
+      localId: event.oldText.localId,
+      classId: classroom.id,
+    );
+
+    final failureOrClassroom = await updateText(TextParams(text: updatedText));
+
+    yield* _eitherLoadedOrErrorState(failureOrClassroom);
+  }
+
+  Stream<TextState> _getTextsState() async* {
+    yield TextsLoadInProgress();
+
+    yield* _loadAndReplaceClassrooms();
+  }
+
+  Stream<TextState> _loadAndReplaceClassrooms() async* {
+    final failureOrClassrooms = await getTexts(
+      ClassroomParams(classroom: classroom),
+    );
+
+    yield failureOrClassrooms.fold(
+      (failure) => Error(message: _mapFailureToMessage(failure)),
+      (texts) {
+        this.texts = texts;
+
+        return TextsLoaded();
+      },
     );
   }
 
