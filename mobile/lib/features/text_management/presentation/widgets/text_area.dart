@@ -4,11 +4,11 @@ class TextArea extends StatelessWidget {
   final String _textBody;
   final ScrollController _scrollControler;
 
-  const TextArea(
-      {Key key,
-      @required String textBody,
-      @required ScrollController scrollControler})
-      : _textBody = textBody,
+  const TextArea({
+    Key key,
+    @required String textBody,
+    @required ScrollController scrollControler,
+  })  : _textBody = textBody,
         _scrollControler = scrollControler,
         super(key: key);
 

@@ -12,16 +12,13 @@ class TextItem extends StatelessWidget {
     return GestureDetector(
       child: Card(
         child: ListTile(
-            title: Hero(
-              tag: 'title_${_text.title}',
-              child: Text(
-                _text.title,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
+            title: Text(
+              _text.title,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
             subtitle: Hero(
-              tag: 'body_${_text.body}',
+              tag: 'body_${_text.localId}',
               child: Text(
                 _text.body,
                 overflow: TextOverflow.ellipsis,

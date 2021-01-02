@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
 
 import '../widgets/word_count_area.dart';
 import '../../../../core/presentation/widgets/background_app_bar.dart';
@@ -30,17 +31,21 @@ class TextDetailPage extends StatelessWidget {
       body: Scrollbar(
         isAlwaysShown: true,
         controller: _scrollControler,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextArea(
-              textBody: _text.body,
-              scrollControler: _scrollControler,
-            ),
-            SizedBox(height: 12),
-            WordCountText(),
-            SizedBox(height: 16),
-          ],
+        child: Hero(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextArea(
+                textBody: _text.body,
+                scrollControler: _scrollControler,
+              ),
+              SizedBox(height: 12),
+              WordCountText(),
+              SizedBox(height: 16),
+            ],
+          ),
+          tag: 'body_${_text.localId}',
+          flightShuttleBuilder: flightShuttleBuilder,
         ),
       ),
     );
