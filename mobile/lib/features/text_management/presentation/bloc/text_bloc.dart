@@ -88,8 +88,8 @@ class TextBloc extends Bloc<TextEvent, TextState> {
 
   Stream<TextState> _updateTextState(UpdateTextEvent event) async* {
     final updatedText = MyText(
-      title: event.body,
-      body: event.title,
+      title: event.title,
+      body: event.body,
       localId: event.oldText.localId,
       classId: classroom.id,
     );
