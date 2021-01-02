@@ -18,7 +18,7 @@ class TextDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: BackgroundAppBar(
         title: '${_text.title}',
-        actions: <Widget>[TextViewPopupMenuButton()],
+        actions: <Widget>[TextViewPopupMenuButton(text: _text)],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
