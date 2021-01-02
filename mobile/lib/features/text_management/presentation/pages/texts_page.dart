@@ -18,7 +18,6 @@ class _TextsPageState extends State<TextsPage> {
     final _bloc = BlocProvider.of<TextBloc>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Texts')),
       body: ListView.builder(
         itemCount: _bloc.texts.length,
         itemBuilder: (context, index) {
