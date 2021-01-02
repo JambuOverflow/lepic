@@ -26,23 +26,7 @@ class TextEditingPage extends StatelessWidget {
       appBar: BackgroundAppBar(title: 'Editing Text'),
       floatingActionButton: DoneFloatingActionButton(
         onPressed: () {
-          if (textToEdit == null) {
-            BlocProvider.of<TextBloc>(context).add(
-              CreateTextEvent(
-                title: _titleController.text,
-                body: _textController.text,
-              ),
-            );
-          } else if (textToEdit != null) {
-            BlocProvider.of<TextBloc>(context).add(
-              UpdateTextEvent(
-                title: _titleController.text,
-                body: _textController.text,
-                oldText: textToEdit,
-              ),
-            );
-          }
-
+          _addOrUpdateText(context);
           Navigator.of(context).pop();
         },
       ),
@@ -59,7 +43,7 @@ class TextEditingPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 32, right: 32),
                 child: TextTitleField(
                   titleController: _titleController,
-                  title: textToEdit != null ? textToEdit.title : null,
+                  title: textToEdit?.title,
                 ),
               ),
               SizedBox(height: 16),
@@ -67,7 +51,7 @@ class TextEditingPage extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 32, right: 32),
                 child: TextBodyField(
                   textController: _textController,
-                  body: textToEdit != null ? textToEdit.body : null,
+                  body: textToEdit?.body,
                 ),
               ),
             ],
@@ -75,5 +59,26 @@ class TextEditingPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _addOrUpdateText(BuildContext context) {
+    final bloc = BlocProvider.of<TextBloc>(context);
+
+    if (textToEdit == null) {
+      bloc.add(
+        CreateTextEvent(
+          title: _titleController.text,
+          body: _textController.text,
+        ),
+      );
+    } else {
+      bloc.add(
+        UpdateTextEvent(
+          title: _titleController.text,
+          body: _textController.text,
+          oldText: textToEdit,
+        ),
+      );
+    }
   }
 }
