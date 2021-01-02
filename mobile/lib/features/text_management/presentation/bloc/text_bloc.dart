@@ -115,7 +115,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
       (texts) {
         this.texts = texts;
 
-        return TextsLoaded();
+        return TextsLoaded(texts);
       },
     );
   }
