@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'classroom_item.dart';
 
@@ -9,7 +10,7 @@ class ClassroomListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<ClassroomBloc>(context);
-    
+
     return Column(
       children: <Widget>[
         Text("Total classes:${bloc.classrooms.length}"),
@@ -18,14 +19,15 @@ class ClassroomListView extends StatelessWidget {
             shrinkWrap: true,
             itemCount: bloc.classrooms.length,
             itemBuilder: (context, index) {
+              final classroom = bloc.classrooms[index];
               return Dismissible(
                 key: UniqueKey(),
                 background: Container(),
                 child: ClassroomItem(index: index),
-                onDismissed: (_) {
-                  emitDeleteClassroomEvent(context: context, index: index);
-                  showDeletedClassroomSnackBar(context, index);
-                },
+                onDismissed: (_) => _emitDeleteEventAndShowSnackBar(
+                  classroom: classroom,
+                  context: context,
+                ),
               );
             },
           ),
@@ -34,22 +36,15 @@ class ClassroomListView extends StatelessWidget {
     );
   }
 
-  void emitDeleteClassroomEvent(
-      {@required BuildContext context, @required int index}) {
-    BlocProvider.of<ClassroomBloc>(context).add(
-      DeleteClassroomEvent(
-        classroom: BlocProvider.of<ClassroomBloc>(context).classrooms[index],
-      ),
-    );
-  }
+  void _emitDeleteEventAndShowSnackBar({
+    @required Classroom classroom,
+    @required BuildContext context,
+  }) {
+    final bloc = BlocProvider.of<ClassroomBloc>(context);
+    bloc.add(DeleteClassroomEvent(classroom: classroom));
 
-  void showDeletedClassroomSnackBar(BuildContext context, int index) {
     Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "student ${BlocProvider.of<ClassroomBloc>(context).classrooms[index].name} deleted",
-        ),
-      ),
+      SnackBar(content: Text("student ${classroom.name} deleted")),
     );
   }
 }
