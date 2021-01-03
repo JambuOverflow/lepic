@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
+import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
@@ -14,6 +15,9 @@ import 'package:mockito/mockito.dart';
 
 class MockTextLocalDataSource extends Mock implements TextLocalDataSource {}
 
+class MockTextEntityModelConverter extends Mock
+    implements TextEntityModelConverter {}
+
 class MockClassroomEntityModelConverter extends Mock
     implements ClassroomEntityModelConverter {}
 
@@ -21,6 +25,7 @@ void main() {
   MockTextLocalDataSource mockLocalDataSource;
   TextRepositoryImpl repository;
   ClassroomModel tClassroomModel;
+  MockTextEntityModelConverter mockTextEntityModelConverter;
   MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
 
   final tClassroom = Classroom(
@@ -35,28 +40,41 @@ void main() {
     classId: 1,
   );
 
-  final tTextModel = textEntityToModel(tText);
+  final tTextModelInput = TextModel(
+    title: "a",
+    body: "b",
+    classId: 1,
+    tutorId: 1,
+  );
 
-  final tTextsModels = [tTextModel, tTextModel];
+  final tTextModelOutput = tTextModelInput.copyWith(localId: 1);
+
+  final tTextsModels = [tTextModelInput, tTextModelInput];
   final tTexts = [tText, tText];
 
   setUp(() {
     mockLocalDataSource = MockTextLocalDataSource();
+    mockTextEntityModelConverter = MockTextEntityModelConverter();
     mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
 
     tClassroomModel = ClassroomModel(grade: 1, localId: 1, name: "A");
 
     repository = TextRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      textEntityModelConverter: mockTextEntityModelConverter,
       classroomEntityModelConverter: mockClassroomEntityModelConverter,
     );
+    when(mockTextEntityModelConverter.mytextEntityToModel(tText))
+        .thenAnswer((_) async => tTextModelInput);
+    when(mockTextEntityModelConverter.mytextModelToEntity(tTextModelOutput))
+        .thenAnswer((_) => tText);
     when(mockClassroomEntityModelConverter.classroomEntityToModel(tClassroom))
         .thenAnswer((_) async => tClassroomModel);
   });
 
   group('createText', () {
     test('should return CacheFailure when cache is unsuccessful', () async {
-      when(mockLocalDataSource.cacheNewText(tTextModel))
+      when(mockLocalDataSource.cacheNewText(tTextModelInput))
           .thenThrow(CacheException());
 
       final result = await repository.createText(tText);
@@ -65,12 +83,12 @@ void main() {
     });
 
     test('should cache newly created text', () async {
-      when(mockLocalDataSource.cacheNewText(tTextModel))
-          .thenAnswer((_) async => tTextModel);
+      when(mockLocalDataSource.cacheNewText(tTextModelInput))
+          .thenAnswer((_) async => tTextModelOutput);
 
       final result = await repository.createText(tText);
 
-      verify(mockLocalDataSource.cacheNewText(tTextModel));
+      verify(mockLocalDataSource.cacheNewText(tTextModelInput));
       expect(result, Right(tText));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
@@ -78,24 +96,24 @@ void main() {
 
   group('delete', () {
     test('should delete a text and return Right', () async {
-      when(mockLocalDataSource.deleteTextFromCache(tTextModel))
+      when(mockLocalDataSource.deleteTextFromCache(tTextModelInput))
           .thenAnswer((_) async => Right(null));
 
       final expected = await repository.deleteText(tText);
 
       expect(expected, Right(null));
 
-      verify(mockLocalDataSource.deleteTextFromCache(tTextModel));
+      verify(mockLocalDataSource.deleteTextFromCache(tTextModelInput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.deleteTextFromCache(tTextModel))
+      when(mockLocalDataSource.deleteTextFromCache(tTextModelInput))
           .thenThrow(CacheException());
 
       final result = await repository.deleteText(tText);
-      verify(mockLocalDataSource.deleteTextFromCache(tTextModel));
+      verify(mockLocalDataSource.deleteTextFromCache(tTextModelInput));
 
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -104,31 +122,32 @@ void main() {
 
   group('update', () {
     test('should return a text when updateText is called', () async {
-      when(mockLocalDataSource.updateCachedText(tTextModel))
-          .thenAnswer((_) async => tTextModel);
+      when(mockLocalDataSource.updateCachedText(tTextModelInput))
+          .thenAnswer((_) async => tTextModelOutput);
 
       final result = await repository.updateText(tText);
 
-      verify(mockLocalDataSource.updateCachedText(tTextModel));
+      verify(mockLocalDataSource.updateCachedText(tTextModelInput));
       expect(result, Right(tText));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.updateCachedText(tTextModel))
+      when(mockLocalDataSource.updateCachedText(tTextModelInput))
           .thenThrow(CacheException());
 
       final result = await repository.updateText(tText);
 
-      verify(mockLocalDataSource.updateCachedText(tTextModel));
+      verify(mockLocalDataSource.updateCachedText(tTextModelInput));
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
   });
 
   group('getTextsOfClassroom', () {
-    test('should return a list of texts when getTextsofClassroom is called', () async {
+    test('should return a list of texts when getTextsofClassroom is called',
+        () async {
       when(mockLocalDataSource.getTextsOfClassroomFromCache(tClassroomModel))
           .thenAnswer((_) async => tTextsModels);
 
@@ -161,11 +180,10 @@ void main() {
       final resultTest = listEquals(resultList, tTexts);
       equals(resultTest);
     });
-    
+
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getTextsFromCache())
-          .thenThrow(CacheException());
+      when(mockLocalDataSource.getTextsFromCache()).thenThrow(CacheException());
 
       final result = await repository.getTexts();
 
