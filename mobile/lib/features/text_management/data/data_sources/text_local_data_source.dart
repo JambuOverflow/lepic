@@ -1,5 +1,6 @@
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 
@@ -9,7 +10,8 @@ abstract class TextLocalDataSource {
   /// Returns an empty list if no [Text] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<TextModel>> getTextsOfClassroomFromCache(ClassroomModel classroomModel);
+  Future<List<TextModel>> getTextsOfClassroomFromCache(
+      ClassroomModel classroomModel);
 
   /// Gets the cached list of [Text].
   ///
@@ -36,8 +38,12 @@ abstract class TextLocalDataSource {
 
 class TextLocalDataSourceImpl implements TextLocalDataSource {
   final Database database;
+  final UserLocalDataSource userLocalDataSource;
 
-  TextLocalDataSourceImpl({@required this.database});
+  TextLocalDataSourceImpl({
+    @required this.database,
+    @required this.userLocalDataSource,
+  });
 
   @override
   Future<TextModel> cacheNewText(TextModel textModel) async {
@@ -45,11 +51,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
       bool nullToAbsent = true;
       final textCompanion = textModel.toCompanion(nullToAbsent);
       final textPk = await this.database.insertText(textCompanion);
-      return TextModel(
-          title: textModel.title,
-          body: textModel.body,
-          classId: textModel.classId,
-          localId: textPk);
+      return textModel.copyWith(localId: textPk);
     } on SqliteException {
       throw CacheException();
     }
@@ -88,8 +90,12 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   }
 
   @override
-  Future<List<TextModel>> getTextsFromCache() {
-    // TODO: implement getTexts
-    throw UnimplementedError();
+  Future<List<TextModel>> getTextsFromCache() async {
+    try {
+      final tutorId = await userLocalDataSource.getUserId();
+      return await this.database.getTexts(tutorId);
+    } on SqliteException {
+      throw CacheException();
+    }
   }
 }
