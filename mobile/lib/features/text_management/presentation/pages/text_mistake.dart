@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:mobile/features/text_management/presentation/widgets/comments_bottom_sheet.dart';
 
 class TextMistake extends StatefulWidget {
   @override
@@ -9,15 +10,14 @@ class TextMistake extends StatefulWidget {
 }
 
 class _TextMistakeState extends State<TextMistake> {
-  List<TapSection> sections;
+  List<WordSection> _sections;
 
   String textToSplit =
       '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sagittis nulla augue, eget tincidunt massa lobortis ut. Vivamus justo eros, maximus non rutrum et, venenatis id lacus. Suspendisse potenti. Vivamus sit amet dolor nisl. Etiam et nisl ut nibh eleifend suscipit a ac neque. Sed imperdiet orci sed porttitor dignissim.''';
-  TapGestureRecognizer r1;
 
   @override
   void initState() {
-    sections = List<TapSection>();
+    _sections = List<WordSection>();
     super.initState();
   }
 
@@ -25,7 +25,10 @@ class _TextMistakeState extends State<TextMistake> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: _buildTextSpanWithSplittedText(textToSplit, context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: _buildTextSpanWithSplittedText(textToSplit, context),
+      ),
     );
   }
 
@@ -37,13 +40,23 @@ class _TextMistakeState extends State<TextMistake> {
     final spans = List<TextSpan>();
 
     for (int i = 0; i <= splittedText.length - 1; i++) {
-      var tapSection = TapSection(callBack: () {
-        print('Text is: ${splittedText[i]} ($i)');
-        setState(() {});
-      });
+      var tapSection = WordSection(
+        longPressCallBack: () {
+          _showTextCommentBottomSheet(context, splittedText[i]);
+          setState(() {});
+        },
+        tapCallBack: () {
+          print('Text is: ${splittedText[i]} ($i)');
+          setState(() {});
+        },
+      );
 
-      sections.add(tapSection);
-      _addClickableWords(spans, splittedText, i);
+      _sections.add(tapSection);
+      _addClickableWords(
+        spans: spans,
+        word: splittedText[i],
+        section: _sections[i],
+      );
       _addNonClickableSpaces(spans);
     }
 
@@ -55,35 +68,85 @@ class _TextMistakeState extends State<TextMistake> {
     );
   }
 
-  void _addClickableWords(
-      List<TextSpan> spans, List<String> splittedText, int i) {
-    spans.add(
-      TextSpan(
-        text: splittedText[i].toString(),
-        style: TextStyle(
-          color: Colors.black,
-          backgroundColor: sections[i].isPressed ? Colors.amber : null,
-        ),
-        recognizer: sections[i].recognizer,
+  void _showTextCommentBottomSheet(BuildContext context, String word) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      barrierColor: Colors.black.withOpacity(0.2),
+      builder: (BuildContext context) => CommentsBottomSheet(
+        wordToComment: word,
       ),
     );
   }
 
+  void _addClickableWords({
+    List<TextSpan> spans,
+    String word,
+    WordSection section,
+  }) {
+    spans.add(
+      TextSpan(
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 22,
+        ),
+        children: <InlineSpan>[
+          WidgetSpan(
+            child: GestureDetector(
+              onTap: () {
+                section.isPressed = !section.isPressed;
+                return section.tapCallBack();
+              },
+              onLongPress: () {
+                section.isPressed = true;
+                section.hasComment = true;
+                return section.longPressCallBack();
+              },
+              child: Text(
+                word,
+                style: TextStyle(
+                  backgroundColor: _highlightText(section),
+                  decoration:
+                      section.hasComment ? TextDecoration.underline : null,
+                  decorationThickness: 1.3,
+                  fontSize: 22,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _highlightText(WordSection section) {
+    if (section.hasComment)
+      return Colors.orange[600];
+    else if (section.isPressed)
+      return Colors.amber;
+    else
+      return null;
+  }
+
   void _addNonClickableSpaces(List<TextSpan> spans) {
-    spans.add(TextSpan(text: ' '));
+    spans.add(TextSpan(
+      text: ' ',
+      style: TextStyle(fontSize: 22),
+    ));
   }
 }
 
-class TapSection {
-  TapGestureRecognizer recognizer;
+class WordSection {
+  TapGestureRecognizer tapRecognizer;
+  LongPressGestureRecognizer longPressRecognizer;
   bool isPressed = false;
-  final Function callBack;
+  bool hasComment = false;
 
-  TapSection({this.callBack}) {
-    recognizer = TapGestureRecognizer();
-    recognizer.onTap = () {
-      this.isPressed = !this.isPressed;
-      this.callBack();
-    };
+  final Function tapCallBack;
+  final Function longPressCallBack;
+
+  WordSection({this.tapCallBack, this.longPressCallBack}) {
+    longPressRecognizer = LongPressGestureRecognizer();
+    tapRecognizer = TapGestureRecognizer();
   }
 }
