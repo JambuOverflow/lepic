@@ -87,7 +87,7 @@ Future<void> main() {
     });
   });
 
-  group("getTextFromClassroom", () {
+  group("getTextOfClassroom", () {
     test("should correctly return a list of texts", () async {
       when(mockDatabase.getTextsOfClassroom(tValidPk))
           .thenAnswer((_) async => tTextModels);
@@ -119,6 +119,40 @@ Future<void> main() {
               await textLocalDataSourceImpl.getTextsOfClassroomFromCache(tClassroomModel),
           throwsA(TypeMatcher<CacheException>()));
     });
+  });
+
+  group("getText", () {
+    test("should correctly return a list of texts", () async {
+      when(mockDatabase.getTexts())
+          .thenAnswer((_) async => tTextModels);
+
+      final result =
+          await textLocalDataSourceImpl.getTextsFromCache();
+
+      verify(mockDatabase.getTexts());
+      final testResult = listEquals(result, tTextModels);
+      equals(testResult);
+    });
+    /*
+    test("should correctly return an empty list", () async {
+      when(mockDatabase.getTextsOfClassroom(tValidPk)).thenAnswer((_) async => []);
+
+      final result =
+          await textLocalDataSourceImpl.getTextsOfClassroomFromCache(tClassroomModel);
+
+      verify(mockDatabase.getTextsOfClassroom(tValidPk));
+      final testResult = listEquals(result, []);
+      equals(testResult);
+    });
+
+    test("should throw a CacheException", () async {
+      when(mockDatabase.getTextsOfClassroom(tValidPk)).thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async =>
+              await textLocalDataSourceImpl.getTextsOfClassroomFromCache(tClassroomModel),
+          throwsA(TypeMatcher<CacheException>()));
+    });*/
   });
 
   group("updateText", () {
