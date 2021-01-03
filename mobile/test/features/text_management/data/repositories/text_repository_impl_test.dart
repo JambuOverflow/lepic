@@ -132,7 +132,7 @@ void main() {
       when(mockLocalDataSource.getTextsFromCache(tClassroomModel))
           .thenAnswer((_) async => tTextsModels);
 
-      final result = await repository.getTexts(tClassroom);
+      final result = await repository.getTextsOfClassroom(tClassroom);
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
@@ -144,7 +144,7 @@ void main() {
       when(mockLocalDataSource.getTextsFromCache(tClassroomModel))
           .thenThrow(CacheException());
 
-      final result = await repository.getTexts(tClassroom);
+      final result = await repository.getTextsOfClassroom(tClassroom);
 
       expect(result, Left(CacheFailure()));
     });

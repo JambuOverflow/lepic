@@ -30,7 +30,7 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, List<MyText>>> getTexts(Classroom classroom) async {
+  Future<Either<Failure, List<MyText>>> getTextsOfClassroom(Classroom classroom) async {
     return await _tryGetTexts(classroom);
   }
 
