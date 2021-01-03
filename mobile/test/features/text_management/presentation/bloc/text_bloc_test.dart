@@ -54,7 +54,7 @@ void main() {
       createText: mockCreateNewText,
       updateText: mockUpdateText,
       deleteText: mockDeleteText,
-      getTexts: mockGetText,
+      getTextsOfClassroom: mockGetText,
     );
 
     when(mockGetText(ClassroomParams(classroom: tClassroom)))

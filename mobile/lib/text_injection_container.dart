@@ -19,7 +19,7 @@ void init() {
       updateText: GetIt.instance(),
       deleteText: GetIt.instance(),
       createText: GetIt.instance(),
-      getTexts: GetIt.instance(),
+      getTextsOfClassroom: GetIt.instance(),
     ),
   );
 
