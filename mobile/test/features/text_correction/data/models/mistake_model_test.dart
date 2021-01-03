@@ -9,7 +9,7 @@ import '../../../../core/fixtures/fixture_reader.dart';
 void main() {
   moorRuntimeOptions.defaultSerializer = Serializer();
 
-  final tClassModel = CorrectionModel(
+  final tMistakeModel = MistakeModel(
     localId: 1,
     studentId: 1,
     textId: 1,
@@ -19,17 +19,17 @@ void main() {
 
   group("from json", () {
     test("should return a valid Correction model", () async {
-      final Map<String, dynamic> jsonMap = json.decode(fixture('correction'));
+      final Map<String, dynamic> jsonMap = json.decode(fixture('mistake'));
 
-      final result = CorrectionModel.fromJson(jsonMap);
+      final result = MistakeModel.fromJson(jsonMap);
 
-      expect(result, tClassModel);
+      expect(result, tMistakeModel);
     });
   });
 
   group('toJson', () {
     test('should return a Correction JSON map with proper data', () async {
-      final result = tClassModel.toJson();
+      final result = tMistakeModel.toJson();
 
       final expectedMap = {
         "local_id": 1,

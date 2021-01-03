@@ -1520,35 +1520,34 @@ class $TextModelsTable extends TextModels
   }
 }
 
-class CorrectionModel extends DataClass implements Insertable<CorrectionModel> {
+class MistakeModel extends DataClass implements Insertable<MistakeModel> {
   final int localId;
   final int wordIndex;
   final String commentary;
-  final int textId;
   final int studentId;
-  CorrectionModel(
+  final int textId;
+  MistakeModel(
       {@required this.localId,
       @required this.wordIndex,
       @required this.commentary,
-      @required this.textId,
-      @required this.studentId});
-  factory CorrectionModel.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
+      @required this.studentId,
+      @required this.textId});
+  factory MistakeModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    return CorrectionModel(
+    return MistakeModel(
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
       wordIndex:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}word_index']),
       commentary: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}commentary']),
-      textId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}text_id']),
       studentId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}student_id']),
+      textId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}text_id']),
     );
   }
   @override
@@ -1563,17 +1562,17 @@ class CorrectionModel extends DataClass implements Insertable<CorrectionModel> {
     if (!nullToAbsent || commentary != null) {
       map['commentary'] = Variable<String>(commentary);
     }
-    if (!nullToAbsent || textId != null) {
-      map['text_id'] = Variable<int>(textId);
-    }
     if (!nullToAbsent || studentId != null) {
       map['student_id'] = Variable<int>(studentId);
+    }
+    if (!nullToAbsent || textId != null) {
+      map['text_id'] = Variable<int>(textId);
     }
     return map;
   }
 
-  CorrectionModelsCompanion toCompanion(bool nullToAbsent) {
-    return CorrectionModelsCompanion(
+  MistakeModelsCompanion toCompanion(bool nullToAbsent) {
+    return MistakeModelsCompanion(
       localId: localId == null && nullToAbsent
           ? const Value.absent()
           : Value(localId),
@@ -1583,23 +1582,23 @@ class CorrectionModel extends DataClass implements Insertable<CorrectionModel> {
       commentary: commentary == null && nullToAbsent
           ? const Value.absent()
           : Value(commentary),
-      textId:
-          textId == null && nullToAbsent ? const Value.absent() : Value(textId),
       studentId: studentId == null && nullToAbsent
           ? const Value.absent()
           : Value(studentId),
+      textId:
+          textId == null && nullToAbsent ? const Value.absent() : Value(textId),
     );
   }
 
-  factory CorrectionModel.fromJson(Map<String, dynamic> json,
+  factory MistakeModel.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return CorrectionModel(
+    return MistakeModel(
       localId: serializer.fromJson<int>(json['local_id']),
       wordIndex: serializer.fromJson<int>(json['word_index']),
       commentary: serializer.fromJson<String>(json['commentary']),
-      textId: serializer.fromJson<int>(json['text_id']),
       studentId: serializer.fromJson<int>(json['student_id']),
+      textId: serializer.fromJson<int>(json['text_id']),
     );
   }
   @override
@@ -1609,32 +1608,32 @@ class CorrectionModel extends DataClass implements Insertable<CorrectionModel> {
       'local_id': serializer.toJson<int>(localId),
       'word_index': serializer.toJson<int>(wordIndex),
       'commentary': serializer.toJson<String>(commentary),
-      'text_id': serializer.toJson<int>(textId),
       'student_id': serializer.toJson<int>(studentId),
+      'text_id': serializer.toJson<int>(textId),
     };
   }
 
-  CorrectionModel copyWith(
+  MistakeModel copyWith(
           {int localId,
           int wordIndex,
           String commentary,
-          int textId,
-          int studentId}) =>
-      CorrectionModel(
+          int studentId,
+          int textId}) =>
+      MistakeModel(
         localId: localId ?? this.localId,
         wordIndex: wordIndex ?? this.wordIndex,
         commentary: commentary ?? this.commentary,
-        textId: textId ?? this.textId,
         studentId: studentId ?? this.studentId,
+        textId: textId ?? this.textId,
       );
   @override
   String toString() {
-    return (StringBuffer('CorrectionModel(')
+    return (StringBuffer('MistakeModel(')
           ..write('localId: $localId, ')
           ..write('wordIndex: $wordIndex, ')
           ..write('commentary: $commentary, ')
-          ..write('textId: $textId, ')
-          ..write('studentId: $studentId')
+          ..write('studentId: $studentId, ')
+          ..write('textId: $textId')
           ..write(')'))
         .toString();
   }
@@ -1645,69 +1644,69 @@ class CorrectionModel extends DataClass implements Insertable<CorrectionModel> {
       $mrjc(
           wordIndex.hashCode,
           $mrjc(commentary.hashCode,
-              $mrjc(textId.hashCode, studentId.hashCode)))));
+              $mrjc(studentId.hashCode, textId.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is CorrectionModel &&
+      (other is MistakeModel &&
           other.localId == this.localId &&
           other.wordIndex == this.wordIndex &&
           other.commentary == this.commentary &&
-          other.textId == this.textId &&
-          other.studentId == this.studentId);
+          other.studentId == this.studentId &&
+          other.textId == this.textId);
 }
 
-class CorrectionModelsCompanion extends UpdateCompanion<CorrectionModel> {
+class MistakeModelsCompanion extends UpdateCompanion<MistakeModel> {
   final Value<int> localId;
   final Value<int> wordIndex;
   final Value<String> commentary;
-  final Value<int> textId;
   final Value<int> studentId;
-  const CorrectionModelsCompanion({
+  final Value<int> textId;
+  const MistakeModelsCompanion({
     this.localId = const Value.absent(),
     this.wordIndex = const Value.absent(),
     this.commentary = const Value.absent(),
-    this.textId = const Value.absent(),
     this.studentId = const Value.absent(),
+    this.textId = const Value.absent(),
   });
-  CorrectionModelsCompanion.insert({
+  MistakeModelsCompanion.insert({
     this.localId = const Value.absent(),
     @required int wordIndex,
     @required String commentary,
-    @required int textId,
     @required int studentId,
+    @required int textId,
   })  : wordIndex = Value(wordIndex),
         commentary = Value(commentary),
-        textId = Value(textId),
-        studentId = Value(studentId);
-  static Insertable<CorrectionModel> custom({
+        studentId = Value(studentId),
+        textId = Value(textId);
+  static Insertable<MistakeModel> custom({
     Expression<int> localId,
     Expression<int> wordIndex,
     Expression<String> commentary,
-    Expression<int> textId,
     Expression<int> studentId,
+    Expression<int> textId,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
       if (wordIndex != null) 'word_index': wordIndex,
       if (commentary != null) 'commentary': commentary,
-      if (textId != null) 'text_id': textId,
       if (studentId != null) 'student_id': studentId,
+      if (textId != null) 'text_id': textId,
     });
   }
 
-  CorrectionModelsCompanion copyWith(
+  MistakeModelsCompanion copyWith(
       {Value<int> localId,
       Value<int> wordIndex,
       Value<String> commentary,
-      Value<int> textId,
-      Value<int> studentId}) {
-    return CorrectionModelsCompanion(
+      Value<int> studentId,
+      Value<int> textId}) {
+    return MistakeModelsCompanion(
       localId: localId ?? this.localId,
       wordIndex: wordIndex ?? this.wordIndex,
       commentary: commentary ?? this.commentary,
-      textId: textId ?? this.textId,
       studentId: studentId ?? this.studentId,
+      textId: textId ?? this.textId,
     );
   }
 
@@ -1723,33 +1722,33 @@ class CorrectionModelsCompanion extends UpdateCompanion<CorrectionModel> {
     if (commentary.present) {
       map['commentary'] = Variable<String>(commentary.value);
     }
-    if (textId.present) {
-      map['text_id'] = Variable<int>(textId.value);
-    }
     if (studentId.present) {
       map['student_id'] = Variable<int>(studentId.value);
+    }
+    if (textId.present) {
+      map['text_id'] = Variable<int>(textId.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('CorrectionModelsCompanion(')
+    return (StringBuffer('MistakeModelsCompanion(')
           ..write('localId: $localId, ')
           ..write('wordIndex: $wordIndex, ')
           ..write('commentary: $commentary, ')
-          ..write('textId: $textId, ')
-          ..write('studentId: $studentId')
+          ..write('studentId: $studentId, ')
+          ..write('textId: $textId')
           ..write(')'))
         .toString();
   }
 }
 
-class $CorrectionModelsTable extends CorrectionModels
-    with TableInfo<$CorrectionModelsTable, CorrectionModel> {
+class $MistakeModelsTable extends MistakeModels
+    with TableInfo<$MistakeModelsTable, MistakeModel> {
   final GeneratedDatabase _db;
   final String _alias;
-  $CorrectionModelsTable(this._db, [this._alias]);
+  $MistakeModelsTable(this._db, [this._alias]);
   final VerificationMeta _localIdMeta = const VerificationMeta('localId');
   GeneratedIntColumn _localId;
   @override
@@ -1783,15 +1782,6 @@ class $CorrectionModelsTable extends CorrectionModels
     );
   }
 
-  final VerificationMeta _textIdMeta = const VerificationMeta('textId');
-  GeneratedIntColumn _textId;
-  @override
-  GeneratedIntColumn get textId => _textId ??= _constructTextId();
-  GeneratedIntColumn _constructTextId() {
-    return GeneratedIntColumn('text_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES text_models(local_id)');
-  }
-
   final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
   GeneratedIntColumn _studentId;
   @override
@@ -1801,17 +1791,26 @@ class $CorrectionModelsTable extends CorrectionModels
         $customConstraints: 'NOT NULL REFERENCES student_models(local_id)');
   }
 
+  final VerificationMeta _textIdMeta = const VerificationMeta('textId');
+  GeneratedIntColumn _textId;
+  @override
+  GeneratedIntColumn get textId => _textId ??= _constructTextId();
+  GeneratedIntColumn _constructTextId() {
+    return GeneratedIntColumn('text_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES text_models(local_id)');
+  }
+
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, wordIndex, commentary, textId, studentId];
+      [localId, wordIndex, commentary, studentId, textId];
   @override
-  $CorrectionModelsTable get asDslTable => this;
+  $MistakeModelsTable get asDslTable => this;
   @override
-  String get $tableName => _alias ?? 'correction_models';
+  String get $tableName => _alias ?? 'mistake_models';
   @override
-  final String actualTableName = 'correction_models';
+  final String actualTableName = 'mistake_models';
   @override
-  VerificationContext validateIntegrity(Insertable<CorrectionModel> instance,
+  VerificationContext validateIntegrity(Insertable<MistakeModel> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1833,17 +1832,17 @@ class $CorrectionModelsTable extends CorrectionModels
     } else if (isInserting) {
       context.missing(_commentaryMeta);
     }
-    if (data.containsKey('text_id')) {
-      context.handle(_textIdMeta,
-          textId.isAcceptableOrUnknown(data['text_id'], _textIdMeta));
-    } else if (isInserting) {
-      context.missing(_textIdMeta);
-    }
     if (data.containsKey('student_id')) {
       context.handle(_studentIdMeta,
           studentId.isAcceptableOrUnknown(data['student_id'], _studentIdMeta));
     } else if (isInserting) {
       context.missing(_studentIdMeta);
+    }
+    if (data.containsKey('text_id')) {
+      context.handle(_textIdMeta,
+          textId.isAcceptableOrUnknown(data['text_id'], _textIdMeta));
+    } else if (isInserting) {
+      context.missing(_textIdMeta);
     }
     return context;
   }
@@ -1851,14 +1850,14 @@ class $CorrectionModelsTable extends CorrectionModels
   @override
   Set<GeneratedColumn> get $primaryKey => {localId};
   @override
-  CorrectionModel map(Map<String, dynamic> data, {String tablePrefix}) {
+  MistakeModel map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return CorrectionModel.fromData(data, _db, prefix: effectivePrefix);
+    return MistakeModel.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
-  $CorrectionModelsTable createAlias(String alias) {
-    return $CorrectionModelsTable(_db, alias);
+  $MistakeModelsTable createAlias(String alias) {
+    return $MistakeModelsTable(_db, alias);
   }
 }
 
@@ -1874,17 +1873,12 @@ abstract class _$Database extends GeneratedDatabase {
       _studentModels ??= $StudentModelsTable(this);
   $TextModelsTable _textModels;
   $TextModelsTable get textModels => _textModels ??= $TextModelsTable(this);
-  $CorrectionModelsTable _correctionModels;
-  $CorrectionModelsTable get correctionModels =>
-      _correctionModels ??= $CorrectionModelsTable(this);
+  $MistakeModelsTable _mistakeModels;
+  $MistakeModelsTable get mistakeModels =>
+      _mistakeModels ??= $MistakeModelsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [
-        userModels,
-        classroomModels,
-        studentModels,
-        textModels,
-        correctionModels
-      ];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [userModels, classroomModels, studentModels, textModels, mistakeModels];
 }
