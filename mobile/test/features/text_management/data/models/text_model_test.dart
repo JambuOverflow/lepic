@@ -2,15 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 
+import '../../../../core/data/entity_model_converters/text_entity_model_converter_test.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
-  final tTextModel = TextModel(title: '1', localId: 2, body: "A", classId: 3);
-
-  final tTextEntity = MyText(title: '1', localId: 2, body: "A", classId: 3);
+  final tTextModel = TextModel(
+    title: '1',
+    localId: 2,
+    body: "A",
+    classId: 3,
+    tutorId: 1,
+  );
 
   group("from json", () {
     test("should return a valid Text model", () async {
@@ -30,26 +36,11 @@ void main() {
         "local_id": 2,
         "title": '1',
         "body": "A",
-        "class_id": 3
+        "class_id": 3,
+        "tutor_id": 1,
       };
 
       expect(result, expectedMap);
-    });
-  });
-
-  group('modelToEntity', () {
-    test('should return a Text entity with proper data', () async {
-      final result = textModelToEntity(tTextModel);
-
-      expect(result, tTextEntity);
-    });
-  });
-
-  group('entityToModel', () {
-    test('should return a Text model with proper data', () async {
-      final result = textEntityToModel(tTextEntity);
-
-      expect(result, tTextModel);
     });
   });
 }
