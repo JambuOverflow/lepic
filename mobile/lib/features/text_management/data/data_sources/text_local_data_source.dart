@@ -10,7 +10,7 @@ abstract class TextLocalDataSource {
   /// Returns an empty list if no [Text] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<TextModel>> getTextsOfClassroomFromCache(
+  Future<List<TextModel>> getTextsFromCacheOfClassroom(
       ClassroomModel classroomModel);
 
   /// Gets the cached list of [Text].
@@ -69,7 +69,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   }
 
   @override
-  Future<List<TextModel>> getTextsOfClassroomFromCache(
+  Future<List<TextModel>> getTextsFromCacheOfClassroom(
       ClassroomModel classroomModel) async {
     final classId = classroomModel.localId;
     try {
