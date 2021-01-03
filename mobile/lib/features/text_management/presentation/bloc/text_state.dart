@@ -1,43 +1,20 @@
 part of 'text_bloc.dart';
 
-@immutable
 abstract class TextState extends Equatable {
   const TextState();
   @override
   List<Object> get props => [TextState];
 }
 
+class TextsLoadInProgress extends TextState {}
 
-class TextInitial extends TextState {}
-
-class TextNotLoaded extends TextState {}
-
-class DeletingText extends TextState {}
-
-class TextDeleted extends TextState {}
-
-class CreatingText extends TextState {}
-
-class TextCreated extends TextState {
-  final MyText text;
-
-  TextCreated({@required this.text});
-}
-
-class UpdatingText extends TextState {}
-
-class TextUpdated extends TextState {
-  final MyText text;
-
-  TextUpdated({@required this.text});
-}
-
-class GettingTexts extends TextState {}
-
-class TextsGot extends TextState {
+class TextsLoaded extends TextState {
   final List<MyText> texts;
-  
-  TextsGot({@required this.texts});
+
+  TextsLoaded(this.texts);
+
+  @override
+  List<Object> get props => [texts];
 }
 
 class Error extends TextState {

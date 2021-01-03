@@ -54,7 +54,7 @@ class TextRepositoryImpl implements TextRepository {
     try {
       var model = textEntityToModel(text);
       await localDataSource.deleteTextFromCache(model);
-      return null;
+      return Right(null);
     } on CacheException {
       return Left(CacheFailure());
     }

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../features/text_management/presentation/pages/text_editing_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_detail_page.dart';
 import '../../../features/class_management/presentation/pages/classrooms_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_creation_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_update_page.dart';
 import '../../../features/student_management/presentation/pages/create_student_page.dart';
 import '../../../features/student_management/presentation/pages/students_page.dart';
-import '../../../features/text_management/presentation/pages/text_creation_page.dart';
 import '../../../features/text_management/presentation/pages/texts_page.dart';
 import '../../../features/user_management/presentation/bloc/login_form_bloc.dart';
 import '../../../features/user_management/presentation/pages/guest.dart';
@@ -55,7 +55,12 @@ class RouteGenerator {
       case '/list_texts':
         return MaterialPageRoute(builder: (_) => TextsPage());
       case '/add_text':
-        return MaterialPageRoute(builder: (_) => TextCreationPage());
+        return MaterialPageRoute(builder: (_) {
+          final Map arguments = settings.arguments as Map;
+          final text = arguments != null ? arguments['textToEdit'] : null;
+
+          return TextEditingPage(textToEdit: text);
+        });
       case '/detail_class':
         return MaterialPageRoute(builder: (_) => ClassroomDetailPage());
 
