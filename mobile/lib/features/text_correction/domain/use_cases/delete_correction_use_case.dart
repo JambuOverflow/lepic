@@ -6,10 +6,10 @@ import 'package:mobile/features/text_correction/domain/use_cases/correction_para
 import '../../../../core/use_cases/use_case.dart';
 
 
-class DeleteCorrection implements UseCase<void, CorrectionParams> {
+class DeleteCorrectionUseCase implements UseCase<void, CorrectionParams> {
   final CorrectionRepository repository;
 
-  DeleteCorrection({@required this.repository});
+  DeleteCorrectionUseCase({@required this.repository});
 
   @override
   Future<Either<Failure, void>> call(CorrectionParams params) =>

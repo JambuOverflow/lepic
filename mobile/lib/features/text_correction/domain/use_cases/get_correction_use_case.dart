@@ -8,11 +8,11 @@ import 'package:mobile/features/text_correction/domain/entities/correction.dart'
 import 'package:mobile/features/text_correction/domain/repositories/correction_repository.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 
-class GetCorrection
+class GetCorrectionUseCase
     implements UseCase<Correction, StudentTextParams> {
   final CorrectionRepository repository;
 
-  GetCorrection({@required this.repository});
+  GetCorrectionUseCase({@required this.repository});
 
   @override
   Future<Either<Failure, Correction>> call(

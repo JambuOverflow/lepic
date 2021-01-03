@@ -7,10 +7,10 @@ import 'package:mobile/features/text_correction/domain/repositories/correction_r
 import 'package:mobile/features/text_correction/domain/use_cases/correction_params.dart';
 
 
-class CreateCorrection implements UseCase<Correction, CorrectionParams> {
+class CreateCorrectionUseCase implements UseCase<Correction, CorrectionParams> {
   final CorrectionRepository repository;
 
-  CreateCorrection({@required this.repository});
+  CreateCorrectionUseCase({@required this.repository});
 
   @override
   Future<Either<Failure, Correction>> call(CorrectionParams params) =>

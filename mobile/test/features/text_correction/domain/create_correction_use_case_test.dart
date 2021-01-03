@@ -10,12 +10,12 @@ import 'package:mockito/mockito.dart';
 class MockCorrectionRepository extends Mock implements CorrectionRepository {}
 
 void main() {
-  CreateCorrection useCase;
+  CreateCorrectionUseCase useCase;
   MockCorrectionRepository mockCorrectionRepository;
 
   setUp(() {
     mockCorrectionRepository = MockCorrectionRepository();
-    useCase = CreateCorrection(repository: mockCorrectionRepository);
+    useCase = CreateCorrectionUseCase(repository: mockCorrectionRepository);
   });
 
   final Map<int, String> mistakes = {0: "ola"};
