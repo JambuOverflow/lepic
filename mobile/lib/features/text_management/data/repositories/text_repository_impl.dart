@@ -77,7 +77,7 @@ class TextRepositoryImpl implements TextRepository {
       var classroomModel =
           await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listTextModel =
-          await localDataSource.getTextsFromCache(classroomModel);
+          await localDataSource.getTextsOfClassroomFromCache(classroomModel);
       var listTextEntity = [
         for (var model in listTextModel) textModelToEntity(model)
       ];
