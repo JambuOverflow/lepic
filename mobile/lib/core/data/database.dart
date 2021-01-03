@@ -1,5 +1,6 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
+import 'package:mobile/features/text_correction/data/models/correction_model.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
@@ -28,7 +29,7 @@ LazyDatabase openConnection() {
   });
 }
 
-@UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
+@UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels, CorrectionModels])
 class Database extends _$Database {
   final clock = Clock();
   Database(QueryExecutor e) : super(e);
