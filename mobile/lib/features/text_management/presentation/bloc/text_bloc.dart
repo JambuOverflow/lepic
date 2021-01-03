@@ -24,10 +24,10 @@ class TextBloc extends Bloc<TextEvent, TextState> {
 
   final Classroom classroom;
 
-  final CreateText createText;
-  final UpdateText updateText;
-  final GetTextsOfClassroom getTextsOfClassroom;
-  final DeleteText deleteText;
+  final CreateTextUseCase createText;
+  final UpdateTextUseCase updateText;
+  final GetTextsOfClassroomUseCase getTextsOfClassroom;
+  final DeleteTextUseCase deleteText;
 
   TextBloc({
     @required this.classroom,

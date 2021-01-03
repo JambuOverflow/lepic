@@ -130,28 +130,28 @@ Future<void> main() {
 
   group("getText", () {
     test("should correctly return a list of texts", () async {
-      when(mockDatabase.getTexts(1)).thenAnswer((_) async => tTextModels);
+      when(mockDatabase.getAllTextsOfUser(1)).thenAnswer((_) async => tTextModels);
 
       final result = await textLocalDataSourceImpl.getAllUserTextsFromCache();
 
-      verify(mockDatabase.getTexts(1));
+      verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, tTextModels);
       equals(testResult);
     });
     
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getTexts(1)).thenAnswer((_) async => []);
+      when(mockDatabase.getAllTextsOfUser(1)).thenAnswer((_) async => []);
 
       final result =
           await textLocalDataSourceImpl.getAllUserTextsFromCache();
 
-      verify(mockDatabase.getTexts(1));
+      verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, []);
       equals(testResult);
     });
     
     test("should throw a CacheException", () async {
-      when(mockDatabase.getTexts(1)).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.getAllTextsOfUser(1)).thenThrow(SqliteException(787, ""));
 
       expect(
           () async =>

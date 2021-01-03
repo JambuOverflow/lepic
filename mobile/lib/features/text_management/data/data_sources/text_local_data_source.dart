@@ -93,7 +93,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   Future<List<TextModel>> getAllUserTextsFromCache() async {
     try {
       final tutorId = await userLocalDataSource.getUserId();
-      return await this.database.getTexts(tutorId);
+      return await this.database.getAllTextsOfUser(tutorId);
     } on SqliteException {
       throw CacheException();
     }

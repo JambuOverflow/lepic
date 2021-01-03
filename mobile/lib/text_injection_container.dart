@@ -23,10 +23,10 @@ void init() {
     ),
   );
 
-  sl.registerLazySingleton(() => CreateText(repository: sl()));
-  sl.registerLazySingleton(() => UpdateText(repository: sl()));
-  sl.registerLazySingleton(() => DeleteText(repository: sl()));
-  sl.registerLazySingleton(() => GetTextsOfClassroom(repository: sl()));
+  sl.registerLazySingleton(() => CreateTextUseCase(repository: sl()));
+  sl.registerLazySingleton(() => UpdateTextUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteTextUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetTextsOfClassroomUseCase(repository: sl()));
 
   sl.registerLazySingleton<TextRepository>(
     () => TextRepositoryImpl(
