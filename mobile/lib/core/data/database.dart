@@ -29,7 +29,13 @@ LazyDatabase openConnection() {
   });
 }
 
-@UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels, MistakeModels])
+@UseMoor(tables: [
+  UserModels,
+  ClassroomModels,
+  StudentModels,
+  TextModels,
+  MistakeModels
+])
 class Database extends _$Database {
   final clock = Clock();
   Database(QueryExecutor e) : super(e);
@@ -111,13 +117,26 @@ class Database extends _$Database {
 
   /// Returns a list of [TextModel]
   Future<List<TextModel>> getAllTextsOfUser(int tutorId) async {
-    return (select(textModels)..where((t) => t.tutorId.equals(tutorId)))
-        .get();
+    return (select(textModels)..where((t) => t.tutorId.equals(tutorId))).get();
   }
 
   /// Returns true if the text was updated, false otherwise
   Future<bool> updateText(TextModel entry) async {
     return update(textModels).replace(entry);
+  }
+
+  /// Returns the primary key (pk) of the added entry
+  /// Throws SqliteException if can't add entry
+  Future<int> insertMistake(MistakeModel entry) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> deleteMistakesOfCorrection({int textPk, int studentPk}){
+    throw UnimplementedError();
+  }
+
+  Future<List<MistakeModel>> getMistakesOfCorrection({int textPk, int studentPk}){
+    throw UnimplementedError();
   }
 
   @override
