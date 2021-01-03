@@ -35,7 +35,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Stream<StudentState> mapEventToState(
     StudentEvent event,
   ) async* {
-    if (event is CreateNewStudentEvent)
+    if (event is CreateStudentEvent)
       yield* _createNewStudentStates(event);
     else if (event is UpdateStudentEvent)
       yield* _updateStudentStates(event);
@@ -45,15 +45,13 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   }
 
   Stream<StudentState> _createNewStudentStates(
-      CreateNewStudentEvent event) async* {
+      CreateStudentEvent event) async* {
     yield CreatingStudent();
-
-    final classroomId = event.classroom;
 
     final student = Student(
       firstName: event.firstName,
       lastName: event.lastName,
-      classroomId: classroomId.id,
+      classroomId: classroom.id,
     );
 
     final studentEither = await createStudent(StudentParams(student: student));
