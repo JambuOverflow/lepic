@@ -34,18 +34,20 @@ void main() {
     name: "class name",
   );
 
-  setUp(() {
-    mockCreateNewStudent = MockCreateStudentUseCase();
-    mockUpdateStudent = MockUpdateStudentEventUseCase();
-    mockdeleteStudent = MockDeleteStudentEventUseCase();
-    mockGetStudent = MockGetStudentsEventUseCase();
-    bloc = StudentBloc(
-        classroom: tClassroom,
-        createStudent: mockCreateNewStudent,
-        getStudents: mockGetStudent,
-        deleteStudent: mockdeleteStudent,
-        updateStudent: mockUpdateStudent);
-  });
+  setUp(
+    () {
+      mockCreateNewStudent = MockCreateStudentUseCase();
+      mockUpdateStudent = MockUpdateStudentEventUseCase();
+      mockdeleteStudent = MockDeleteStudentEventUseCase();
+      mockGetStudent = MockGetStudentsEventUseCase();
+      bloc = StudentBloc(
+          classroom: tClassroom,
+          createStudent: mockCreateNewStudent,
+          getStudents: mockGetStudent,
+          deleteStudent: mockdeleteStudent,
+          updateStudent: mockUpdateStudent);
+    },
+  );
 
   final tStudent = Student(
     firstName: 'joãozinho',
@@ -76,10 +78,9 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateNewStudentEvent(
+      bloc.add(CreateStudentEvent(
         firstName: tFirstName,
         lastName: tLastName,
-        classroom: tClassroom,
       ));
     });
 
@@ -95,10 +96,9 @@ void main() {
       ];
 
       expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateNewStudentEvent(
+      bloc.add(CreateStudentEvent(
         firstName: tFirstName,
         lastName: tLastName,
-        classroom: tClassroom,
       ));
     });
   });
