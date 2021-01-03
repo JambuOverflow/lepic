@@ -94,7 +94,7 @@ class TextRepositoryImpl implements TextRepository {
   @override
   Future<Either<Failure, List<MyText>>> getAllTextsOfUser() async {
     try {
-      var listTextModel = await localDataSource.getTextsFromCache();
+      var listTextModel = await localDataSource.getAllUserTextsFromCache();
       var listTextEntity = [
         for (var model in listTextModel) textEntityModelConverter.mytextModelToEntity(model)
       ];

@@ -132,7 +132,7 @@ Future<void> main() {
     test("should correctly return a list of texts", () async {
       when(mockDatabase.getTexts(1)).thenAnswer((_) async => tTextModels);
 
-      final result = await textLocalDataSourceImpl.getTextsFromCache();
+      final result = await textLocalDataSourceImpl.getAllUserTextsFromCache();
 
       verify(mockDatabase.getTexts(1));
       final testResult = listEquals(result, tTextModels);
@@ -143,7 +143,7 @@ Future<void> main() {
       when(mockDatabase.getTexts(1)).thenAnswer((_) async => []);
 
       final result =
-          await textLocalDataSourceImpl.getTextsFromCache();
+          await textLocalDataSourceImpl.getAllUserTextsFromCache();
 
       verify(mockDatabase.getTexts(1));
       final testResult = listEquals(result, []);
@@ -155,7 +155,7 @@ Future<void> main() {
 
       expect(
           () async =>
-              await textLocalDataSourceImpl.getTextsFromCache(),
+              await textLocalDataSourceImpl.getAllUserTextsFromCache(),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
