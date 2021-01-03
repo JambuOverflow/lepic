@@ -16,38 +16,50 @@ void main() {
   final body = "B";
 
   final tValidTextCompanion = TextModelsCompanion(
-      title: Value(title),
-      body: Value(body),
-      classId: Value(tValidClassroomPk));
+    title: Value(title),
+    body: Value(body),
+    classId: Value(tValidClassroomPk),
+    tutorId: Value(1),
+  );
 
   final tInvalidTextCompanion = TextModelsCompanion(
-      title: Value(title),
-      body: Value(body),
-      classId: Value(tInvalidClassroomPk));
+    title: Value(title),
+    body: Value(body),
+    classId: Value(tInvalidClassroomPk),
+    tutorId: Value(2),
+  );
 
   final tValidTextModel1 = TextModel(
-      title: title,
-      body: body,
-      classId: tValidClassroomPk,
-      localId: tValidTextPk1);
+    title: title,
+    body: body,
+    classId: tValidClassroomPk,
+    localId: tValidTextPk1,
+    tutorId: 1,
+  );
 
   final tValidTextModel2 = TextModel(
-      title: title,
-      body: body,
-      classId: tValidClassroomPk,
-      localId: tValidTextPk2);
+    title: title,
+    body: body,
+    classId: tValidClassroomPk,
+    localId: tValidTextPk2,
+    tutorId: 1,
+  );
 
   final tValidUpdateTextModel = TextModel(
-      title: title,
-      body: updateBody,
-      classId: tValidClassroomPk,
-      localId: tValidTextPk1);
+    title: title,
+    body: updateBody,
+    classId: tValidClassroomPk,
+    localId: tValidTextPk1,
+    tutorId: 1,
+  );
 
   final tInvalidUpdateTextModel = TextModel(
-      localId: tInvalidTextPk,
-      title: title,
-      body: updateBody,
-      classId: tValidClassroomPk);
+    localId: tInvalidTextPk,
+    title: title,
+    body: updateBody,
+    classId: tValidClassroomPk,
+    tutorId: 2,
+  );
 
   final tUserCompanion = UserModelsCompanion(
     firstName: Value('v'),

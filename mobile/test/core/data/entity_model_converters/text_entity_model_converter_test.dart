@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:mockito/mockito.dart';
