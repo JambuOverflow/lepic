@@ -5,7 +5,7 @@ import 'package:mobile/features/text_management/data/repositories/text_repositor
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/get_texts_use_case.dart';
+import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
 
 import 'features/text_management/presentation/bloc/text_bloc.dart';
@@ -19,14 +19,14 @@ void init() {
       updateText: GetIt.instance(),
       deleteText: GetIt.instance(),
       createText: GetIt.instance(),
-      getTexts: GetIt.instance(),
+      getTextsOfClassroom: GetIt.instance(),
     ),
   );
 
-  sl.registerLazySingleton(() => CreateText(repository: sl()));
-  sl.registerLazySingleton(() => UpdateText(repository: sl()));
-  sl.registerLazySingleton(() => DeleteText(repository: sl()));
-  sl.registerLazySingleton(() => GetTexts(repository: sl()));
+  sl.registerLazySingleton(() => CreateTextUseCase(repository: sl()));
+  sl.registerLazySingleton(() => UpdateTextUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteTextUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetTextsOfClassroomUseCase(repository: sl()));
 
   sl.registerLazySingleton<TextRepository>(
     () => TextRepositoryImpl(

@@ -4,14 +4,13 @@ import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
-import 'package:mobile/features/text_management/domain/use_cases/text_params.dart';
 
-class UpdateTextUseCase implements UseCase<MyText, TextParams> {
+class GetAllUserTextsUseCase implements UseCase<List<MyText>, NoParams> {
   final TextRepository repository;
 
-  UpdateTextUseCase({@required this.repository});
+  GetAllUserTextsUseCase({@required this.repository});
 
   @override
-  Future<Either<Failure, MyText>> call(TextParams params) =>
-      repository.updateText(params.text);
+  Future<Either<Failure, List<MyText>>> call(params) =>
+      repository.getAllTextsOfUser();
 }

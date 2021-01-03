@@ -12,7 +12,7 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entities/text.dart';
 import '../../domain/use_cases/create_text_use_case.dart';
 import '../../domain/use_cases/delete_text_use_case.dart';
-import '../../domain/use_cases/get_texts_use_case.dart';
+import '../../domain/use_cases/get_texts_of_classroom_use_case.dart';
 import '../../domain/use_cases/text_params.dart';
 import '../../domain/use_cases/update_text_use_case.dart';
 
@@ -24,17 +24,17 @@ class TextBloc extends Bloc<TextEvent, TextState> {
 
   final Classroom classroom;
 
-  final CreateText createText;
-  final UpdateText updateText;
-  final GetTexts getTexts;
-  final DeleteText deleteText;
+  final CreateTextUseCase createText;
+  final UpdateTextUseCase updateText;
+  final GetTextsOfClassroomUseCase getTextsOfClassroom;
+  final DeleteTextUseCase deleteText;
 
   TextBloc({
     @required this.classroom,
     @required this.createText,
     @required this.updateText,
     @required this.deleteText,
-    @required this.getTexts,
+    @required this.getTextsOfClassroom,
   }) : super(TextsLoadInProgress());
 
   @override
@@ -106,7 +106,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
   }
 
   Stream<TextState> _loadAndReplaceClassrooms() async* {
-    final failureOrClassrooms = await getTexts(
+    final failureOrClassrooms = await getTextsOfClassroom(
       ClassroomParams(classroom: classroom),
     );
 

@@ -9,12 +9,12 @@ import 'package:mockito/mockito.dart';
 class MockTextRepository extends Mock implements TextRepository {}
 
 void main() {
-  UpdateText useCase;
+  UpdateTextUseCase useCase;
   MockTextRepository mockTextRepository;
 
   setUp(() {
     mockTextRepository = MockTextRepository();
-    useCase = UpdateText(repository: mockTextRepository);
+    useCase = UpdateTextUseCase(repository: mockTextRepository);
   });
 
   final tText = MyText(

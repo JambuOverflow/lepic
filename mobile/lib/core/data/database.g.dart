@@ -1191,11 +1191,13 @@ class TextModel extends DataClass implements Insertable<TextModel> {
   final int localId;
   final String title;
   final String body;
+  final int tutorId;
   final int classId;
   TextModel(
       {@required this.localId,
       @required this.title,
       @required this.body,
+      @required this.tutorId,
       @required this.classId});
   factory TextModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -1208,6 +1210,8 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       title:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
       body: stringType.mapFromDatabaseResponse(data['${effectivePrefix}body']),
+      tutorId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}tutor_id']),
       classId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}class_id']),
     );
@@ -1224,6 +1228,9 @@ class TextModel extends DataClass implements Insertable<TextModel> {
     if (!nullToAbsent || body != null) {
       map['body'] = Variable<String>(body);
     }
+    if (!nullToAbsent || tutorId != null) {
+      map['tutor_id'] = Variable<int>(tutorId);
+    }
     if (!nullToAbsent || classId != null) {
       map['class_id'] = Variable<int>(classId);
     }
@@ -1238,6 +1245,9 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       title:
           title == null && nullToAbsent ? const Value.absent() : Value(title),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
+      tutorId: tutorId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tutorId),
       classId: classId == null && nullToAbsent
           ? const Value.absent()
           : Value(classId),
@@ -1251,6 +1261,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       localId: serializer.fromJson<int>(json['local_id']),
       title: serializer.fromJson<String>(json['title']),
       body: serializer.fromJson<String>(json['body']),
+      tutorId: serializer.fromJson<int>(json['tutor_id']),
       classId: serializer.fromJson<int>(json['class_id']),
     );
   }
@@ -1261,15 +1272,18 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       'local_id': serializer.toJson<int>(localId),
       'title': serializer.toJson<String>(title),
       'body': serializer.toJson<String>(body),
+      'tutor_id': serializer.toJson<int>(tutorId),
       'class_id': serializer.toJson<int>(classId),
     };
   }
 
-  TextModel copyWith({int localId, String title, String body, int classId}) =>
+  TextModel copyWith(
+          {int localId, String title, String body, int tutorId, int classId}) =>
       TextModel(
         localId: localId ?? this.localId,
         title: title ?? this.title,
         body: body ?? this.body,
+        tutorId: tutorId ?? this.tutorId,
         classId: classId ?? this.classId,
       );
   @override
@@ -1278,14 +1292,17 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           ..write('localId: $localId, ')
           ..write('title: $title, ')
           ..write('body: $body, ')
+          ..write('tutorId: $tutorId, ')
           ..write('classId: $classId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(localId.hashCode,
-      $mrjc(title.hashCode, $mrjc(body.hashCode, classId.hashCode))));
+  int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
+      $mrjc(title.hashCode,
+          $mrjc(body.hashCode, $mrjc(tutorId.hashCode, classId.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1293,6 +1310,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           other.localId == this.localId &&
           other.title == this.title &&
           other.body == this.body &&
+          other.tutorId == this.tutorId &&
           other.classId == this.classId);
 }
 
@@ -1300,31 +1318,37 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
   final Value<int> localId;
   final Value<String> title;
   final Value<String> body;
+  final Value<int> tutorId;
   final Value<int> classId;
   const TextModelsCompanion({
     this.localId = const Value.absent(),
     this.title = const Value.absent(),
     this.body = const Value.absent(),
+    this.tutorId = const Value.absent(),
     this.classId = const Value.absent(),
   });
   TextModelsCompanion.insert({
     this.localId = const Value.absent(),
     @required String title,
     @required String body,
+    @required int tutorId,
     @required int classId,
   })  : title = Value(title),
         body = Value(body),
+        tutorId = Value(tutorId),
         classId = Value(classId);
   static Insertable<TextModel> custom({
     Expression<int> localId,
     Expression<String> title,
     Expression<String> body,
+    Expression<int> tutorId,
     Expression<int> classId,
   }) {
     return RawValuesInsertable({
       if (localId != null) 'local_id': localId,
       if (title != null) 'title': title,
       if (body != null) 'body': body,
+      if (tutorId != null) 'tutor_id': tutorId,
       if (classId != null) 'class_id': classId,
     });
   }
@@ -1333,11 +1357,13 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
       {Value<int> localId,
       Value<String> title,
       Value<String> body,
+      Value<int> tutorId,
       Value<int> classId}) {
     return TextModelsCompanion(
       localId: localId ?? this.localId,
       title: title ?? this.title,
       body: body ?? this.body,
+      tutorId: tutorId ?? this.tutorId,
       classId: classId ?? this.classId,
     );
   }
@@ -1354,6 +1380,9 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
     if (body.present) {
       map['body'] = Variable<String>(body.value);
     }
+    if (tutorId.present) {
+      map['tutor_id'] = Variable<int>(tutorId.value);
+    }
     if (classId.present) {
       map['class_id'] = Variable<int>(classId.value);
     }
@@ -1366,6 +1395,7 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
           ..write('localId: $localId, ')
           ..write('title: $title, ')
           ..write('body: $body, ')
+          ..write('tutorId: $tutorId, ')
           ..write('classId: $classId')
           ..write(')'))
         .toString();
@@ -1410,6 +1440,18 @@ class $TextModelsTable extends TextModels
     );
   }
 
+  final VerificationMeta _tutorIdMeta = const VerificationMeta('tutorId');
+  GeneratedIntColumn _tutorId;
+  @override
+  GeneratedIntColumn get tutorId => _tutorId ??= _constructTutorId();
+  GeneratedIntColumn _constructTutorId() {
+    return GeneratedIntColumn(
+      'tutor_id',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _classIdMeta = const VerificationMeta('classId');
   GeneratedIntColumn _classId;
   @override
@@ -1420,7 +1462,8 @@ class $TextModelsTable extends TextModels
   }
 
   @override
-  List<GeneratedColumn> get $columns => [localId, title, body, classId];
+  List<GeneratedColumn> get $columns =>
+      [localId, title, body, tutorId, classId];
   @override
   $TextModelsTable get asDslTable => this;
   @override
@@ -1447,6 +1490,12 @@ class $TextModelsTable extends TextModels
           _bodyMeta, body.isAcceptableOrUnknown(data['body'], _bodyMeta));
     } else if (isInserting) {
       context.missing(_bodyMeta);
+    }
+    if (data.containsKey('tutor_id')) {
+      context.handle(_tutorIdMeta,
+          tutorId.isAcceptableOrUnknown(data['tutor_id'], _tutorIdMeta));
+    } else if (isInserting) {
+      context.missing(_tutorIdMeta);
     }
     if (data.containsKey('class_id')) {
       context.handle(_classIdMeta,

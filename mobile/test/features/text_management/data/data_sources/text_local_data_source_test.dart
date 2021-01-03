@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 
 import 'package:mockito/mockito.dart';
 import 'package:moor/ffi.dart';
@@ -13,8 +13,11 @@ import 'package:matcher/matcher.dart';
 
 class MockDatabase extends Mock implements Database {}
 
+class MockUserLocalDataSource extends Mock implements UserLocalDataSource {}
+
 Future<void> main() {
   MockDatabase mockDatabase;
+  MockUserLocalDataSource mockUserLocalDataSource;
   TextLocalDataSourceImpl textLocalDataSourceImpl;
   ClassroomModel tClassroomModel;
 
@@ -39,11 +42,13 @@ Future<void> main() {
 
   setUp(() async {
     mockDatabase = MockDatabase();
-    tClassroomModel = ClassroomModel(grade:1, name:"A", localId: 1);
+    mockUserLocalDataSource = MockUserLocalDataSource();
+    tClassroomModel = ClassroomModel(grade: 1, name: "A", localId: 1);
 
     textLocalDataSourceImpl = TextLocalDataSourceImpl(
-      database: mockDatabase,
-    );
+        database: mockDatabase, userLocalDataSource: mockUserLocalDataSource);
+
+    when(mockUserLocalDataSource.getUserId()).thenAnswer((_) async => 1);
   });
 
   group("cacheText", () {
@@ -87,36 +92,70 @@ Future<void> main() {
     });
   });
 
-  group("getText", () {
+  group("getTextOfClassroom", () {
     test("should correctly return a list of texts", () async {
-      when(mockDatabase.getTexts(tValidPk))
+      when(mockDatabase.getTextsOfClassroom(tValidPk))
           .thenAnswer((_) async => tTextModels);
 
-      final result =
-          await textLocalDataSourceImpl.getTextsFromCache(tClassroomModel);
+      final result = await textLocalDataSourceImpl
+          .getTextsFromCacheOfClassroom(tClassroomModel);
 
-      verify(mockDatabase.getTexts(tValidPk));
+      verify(mockDatabase.getTextsOfClassroom(tValidPk));
       final testResult = listEquals(result, tTextModels);
       equals(testResult);
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getTexts(tValidPk)).thenAnswer((_) async => []);
+      when(mockDatabase.getTextsOfClassroom(tValidPk))
+          .thenAnswer((_) async => []);
 
-      final result =
-          await textLocalDataSourceImpl.getTextsFromCache(tClassroomModel);
+      final result = await textLocalDataSourceImpl
+          .getTextsFromCacheOfClassroom(tClassroomModel);
 
-      verify(mockDatabase.getTexts(tValidPk));
+      verify(mockDatabase.getTextsOfClassroom(tValidPk));
       final testResult = listEquals(result, []);
       equals(testResult);
     });
 
     test("should throw a CacheException", () async {
-      when(mockDatabase.getTexts(tValidPk)).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.getTextsOfClassroom(tValidPk))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async => await textLocalDataSourceImpl
+              .getTextsFromCacheOfClassroom(tClassroomModel),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+  });
+
+  group("getText", () {
+    test("should correctly return a list of texts", () async {
+      when(mockDatabase.getAllTextsOfUser(1)).thenAnswer((_) async => tTextModels);
+
+      final result = await textLocalDataSourceImpl.getAllUserTextsFromCache();
+
+      verify(mockDatabase.getAllTextsOfUser(1));
+      final testResult = listEquals(result, tTextModels);
+      equals(testResult);
+    });
+    
+    test("should correctly return an empty list", () async {
+      when(mockDatabase.getAllTextsOfUser(1)).thenAnswer((_) async => []);
+
+      final result =
+          await textLocalDataSourceImpl.getAllUserTextsFromCache();
+
+      verify(mockDatabase.getAllTextsOfUser(1));
+      final testResult = listEquals(result, []);
+      equals(testResult);
+    });
+    
+    test("should throw a CacheException", () async {
+      when(mockDatabase.getAllTextsOfUser(1)).thenThrow(SqliteException(787, ""));
 
       expect(
           () async =>
-              await textLocalDataSourceImpl.getTextsFromCache(tClassroomModel),
+              await textLocalDataSourceImpl.getAllUserTextsFromCache(),
           throwsA(TypeMatcher<CacheException>()));
     });
   });

@@ -1,15 +1,24 @@
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
+import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 
 abstract class TextLocalDataSource {
+  /// Gets the cached list of [Text] from a specific classroom.
+  ///
+  /// Returns an empty list if no [Text] is cached.
+  ///
+  /// Throws [CacheException] if something wrong happens.
+  Future<List<TextModel>> getTextsFromCacheOfClassroom(
+      ClassroomModel classroomModel);
+
   /// Gets the cached list of [Text].
   ///
   /// Returns an empty list if no [Text] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<TextModel>> getTextsFromCache(ClassroomModel classroomModel);
+  Future<List<TextModel>> getAllUserTextsFromCache();
 
   /// Deletes the [Text] passed.
   ///
@@ -29,8 +38,12 @@ abstract class TextLocalDataSource {
 
 class TextLocalDataSourceImpl implements TextLocalDataSource {
   final Database database;
+  final UserLocalDataSource userLocalDataSource;
 
-  TextLocalDataSourceImpl({@required this.database});
+  TextLocalDataSourceImpl({
+    @required this.database,
+    @required this.userLocalDataSource,
+  });
 
   @override
   Future<TextModel> cacheNewText(TextModel textModel) async {
@@ -38,11 +51,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
       bool nullToAbsent = true;
       final textCompanion = textModel.toCompanion(nullToAbsent);
       final textPk = await this.database.insertText(textCompanion);
-      return TextModel(
-          title: textModel.title,
-          body: textModel.body,
-          classId: textModel.classId,
-          localId: textPk);
+      return textModel.copyWith(localId: textPk);
     } on SqliteException {
       throw CacheException();
     }
@@ -60,11 +69,11 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   }
 
   @override
-  Future<List<TextModel>> getTextsFromCache(
+  Future<List<TextModel>> getTextsFromCacheOfClassroom(
       ClassroomModel classroomModel) async {
     final classId = classroomModel.localId;
     try {
-      return await this.database.getTexts(classId);
+      return await this.database.getTextsOfClassroom(classId);
     } on SqliteException {
       throw CacheException();
     }
@@ -76,6 +85,16 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
     if (updated) {
       return textModel;
     } else {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<List<TextModel>> getAllUserTextsFromCache() async {
+    try {
+      final tutorId = await userLocalDataSource.getUserId();
+      return await this.database.getAllTextsOfUser(tutorId);
+    } on SqliteException {
       throw CacheException();
     }
   }

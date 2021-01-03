@@ -102,9 +102,15 @@ class Database extends _$Database {
     }
   }
 
-  /// Returns a list of [TextModel]
-  Future<List<TextModel>> getTexts(int classroomId) async {
+  /// Returns a list of [TextModel] from a classroom
+  Future<List<TextModel>> getTextsOfClassroom(int classroomId) async {
     return (select(textModels)..where((t) => t.classId.equals(classroomId)))
+        .get();
+  }
+
+  /// Returns a list of [TextModel]
+  Future<List<TextModel>> getAllTextsOfUser(int tutorId) async {
+    return (select(textModels)..where((t) => t.tutorId.equals(tutorId)))
         .get();
   }
 
