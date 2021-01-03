@@ -9,7 +9,7 @@ import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/get_texts_use_case.dart';
+import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:mockito/mockito.dart';

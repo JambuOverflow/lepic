@@ -92,7 +92,7 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, List<MyText>>> getTexts() async {
+  Future<Either<Failure, List<MyText>>> getAllTextsOfUser() async {
     try {
       var listTextModel = await localDataSource.getTextsFromCache();
       var listTextEntity = [
