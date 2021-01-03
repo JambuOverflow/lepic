@@ -148,7 +148,7 @@ void main() {
   group('getTextsOfClassroom', () {
     test('should return a list of texts when getTextsofClassroom is called',
         () async {
-      when(mockLocalDataSource.getTextsOfClassroomFromCache(tClassroomModel))
+      when(mockLocalDataSource.getTextsFromCacheOfClassroom(tClassroomModel))
           .thenAnswer((_) async => tTextsModels);
 
       final result = await repository.getTextsOfClassroom(tClassroom);
@@ -160,7 +160,7 @@ void main() {
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getTextsOfClassroomFromCache(tClassroomModel))
+      when(mockLocalDataSource.getTextsFromCacheOfClassroom(tClassroomModel))
           .thenThrow(CacheException());
 
       final result = await repository.getTextsOfClassroom(tClassroom);
@@ -171,10 +171,10 @@ void main() {
 
   group('getTexts', () {
     test('should return a list of texts when getTexts is called', () async {
-      when(mockLocalDataSource.getTextsFromCache())
+      when(mockLocalDataSource.getAllUserTextsFromCache())
           .thenAnswer((_) async => tTextsModels);
 
-      final result = await repository.getTexts();
+      final result = await repository.getAllTextsOfUser();
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
@@ -183,9 +183,9 @@ void main() {
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getTextsFromCache()).thenThrow(CacheException());
+      when(mockLocalDataSource.getAllUserTextsFromCache()).thenThrow(CacheException());
 
-      final result = await repository.getTexts();
+      final result = await repository.getAllTextsOfUser();
 
       expect(result, Left(CacheFailure()));
     });

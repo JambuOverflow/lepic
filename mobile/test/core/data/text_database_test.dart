@@ -166,7 +166,7 @@ void main() {
 
   group("getTexts", () {
     test("should return an empty list of texts", () async {
-      final texts = await database.getTexts(1);
+      final texts = await database.getAllTextsOfUser(1);
       expect(texts, []);
     });
     
@@ -174,7 +174,7 @@ void main() {
     test("should return a list with one text", () async {
       await database.insertText(tValidTextCompanion);
 
-      final texts = await database.getTexts(1);
+      final texts = await database.getAllTextsOfUser(1);
       expect(texts, [tValidTextModel1]);
     });
     
@@ -184,7 +184,7 @@ void main() {
       await database.insertText(tValidTextCompanion);
       await database.insertText(tInvalidUserText.toCompanion(true));
 
-      final texts = await database.getTexts(1);
+      final texts = await database.getAllTextsOfUser(1);
       expect(texts, [tValidTextModel1, tValidTextModel2]);
     });
     

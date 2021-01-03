@@ -81,7 +81,7 @@ class TextRepositoryImpl implements TextRepository {
       var classroomModel =
           await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listTextModel =
-          await localDataSource.getTextsOfClassroomFromCache(classroomModel);
+          await localDataSource.getTextsFromCacheOfClassroom(classroomModel);
       var listTextEntity = [
         for (var model in listTextModel) textEntityModelConverter.mytextModelToEntity(model)
       ];
@@ -92,9 +92,9 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, List<MyText>>> getTexts() async {
+  Future<Either<Failure, List<MyText>>> getAllTextsOfUser() async {
     try {
-      var listTextModel = await localDataSource.getTextsFromCache();
+      var listTextModel = await localDataSource.getAllUserTextsFromCache();
       var listTextEntity = [
         for (var model in listTextModel) textEntityModelConverter.mytextModelToEntity(model)
       ];

@@ -10,7 +10,7 @@ abstract class TextLocalDataSource {
   /// Returns an empty list if no [Text] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<TextModel>> getTextsOfClassroomFromCache(
+  Future<List<TextModel>> getTextsFromCacheOfClassroom(
       ClassroomModel classroomModel);
 
   /// Gets the cached list of [Text].
@@ -18,7 +18,7 @@ abstract class TextLocalDataSource {
   /// Returns an empty list if no [Text] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<TextModel>> getTextsFromCache();
+  Future<List<TextModel>> getAllUserTextsFromCache();
 
   /// Deletes the [Text] passed.
   ///
@@ -69,7 +69,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   }
 
   @override
-  Future<List<TextModel>> getTextsOfClassroomFromCache(
+  Future<List<TextModel>> getTextsFromCacheOfClassroom(
       ClassroomModel classroomModel) async {
     final classId = classroomModel.localId;
     try {
@@ -90,10 +90,10 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
   }
 
   @override
-  Future<List<TextModel>> getTextsFromCache() async {
+  Future<List<TextModel>> getAllUserTextsFromCache() async {
     try {
       final tutorId = await userLocalDataSource.getUserId();
-      return await this.database.getTexts(tutorId);
+      return await this.database.getAllTextsOfUser(tutorId);
     } on SqliteException {
       throw CacheException();
     }

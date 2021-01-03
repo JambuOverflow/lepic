@@ -9,17 +9,18 @@ import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
+import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:mockito/mockito.dart';
 
-class MockCreateTextUseCase extends Mock implements CreateText {}
+class MockCreateTextUseCase extends Mock implements CreateTextUseCase {}
 
-class MockUpdateTextEventUseCase extends Mock implements UpdateText {}
+class MockUpdateTextEventUseCase extends Mock implements UpdateTextUseCase {}
 
-class MockDeleteTextEventUseCase extends Mock implements DeleteText {}
+class MockDeleteTextEventUseCase extends Mock implements DeleteTextUseCase {}
 
-class MockGetTextEventUseCase extends Mock implements GetTextsOfClassroom {}
+class MockGetTextEventUseCase extends Mock implements GetTextsOfClassroomUseCase {}
 
 void main() {
   TextBloc bloc;
