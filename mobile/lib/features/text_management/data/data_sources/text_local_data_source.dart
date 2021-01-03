@@ -71,7 +71,7 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
       ClassroomModel classroomModel) async {
     final classId = classroomModel.localId;
     try {
-      return await this.database.getTexts(classId);
+      return await this.database.getTextsOfClassroom(classId);
     } on SqliteException {
       throw CacheException();
     }

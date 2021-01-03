@@ -87,32 +87,32 @@ Future<void> main() {
     });
   });
 
-  group("getText", () {
+  group("getTextFromClassroom", () {
     test("should correctly return a list of texts", () async {
-      when(mockDatabase.getTexts(tValidPk))
+      when(mockDatabase.getTextsOfClassroom(tValidPk))
           .thenAnswer((_) async => tTextModels);
 
       final result =
           await textLocalDataSourceImpl.getTextsOfClassroomFromCache(tClassroomModel);
 
-      verify(mockDatabase.getTexts(tValidPk));
+      verify(mockDatabase.getTextsOfClassroom(tValidPk));
       final testResult = listEquals(result, tTextModels);
       equals(testResult);
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getTexts(tValidPk)).thenAnswer((_) async => []);
+      when(mockDatabase.getTextsOfClassroom(tValidPk)).thenAnswer((_) async => []);
 
       final result =
           await textLocalDataSourceImpl.getTextsOfClassroomFromCache(tClassroomModel);
 
-      verify(mockDatabase.getTexts(tValidPk));
+      verify(mockDatabase.getTextsOfClassroom(tValidPk));
       final testResult = listEquals(result, []);
       equals(testResult);
     });
 
     test("should throw a CacheException", () async {
-      when(mockDatabase.getTexts(tValidPk)).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.getTextsOfClassroom(tValidPk)).thenThrow(SqliteException(787, ""));
 
       expect(
           () async =>
