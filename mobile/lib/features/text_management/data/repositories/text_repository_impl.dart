@@ -31,7 +31,7 @@ class TextRepositoryImpl implements TextRepository {
 
   @override
   Future<Either<Failure, List<MyText>>> getTextsOfClassroom(Classroom classroom) async {
-    return await _tryGetTexts(classroom);
+    return await _tryGetTextsOfClassroom(classroom);
   }
 
   @override
@@ -71,7 +71,7 @@ class TextRepositoryImpl implements TextRepository {
     }
   }
 
-  Future<Either<Failure, List<MyText>>> _tryGetTexts(
+  Future<Either<Failure, List<MyText>>> _tryGetTextsOfClassroom(
       Classroom classroom) async {
     try {
       var classroomModel =
@@ -85,5 +85,11 @@ class TextRepositoryImpl implements TextRepository {
     } on CacheException {
       return Left(CacheFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, List<MyText>>> getTexts() {
+    // TODO: implement getTexts
+    throw UnimplementedError();
   }
 }
