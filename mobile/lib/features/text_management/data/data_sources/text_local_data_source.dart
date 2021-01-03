@@ -4,12 +4,19 @@ import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 
 abstract class TextLocalDataSource {
-  /// Gets the cached list of [Text].
+  /// Gets the cached list of [Text] from a specific classroom.
   ///
   /// Returns an empty list if no [Text] is cached.
   ///
   /// Throws [CacheException] if something wrong happens.
   Future<List<TextModel>> getTextsOfClassroomFromCache(ClassroomModel classroomModel);
+
+  /// Gets the cached list of [Text].
+  ///
+  /// Returns an empty list if no [Text] is cached.
+  ///
+  /// Throws [CacheException] if something wrong happens.
+  Future<List<TextModel>> getTextsFromCache();
 
   /// Deletes the [Text] passed.
   ///
@@ -78,5 +85,11 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
     } else {
       throw CacheException();
     }
+  }
+
+  @override
+  Future<List<TextModel>> getTextsFromCache() {
+    // TODO: implement getTexts
+    throw UnimplementedError();
   }
 }

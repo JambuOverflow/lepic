@@ -152,22 +152,22 @@ void main() {
 
   group('getTexts', () {
     test('should return a list of texts when getTexts is called', () async {
-      when(mockLocalDataSource.getTextsOfClassroomFromCache(tClassroomModel))
+      when(mockLocalDataSource.getTextsFromCache())
           .thenAnswer((_) async => tTextsModels);
 
-      final result = await repository.getTextsOfClassroom(tClassroom);
+      final result = await repository.getTexts();
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
       equals(resultTest);
     });
-
+    
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getTextsOfClassroomFromCache(tClassroomModel))
+      when(mockLocalDataSource.getTextsFromCache())
           .thenThrow(CacheException());
 
-      final result = await repository.getTextsOfClassroom(tClassroom);
+      final result = await repository.getTexts();
 
       expect(result, Left(CacheFailure()));
     });

@@ -88,8 +88,15 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, List<MyText>>> getTexts() {
-    // TODO: implement getTexts
-    throw UnimplementedError();
+  Future<Either<Failure, List<MyText>>> getTexts() async {
+    try {
+      var listTextModel = await localDataSource.getTextsFromCache();
+      var listTextEntity = [
+        for (var model in listTextModel) textModelToEntity(model)
+      ];
+      return Right(listTextEntity);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
   }
 }
