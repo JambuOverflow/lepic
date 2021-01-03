@@ -31,6 +31,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
               label: 'Texts',
             ),
             BottomNavigationBarItem(
+              activeIcon: Icon(Icons.text_fields_rounded),
+              icon: Icon(Icons.text_fields_outlined),
+              label: 'Text Mistakes',
+            ),
+            BottomNavigationBarItem(
               activeIcon: Icon(Icons.account_circle),
               icon: Icon(Icons.account_circle_outlined),
               label: 'Account',
