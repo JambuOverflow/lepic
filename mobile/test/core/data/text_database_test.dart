@@ -70,6 +70,9 @@ void main() {
     password: Value('123'),
   );
 
+  final tInvalidUserText =
+      TextModel(body: "A", title: "C", localId: 10, tutorId: 10, classId: 10);
+
   final tClassroomCompanion = ClassroomModelsCompanion(
     grade: Value(1),
     name: Value("varro"),
@@ -77,6 +80,16 @@ void main() {
     lastUpdated: Value(DateTime.now()),
     clientLastUpdated: Value(DateTime.now()),
     deleted: Value(false),
+  );
+
+  final tInvalidClassroom = ClassroomModel(
+    grade: 1,
+    name: "varro",
+    tutorId: 10,
+    lastUpdated: DateTime.now(),
+    clientLastUpdated: DateTime.now(),
+    deleted: false,
+    localId: 10,
   );
 
   Database database;
@@ -89,6 +102,7 @@ void main() {
     database = Database(vmDatabase);
     await database.into(database.userModels).insert(tUserCompanion);
     await database.into(database.classroomModels).insert(tClassroomCompanion);
+    await database.into(database.classroomModels).insert(tInvalidClassroom);
   }
 
   setUp(() async {
@@ -128,7 +142,7 @@ void main() {
     });
   });
 
-  group("getTexts", () {
+  group("getTextsOfClassroom", () {
     test("should return an empty list of texts", () async {
       final texts = await database.getTextsOfClassroom(tValidClassroomPk);
       expect(texts, []);
@@ -151,6 +165,32 @@ void main() {
   });
 
   group("getTexts", () {
+    test("should return an empty list of texts", () async {
+      final texts = await database.getTexts(1);
+      expect(texts, []);
+    });
+    
+
+    test("should return a list with one text", () async {
+      await database.insertText(tValidTextCompanion);
+
+      final texts = await database.getTexts(1);
+      expect(texts, [tValidTextModel1]);
+    });
+    
+
+    test("should return a list with two texts", () async {
+      await database.insertText(tValidTextCompanion);
+      await database.insertText(tValidTextCompanion);
+      await database.insertText(tInvalidUserText.toCompanion(true));
+
+      final texts = await database.getTexts(1);
+      expect(texts, [tValidTextModel1, tValidTextModel2]);
+    });
+    
+  });
+
+  group("update", () {
     setUp(() async {
       await database.insertText(tValidTextCompanion);
     });
