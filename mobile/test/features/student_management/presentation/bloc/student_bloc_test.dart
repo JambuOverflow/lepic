@@ -63,7 +63,7 @@ void main() {
   final String tLastName = 'da Silva';
 
   test('initial state should be [StudentNotLoaded]', () {
-    expect(bloc.state, GettingStudents());
+    expect(bloc.state, StudentLoadInProgress());
   });
 
   group('createNewStudent', () {
@@ -179,8 +179,8 @@ void main() {
           .thenAnswer((_) async => Right(tList));
 
       final expected = [
-        GettingStudents(),
-        StudentsGot(students: tList),
+        StudentLoadInProgress(),
+        StudentsLoaded(students: tList),
       ];
       expectLater(bloc, emitsInOrder(expected));
       bloc.add(GetStudentsEvent());
@@ -192,7 +192,7 @@ void main() {
       when(mockGetStudent(any)).thenAnswer((_) async => Left(ServerFailure()));
 
       final expected = [
-        GettingStudents(),
+        StudentLoadInProgress(),
         Error(message: 'Not able to get student list'),
       ];
       expectLater(bloc, emitsInOrder(expected));
