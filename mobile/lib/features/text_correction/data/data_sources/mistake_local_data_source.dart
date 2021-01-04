@@ -9,7 +9,7 @@ abstract class MistakeLocalDataSource {
   /// Returns an empty list if no [Mistake] is cache.
   ///
   /// Throws [CacheException] if something wrong happens.
-  Future<List<MistakeModel>> getMistakesFromCacheOfCorrection({
+  Future<List<MistakeModel>> getCorrectionMistakesFromCache({
     StudentModel studentModel,
     TextModel textModel,
   });
@@ -59,7 +59,7 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
   }
 
   @override
-  Future<List<MistakeModel>> getMistakesFromCacheOfCorrection(
+  Future<List<MistakeModel>> getCorrectionMistakesFromCache(
       {StudentModel studentModel, TextModel textModel}) async {
     final int studentId = studentModel.localId;
     final int textId = textModel.localId;

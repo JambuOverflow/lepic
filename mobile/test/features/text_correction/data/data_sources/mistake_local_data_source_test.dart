@@ -114,7 +114,7 @@ void main() {
       )).thenAnswer((_) async => [tMistakeOutputModel1]);
 
       final result =
-          await mistakeLocalDataSourceImpl.getMistakesFromCacheOfCorrection(
+          await mistakeLocalDataSourceImpl.getCorrectionMistakesFromCache(
         studentModel: studentModel,
         textModel: textModel,
       );
@@ -136,7 +136,7 @@ void main() {
       )).thenAnswer((_) async => []);
 
       final result =
-          await mistakeLocalDataSourceImpl.getMistakesFromCacheOfCorrection(
+          await mistakeLocalDataSourceImpl.getCorrectionMistakesFromCache(
         studentModel: studentModel,
         textModel: textModel,
       );
@@ -156,7 +156,7 @@ void main() {
       )).thenThrow(SqliteException(787, ""));
 
       expect(
-          () async => await mistakeLocalDataSourceImpl.getMistakesFromCacheOfCorrection(
+          () async => await mistakeLocalDataSourceImpl.getCorrectionMistakesFromCache(
         studentModel: studentModel,
         textModel: textModel,
       ),
