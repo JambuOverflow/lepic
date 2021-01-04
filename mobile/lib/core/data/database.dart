@@ -131,6 +131,8 @@ class Database extends _$Database {
     return into(mistakeModels).insert(entry);
   }
 
+  /// Deletes all mistakes from  a correction
+  /// Throws SqliteException if no entry is found
   Future<void> deleteMistakesOfCorrection({int textPk, int studentPk}) async {
     var done = await (delete(mistakeModels)
           ..where(
@@ -142,6 +144,8 @@ class Database extends _$Database {
     }
   }
 
+  /// Returns all mistakes from  a correction
+  /// Returns an empty list if no entry is found
   Future<List<MistakeModel>> getMistakesOfCorrection(
       {int textPk, int studentPk}) {
     return (select(mistakeModels)
@@ -150,10 +154,12 @@ class Database extends _$Database {
         .get();
   }
 
+  /// Returns all mistakes in database
+  /// Returns an empty list if no entry is found
   Future<List<MistakeModel>> getAllMistakes() {
     return (select(mistakeModels)).get();
   }
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/mistake_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';

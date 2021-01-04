@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:moor/ffi.dart';
 
 abstract class MistakeLocalDataSource {
