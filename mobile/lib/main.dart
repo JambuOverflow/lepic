@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/presentation/bloc/bottom_navigation_bloc.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
-import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:moor/moor.dart';
 
 import 'core/presentation/pages/route_generator.dart';
@@ -33,12 +31,6 @@ void main() async {
         BlocProvider<ClassroomBloc>(
             create: (_) => GetIt.instance<ClassroomBloc>()),
         BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
-        BlocProvider<TextBloc>(
-          // TODO: For testing!
-          create: (_) => GetIt.instance<TextBloc>(
-            param1: Classroom(grade: 1, name: 'fake', id: 1),
-          ),
-        ),
       ],
       child: MyApp(),
     ),

@@ -5,7 +5,7 @@ import 'account_page.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../widgets/home_preview.dart';
 import '../../../features/class_management/presentation/pages/classrooms_page.dart';
-import '../../../features/text_management/presentation/pages/texts_page.dart';
+import '../../../features/text_management/presentation/pages/classroom_texts_page.dart';
 import '../bloc/bottom_navigation_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
               case 1:
                 return ClassroomsPage();
               case 2:
-                return TextsPage();
+                return ClassroomTextsPage();
               case 3:
                 return AccountPage();
               default:
