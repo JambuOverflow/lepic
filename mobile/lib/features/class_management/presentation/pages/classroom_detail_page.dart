@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../domain/entities/classroom.dart';
 import '../../../student_management/presentation/pages/students_page.dart';
-import '../../../text_management/presentation/pages/texts_page.dart';
+import '../../../text_management/presentation/pages/classroom_texts_page.dart';
 import '../../../../core/presentation/widgets/flight_shuttle_builder.dart';
 
 enum MenuOption { Assign, Edit, Remove }
@@ -41,7 +41,7 @@ class ClassroomDetailPage extends StatelessWidget {
           body: TabBarView(
             children: <Widget>[
               StudentsPage(),
-              TextsPage(),
+              ClassroomTextsPage(),
             ],
           ),
         ),

@@ -5,14 +5,14 @@ import '../../../../core/presentation/widgets/background_app_bar.dart';
 import '../bloc/text_bloc.dart';
 import '../widgets/text_item.dart';
 
-class TextsPage extends StatefulWidget {
-  TextsPage({Key key}) : super(key: key);
+class ClassroomTextsPage extends StatefulWidget {
+  ClassroomTextsPage({Key key}) : super(key: key);
 
   @override
-  _TextsPageState createState() => _TextsPageState();
+  _ClassroomTextsPageState createState() => _ClassroomTextsPageState();
 }
 
-class _TextsPageState extends State<TextsPage> {
+class _ClassroomTextsPageState extends State<ClassroomTextsPage> {
   @override
   void initState() {
     super.initState();
