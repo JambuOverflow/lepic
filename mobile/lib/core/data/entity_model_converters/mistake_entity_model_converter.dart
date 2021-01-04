@@ -8,7 +8,7 @@ class MistakeEntityModelConverter {
   Correction modelToEntity(List<MistakeModel> models) {
     if (models.length == 0){
       throw ErrorDescription(
-          "Models are empty",
+          "'model' is empty",
         );
     }
     List<Mistake> mistakes = [];
@@ -16,11 +16,7 @@ class MistakeEntityModelConverter {
     final int textId = models[0].textId;
 
     for (var model in models) {
-      var mistake = Mistake(
-        commentary: model.commentary,
-        localId: model.localId,
-        wordIndex: model.wordIndex,
-      );
+      Mistake mistake = extractMistake(model);
 
       if (model.studentId != studentId || model.textId != textId) {
         throw ErrorDescription(
@@ -36,6 +32,15 @@ class MistakeEntityModelConverter {
       studentId: studentId,
       mistakes: mistakes,
     );
+  }
+
+  Mistake extractMistake(MistakeModel model) {
+    var mistake = Mistake(
+      commentary: model.commentary,
+      localId: model.localId,
+      wordIndex: model.wordIndex,
+    );
+    return mistake;
   }
 
   List<MistakeModel> entityToModel(Correction entity) {
