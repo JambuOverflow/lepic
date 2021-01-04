@@ -37,4 +37,4 @@ class DeleteStudentEvent extends StudentEvent {
   DeleteStudentEvent({@required this.student});
 }
 
-class GetStudentsEvent extends StudentEvent {}
+class LoadStudentsEvent extends StudentEvent {}

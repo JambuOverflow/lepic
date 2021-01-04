@@ -2,23 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 
 class StudentDetailPage extends StatelessWidget {
-  final Student _student;
+  final Student student;
 
-  StudentDetailPage(this._student);
-
+  const StudentDetailPage({Key key, this.student}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_student.firstName.toString()),
+        title: Text(student.firstName.toString()),
       ),
       body: Container(
         padding: EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            Text(_student.lastName.toString()),
-            Text(_student.classroomId.toString()),
-            Text(_student.id.toString()),
+            Text(student.lastName.toString()),
+            Text(student.classroomId.toString()),
+            Text(student.id.toString()),
           ],
         ),
       ),

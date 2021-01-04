@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/use_cases/create_student_use_case.dart';
@@ -23,13 +24,15 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   final DeleteStudent deleteStudent;
   final UpdateStudent updateStudent;
 
+  List<Student> students = const <Student>[];
+
   StudentBloc({
     @required this.classroom,
     @required this.createStudent,
     @required this.getStudents,
     @required this.deleteStudent,
     @required this.updateStudent,
-  }) : super(GettingStudents());
+  }) : super(StudentsLoadInProgress());
 
   @override
   Stream<StudentState> mapEventToState(
@@ -41,7 +44,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       yield* _updateStudentStates(event);
     else if (event is DeleteStudentEvent)
       yield* _deleteStudentStates(event);
-    else if (event is GetStudentsEvent) yield* _getStudentsStates(event);
+    else if (event is LoadStudentsEvent) yield* _getStudentsStates(event);
   }
 
   Stream<StudentState> _createNewStudentStates(
@@ -88,14 +91,23 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     );
   }
 
-  Stream<StudentState> _getStudentsStates(GetStudentsEvent event) async* {
-    yield GettingStudents();
+  Stream<StudentState> _getStudentsStates(LoadStudentsEvent event) async* {
+    yield StudentsLoadInProgress();
 
-    final getEither = await getStudents(ClassroomParams(classroom: classroom));
+    yield* _loadAndReplaceStudents();
+  }
 
-    yield getEither.fold(
-      (failure) => Error(message: _mapFailureToMessage(ServerFailure())),
-      (students) => StudentsGot(students: students),
+  Stream<StudentState> _loadAndReplaceStudents() async* {
+    final failureOrClassrooms =
+        await getStudents(ClassroomParams(classroom: classroom));
+
+    yield failureOrClassrooms.fold(
+      (failure) => Error(message: _mapFailureToMessage(failure)),
+      (students) {
+        this.students = students;
+
+        return StudentsLoaded();
+      },
     );
   }
 
