@@ -30,7 +30,7 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
       Correction correction) async {
     try {
       List<MistakeModel> inputModels =
-          mistakeEntityModelConverter.mistakeEntityToModel(correction);
+          mistakeEntityModelConverter.entityToModel(correction);
       List<MistakeModel> outputModels = [];
 
       for (var model in inputModels) {
@@ -39,7 +39,7 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
       }
 
       var localCorrection =
-          mistakeEntityModelConverter.mistakeModelToEntity(outputModels);
+          mistakeEntityModelConverter.modelToEntity(outputModels);
       return Right(localCorrection);
     } on CacheException {
       return Left(CacheFailure());
@@ -50,7 +50,7 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
   Future<Either<Failure, void>> deleteCorrection(Correction correction) async {
     try {
       MistakeModel firstModel =
-          mistakeEntityModelConverter.mistakeEntityToModel(correction)[0];
+          mistakeEntityModelConverter.entityToModel(correction)[0];
 
       await localDataSource.deleteCorrectionMistakesFromCache(firstModel);
 
@@ -72,7 +72,7 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
           .getCorrectionMistakesFromCache(studentModel: studentModel, textModel: textModel);
 
       final Correction correction =
-          this.mistakeEntityModelConverter.mistakeModelToEntity(mistakes);
+          this.mistakeEntityModelConverter.modelToEntity(mistakes);
       return Right(correction);
     } on CacheException {
       return Left(CacheFailure());

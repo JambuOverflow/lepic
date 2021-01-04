@@ -5,7 +5,7 @@ import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 import '../database.dart';
 
 class MistakeEntityModelConverter {
-  Correction mistakeModelToEntity(List<MistakeModel> models) {
+  Correction modelToEntity(List<MistakeModel> models) {
     List<Mistake> mistakes = [];
     final int studentId = models[0].studentId;
     final int textId = models[0].textId;
@@ -33,7 +33,7 @@ class MistakeEntityModelConverter {
     );
   }
 
-  List<MistakeModel> mistakeEntityToModel(Correction entity) {
+  List<MistakeModel> entityToModel(Correction entity) {
     List<MistakeModel> mistakeModels = [];
     MistakeModel mistakeModel;
     for (var mistake in entity.mistakes) {

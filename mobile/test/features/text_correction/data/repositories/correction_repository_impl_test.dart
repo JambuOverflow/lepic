@@ -132,13 +132,13 @@ void main() {
         mistakeEntityModelConverter: mockMistakeEntityModelConverter,
         textEntityModelConverter: mockTextEntityModelConverter);
 
-    when(mockMistakeEntityModelConverter.mistakeEntityToModel(tCorrectionInput))
+    when(mockMistakeEntityModelConverter.entityToModel(tCorrectionInput))
         .thenAnswer((_) => tMistakeModelsInput);
     when(mockMistakeEntityModelConverter
-            .mistakeEntityToModel(tCorrectionOutput))
+            .entityToModel(tCorrectionOutput))
         .thenAnswer((_) => tMistakeModelsOutput);
     when(mockMistakeEntityModelConverter
-            .mistakeModelToEntity(tMistakeModelsOutput))
+            .modelToEntity(tMistakeModelsOutput))
         .thenAnswer((_) => tCorrectionOutput);
   });
 

@@ -31,7 +31,7 @@ void main() {
   group('modelToEntity', () {
     test('should return a Mistake entity with proper data', () async {
       final result =
-          mistakeEntityModelConverter.mistakeModelToEntity([tMistakeModel]);
+          mistakeEntityModelConverter.modelToEntity([tMistakeModel]);
 
       expect(result, tCorrection);
     });
@@ -40,7 +40,7 @@ void main() {
   group('entityToModel', () {
     test('should return a Classroom model with proper data', () {
       final result = mistakeEntityModelConverter
-          .mistakeEntityToModel(tCorrection);
+          .entityToModel(tCorrection);
 
       expect(result, [tMistakeModel]);
     });
