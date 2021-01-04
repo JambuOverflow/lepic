@@ -52,7 +52,7 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
       MistakeModel firstModel =
           mistakeEntityModelConverter.mistakeEntityToModel(correction)[0];
 
-      await localDataSource.deleteAllMistakesFromCacheOfCorrection(firstModel);
+      await localDataSource.deleteCorrectionMistakesFromCache(firstModel);
 
       return Right(null);
     } on CacheException {

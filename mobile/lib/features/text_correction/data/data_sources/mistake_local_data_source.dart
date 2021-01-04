@@ -17,7 +17,7 @@ abstract class MistakeLocalDataSource {
   /// Deletes all the [Mistake] from a specific collection.
   ///
   /// Throws [CacheException] if the [Collection] is not cached.
-  Future<void> deleteAllMistakesFromCacheOfCorrection(
+  Future<void> deleteCorrectionMistakesFromCache(
       MistakeModel mistakeModel);
 
   /// Caches the new [Mistake] passed.
@@ -44,7 +44,7 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
   }
 
   @override
-  Future<void> deleteAllMistakesFromCacheOfCorrection(
+  Future<void> deleteCorrectionMistakesFromCache(
       MistakeModel mistakeModel) async {
     final int studentPk = mistakeModel.studentId;
     final int textPk = mistakeModel.textId;

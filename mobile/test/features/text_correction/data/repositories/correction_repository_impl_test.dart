@@ -172,14 +172,14 @@ void main() {
   group('deleteCorrection', () {
     test('should delete a correction', () async {
       when(mockLocalDataSource
-              .deleteAllMistakesFromCacheOfCorrection(tMistakeModelOutput1))
+              .deleteCorrectionMistakesFromCache(tMistakeModelOutput1))
           .thenAnswer((_) => null);
 
       await repository.deleteCorrection(tCorrectionOutput);
 
       verifyInOrder([
         mockLocalDataSource
-            .deleteAllMistakesFromCacheOfCorrection(tMistakeModelOutput1),
+            .deleteCorrectionMistakesFromCache(tMistakeModelOutput1),
       ]);
       verifyNoMoreInteractions(mockLocalDataSource);
     });
@@ -187,12 +187,12 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource
-              .deleteAllMistakesFromCacheOfCorrection(tMistakeModelOutput1))
+              .deleteCorrectionMistakesFromCache(tMistakeModelOutput1))
           .thenThrow(CacheException());
 
       final result = await repository.deleteCorrection(tCorrectionOutput);
       verify(mockLocalDataSource
-          .deleteAllMistakesFromCacheOfCorrection(tMistakeModelOutput1));
+          .deleteCorrectionMistakesFromCache(tMistakeModelOutput1));
 
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -203,7 +203,7 @@ void main() {
     test('should return a correction when updateCorrection is called',
         () async {
       when(mockLocalDataSource
-              .deleteAllMistakesFromCacheOfCorrection(tMistakeModelInput1))
+              .deleteCorrectionMistakesFromCache(tMistakeModelInput1))
           .thenAnswer((_) async => null);
       when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput1))
           .thenAnswer((_) async => tMistakeModelOutput1);
@@ -214,7 +214,7 @@ void main() {
 
       verifyInOrder([
         mockLocalDataSource
-            .deleteAllMistakesFromCacheOfCorrection(tMistakeModelInput1),
+            .deleteCorrectionMistakesFromCache(tMistakeModelInput1),
         mockLocalDataSource.cacheNewMistake(tMistakeModelInput1),
         mockLocalDataSource.cacheNewMistake(tMistakeModelInput2),
       ]);
@@ -225,14 +225,14 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource
-              .deleteAllMistakesFromCacheOfCorrection(tMistakeModelInput1))
+              .deleteCorrectionMistakesFromCache(tMistakeModelInput1))
           .thenThrow(CacheException());
 
       final result = await repository.updateCorrection(tCorrectionInput);
 
       verifyInOrder([
         mockLocalDataSource
-            .deleteAllMistakesFromCacheOfCorrection(tMistakeModelInput1),
+            .deleteCorrectionMistakesFromCache(tMistakeModelInput1),
       ]);
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -241,7 +241,7 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource
-              .deleteAllMistakesFromCacheOfCorrection(tMistakeModelInput1))
+              .deleteCorrectionMistakesFromCache(tMistakeModelInput1))
           .thenAnswer((_) async => null);
       when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput1))
           .thenThrow(CacheException());
@@ -250,7 +250,7 @@ void main() {
 
       verifyInOrder([
         mockLocalDataSource
-            .deleteAllMistakesFromCacheOfCorrection(tMistakeModelInput1),
+            .deleteCorrectionMistakesFromCache(tMistakeModelInput1),
         mockLocalDataSource.cacheNewMistake(tMistakeModelInput1),
       ]);
       expect(result, Left(CacheFailure()));

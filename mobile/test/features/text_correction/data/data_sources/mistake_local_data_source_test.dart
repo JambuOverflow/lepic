@@ -85,7 +85,7 @@ void main() {
       )).thenAnswer((_) async => _);
 
       await mistakeLocalDataSourceImpl
-          .deleteAllMistakesFromCacheOfCorrection(tMistakeInputModel1);
+          .deleteCorrectionMistakesFromCache(tMistakeInputModel1);
       verify(mockDatabase.deleteMistakesOfCorrection(
         textPk: textPk,
         studentPk: studentPk,
@@ -101,7 +101,7 @@ void main() {
 
       expect(
           () async => await mistakeLocalDataSourceImpl
-              .deleteAllMistakesFromCacheOfCorrection(tMistakeInputModel1),
+              .deleteCorrectionMistakesFromCache(tMistakeInputModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
