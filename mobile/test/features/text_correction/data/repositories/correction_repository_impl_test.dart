@@ -262,7 +262,7 @@ void main() {
     test('should return a list of corrections when getCorrections is called',
         () async {
       when(mockLocalDataSource.getMistakesFromCacheOfCorrection(
-              studentModel, textModel))
+              studentModel: studentModel, textModel: textModel))
           .thenAnswer((_) async => tMistakeModelsOutput);
       when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
 
@@ -272,7 +272,7 @@ void main() {
       verifyInOrder([
         mockTextEntityModelConverter.mytextEntityToModel(text),
         mockLocalDataSource.getMistakesFromCacheOfCorrection(
-              studentModel, textModel),
+              studentModel: studentModel, textModel: textModel),
         
       ]);
       expect(result, Right(tCorrectionOutput));
@@ -283,7 +283,7 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource.getMistakesFromCacheOfCorrection(
-              studentModel, textModel))
+              studentModel: studentModel, textModel: textModel))
           .thenThrow(CacheException());
       when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
 
@@ -293,7 +293,7 @@ void main() {
       verifyInOrder([
         mockTextEntityModelConverter.mytextEntityToModel(text),
         mockLocalDataSource.getMistakesFromCacheOfCorrection(
-              studentModel, textModel),
+              studentModel:studentModel, textModel: textModel),
         
       ]);
       expect(result, Left(CacheFailure()));

@@ -128,15 +128,30 @@ class Database extends _$Database {
   /// Returns the primary key (pk) of the added entry
   /// Throws SqliteException if can't add entry
   Future<int> insertMistake(MistakeModel entry) async {
-    throw UnimplementedError();
+    return into(mistakeModels).insert(entry);
   }
 
-  Future<void> deleteMistakesOfCorrection({int textPk, int studentPk}){
-    throw UnimplementedError();
+  Future<void> deleteMistakesOfCorrection({int textPk, int studentPk}) async {
+    var done = await (delete(mistakeModels)
+          ..where(
+              (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
+        .go();
+    if (done != 1) {
+      throw SqliteException(
+          787, "The table doesn't have mistakes with this text and student");
+    }
   }
 
-  Future<List<MistakeModel>> getMistakesOfCorrection({int textPk, int studentPk}){
-    throw UnimplementedError();
+  Future<List<MistakeModel>> getMistakesOfCorrection(
+      {int textPk, int studentPk}) {
+    return (select(mistakeModels)
+          ..where(
+              (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
+        .get();
+  }
+
+  Future<List<MistakeModel>> getAllMistakes() {
+    return (select(mistakeModels)).get();
   }
 
   @override

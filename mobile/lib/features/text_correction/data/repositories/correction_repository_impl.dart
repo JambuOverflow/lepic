@@ -71,7 +71,7 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
           await this.textEntityModelConverter.mytextEntityToModel(text);
 
       final List<MistakeModel> mistakes = await localDataSource
-          .getMistakesFromCacheOfCorrection(studentModel, textModel);
+          .getMistakesFromCacheOfCorrection(studentModel: studentModel, textModel: textModel);
 
       final Correction correction =
           this.mistakeEntityModelConverter.mistakeModelToEntity(mistakes);
