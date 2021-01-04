@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
+import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
+import 'package:mobile/features/text_management/presentation/pages/text_editing_page.dart';
 
 import '../widgets/word_count_area.dart';
 import '../../../../core/presentation/widgets/background_app_bar.dart';
@@ -23,9 +26,13 @@ class TextDetailPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
-        onPressed: () => Navigator.of(context).popAndPushNamed(
-          '/add_text',
-          arguments: {'textToEdit': _text},
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+              value: BlocProvider.of<TextBloc>(context),
+              child: TextEditingPage(textToEdit: _text),
+            ),
+          ),
         ),
       ),
       body: Scrollbar(

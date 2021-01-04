@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/presentation/widgets/background_app_bar.dart';
+import '../../../../core/presentation/widgets/empty_list_text.dart';
 import '../bloc/text_bloc.dart';
 import '../widgets/text_item.dart';
+import 'text_editing_page.dart';
 
 class ClassroomTextsPage extends StatefulWidget {
   ClassroomTextsPage({Key key}) : super(key: key);
@@ -24,17 +25,22 @@ class _ClassroomTextsPageState extends State<ClassroomTextsPage> {
     final _bloc = BlocProvider.of<TextBloc>(context);
 
     return Scaffold(
-      appBar: BackgroundAppBar(title: 'Texts'),
       body: BlocConsumer<TextBloc, TextState>(
         builder: (context, state) {
           if (state is TextsLoaded) {
-            return ListView.builder(
-              itemCount: _bloc.texts.length,
-              itemBuilder: (context, index) {
-                final text = _bloc.texts[index];
-                return TextItem(text);
-              },
-            );
+            if (state.texts.isEmpty)
+              return EmptyListText(
+                'Nothing here 😢 Try creating texts for your class to read!',
+                fontSize: 16,
+              );
+            else
+              return ListView.builder(
+                itemCount: _bloc.texts.length,
+                itemBuilder: (context, index) {
+                  final text = _bloc.texts[index];
+                  return TextItem(text);
+                },
+              );
           } else
             return CircularProgressIndicator();
         },
@@ -47,9 +53,14 @@ class _ClassroomTextsPageState extends State<ClassroomTextsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed('/add_text');
-        },
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute<TextEditingPage>(
+            builder: (_) => BlocProvider.value(
+              value: BlocProvider.of<TextBloc>(context),
+              child: TextEditingPage(),
+            ),
+          ),
+        ),
       ),
     );
   }
