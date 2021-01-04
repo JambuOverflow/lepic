@@ -6,6 +6,11 @@ import '../database.dart';
 
 class MistakeEntityModelConverter {
   Correction modelToEntity(List<MistakeModel> models) {
+    if (models.length == 0){
+      throw ErrorDescription(
+          "Models are empty",
+        );
+    }
     List<Mistake> mistakes = [];
     final int studentId = models[0].studentId;
     final int textId = models[0].textId;
