@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_management/presentation/pages/text_mistake.dart';
 
 import 'account_page.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
@@ -30,6 +31,8 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
               case 2:
                 return TextsPage();
               case 3:
+                return TextMistake();
+              case 4:
                 return AccountPage();
               default:
                 return null;
