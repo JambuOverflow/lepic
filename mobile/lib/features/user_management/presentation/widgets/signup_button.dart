@@ -12,7 +12,7 @@ class SignupButton extends StatelessWidget {
         'Sign up',
         style: TextStyle(fontSize: 16),
       ),
-      onPressed: () => Navigator.of(context).pushNamed('/signup'),
+      onPressed: () => Navigator.of(context).pushNamed('/signup'), key: Key("signUpButton"),
     );
   }
 }

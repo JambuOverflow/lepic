@@ -49,22 +49,22 @@ class _SignupState extends State<Signup> {
           return IgnorePointer(
             ignoring: _ignoreTouch,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16), 
               child: ListView(
                 children: <Widget>[
                   const SizedBox(height: 16),
-                  FirstNameInputField(focusNode: _firstNameFocusNode),
+                  FirstNameInputField(focusNode: _firstNameFocusNode, key: Key("firstNameField"),),
                   const SizedBox(height: 16),
-                  LastNameInputField(focusNode: _lastNameFocusNode),
+                  LastNameInputField(focusNode: _lastNameFocusNode, key: Key("lastNameField")),
                   const SizedBox(height: 16),
-                  EmailInputField(focusNode: _emailFocusNode),
+                  EmailInputField(focusNode: _emailFocusNode, key: Key("emailNameField")),
                   const SizedBox(height: 32),
-                  PasswordInputField(focusNode: _passwordFocusNode),
+                  PasswordInputField(focusNode: _passwordFocusNode, key: Key("passwordField")),
                   const SizedBox(height: 16),
                   ConfirmPasswordInputField(
-                      focusNode: _confirmPasswordFocusNode),
+                      focusNode: _confirmPasswordFocusNode, key: Key("passwordConfirmationField")),
                   const SizedBox(height: 32),
-                  RoleDropdownInputField(focusNode: _confirmPasswordFocusNode),
+                  RoleDropdownInputField(focusNode: _confirmPasswordFocusNode, key: Key("roleDropdown")),
                   const SizedBox(height: 16),
                   CreateUserButton(),
                 ],
