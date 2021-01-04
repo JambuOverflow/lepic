@@ -6,7 +6,7 @@ import '../database.dart';
 
 class MistakeEntityModelConverter {
   Correction modelToEntity(List<MistakeModel> models) {
-    if (models.length == 0){
+    if (models.isEmpty){
       throw ErrorDescription(
           "'model' is empty",
         );
