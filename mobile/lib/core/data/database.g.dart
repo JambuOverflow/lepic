@@ -1520,6 +1520,347 @@ class $TextModelsTable extends TextModels
   }
 }
 
+class MistakeModel extends DataClass implements Insertable<MistakeModel> {
+  final int localId;
+  final int wordIndex;
+  final String commentary;
+  final int studentId;
+  final int textId;
+  MistakeModel(
+      {@required this.localId,
+      @required this.wordIndex,
+      @required this.commentary,
+      @required this.studentId,
+      @required this.textId});
+  factory MistakeModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return MistakeModel(
+      localId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      wordIndex:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}word_index']),
+      commentary: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}commentary']),
+      studentId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}student_id']),
+      textId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}text_id']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int>(localId);
+    }
+    if (!nullToAbsent || wordIndex != null) {
+      map['word_index'] = Variable<int>(wordIndex);
+    }
+    if (!nullToAbsent || commentary != null) {
+      map['commentary'] = Variable<String>(commentary);
+    }
+    if (!nullToAbsent || studentId != null) {
+      map['student_id'] = Variable<int>(studentId);
+    }
+    if (!nullToAbsent || textId != null) {
+      map['text_id'] = Variable<int>(textId);
+    }
+    return map;
+  }
+
+  MistakeModelsCompanion toCompanion(bool nullToAbsent) {
+    return MistakeModelsCompanion(
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
+      wordIndex: wordIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wordIndex),
+      commentary: commentary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(commentary),
+      studentId: studentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(studentId),
+      textId:
+          textId == null && nullToAbsent ? const Value.absent() : Value(textId),
+    );
+  }
+
+  factory MistakeModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return MistakeModel(
+      localId: serializer.fromJson<int>(json['local_id']),
+      wordIndex: serializer.fromJson<int>(json['word_index']),
+      commentary: serializer.fromJson<String>(json['commentary']),
+      studentId: serializer.fromJson<int>(json['student_id']),
+      textId: serializer.fromJson<int>(json['text_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'local_id': serializer.toJson<int>(localId),
+      'word_index': serializer.toJson<int>(wordIndex),
+      'commentary': serializer.toJson<String>(commentary),
+      'student_id': serializer.toJson<int>(studentId),
+      'text_id': serializer.toJson<int>(textId),
+    };
+  }
+
+  MistakeModel copyWith(
+          {int localId,
+          int wordIndex,
+          String commentary,
+          int studentId,
+          int textId}) =>
+      MistakeModel(
+        localId: localId ?? this.localId,
+        wordIndex: wordIndex ?? this.wordIndex,
+        commentary: commentary ?? this.commentary,
+        studentId: studentId ?? this.studentId,
+        textId: textId ?? this.textId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('MistakeModel(')
+          ..write('localId: $localId, ')
+          ..write('wordIndex: $wordIndex, ')
+          ..write('commentary: $commentary, ')
+          ..write('studentId: $studentId, ')
+          ..write('textId: $textId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
+      $mrjc(
+          wordIndex.hashCode,
+          $mrjc(commentary.hashCode,
+              $mrjc(studentId.hashCode, textId.hashCode)))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is MistakeModel &&
+          other.localId == this.localId &&
+          other.wordIndex == this.wordIndex &&
+          other.commentary == this.commentary &&
+          other.studentId == this.studentId &&
+          other.textId == this.textId);
+}
+
+class MistakeModelsCompanion extends UpdateCompanion<MistakeModel> {
+  final Value<int> localId;
+  final Value<int> wordIndex;
+  final Value<String> commentary;
+  final Value<int> studentId;
+  final Value<int> textId;
+  const MistakeModelsCompanion({
+    this.localId = const Value.absent(),
+    this.wordIndex = const Value.absent(),
+    this.commentary = const Value.absent(),
+    this.studentId = const Value.absent(),
+    this.textId = const Value.absent(),
+  });
+  MistakeModelsCompanion.insert({
+    this.localId = const Value.absent(),
+    @required int wordIndex,
+    @required String commentary,
+    @required int studentId,
+    @required int textId,
+  })  : wordIndex = Value(wordIndex),
+        commentary = Value(commentary),
+        studentId = Value(studentId),
+        textId = Value(textId);
+  static Insertable<MistakeModel> custom({
+    Expression<int> localId,
+    Expression<int> wordIndex,
+    Expression<String> commentary,
+    Expression<int> studentId,
+    Expression<int> textId,
+  }) {
+    return RawValuesInsertable({
+      if (localId != null) 'local_id': localId,
+      if (wordIndex != null) 'word_index': wordIndex,
+      if (commentary != null) 'commentary': commentary,
+      if (studentId != null) 'student_id': studentId,
+      if (textId != null) 'text_id': textId,
+    });
+  }
+
+  MistakeModelsCompanion copyWith(
+      {Value<int> localId,
+      Value<int> wordIndex,
+      Value<String> commentary,
+      Value<int> studentId,
+      Value<int> textId}) {
+    return MistakeModelsCompanion(
+      localId: localId ?? this.localId,
+      wordIndex: wordIndex ?? this.wordIndex,
+      commentary: commentary ?? this.commentary,
+      studentId: studentId ?? this.studentId,
+      textId: textId ?? this.textId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localId.present) {
+      map['local_id'] = Variable<int>(localId.value);
+    }
+    if (wordIndex.present) {
+      map['word_index'] = Variable<int>(wordIndex.value);
+    }
+    if (commentary.present) {
+      map['commentary'] = Variable<String>(commentary.value);
+    }
+    if (studentId.present) {
+      map['student_id'] = Variable<int>(studentId.value);
+    }
+    if (textId.present) {
+      map['text_id'] = Variable<int>(textId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MistakeModelsCompanion(')
+          ..write('localId: $localId, ')
+          ..write('wordIndex: $wordIndex, ')
+          ..write('commentary: $commentary, ')
+          ..write('studentId: $studentId, ')
+          ..write('textId: $textId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MistakeModelsTable extends MistakeModels
+    with TableInfo<$MistakeModelsTable, MistakeModel> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $MistakeModelsTable(this._db, [this._alias]);
+  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
+  GeneratedIntColumn _localId;
+  @override
+  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
+  GeneratedIntColumn _constructLocalId() {
+    return GeneratedIntColumn('local_id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _wordIndexMeta = const VerificationMeta('wordIndex');
+  GeneratedIntColumn _wordIndex;
+  @override
+  GeneratedIntColumn get wordIndex => _wordIndex ??= _constructWordIndex();
+  GeneratedIntColumn _constructWordIndex() {
+    return GeneratedIntColumn(
+      'word_index',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _commentaryMeta = const VerificationMeta('commentary');
+  GeneratedTextColumn _commentary;
+  @override
+  GeneratedTextColumn get commentary => _commentary ??= _constructCommentary();
+  GeneratedTextColumn _constructCommentary() {
+    return GeneratedTextColumn(
+      'commentary',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
+  GeneratedIntColumn _studentId;
+  @override
+  GeneratedIntColumn get studentId => _studentId ??= _constructStudentId();
+  GeneratedIntColumn _constructStudentId() {
+    return GeneratedIntColumn('student_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES student_models(local_id)');
+  }
+
+  final VerificationMeta _textIdMeta = const VerificationMeta('textId');
+  GeneratedIntColumn _textId;
+  @override
+  GeneratedIntColumn get textId => _textId ??= _constructTextId();
+  GeneratedIntColumn _constructTextId() {
+    return GeneratedIntColumn('text_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES text_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [localId, wordIndex, commentary, studentId, textId];
+  @override
+  $MistakeModelsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'mistake_models';
+  @override
+  final String actualTableName = 'mistake_models';
+  @override
+  VerificationContext validateIntegrity(Insertable<MistakeModel> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_id')) {
+      context.handle(_localIdMeta,
+          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
+    }
+    if (data.containsKey('word_index')) {
+      context.handle(_wordIndexMeta,
+          wordIndex.isAcceptableOrUnknown(data['word_index'], _wordIndexMeta));
+    } else if (isInserting) {
+      context.missing(_wordIndexMeta);
+    }
+    if (data.containsKey('commentary')) {
+      context.handle(
+          _commentaryMeta,
+          commentary.isAcceptableOrUnknown(
+              data['commentary'], _commentaryMeta));
+    } else if (isInserting) {
+      context.missing(_commentaryMeta);
+    }
+    if (data.containsKey('student_id')) {
+      context.handle(_studentIdMeta,
+          studentId.isAcceptableOrUnknown(data['student_id'], _studentIdMeta));
+    } else if (isInserting) {
+      context.missing(_studentIdMeta);
+    }
+    if (data.containsKey('text_id')) {
+      context.handle(_textIdMeta,
+          textId.isAcceptableOrUnknown(data['text_id'], _textIdMeta));
+    } else if (isInserting) {
+      context.missing(_textIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localId};
+  @override
+  MistakeModel map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return MistakeModel.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $MistakeModelsTable createAlias(String alias) {
+    return $MistakeModelsTable(_db, alias);
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserModelsTable _userModels;
@@ -1532,9 +1873,12 @@ abstract class _$Database extends GeneratedDatabase {
       _studentModels ??= $StudentModelsTable(this);
   $TextModelsTable _textModels;
   $TextModelsTable get textModels => _textModels ??= $TextModelsTable(this);
+  $MistakeModelsTable _mistakeModels;
+  $MistakeModelsTable get mistakeModels =>
+      _mistakeModels ??= $MistakeModelsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [userModels, classroomModels, studentModels, textModels];
+      [userModels, classroomModels, studentModels, textModels, mistakeModels];
 }
