@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:mobile/features/text_management/presentation/widgets/comments_bottom_sheet.dart';
+
+import '../utils/word_section.dart';
+import '../widgets/comments_bottom_sheet.dart';
 
 class TextMistake extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class TextMistake extends StatefulWidget {
 class _TextMistakeState extends State<TextMistake> {
   List<WordSection> _sections;
 
-  String textToSplit =
+  String testText =
       '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sagittis nulla augue, eget tincidunt massa lobortis ut. Vivamus justo eros, maximus non rutrum et, venenatis id lacus. Suspendisse potenti. Vivamus sit amet dolor nisl. Etiam et nisl ut nibh eleifend suscipit a ac neque. Sed imperdiet orci sed porttitor dignissim.''';
 
   @override
@@ -27,7 +28,7 @@ class _TextMistakeState extends State<TextMistake> {
       alignment: Alignment.center,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: _buildTextSpanWithSplittedText(textToSplit, context),
+        child: _buildTextSpanWithSplittedText(testText, context),
       ),
     );
   }
@@ -41,11 +42,11 @@ class _TextMistakeState extends State<TextMistake> {
 
     for (int i = 0; i <= splittedText.length - 1; i++) {
       var tapSection = WordSection(
-        longPressCallBack: () {
-          _showTextCommentBottomSheet(context, splittedText[i]);
+        commentFunction: () {
+          _showTextCommentBottomSheet(context, splittedText[i], _sections[i]);
           setState(() {});
         },
-        tapCallBack: () {
+        highlightFunction: () {
           print('Text is: ${splittedText[i]} ($i)');
           setState(() {});
         },
@@ -68,13 +69,18 @@ class _TextMistakeState extends State<TextMistake> {
     );
   }
 
-  void _showTextCommentBottomSheet(BuildContext context, String word) {
+  void _showTextCommentBottomSheet(
+    BuildContext context,
+    String word,
+    WordSection section,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       barrierColor: Colors.black.withOpacity(0.2),
       builder: (BuildContext context) => CommentsBottomSheet(
         wordToComment: word,
+        section: section,
       ),
     );
   }
@@ -94,13 +100,14 @@ class _TextMistakeState extends State<TextMistake> {
           WidgetSpan(
             child: GestureDetector(
               onTap: () {
+                if (section.hasComment) return section.commentFunction();
+
                 section.isPressed = !section.isPressed;
-                return section.tapCallBack();
+                return section.highlightFunction();
               },
               onLongPress: () {
-                section.isPressed = true;
                 section.hasComment = true;
-                return section.longPressCallBack();
+                return section.commentFunction();
               },
               child: Text(
                 word,
@@ -136,17 +143,3 @@ class _TextMistakeState extends State<TextMistake> {
   }
 }
 
-class WordSection {
-  TapGestureRecognizer tapRecognizer;
-  LongPressGestureRecognizer longPressRecognizer;
-  bool isPressed = false;
-  bool hasComment = false;
-
-  final Function tapCallBack;
-  final Function longPressCallBack;
-
-  WordSection({this.tapCallBack, this.longPressCallBack}) {
-    longPressRecognizer = LongPressGestureRecognizer();
-    tapRecognizer = TapGestureRecognizer();
-  }
-}

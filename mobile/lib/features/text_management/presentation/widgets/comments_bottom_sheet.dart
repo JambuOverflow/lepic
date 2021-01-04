@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/text_management/presentation/utils/word_section.dart';
 
 class CommentsBottomSheet extends StatelessWidget {
   final String _word;
+  final WordSection _section;
 
-  const CommentsBottomSheet({Key key, @required String wordToComment})
-      : _word = wordToComment,
+  const CommentsBottomSheet({
+    Key key,
+    @required String wordToComment,
+    @required WordSection section,
+  })  : _word = wordToComment,
+        _section = section,
         super(key: key);
 
   @override
@@ -21,7 +27,7 @@ class CommentsBottomSheet extends StatelessWidget {
               buildWordAndDeleteRow(context),
               buildCommentField(),
               SizedBox(height: 16),
-              buildBottomButtons(),
+              buildBottomButtons(context),
             ],
           ),
         ),
@@ -48,22 +54,31 @@ class CommentsBottomSheet extends StatelessWidget {
             style: TextStyle(fontSize: 22, color: Colors.blue[900]),
           ),
         ),
-        Icon(Icons.delete, color: Colors.blue),
+        IconButton(
+          icon: Icon(
+            Icons.delete,
+            color: Theme.of(context).accentColor,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ],
     );
   }
 
-  Row buildBottomButtons() {
+  Row buildBottomButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FlatButton(
           child: Text('CANCEL'),
-          onPressed: () {},
+          onPressed: () {
+            _section.hasComment = false;
+            Navigator.pop(context);
+          },
         ),
         FlatButton(
           child: Text('OK'),
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
         ),
       ],
     );
