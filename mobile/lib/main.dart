@@ -13,7 +13,7 @@ import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
 import 'injection_container.dart';
 
-const IS_IN_DEVELOPMENT = true;
+const IS_IN_DEVELOPMENT = false;
 
 void main() async {
   // This setting overrides the default serializer to our custom one
@@ -32,7 +32,6 @@ void main() async {
         BlocProvider<AuthBloc>(create: (_) => authBloc),
         BlocProvider<ClassroomBloc>(
             create: (_) => GetIt.instance<ClassroomBloc>()),
-        BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
         BlocProvider<TextBloc>(
           // TODO: For testing!
           create: (_) => GetIt.instance<TextBloc>(
