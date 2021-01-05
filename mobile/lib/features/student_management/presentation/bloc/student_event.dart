@@ -21,12 +21,12 @@ class UpdateStudentEvent extends StudentEvent {
   final String firstName;
   final String lastName;
 
-  final Student student;
+  final Student oldStudent;
 
   UpdateStudentEvent({
     this.firstName,
     this.lastName,
-    @required this.student,
+    @required this.oldStudent,
   });
 }
 

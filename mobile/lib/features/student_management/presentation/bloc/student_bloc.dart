@@ -32,7 +32,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     @required this.getStudents,
     @required this.deleteStudent,
     @required this.updateStudent,
-  }) : super(StudentLoadInProgress());
+  }) : super(StudentsLoadInProgress());
 
   @override
   Stream<StudentState> mapEventToState(
@@ -77,7 +77,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     final updatedStudent = Student(
       firstName: event.firstName,
       lastName: event.lastName,
-      id: event.student.id,
+      id: event.oldStudent.id,
       classroomId: classroom.id,
     );
 
@@ -102,7 +102,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   }
 
   Stream<StudentState> _getStudentsState() async* {
-    yield StudentLoadInProgress();
+    yield StudentsLoadInProgress();
 
     yield* _loadAndReplaceClassrooms();
   }

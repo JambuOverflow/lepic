@@ -6,7 +6,7 @@ abstract class StudentState extends Equatable {
   List<Object> get props => [StudentState];
 }
 
-class StudentLoadInProgress extends StudentState {}
+class StudentsLoadInProgress extends StudentState {}
 
 class StudentsLoaded extends StudentState {
   final List<Student> students;
