@@ -32,7 +32,6 @@ void main() async {
         BlocProvider<AuthBloc>(create: (_) => authBloc),
         BlocProvider<ClassroomBloc>(
             create: (_) => GetIt.instance<ClassroomBloc>()),
-        BlocProvider<StudentBloc>(create: (_) => GetIt.instance<StudentBloc>()),
         BlocProvider<TextBloc>(
           // TODO: For testing!
           create: (_) => GetIt.instance<TextBloc>(
