@@ -23,7 +23,7 @@ class StudentListView extends StatelessWidget {
               return Dismissible(
                 key: UniqueKey(),
                 background: Container(),
-                child: StudentItem(index: index),
+                child: StudentItem(student: student),
                 onDismissed: (_) => _emitDeleteEventAndShowSnackBar(
                   student: student,
                   context: context,

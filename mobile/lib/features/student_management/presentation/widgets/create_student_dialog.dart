@@ -24,7 +24,7 @@ class CreateStudentDialog extends StatelessWidget {
         FlatButton(
           onPressed: () {
             BlocProvider.of<StudentBloc>(context).add(
-              CreateNewStudentEvent(
+              CreateStudentEvent(
                 firstName: _firstNameController.text,
                 lastName: _lastNameController.text,
               ),
