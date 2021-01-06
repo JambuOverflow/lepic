@@ -10,12 +10,10 @@ abstract class StudentEvent extends Equatable {
 class CreateNewStudentEvent extends StudentEvent {
   final String firstName;
   final String lastName;
-  final Classroom classroom;
 
   CreateNewStudentEvent({
     @required this.firstName,
     @required this.lastName,
-    @required this.classroom,
   });
 }
 

@@ -51,12 +51,10 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       CreateNewStudentEvent event) async* {
     yield CreatingStudent();
 
-    final classroomId = event.classroom;
-
     final student = Student(
       firstName: event.firstName,
       lastName: event.lastName,
-      classroomId: classroomId.id,
+      classroomId: classroom.id,
     );
 
     final studentEither = await createStudent(StudentParams(student: student));

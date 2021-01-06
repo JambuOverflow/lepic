@@ -27,7 +27,6 @@ class CreateStudentDialog extends StatelessWidget {
               CreateNewStudentEvent(
                 firstName: _firstNameController.text,
                 lastName: _lastNameController.text,
-                classroom: null,
               ),
             );
             Navigator.pop(context);
