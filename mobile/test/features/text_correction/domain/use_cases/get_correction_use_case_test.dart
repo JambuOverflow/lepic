@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
+import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 import 'package:mobile/features/text_correction/domain/repositories/correction_repository.dart';
 import 'package:mobile/features/text_correction/domain/use_cases/get_correction_use_case.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
@@ -19,10 +20,9 @@ void main() {
     useCase = GetCorrectionUseCase(repository: mockCorrectionRepository);
   });
 
-  final Map<int, String> mistakes = {0: "ola"};
+  final List<Mistake> mistakes= [Mistake(localId: 1, wordIndex: 0, commentary: "ola")];
 
   final tCorrection1 = Correction(
-    localId: 1,
     studentId: 1,
     textId: 2,
     mistakes: mistakes,

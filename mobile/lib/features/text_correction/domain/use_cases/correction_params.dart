@@ -8,5 +8,5 @@ class CorrectionParams extends Equatable {
   CorrectionParams({@required this.correction});
 
   @override
-  List<Object> get props => [CorrectionParams];
+  List<Object> get props => [correction];
 }

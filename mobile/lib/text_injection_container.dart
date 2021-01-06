@@ -44,5 +44,11 @@ void init() {
     ),
   );
 
+// refactor-student-pages-and-widgets
   sl.registerFactory(() => TextEntityModelConverter(userLocalDataSource: sl()));
+/*
+  sl.registerLazySingleton(
+    () => TextEntityModelConverter(userLocalDataSource: sl()),
+  );
+*/
 }
