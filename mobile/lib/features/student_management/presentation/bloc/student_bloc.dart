@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/use_cases/create_student_use_case.dart';
@@ -19,13 +18,13 @@ part 'student_event.dart';
 part 'student_state.dart';
 
 class StudentBloc extends Bloc<StudentEvent, StudentState> {
+  List<Student> students = const <Student>[];
+
   final Classroom classroom;
   final CreateStudent createStudent;
   final GetStudents getStudents;
   final DeleteStudent deleteStudent;
   final UpdateStudent updateStudent;
-
-  List<Student> students = const <Student>[];
 
   StudentBloc({
     @required this.classroom,
@@ -40,17 +39,15 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     StudentEvent event,
   ) async* {
     if (event is CreateStudentEvent)
-      yield* _createStudentState(event);
+      yield* _createNewStudentState(event);
     else if (event is UpdateStudentEvent)
       yield* _updateStudentState(event);
     else if (event is DeleteStudentEvent)
       yield* _deleteStudentState(event);
-    else if (event is LoadStudentsEvent) yield* _getStudentsStates(event);
+    else if (event is LoadStudentsEvent) yield* _getStudentsState();
   }
 
-  Stream<StudentState> _createStudentState(CreateStudentEvent event) async* {
-    yield StudentsLoadInProgress();
-
+  Stream<StudentState> _createNewStudentState(CreateStudentEvent event) async* {
     final student = Student(
       firstName: event.firstName,
       lastName: event.lastName,
@@ -71,7 +68,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         yield Error(message: _mapFailureToMessage(failure));
       },
       (_) async* {
-        yield* _loadAndReplaceStudents();
+        yield* _loadAndReplaceClassrooms();
       },
     );
   }
@@ -99,20 +96,21 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         yield Error(message: _mapFailureToMessage(CacheFailure()));
       },
       (_) async* {
-        yield* _loadAndReplaceStudents();
+        yield* _loadAndReplaceClassrooms();
       },
     );
   }
 
-  Stream<StudentState> _getStudentsStates(LoadStudentsEvent event) async* {
+  Stream<StudentState> _getStudentsState() async* {
     yield StudentsLoadInProgress();
 
-    yield* _loadAndReplaceStudents();
+    yield* _loadAndReplaceClassrooms();
   }
 
-  Stream<StudentState> _loadAndReplaceStudents() async* {
-    final failureOrClassrooms =
-        await getStudents(ClassroomParams(classroom: classroom));
+  Stream<StudentState> _loadAndReplaceClassrooms() async* {
+    final failureOrClassrooms = await getStudents(
+      ClassroomParams(classroom: classroom),
+    );
 
     yield failureOrClassrooms.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
