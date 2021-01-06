@@ -19,8 +19,6 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _bloc = BlocProvider.of<StudentBloc>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('New Student'),
@@ -51,12 +49,13 @@ class _CreateStudentPageState extends State<CreateStudentPage> {
                       style: TextStyle(fontSize: 16),
                     ),
                     onPressed: () {
-                      _bloc.add(
+                      BlocProvider.of<StudentBloc>(context).add(
                         CreateStudentEvent(
                           firstName: _firstNameController.text,
                           lastName: _lastNameController.text,
                         ),
                       );
+                      Navigator.of(context).pop();
                     },
                   ),
                 ),

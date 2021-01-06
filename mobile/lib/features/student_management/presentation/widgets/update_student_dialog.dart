@@ -12,7 +12,7 @@ class UpdateStudentDialog extends StatelessWidget {
 
   final Student student;
 
-  UpdateStudentDialog({Key key, @required this.student}) : super(key: key);
+  UpdateStudentDialog({Key key, this.student}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +26,19 @@ class UpdateStudentDialog extends StatelessWidget {
         CancelButton(),
         FlatButton(
           onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<UpdateStudentDialog>(
+                builder: (_) => BlocProvider.value(
+                  value: BlocProvider.of<StudentBloc>(context),
+                  child: UpdateStudentDialog(
+                    student: student,
+                  ),
+                ),
+              ),
+            );
             BlocProvider.of<StudentBloc>(context).add(
               UpdateStudentEvent(
-                student: student,
+                oldStudent: student,
                 firstName: _firstNameController.text,
                 lastName: _lastNameController.text,
               ),
