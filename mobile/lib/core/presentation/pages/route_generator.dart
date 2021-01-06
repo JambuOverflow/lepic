@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import '../../../features/text_management/presentation/pages/text_editing_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_detail_page.dart';
 import '../../../features/class_management/presentation/pages/classrooms_page.dart';
-import '../../../features/class_management/presentation/pages/classroom_creation_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_update_page.dart';
 import '../../../features/student_management/presentation/pages/create_student_page.dart';
 import '../../../features/student_management/presentation/pages/students_page.dart';
@@ -50,8 +49,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => AddStudent());
       case '/list_classes':
         return MaterialPageRoute(builder: (_) => ClassroomsPage());
-      case '/add_class':
-        return MaterialPageRoute(builder: (_) => ClassroomCreationPage());
       case '/list_texts':
         return MaterialPageRoute(builder: (_) => ClassroomTextsPage());
       case '/add_text':
