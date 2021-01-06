@@ -45,6 +45,7 @@ class StudentRepositoryImpl implements StudentRepository {
     try {
       var model = studentEntityToModel(student);
       await localDataSource.deleteStudentFromCache(model);
+      return Right(null);
     } on CacheException {
       return Left(CacheFailure());
     }
@@ -59,7 +60,8 @@ class StudentRepositoryImpl implements StudentRepository {
   Future<Either<Failure, List<Student>>> _tryGetStudents(
       Classroom classroom) async {
     try {
-      var classroomModel = await classroomEntityModelConverter.classroomEntityToModel(classroom);
+      var classroomModel =
+          await classroomEntityModelConverter.classroomEntityToModel(classroom);
       var listStudentModel =
           await localDataSource.getStudentsFromCache(classroomModel);
       var listStudentEntity = [

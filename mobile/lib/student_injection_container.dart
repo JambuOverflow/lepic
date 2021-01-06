@@ -9,6 +9,7 @@ import 'package:mobile/features/student_management/domain/use_cases/update_stude
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'features/class_management/domain/entities/classroom.dart';
 
+
 final slStudent = GetIt.instance;
 
 void init() {

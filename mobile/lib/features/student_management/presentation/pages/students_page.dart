@@ -3,6 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/student_management/presentation/widgets/create_student_dialog.dart';
 import 'package:mobile/features/student_management/presentation/widgets/student_list_view.dart';
 import '../bloc/student_bloc.dart';
+import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
+import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
+
+import '../../domain/entities/student.dart';
+import '../widgets/student_item.dart';
 
 class StudentsPage extends StatefulWidget {
   @override
@@ -18,35 +23,41 @@ class _StudentsPageState extends State<StudentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _bloc = BlocProvider.of<StudentBloc>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('My Students')),
-      body: Center(
-        child: BlocConsumer<StudentBloc, StudentState>(
-          listener: (context, state) {
-            if (state is Error) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state is StudentsLoadInProgress) {
-              return Center(child: CircularProgressIndicator());
-            } else if (state is StudentsLoaded) {
-              return StudentListView();
-            } else
-              return Center(child: const Text('No data'));
-          },
-        ),
+      body: BlocConsumer<StudentBloc, StudentState>(
+        builder: (context, state) {
+          if (state is StudentsLoaded) {
+            return ListView.builder(
+              itemCount: _bloc.students.length,
+              itemBuilder: (context, index) {
+                final student = _bloc.students[index];
+                return StudentItem(student: student);
+              },
+            );
+          } else
+            return CircularProgressIndicator();
+        },
+        listener: (context, state) {
+          if (state is Error)
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        elevation: 10,
-        onPressed: () => showDialog(
-          barrierDismissible: true,
-          context: context,
-          builder: (_) => CreateStudentDialog(),
-        ),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<CreateStudentDialog>(
+              builder: (_) => BlocProvider.value(
+                value: BlocProvider.of<StudentBloc>(context),
+                child: CreateStudentDialog(),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

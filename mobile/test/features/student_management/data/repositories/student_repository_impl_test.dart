@@ -80,9 +80,11 @@ void main() {
   group('deleteStudent', () {
     test('should delete a student', () async {
       when(mockLocalDataSource.deleteStudentFromCache(tStudentModel))
-          .thenAnswer((_) async => _);
+          .thenAnswer((_) async => Right(null));
 
-      await repository.deleteStudent(tStudent);
+      final expected = await repository.deleteStudent(tStudent);
+
+      expect(expected, Right(null));
 
       verify(mockLocalDataSource.deleteStudentFromCache(tStudentModel));
       verifyNoMoreInteractions(mockLocalDataSource);
