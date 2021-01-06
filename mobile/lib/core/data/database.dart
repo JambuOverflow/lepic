@@ -1,5 +1,6 @@
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
+import 'package:mobile/features/text_correction/data/models/mistake_model.dart';
 import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/user_management/data/models/user_model.dart';
 import 'package:mobile/features/user_management/domain/entities/user.dart';
@@ -28,7 +29,13 @@ LazyDatabase openConnection() {
   });
 }
 
-@UseMoor(tables: [UserModels, ClassroomModels, StudentModels, TextModels])
+@UseMoor(tables: [
+  UserModels,
+  ClassroomModels,
+  StudentModels,
+  TextModels,
+  MistakeModels
+])
 class Database extends _$Database {
   final clock = Clock();
   Database(QueryExecutor e) : super(e);
@@ -110,8 +117,7 @@ class Database extends _$Database {
 
   /// Returns a list of [TextModel]
   Future<List<TextModel>> getAllTextsOfUser(int tutorId) async {
-    return (select(textModels)..where((t) => t.tutorId.equals(tutorId)))
-        .get();
+    return (select(textModels)..where((t) => t.tutorId.equals(tutorId))).get();
   }
 
   /// Returns true if the text was updated, false otherwise
@@ -119,6 +125,41 @@ class Database extends _$Database {
     return update(textModels).replace(entry);
   }
 
+  /// Returns the primary key (pk) of the added entry
+  /// Throws SqliteException if can't add entry
+  Future<int> insertMistake(MistakeModel entry) async {
+    return into(mistakeModels).insert(entry);
+  }
+
+  /// Deletes all mistakes from  a correction
+  /// Throws SqliteException if no entry is found
+  Future<void> deleteMistakesOfCorrection({int textPk, int studentPk}) async {
+    var done = await (delete(mistakeModels)
+          ..where(
+              (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
+        .go();
+    if (done != 1) {
+      throw SqliteException(
+          787, "The table doesn't have mistakes with this text and student");
+    }
+  }
+
+  /// Returns all mistakes from  a correction
+  /// Returns an empty list if no entry is found
+  Future<List<MistakeModel>> getMistakesOfCorrection(
+      {int textPk, int studentPk}) {
+    return (select(mistakeModels)
+          ..where(
+              (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
+        .get();
+  }
+
+  /// Returns all mistakes in database
+  /// Returns an empty list if no entry is found
+  Future<List<MistakeModel>> getAllMistakes() {
+    return (select(mistakeModels)).get();
+  }
+
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 }

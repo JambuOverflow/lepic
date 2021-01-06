@@ -5,11 +5,11 @@ import 'package:mobile/core/presentation/bloc/bottom_navigation_bloc.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
-import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:moor/moor.dart';
 
 import 'core/presentation/pages/route_generator.dart';
 import 'features/class_management/presentation/bloc/classroom_bloc.dart';
+import 'features/text_management/presentation/bloc/text_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
 import 'injection_container.dart';

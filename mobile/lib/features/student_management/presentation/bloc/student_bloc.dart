@@ -40,7 +40,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     StudentEvent event,
   ) async* {
     if (event is CreateStudentEvent)
-      yield* _createNewStudentState(event);
+      yield* _createStudentState(event);
     else if (event is UpdateStudentEvent)
       yield* _updateStudentState(event);
     else if (event is DeleteStudentEvent)
@@ -48,7 +48,9 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     else if (event is LoadStudentsEvent) yield* _getStudentsStates(event);
   }
 
-  Stream<StudentState> _createNewStudentState(CreateStudentEvent event) async* {
+  Stream<StudentState> _createStudentState(CreateStudentEvent event) async* {
+    yield StudentsLoadInProgress();
+
     final student = Student(
       firstName: event.firstName,
       lastName: event.lastName,

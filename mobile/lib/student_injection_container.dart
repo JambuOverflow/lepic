@@ -7,6 +7,7 @@ import 'package:mobile/features/student_management/domain/use_cases/delete_stude
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
+import 'features/class_management/domain/entities/classroom.dart';
 
 import 'features/class_management/domain/entities/classroom.dart';
 
@@ -16,10 +17,10 @@ void init() {
   slStudent.registerFactoryParam<StudentBloc, Classroom, void>(
     (classroom, _) => StudentBloc(
       classroom: classroom,
-      createStudent: slStudent(),
-      updateStudent: slStudent(),
-      deleteStudent: slStudent(),
-      getStudents: slStudent(),
+      createStudent: GetIt.instance(),
+      deleteStudent: GetIt.instance(),
+      getStudents: GetIt.instance(),
+      updateStudent: GetIt.instance(),
     ),
   );
 
