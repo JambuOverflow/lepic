@@ -9,13 +9,13 @@ class StudentDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(student.firstName.toString()),
+        title: Text(student.firstName),
       ),
       body: Container(
         padding: EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
-            Text(student.lastName.toString()),
+            Text(student.lastName),
             Text(student.classroomId.toString()),
             Text(student.id.toString()),
           ],
