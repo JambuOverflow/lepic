@@ -7,16 +7,18 @@ import 'package:mobile/features/student_management/domain/use_cases/delete_stude
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
+import 'features/class_management/domain/entities/classroom.dart';
 
 final slStudent = GetIt.instance;
 
 void init() {
-  slStudent.registerFactory(
-    () => StudentBloc(
-      updateStudent: slStudent(),
-      deleteStudent: slStudent(),
-      createStudent: slStudent(),
-      getStudents: slStudent(),
+  slStudent.registerFactoryParam<StudentBloc, Classroom, void>(
+    (classroom, _) => StudentBloc(
+      classroom: classroom,
+      createStudent: GetIt.instance(),
+      deleteStudent: GetIt.instance(),
+      getStudents: GetIt.instance(),
+      updateStudent: GetIt.instance(),
     ),
   );
 
@@ -28,6 +30,7 @@ void init() {
   slStudent.registerLazySingleton<StudentRepository>(
     () => StudentRepositoryImpl(
       localDataSource: slStudent(),
+      classroomEntityModelConverter: slStudent(),
     ),
   );
 
