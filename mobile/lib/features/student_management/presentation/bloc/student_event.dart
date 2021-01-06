@@ -1,33 +1,32 @@
 part of 'student_bloc.dart';
 
+@immutable
 abstract class StudentEvent extends Equatable {
   const StudentEvent();
-
   @override
   List<Object> get props => [];
 }
 
-class CreateNewStudentEvent extends StudentEvent {
+class CreateStudentEvent extends StudentEvent {
   final String firstName;
   final String lastName;
-  final Classroom classroom;
 
-  CreateNewStudentEvent({
+  CreateStudentEvent({
     @required this.firstName,
     @required this.lastName,
-    @required this.classroom,
   });
 }
 
 class UpdateStudentEvent extends StudentEvent {
-  final Student student;
   final String firstName;
   final String lastName;
 
+  final Student oldStudent;
+
   UpdateStudentEvent({
-    @required this.student,
-    @required this.firstName,
-    @required this.lastName,
+    this.firstName,
+    this.lastName,
+    @required this.oldStudent,
   });
 }
 

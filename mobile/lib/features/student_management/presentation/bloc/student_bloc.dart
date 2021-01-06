@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
@@ -38,56 +39,66 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   Stream<StudentState> mapEventToState(
     StudentEvent event,
   ) async* {
-    if (event is CreateNewStudentEvent)
-      yield* _createNewStudentStates(event);
+    if (event is CreateStudentEvent)
+      yield* _createNewStudentState(event);
     else if (event is UpdateStudentEvent)
-      yield* _updateStudentStates(event);
+      yield* _updateStudentState(event);
     else if (event is DeleteStudentEvent)
-      yield* _deleteStudentStates(event);
+      yield* _deleteStudentState(event);
     else if (event is LoadStudentsEvent) yield* _getStudentsStates(event);
   }
 
-  Stream<StudentState> _createNewStudentStates(
-      CreateNewStudentEvent event) async* {
-    yield CreatingStudent();
-
-    final classroomId = event.classroom;
-
+  Stream<StudentState> _createNewStudentState(CreateStudentEvent event) async* {
     final student = Student(
       firstName: event.firstName,
       lastName: event.lastName,
-      classroomId: classroomId.id,
+      classroomId: classroom.id,
     );
 
-    final studentEither = await createStudent(StudentParams(student: student));
+    final failureOrSucess =
+        await createStudent(StudentParams(student: student));
 
-    yield studentEither.fold(
-      (failure) => Error(message: _mapFailureToMessage(failure)),
-      (newStudent) => StudentCreated(student: newStudent),
+    yield* _eitherLoadedOrErrorState(failureOrSucess);
+  }
+
+  Stream<StudentState> _eitherLoadedOrErrorState(
+    Either<Failure, dynamic> failureOrSuccess,
+  ) async* {
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(failure));
+      },
+      (_) async* {
+        yield* _loadAndReplaceStudents();
+      },
     );
   }
 
-  Stream<StudentState> _updateStudentStates(UpdateStudentEvent event) async* {
-    yield UpdatingStudent();
+  Stream<StudentState> _updateStudentState(UpdateStudentEvent event) async* {
+    final updatedStudent = Student(
+      firstName: event.firstName,
+      lastName: event.lastName,
+      id: event.oldStudent.id,
+      classroomId: classroom.id,
+    );
 
     final failureOrStudent =
-        await updateStudent(StudentParams(student: event.student));
+        await updateStudent(StudentParams(student: updatedStudent));
 
-    yield failureOrStudent.fold(
-      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
-      (student) => StudentUpdated(updatedStudent: student),
-    );
+    yield* _eitherLoadedOrErrorState(failureOrStudent);
   }
 
-  Stream<StudentState> _deleteStudentStates(DeleteStudentEvent event) async* {
-    yield DeletingStudent();
-
+  Stream<StudentState> _deleteStudentState(DeleteStudentEvent event) async* {
     final failureOrSuccess =
         await deleteStudent(StudentParams(student: event.student));
 
-    yield failureOrSuccess.fold(
-      (failure) => Error(message: _mapFailureToMessage(CacheFailure())),
-      (_) => StudentDeleted(),
+    yield* failureOrSuccess.fold(
+      (failure) async* {
+        yield Error(message: _mapFailureToMessage(CacheFailure()));
+      },
+      (_) async* {
+        yield* _loadAndReplaceStudents();
+      },
     );
   }
 
@@ -106,7 +117,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       (students) {
         this.students = students;
 
-        return StudentsLoaded();
+        return StudentsLoaded(students: students);
       },
     );
   }

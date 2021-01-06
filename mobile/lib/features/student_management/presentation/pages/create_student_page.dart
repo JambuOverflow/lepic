@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/presentation/widgets/basic_form.dart';
+import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import '../bloc/student_bloc.dart';
 
-class AddStudent extends StatefulWidget {
+class CreateStudentPage extends StatefulWidget {
+  const CreateStudentPage({Key key}) : super(key: key);
+
   @override
-  _AddStudentState createState() => _AddStudentState();
+  _CreateStudentPageState createState() => _CreateStudentPageState();
 }
 
-class _AddStudentState extends State<AddStudent> {
+class _CreateStudentPageState extends State<CreateStudentPage> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
 
+  _CreateStudentPageState();
+
   @override
   Widget build(BuildContext context) {
+    final _bloc = BlocProvider.of<StudentBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('New student'),
+        title: Text('New Student'),
       ),
       body: Padding(
         padding: EdgeInsets.all(8.0),
@@ -40,10 +47,17 @@ class _AddStudentState extends State<AddStudent> {
                   ),
                   child: RaisedButton(
                     child: Text(
-                      'Create student',
+                      'Create Student',
                       style: TextStyle(fontSize: 16),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      _bloc.add(
+                        CreateStudentEvent(
+                          firstName: _firstNameController.text,
+                          lastName: _lastNameController.text,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],

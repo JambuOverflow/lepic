@@ -47,7 +47,7 @@ class RouteGenerator {
       case '/list_students':
         return MaterialPageRoute(builder: (_) => StudentsPage());
       case '/add_student':
-        return MaterialPageRoute(builder: (_) => AddStudent());
+        return MaterialPageRoute(builder: (_) => CreateStudentPage());
       case '/list_classes':
         return MaterialPageRoute(builder: (_) => ClassroomsPage());
       case '/add_class':
