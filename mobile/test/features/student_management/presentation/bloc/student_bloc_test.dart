@@ -79,7 +79,6 @@ void main() {
       bloc.add(CreateNewStudentEvent(
         firstName: tFirstName,
         lastName: tLastName,
-        classroom: tClassroom,
       ));
     });
 
@@ -98,7 +97,6 @@ void main() {
       bloc.add(CreateNewStudentEvent(
         firstName: tFirstName,
         lastName: tLastName,
-        classroom: tClassroom,
       ));
     });
   });
