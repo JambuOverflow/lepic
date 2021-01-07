@@ -4,8 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
-//import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
-
 import '../../domain/entities/classroom.dart';
 import '../../../student_management/presentation/pages/students_page.dart';
 import '../../../text_management/presentation/pages/classroom_texts_page.dart';
@@ -43,7 +41,7 @@ class ClassroomDetailPage extends StatelessWidget {
                     Tab(text: 'TEXTS'),
                   ],
                 ),
-              )
+              ),
             ];
           },
           body: TabBarView(
