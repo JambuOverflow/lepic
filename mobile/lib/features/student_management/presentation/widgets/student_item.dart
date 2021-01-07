@@ -4,16 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/student.dart';
 import '../bloc/student_bloc.dart';
 import '../pages/student_detail_page.dart';
-import 'update_student_dialog.dart';
 
 class StudentItem extends StatelessWidget {
-  final Student student;
+  final int studentIndex;
 
-  const StudentItem({Key key, this.student}) : super(key: key);
+  const StudentItem({Key key, this.studentIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<StudentBloc>(context);
+    final student = bloc.students[studentIndex];
 
     return GestureDetector(
       child: Padding(
@@ -22,7 +22,7 @@ class StudentItem extends StatelessWidget {
           child: Row(
             children: [
               buildIcon(),
-              buildStudentListTile(context, bloc),
+              buildStudentListTile(context, student),
             ],
           ),
         ),
@@ -32,7 +32,7 @@ class StudentItem extends StatelessWidget {
           MaterialPageRoute<StudentDetailPage>(
             builder: (_) => BlocProvider.value(
               value: bloc,
-              child: StudentDetailPage(student: student),
+              child: StudentDetailPage(studentIndex: studentIndex),
             ),
           ),
         );
@@ -40,26 +40,14 @@ class StudentItem extends StatelessWidget {
     );
   }
 
-  Expanded buildStudentListTile(BuildContext context, StudentBloc bloc) {
+  Expanded buildStudentListTile(BuildContext context, Student student) {
     return Expanded(
       child: ListTile(
         title: Hero(
           tag: 'firstName_${student.id}',
-          child: Text(student.firstName),
+          child: Text('${student.firstName} ${student.lastName}'),
         ),
-        subtitle: Text(student.lastName),
-        trailing: IconButton(
-          icon: Icon(Icons.edit),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (_) => BlocProvider.value(
-                value: bloc,
-                child: UpdateStudentDialog(student: student),
-              ),
-            );
-          },
-        ),
+        trailing: Icon(Icons.arrow_forward_ios),
       ),
       flex: 5,
     );
