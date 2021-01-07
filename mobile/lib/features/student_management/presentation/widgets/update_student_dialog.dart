@@ -19,6 +19,7 @@ class UpdateStudentDialog extends StatelessWidget {
     return AlertDialog(
       title: Text('Update student'),
       content: StudentForm(
+        studentToEdit: student,
         firstNameController: _firstNameController,
         lastNameController: _lastNameController,
       ),
