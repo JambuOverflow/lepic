@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/class_management/presentation/widgets/classroom_list_view.dart';
 import 'package:mobile/features/class_management/presentation/widgets/create_classroom_dialog.dart';
+
+import '../../../../core/presentation/widgets/add_to_list_button.dart';
+import '../widgets/classroom_list_view.dart';
 import '../bloc/classroom_bloc.dart';
 
 class ClassroomsPage extends StatefulWidget {
@@ -10,10 +12,13 @@ class ClassroomsPage extends StatefulWidget {
 }
 
 class _ClassroomsPageState extends State<ClassroomsPage> {
+  ClassroomBloc _bloc;
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ClassroomBloc>(context).add(LoadClassroomsEvent());
+    _bloc = BlocProvider.of<ClassroomBloc>(context);
+    _bloc.add(LoadClassroomsEvent());
   }
 
   @override
@@ -39,33 +44,10 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        elevation: 10,
-        onPressed: () => showDialog(
-          barrierDismissible: true,
-          context: context,
-          builder: (_) => CreateClassroomDialog(),
-        ),
+      floatingActionButton: AddToListButton(
+        bloc: _bloc,
+        dialog: CreateClassroomDialog(),
       ),
-    );
-  }
-}
-
-class FakeAppBarButtons extends StatelessWidget {
-  const FakeAppBarButtons({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(Icons.filter_alt_rounded),
-        SizedBox(width: 16),
-        Icon(Icons.search_rounded),
-        SizedBox(width: 16),
-      ],
     );
   }
 }

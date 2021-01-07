@@ -120,7 +120,7 @@ void main() {
       ));
     });
 
-    test('''should emit [UpdatingStudent, Error] when text update 
+    test('''should emit [UpdateTextEvent, Error] when text update 
     is unsuccessful''', () {
       when(mockUpdateText(any)).thenAnswer((_) async => Left(ServerFailure()));
 

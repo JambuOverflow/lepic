@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
 import '../../domain/entities/classroom.dart';
@@ -40,12 +41,16 @@ class ClassroomDetailPage extends StatelessWidget {
                     Tab(text: 'TEXTS'),
                   ],
                 ),
-              )
+              ),
             ];
           },
           body: TabBarView(
             children: <Widget>[
-              StudentsPage(),
+              BlocProvider(
+                create: (context) =>
+                    GetIt.instance<StudentBloc>(param1: classroom),
+                child: StudentsPage(),
+              ),
               BlocProvider<TextBloc>(
                 create: (context) =>
                     GetIt.instance<TextBloc>(param1: classroom),
