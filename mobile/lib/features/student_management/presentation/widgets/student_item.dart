@@ -13,35 +13,36 @@ class StudentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<StudentBloc>(context);
     return GestureDetector(
-        child: Card(
-          child: ListTile(
-            title: Text(student.firstName),
-            subtitle: Text(student.lastName),
-            trailing: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<UpdateStudentDialog>(
-                    builder: (_) => BlocProvider.value(
-                      value: BlocProvider.of<StudentBloc>(context),
-                      child: UpdateStudentDialog(student: student),
-                    ),
-                  ),
-                );
-              },
-            ),
+      child: Card(
+        child: ListTile(
+          title: Text(student.firstName),
+          subtitle: Text(student.lastName),
+          trailing: IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => BlocProvider.value(
+                  value: bloc,
+                  child: UpdateStudentDialog(student: student),
+                ),
+              );
+            },
           ),
         ),
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<StudentDetailPage>(
-              builder: (_) => BlocProvider.value(
-                value: BlocProvider.of<StudentBloc>(context),
-                child: StudentDetailPage(student: student),
-              ),
+      ),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute<StudentDetailPage>(
+            builder: (_) => BlocProvider.value(
+              value: bloc,
+              child: StudentDetailPage(student: student),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

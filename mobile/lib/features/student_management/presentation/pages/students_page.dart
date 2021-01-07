@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/student_management/presentation/widgets/create_student_dialog.dart';
+
+import '../widgets/create_student_dialog.dart';
 import '../bloc/student_bloc.dart';
-import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import '../widgets/student_item.dart';
 
 class StudentsPage extends StatefulWidget {
@@ -44,16 +44,15 @@ class _StudentsPageState extends State<StudentsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<CreateStudentDialog>(
-              builder: (_) => BlocProvider.value(
-                value: BlocProvider.of<StudentBloc>(context),
-                child: CreateStudentDialog(),
-              ),
-            ),
-          );
-        },
+        elevation: 10,
+        onPressed: () => showDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (_) => BlocProvider.value(
+            value: _bloc,
+            child: CreateStudentDialog(),
+          ),
+        ),
       ),
     );
   }
