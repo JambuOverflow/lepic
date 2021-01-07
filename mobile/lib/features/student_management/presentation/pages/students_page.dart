@@ -62,21 +62,3 @@ class _StudentsPageState extends State<StudentsPage> {
     );
   }
 }
-
-class FakeAppBarButtons extends StatelessWidget {
-  const FakeAppBarButtons({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(Icons.filter_alt_rounded),
-        SizedBox(width: 16),
-        Icon(Icons.search_rounded),
-        SizedBox(width: 16),
-      ],
-    );
-  }
-}
