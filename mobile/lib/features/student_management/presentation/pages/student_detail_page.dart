@@ -4,7 +4,7 @@ import 'package:mobile/features/student_management/domain/entities/student.dart'
 class StudentDetailPage extends StatelessWidget {
   final Student student;
 
-  const StudentDetailPage({Key key, this.student}) : super(key: key);
+  const StudentDetailPage({Key key, @required this.student}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

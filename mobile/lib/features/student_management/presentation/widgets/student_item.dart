@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
-import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
-import 'package:mobile/features/student_management/presentation/pages/student_detail_page.dart';
-import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
 
+import '../../domain/entities/student.dart';
+import '../bloc/student_bloc.dart';
+import '../pages/student_detail_page.dart';
 import 'update_student_dialog.dart';
 
 class StudentItem extends StatelessWidget {
@@ -17,14 +16,17 @@ class StudentItem extends StatelessWidget {
     return GestureDetector(
         child: Card(
           child: ListTile(
-            title: Text(student.firstName.toString()),
-            subtitle: Text(student.classroomId.toString()),
+            title: Text(student.firstName),
+            subtitle: Text(student.lastName),
             trailing: IconButton(
-              icon: Icon(Icons.arrow_forward),
+              icon: Icon(Icons.edit),
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => StudentDetailPage(student: student),
+                  MaterialPageRoute<UpdateStudentDialog>(
+                    builder: (_) => BlocProvider.value(
+                      value: BlocProvider.of<StudentBloc>(context),
+                      child: UpdateStudentDialog(student: student),
+                    ),
                   ),
                 );
               },
@@ -33,10 +35,10 @@ class StudentItem extends StatelessWidget {
         ),
         onTap: () {
           Navigator.of(context).push(
-            MaterialPageRoute<CreateStudentPage>(
+            MaterialPageRoute<StudentDetailPage>(
               builder: (_) => BlocProvider.value(
                 value: BlocProvider.of<StudentBloc>(context),
-                child: CreateStudentPage(),
+                child: StudentDetailPage(student: student),
               ),
             ),
           );
