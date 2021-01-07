@@ -1,53 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/update_student_dialog.dart';
+import '../bloc/student_bloc.dart';
+import '../widgets/student_detail_popup_menu_button.dart';
+import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
 
 class StudentDetailPage extends StatelessWidget {
-  final Student student;
+  final int studentIndex;
 
-  const StudentDetailPage({Key key, @required this.student}) : super(key: key);
+  const StudentDetailPage({Key key, @required this.studentIndex})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(student.firstName.toString()),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            Text(student.lastName.toString()),
-            Text(student.classroomId.toString()),
-            Text(student.id.toString()),
-          ],
+    final bloc = BlocProvider.of<StudentBloc>(context);
+
+    return BlocBuilder<StudentBloc, StudentState>(builder: (context, state) {
+      final student = bloc.students[studentIndex];
+      return Scaffold(
+        appBar: AppBar(
+          title: Hero(
+            tag: 'firstName_${student.id}',
+            child: Text('${student.firstName} ${student.lastName}'),
+            flightShuttleBuilder: flightShuttleBuilder,
+          ),
+          actions: <Widget>[StudentDetailPopupMenuButton(student: student)],
         ),
-      ),
-    );
-  }
-}
-
-enum MenuOption { Assign, Edit, Remove }
-
-class PopupMenuOption extends StatelessWidget {
-  const PopupMenuOption({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<MenuOption>(
-      itemBuilder: (BuildContext context) {
-        return <PopupMenuEntry<MenuOption>>[
-          PopupMenuItem(
-            child: Text('Assign student'),
-            value: MenuOption.Assign,
+        floatingActionButton: FloatingActionButton(
+          elevation: 10,
+          child: Icon(Icons.edit),
+          onPressed: () => showDialog(
+            context: context,
+            builder: (_) => BlocProvider.value(
+              value: BlocProvider.of<StudentBloc>(context),
+              child: UpdateStudentDialog(student: student),
+            ),
           ),
-          PopupMenuItem(
-            child: Text('Edit student'),
-            value: MenuOption.Edit,
-          ),
-          PopupMenuItem(
-            child: Text('Remove student'),
-            value: MenuOption.Remove,
-          ),
-        ];
-      },
-    );
+        ),
+        body: Container(
+          padding: EdgeInsets.all(8.0),
+          child: Center(child: Text('Nothing to show here for now...')),
+        ),
+      );
+    });
   }
 }

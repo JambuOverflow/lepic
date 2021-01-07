@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/presentation/widgets/empty_list_text.dart';
 import '../widgets/create_student_dialog.dart';
 import '../bloc/student_bloc.dart';
 import '../widgets/student_item.dart';
@@ -25,13 +26,17 @@ class _StudentsPageState extends State<StudentsPage> {
       body: BlocConsumer<StudentBloc, StudentState>(
         builder: (context, state) {
           if (state is StudentsLoaded) {
-            return ListView.builder(
-              itemCount: _bloc.students.length,
-              itemBuilder: (context, index) {
-                final student = _bloc.students[index];
-                return StudentItem(student: student);
-              },
-            );
+            if (state.students.isEmpty)
+              return EmptyListText(
+                'Nothing here 😢 Try creating students for your class!',
+                fontSize: 16,
+              );
+            else
+              return ListView.builder(
+                itemCount: _bloc.students.length,
+                itemBuilder: (context, index) =>
+                    StudentItem(studentIndex: index),
+              );
           } else
             return CircularProgressIndicator();
         },
