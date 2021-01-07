@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/presentation/widgets/basic_form.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import '../bloc/student_bloc.dart';
 
 class CreateStudentPage extends StatefulWidget {

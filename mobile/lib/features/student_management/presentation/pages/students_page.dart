@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/student_management/presentation/widgets/create_student_dialog.dart';
-import 'package:mobile/features/student_management/presentation/widgets/student_list_view.dart';
 import '../bloc/student_bloc.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
-import 'package:mobile/features/student_management/presentation/pages/create_student_page.dart';
-
-import '../../domain/entities/student.dart';
 import '../widgets/student_item.dart';
 
 class StudentsPage extends StatefulWidget {
@@ -41,7 +37,7 @@ class _StudentsPageState extends State<StudentsPage> {
         },
         listener: (context, state) {
           if (state is Error)
-            ScaffoldMessenger.of(context).showSnackBar(
+            Scaffold.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
         },
