@@ -47,3 +47,7 @@ jobs:
           base-path: ./mobile
           path-to-lcov: ./mobile/coverage/lcov.info
           github-token: ${{ secrets.github_token }}
+
+      - name: APK
+        working-directory: ./mobile
+        run: flutter build apk
