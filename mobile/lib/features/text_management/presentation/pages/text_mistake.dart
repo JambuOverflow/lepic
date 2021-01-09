@@ -1,4 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share/share.dart';
 
 import '../utils/word_section.dart';
 import '../widgets/comments_bottom_sheet.dart';
@@ -13,6 +19,9 @@ class TextMistake extends StatefulWidget {
 class _TextMistakeState extends State<TextMistake> {
   List<WordSection> _sections;
 
+  File _imageFile;
+  ScreenshotController _screenshotController = ScreenshotController();
+
   String testText =
       '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sagittis nulla augue, eget tincidunt massa lobortis ut. Vivamus justo eros, maximus non rutrum et, venenatis id lacus. Suspendisse potenti. Vivamus sit amet dolor nisl. Etiam et nisl ut nibh eleifend suscipit a ac neque. Sed imperdiet orci sed porttitor dignissim.''';
 
@@ -24,13 +33,42 @@ class _TextMistakeState extends State<TextMistake> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: _buildTextSpanWithSplittedText(testText, context),
+    return Scaffold(
+      appBar: BackgroundAppBar(
+        title: 'Text Correction',
+        actions: [
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () async => await _screenshotAndShare(),
+          )
+        ],
+      ),
+      body: Screenshot(
+        controller: _screenshotController,
+        child: Container(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _buildTextSpanWithSplittedText(testText, context),
+          ),
+        ),
       ),
     );
+  }
+
+  Future _screenshotAndShare() async {
+    final directory = (await getApplicationDocumentsDirectory()).path;
+    String fileName = 'screenshot';
+    final path = '$directory/$fileName.png';
+
+    _screenshotController.capture(path: path).then((File image) {
+      setState(() {
+        _imageFile = image;
+        Share.shareFiles([path]);
+      });
+    }).catchError((onError) {
+      print(onError);
+    });
   }
 
   RichText _buildTextSpanWithSplittedText(
@@ -142,4 +180,3 @@ class _TextMistakeState extends State<TextMistake> {
     ));
   }
 }
-
