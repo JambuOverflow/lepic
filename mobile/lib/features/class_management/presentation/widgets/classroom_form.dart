@@ -19,6 +19,7 @@ class ClassroomForm extends StatelessWidget {
       child: ListBody(
         children: <Widget>[
           TextFormField(
+            key: Key("classNameField"),
             controller: _nameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
@@ -27,6 +28,7 @@ class ClassroomForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           TextFormField(
+            key: Key("classGradeField"),
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(2),

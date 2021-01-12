@@ -13,7 +13,7 @@ class ClassroomListView extends StatelessWidget {
 
     return Column(
       children: <Widget>[
-        Text("Total classes:${bloc.classrooms.length}"),
+        Text("Total classes:${bloc.classrooms.length}", key: Key("classCounter"),),
         Expanded(
           child: ListView.builder(
             shrinkWrap: true,
