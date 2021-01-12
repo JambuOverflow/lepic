@@ -40,7 +40,7 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, key: Key("createClass"),),
         elevation: 10,
         onPressed: () => showDialog(
           barrierDismissible: true,
