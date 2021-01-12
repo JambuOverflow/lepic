@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
 import '../pages/text_detail_page.dart';
 import '../../domain/entities/text.dart';
@@ -27,13 +29,14 @@ class TextItem extends StatelessWidget {
             ),
             trailing: Icon(Icons.arrow_forward_ios)),
       ),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => TextDetailPage(_text),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: BlocProvider.of<TextBloc>(context),
+            child: TextDetailPage(_text),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

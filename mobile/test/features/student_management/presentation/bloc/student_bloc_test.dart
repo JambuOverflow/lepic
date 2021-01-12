@@ -1,14 +1,14 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
+import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
-
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/domain/use_cases/create_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/delete_student_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
-import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
 import 'package:mobile/features/student_management/domain/use_cases/update_student_use_case.dart';
 import 'package:mobile/features/student_management/presentation/bloc/student_bloc.dart';
 import 'package:mockito/mockito.dart';
@@ -25,27 +25,8 @@ void main() {
   StudentBloc bloc;
   MockCreateStudentUseCase mockCreateNewStudent;
   MockUpdateStudentEventUseCase mockUpdateStudent;
-  MockDeleteStudentEventUseCase mockdeleteStudent;
+  MockDeleteStudentEventUseCase mockDeleteStudent;
   MockGetStudentsEventUseCase mockGetStudent;
-
-  final tClassroom = Classroom(
-    grade: 1,
-    id: 001,
-    name: "class name",
-  );
-
-  setUp(() {
-    mockCreateNewStudent = MockCreateStudentUseCase();
-    mockUpdateStudent = MockUpdateStudentEventUseCase();
-    mockdeleteStudent = MockDeleteStudentEventUseCase();
-    mockGetStudent = MockGetStudentsEventUseCase();
-    bloc = StudentBloc(
-        classroom: tClassroom,
-        createStudent: mockCreateNewStudent,
-        getStudents: mockGetStudent,
-        deleteStudent: mockdeleteStudent,
-        updateStudent: mockUpdateStudent);
-  });
 
   final tStudent = Student(
     firstName: 'joãozinho',
@@ -54,149 +35,219 @@ void main() {
     classroomId: 001,
   );
 
-  final tList = List<Student>();
-  tList.add(tStudent);
+  final tStudentList = <Student>[tStudent];
+
+  final tClassroom = Classroom(
+    grade: 1,
+    id: 001,
+    name: "class name",
+  );
+
+  setUp(
+    () {
+      mockCreateNewStudent = MockCreateStudentUseCase();
+      mockUpdateStudent = MockUpdateStudentEventUseCase();
+      mockDeleteStudent = MockDeleteStudentEventUseCase();
+      mockGetStudent = MockGetStudentsEventUseCase();
+      bloc = StudentBloc(
+        classroom: tClassroom,
+        createStudent: mockCreateNewStudent,
+        getStudents: mockGetStudent,
+        deleteStudent: mockDeleteStudent,
+        updateStudent: mockUpdateStudent,
+      );
+
+      when(mockGetStudent(ClassroomParams(classroom: tClassroom))).thenAnswer(
+        (_) async => Right(tStudentList),
+      );
+    },
+  );
 
   final String tFirstName = 'joãozinho';
   final String tLastName = 'da Silva';
 
-  test('initial state should be [StudentNotLoaded]', () {
-    expect(bloc.state, GettingStudents());
-  });
+  test(
+    'initial state should be [StudentNotLoaded]',
+    () {
+      expect(bloc.state, StudentsLoadInProgress());
+    },
+  );
 
-  group('createNewStudent', () {
-    test(
-        '''should emit [CreatingStudent, StudentCreated] when student creation is successful''',
+  group(
+    'createStudent',
+    () {
+      test(
+        '''should emit [StudentsLoaded] when student creation is successful''',
         () {
-      when(mockCreateNewStudent(any)).thenAnswer((_) async => Right(tStudent));
+          when(mockCreateNewStudent(any))
+              .thenAnswer((_) async => Right(tStudent));
 
-      final expected = [
-        CreatingStudent(),
-        StudentCreated(student: tStudent),
-      ];
+          final expected = StudentsLoaded(students: tStudentList);
 
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateNewStudentEvent(
-        firstName: tFirstName,
-        lastName: tLastName,
-        classroom: tClassroom,
-      ));
-    });
-
-    test(
-        'should emit [CreatingStudent, Error] when student create is unsuccessful',
-        () async {
-      when(mockCreateNewStudent(StudentParams(student: tStudent)))
-          .thenAnswer((_) async => Left(CacheFailure()));
-
-      final expected = [
-        CreatingStudent(),
-        Error(message: 'Could not create Student')
-      ];
-
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(CreateNewStudentEvent(
-        firstName: tFirstName,
-        lastName: tLastName,
-        classroom: tClassroom,
-      ));
-    });
-  });
-
-  group('updateStudent', () {
-    test('''should emit [UpdatingStudent, StudentUpdated] when update
-    is successful''', () async {
-      when(mockUpdateStudent(any)).thenAnswer(
-        (_) async => Right(tStudent),
+          expectLater(bloc, emits(expected));
+          bloc.add(
+            CreateStudentEvent(
+              firstName: tFirstName,
+              lastName: tLastName,
+            ),
+          );
+        },
       );
 
-      final expected = [
-        UpdatingStudent(),
-        StudentUpdated(updatedStudent: tStudent)
-      ];
+      blocTest(
+        'should update students list after student creation',
+        build: () {
+          when(mockCreateNewStudent(any))
+              .thenAnswer((_) async => Right(tStudent));
+          return bloc;
+        },
+        act: (bloc) {
+          bloc.add(
+              CreateStudentEvent(firstName: tFirstName, lastName: tLastName));
+          bloc.add(
+              CreateStudentEvent(firstName: tFirstName, lastName: tLastName));
+          bloc.add(
+              CreateStudentEvent(firstName: tFirstName, lastName: tLastName));
+        },
+        verify: (bloc) => bloc.students.length == 3,
+      );
 
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateStudentEvent(
-        firstName: tFirstName,
-        lastName: tLastName,
-        student: tStudent,
-      ));
-    });
-
-    test('''should emit [UpdatingStudent, Error] when student creation
-    is unsuccessful''', () {
-      when(mockUpdateStudent(any))
-          .thenAnswer((_) async => Left(CacheFailure()));
-
-      final expected = [
-        UpdatingStudent(),
-        Error(message: 'Not able to update a student')
-      ];
-
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(UpdateStudentEvent(
-        firstName: tFirstName,
-        lastName: tLastName,
-        student: tStudent,
-      ));
-    });
-  });
-
-  group('''deleteStudent''', () {
-    test('''Should emit [DeletingStudent, StudentDeleted] when delete is
-        successful''', () {
-      when(mockdeleteStudent(any)).thenAnswer((_) async => Right(tStudent));
-
-      final expected = [
-        DeletingStudent(),
-        StudentDeleted(),
-      ];
-
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteStudentEvent(student: tStudent));
-    });
-
-    test('''Should emit [DeletingStudent, Error] when delete is
-        unsuccessful''', () {
-      when(mockdeleteStudent(any))
-          .thenAnswer((_) async => Left(CacheFailure()));
-
-      final expected = [
-        DeletingStudent(),
-        Error(message: 'Not able to delete student'),
-      ];
-
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(DeleteStudentEvent(student: tStudent));
-    });
-  });
-
-  group('''getStudents''', () {
-    test(
-        '''Should emit [GettingStudents, StudentGot] when get a student list''',
+      test(
+        '''should emit [Error] when student could not be created''',
         () {
-      when(mockGetStudent(ClassroomParams(classroom: tClassroom)))
-          .thenAnswer((_) async => Right(tList));
+          when(mockCreateNewStudent(any))
+              .thenAnswer((_) async => Left(ServerFailure()));
 
-      final expected = [
-        GettingStudents(),
-        StudentsGot(students: tList),
-      ];
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentsEvent());
-    });
+          final expected = Error(message: 'Could not create student');
 
-    test(
-        '''Should emit [GettingStudents, Error] when could not get a student list''',
+          expectLater(bloc, emits(expected));
+          bloc.add(
+              CreateStudentEvent(firstName: tFirstName, lastName: tLastName));
+        },
+      );
+    },
+  );
+
+  group(
+    'updateStudent',
+    () {
+      test(
+        'should emit [StudentsLoaded] when a Student update is successful',
+        () async {
+          when(mockUpdateStudent(any)).thenAnswer((_) async => Right(tStudent));
+
+          final expected = StudentsLoaded(students: tStudentList);
+
+          expectLater(bloc, emits(expected));
+          bloc.add(
+            UpdateStudentEvent(
+              firstName: tFirstName,
+              lastName: tLastName,
+              student: tStudent,
+            ),
+          );
+        },
+      );
+
+      test(
+        '''should emit [UpdateStudentEvent, Error] when student update 
+    is unsuccessful''',
         () {
-      when(mockGetStudent(any)).thenAnswer((_) async => Left(ServerFailure()));
+          when(mockUpdateStudent(any))
+              .thenAnswer((_) async => Left(ServerFailure()));
 
-      final expected = [
-        GettingStudents(),
-        Error(message: 'Not able to get student list'),
-      ];
-      expectLater(bloc, emitsInOrder(expected));
-      bloc.add(GetStudentsEvent());
-    });
-  });
+          final expected = Error(message: 'Not able to update a text');
+
+          expectLater(bloc, emits(expected));
+          bloc.add(
+            UpdateStudentEvent(
+                firstName: tFirstName, lastName: tLastName, student: tStudent),
+          );
+        },
+      );
+    },
+  );
+
+  group(
+    'deleteStudent',
+    () {
+      test(
+        'Should emit [StudentsLoaded] when a student is deleted successfully',
+        () {
+          when(mockDeleteStudent(any)).thenAnswer((_) async => Right(Response));
+
+          final expected = StudentsLoaded(students: tStudentList);
+
+          expectLater(bloc, emits(expected));
+          bloc.add(DeleteStudentEvent(student: tStudent));
+        },
+      );
+
+      blocTest(
+        'should update students list after student deletion',
+        build: () {
+          when(mockCreateNewStudent(any))
+              .thenAnswer((_) async => Right(tStudent));
+          when(mockDeleteStudent(any)).thenAnswer((_) async => Right(tStudent));
+          return bloc;
+        },
+        act: (bloc) {
+          bloc.add(
+              CreateStudentEvent(firstName: tFirstName, lastName: tLastName));
+          bloc.add(DeleteStudentEvent(student: tStudent));
+        },
+        verify: (bloc) => bloc.students.isEmpty,
+      );
+
+      test(
+        'Should emit [Error] when a student could not be deleted successfully',
+        () {
+          when(mockDeleteStudent(any))
+              .thenAnswer((_) async => Left(ServerFailure()));
+
+          final expected = Error(message: 'could not delete this student');
+
+          expectLater(bloc, emits(expected));
+          bloc.add(DeleteStudentEvent(student: tStudent));
+        },
+      );
+    },
+  );
+
+  group(
+    'getStudents',
+    () {
+      test(
+        'Should emit [StudentsLoaded] when students loaded successfuly',
+        () {
+          when(mockGetStudent(ClassroomParams(classroom: tClassroom)))
+              .thenAnswer((_) async => Right(tStudentList));
+
+          final expected = [
+            StudentsLoadInProgress(),
+            StudentsLoaded(students: tStudentList),
+          ];
+
+          expectLater(bloc, emitsInOrder(expected));
+          bloc.add(LoadStudentsEvent());
+        },
+      );
+
+      test(
+        'Should emit [Error] when can not get the students list',
+        () {
+          when(mockGetStudent(any))
+              .thenAnswer((_) async => Left(ServerFailure()));
+
+          final expected = [
+            StudentsLoadInProgress(),
+            Error(message: 'Not able to get students list'),
+          ];
+
+          expectLater(bloc, emitsInOrder(expected));
+          bloc.add(LoadStudentsEvent());
+        },
+      );
+    },
+  );
 }

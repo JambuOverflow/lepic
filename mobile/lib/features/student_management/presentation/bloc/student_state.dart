@@ -6,38 +6,12 @@ abstract class StudentState extends Equatable {
   List<Object> get props => [StudentState];
 }
 
-class DeletingStudent extends StudentState {}
+class StudentsLoadInProgress extends StudentState {}
 
-class StudentDeleted extends StudentState {}
-
-class CreatingStudent extends StudentState {}
-
-class StudentCreated extends StudentState {
-  final Student student;
-
-  StudentCreated({@required this.student});
-
-  @override
-  List<Object> get props => [student];
-}
-
-class UpdatingStudent extends StudentState {}
-
-class StudentUpdated extends StudentState {
-  final Student updatedStudent;
-
-  StudentUpdated({@required this.updatedStudent});
-
-  @override
-  List<Object> get props => [updatedStudent];
-}
-
-class GettingStudents extends StudentState {}
-
-class StudentsGot extends StudentState {
+class StudentsLoaded extends StudentState {
   final List<Student> students;
 
-  StudentsGot({@required this.students});
+  StudentsLoaded({@required this.students});
 
   @override
   List<Object> get props => [students];

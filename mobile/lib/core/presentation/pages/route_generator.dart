@@ -9,7 +9,7 @@ import '../../../features/class_management/presentation/pages/classroom_creation
 import '../../../features/class_management/presentation/pages/classroom_update_page.dart';
 import '../../../features/student_management/presentation/pages/create_student_page.dart';
 import '../../../features/student_management/presentation/pages/students_page.dart';
-import '../../../features/text_management/presentation/pages/texts_page.dart';
+import '../../../features/text_management/presentation/pages/classroom_texts_page.dart';
 import '../../../features/user_management/presentation/bloc/login_form_bloc.dart';
 import '../../../features/user_management/presentation/pages/guest.dart';
 import '../../../features/user_management/presentation/bloc/signup_form_bloc.dart';
@@ -47,13 +47,13 @@ class RouteGenerator {
       case '/list_students':
         return MaterialPageRoute(builder: (_) => StudentsPage());
       case '/add_student':
-        return MaterialPageRoute(builder: (_) => AddStudent());
+        return MaterialPageRoute(builder: (_) => CreateStudentPage());
       case '/list_classes':
         return MaterialPageRoute(builder: (_) => ClassroomsPage());
       case '/add_class':
         return MaterialPageRoute(builder: (_) => ClassroomCreationPage());
       case '/list_texts':
-        return MaterialPageRoute(builder: (_) => TextsPage());
+        return MaterialPageRoute(builder: (_) => ClassroomTextsPage());
       case '/add_text':
         return MaterialPageRoute(builder: (_) {
           final Map arguments = settings.arguments as Map;
