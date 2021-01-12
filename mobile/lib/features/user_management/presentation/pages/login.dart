@@ -40,13 +40,13 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 SizedBox(height: 16),
-                UserLoginInputField(),
+                UserLoginInputField(key: Key("userLoginField"),),
                 SizedBox(height: 8),
-                PasswordLoginInputField(),
+                PasswordLoginInputField(key: Key("userPasswordField"),),
                 SizedBox(height: 12),
                 InvalidCredentialsWarning(isVisible: state.isCredentialInvalid),
                 SizedBox(height: 16),
-                LoginButton(),
+                LoginButton(key: Key("loginButton"),),
                 Row(
                   children: [
                     Expanded(child: GuestLoginButton()),

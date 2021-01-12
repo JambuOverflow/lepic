@@ -23,6 +23,7 @@ class SignUpSuccess extends StatelessWidget {
             SizedBox(height: 16),
             Text(
               'Welcome to Lepic!',
+              key: Key("welcomePage"),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 28,

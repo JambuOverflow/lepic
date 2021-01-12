@@ -17,6 +17,7 @@ class CreateUserButton extends StatelessWidget {
             child: _loadingOrTextBasedOn(state: state, text: 'Create Account'),
             onPressed: () =>
                 context.read<SignupFormBloc>().add(FormSubmitted()),
+                key: Key("createUserButton"),
           ),
         );
       },
