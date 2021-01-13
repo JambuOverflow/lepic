@@ -19,10 +19,12 @@ class ClassroomItem extends StatelessWidget {
           tag: 'name_${bloc.classrooms[index].id}',
           child: Text(
             '${bloc.classrooms[index].name}',
+            key: Key("currentName")
           ),
         ),
         subtitle: Text(
           'Grade: ${bloc.classrooms[index].grade}',
+          key: Key("currentGrade")
         ),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
@@ -35,6 +37,7 @@ class ClassroomItem extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
+              key: Key("updateClassButton"),
               onPressed: () => showDialog(
                 barrierDismissible: true,
                 context: context,
