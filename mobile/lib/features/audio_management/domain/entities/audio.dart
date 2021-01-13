@@ -4,14 +4,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-class Audio extends Equatable {
+class AudioEntity extends Equatable {
   final int localId;
   final String title;
   final int textId;
   final int studentId;
   final Uint8List audioData;
 
-  Audio({
+  AudioEntity({
     @required this.title,
     @required this.textId,
     @required this.studentId,
