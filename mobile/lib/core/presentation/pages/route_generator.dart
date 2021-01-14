@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/audio_management/presentation/pages/audio_upload.dart';
 
 import '../../../features/text_management/presentation/pages/text_editing_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_detail_page.dart';
@@ -66,7 +67,8 @@ class RouteGenerator {
 
       case '/update_class':
         return MaterialPageRoute(builder: (_) => ClassroomUpdatePage());
-
+      case '/audio_page':
+        return MaterialPageRoute(builder: (_) => AudioPage());
       default:
         return _errorRoute();
     }
