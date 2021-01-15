@@ -1,7 +1,7 @@
 // import 'dart:async';
 
 import 'dart:async';
-import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/features/audio_management/presentation/widgets/stopwatch.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
@@ -26,32 +26,24 @@ class _AudioPageState extends State<AudioPage> {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.attach_file),
-            tooltip: 'Import Audio',
+            icon: Icon(Icons.replay),
+            tooltip: 'replay recording',
             onPressed: () {
               print('replay recording');
             },
           ),
           IconButton(
-            icon: Icon(Icons.list),
-            tooltip: 'Select Students',
-            onPressed: () {
-              print('record deleted');
-            },
-          ),
-          IconButton(
             icon: Icon(Icons.delete),
-            tooltip: 'Delete Audio',
+            tooltip: 'delete recording',
             onPressed: () {
               print('record deleted');
             },
           ),
         ],
-        title: Text('Add audio'),
+        title: Text('Record audio'),
       ),
       bottomNavigationBar: BottomAppBar(
-        elevation: 0,
-        color: Colors.grey[50],
+        color: Colors.grey[700],
         child: Container(
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -62,13 +54,13 @@ class _AudioPageState extends State<AudioPage> {
               Expanded(
                 child: Text("$minutesStr:$secondsStr",
                     style: TextStyle(
-                      color: Colors.black54,
+                      color: Colors.white,
                     )),
               ),
               IconButton(
                 icon: Icon(
-                  Icons.send_sharp,
-                  color: Colors.black54,
+                  Icons.send,
+                  color: Colors.white,
                 ),
                 onPressed: () {
                   // Upload the audio file
