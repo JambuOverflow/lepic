@@ -11,5 +11,6 @@ abstract class AudioRepository {
     Student student,
     MyText text,
   });
+  Future<Either<Failure, List<AudioEntity>>> getAllAudiosFromStudent(Student student);
   Future<Either<Failure, void>> deleteAudio(AudioEntity audio);
 }
