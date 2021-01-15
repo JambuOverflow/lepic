@@ -50,6 +50,9 @@ dependencies:
   formz: ^0.3.2
   email_validator: ^1.0.5
 
+  # File Import
+  file_picker: ^2.1.5+1
+
   # Tests
   bloc_test: ^7.1.0
 
