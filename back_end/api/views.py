@@ -1,7 +1,10 @@
-from rest_framework import generics, status, permissions
+import json
+from rest_framework import generics, mixins, status, permissions, serializers
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.http import JsonResponse, Http404
 from django.db import IntegrityError
 from django.urls import reverse
 from django.core.mail import EmailMessage
@@ -14,9 +17,11 @@ from .serializers import ClassSerializer, UserSerializer, TextSerializer, Studen
     SchoolSerializer
 from .models import Text, Class, User, Student, AudioFile, School
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, \
-    IsCreator, IsTeacher
+    IsCreator, IsTeacher, IsSupportProfessional
 from .utils import EmailThread
 from django.shortcuts import get_object_or_404
+from datetime import datetime
+import pytz
 
 
 class EmailVerification(generics.GenericAPIView):
@@ -43,6 +48,7 @@ class EmailVerification(generics.GenericAPIView):
             return Response(
                 {'detail': 'Your email was not successfully verified, please check your verification link.'},
                 status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class ForgotMyPassword(generics.GenericAPIView):
@@ -81,6 +87,7 @@ class ForgotMyPassword(generics.GenericAPIView):
                 'error_message': 'This email is not registered in our database, please send an email '
                                  'already registered'},
                 status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class ResetPassword(generics.GenericAPIView):
@@ -141,6 +148,7 @@ class UserCreate(generics.CreateAPIView,
             return Response({"email": ["user with this email address already exists."],
                              'exception_message': exception}, status.HTTP_400_BAD_REQUEST)
 
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.initial_data['email'] = serializer.initial_data['email'].lower()
@@ -172,127 +180,248 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 class ClassCreate(generics.ListCreateAPIView):
     """
     List classes of authenticated user or create a new class.
+    For last_sync GET use /api/classes/?last_sync=[TIME]
+    EX: GET or POST /api/classes/
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacher]
     serializer_class = ClassSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
     def get_queryset(self):
-        user = self.request.user
+        user = self.request.user   
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return Class.objects.filter(tutor=user, last_update__gte=last_sync)
         return Class.objects.filter(tutor=user)
 
+      
     def perform_create(self, serializer):
-        serializer.save(tutor=self.request.user)
+        serializer.save(tutor=self.request.user, last_update=datetime.now(tz=pytz.utc))
 
 
-class ClassDetail(generics.RetrieveUpdateDestroyAPIView):
+class ClassDetail(generics.RetrieveUpdateAPIView):
     """
-    Retrieve, update or delete a class instance of authenticated tutor.
-    EX: GET or PUT or DELETE /api/classes/<int:pk>/
+    Retrieve or update a class of authenticated tutor.
+    EX: GET or PUT or PATCH /api/classes/<int:local_id>/
     """
     queryset = Class.objects.all()
     serializer_class = ClassSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsClassTutor]
+    
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('local_id', self.kwargs['local_id']))
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 
 class TextList(generics.ListCreateAPIView):
     """
     List texts of authenticated user or create a new text.
+    For last_sync GET use /api/texts/?last_sync=[TIME]
     EX: GET or POST /api/texts/
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacher|IsSupportProfessional]
     serializer_class = TextSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+      
     def get_queryset(self):
-        classes = Class.objects.filter(tutor=self.request.user.id)
-        queryset = Text.objects.filter(_class__in=classes)
-        return queryset
+        user = self.request.user   
+        classes = Class.objects.filter(tutor=user)
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return Text.objects.filter(_class__in=classes, last_update__gte=last_sync)
+        return Text.objects.filter(_class__in=classes)
 
 
-class TextDetail(generics.RetrieveUpdateDestroyAPIView):
+    def perform_create(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
+
+
+
+class TextDetail(generics.RetrieveUpdateAPIView):
     """
-    Retrieve, update or delete a text instance.
-    EX: GET or PUT or DELETE /api/texts/<int:pk>/
+    Retrieve or update a text of authenticated user.
+    EX: GET or PUT or PATCH /api/texts/<int:local_id>/
     """
     queryset = Text.objects.all()
     serializer_class = TextSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsTextCreator]
 
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('local_id', self.kwargs['local_id']))
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
+
 
 class SchoolList(generics.ListCreateAPIView):
     """
-    List texts of authenticated user or create a new text.
+    List schools of authenticated user or create a new school.
+    For last_sync GET use /api/schools/?last_sync=[TIME]
     EX: GET or POST /api/schools/
     """
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
     permission_classes = [permissions.IsAuthenticated,
-                          IsTeacher]
+                          IsTeacher|IsSupportProfessional]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+    def get_queryset(self):
+        user = self.request.user   
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return School.objects.filter(creator=user, last_update__gte=last_sync)
+        return School.objects.filter(creator=user)
+                          
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(creator=self.request.user, last_update=datetime.now(tz=pytz.utc))
 
 
-class SchoolDetail(generics.RetrieveUpdateDestroyAPIView):
+class SchoolDetail(generics.RetrieveUpdateAPIView):
     """
-    Retrieve, update or delete a text instance.
-    EX: GET or PUT or DELETE /api/schools/<int:pk>/
+    Retrieve or update a school.
+    EX: GET or PUT or PATCH /api/schools/<int:local_id>/
     """
     queryset = School.objects.all()
     serializer_class = SchoolSerializer
     permission_classes = [permissions.IsAuthenticated,
                           IsCreator]
 
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('local_id', self.kwargs['local_id']))
+        self.check_object_permissions(self.request, obj)
+        return obj
 
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
+    
+  
 class StudentList(generics.ListCreateAPIView):
     """
-    List all students instances or create a new student instance.
-    EX: GET or POST /api/students/
+    List students of authenticated user or create a new student.
+    For last_sync GET use /api/students/?last_sync=[TIME]
+    EX: GET or POST or PATCH /api/students/
     """
     serializer_class = StudentSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Student.objects.all()
+    permission_classes = [permissions.IsAuthenticated, 
+                          IsTeacher|IsSupportProfessional]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
     def get_queryset(self):
         classes = Class.objects.filter(tutor=self.request.user.id)
-        queryset = Student.objects.filter(_class__in=classes)
-        return queryset
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return Student.objects.filter(_class__in=classes, last_update__gte=last_sync)
+        return Student.objects.filter(_class__in=classes)
+
 
     def perform_create(self, serializer):
-        class_tutor = Class.objects.filter(id=self.request.data['_class']).values_list('tutor', flat=True)
-        if self.request.user.id in class_tutor:
-            serializer.save()
-        else:
-            raise PermissionDenied("You do not have the permission to create a student account with " +
-                                   "a class where you are not the teacher", 'permission_denied')
+        for class_ in self.request.data:
+            class_tutor = Class.objects.filter(id=class_['_class']).values_list('tutor', flat=True)
+            if(self.request.user.id in class_tutor):
+                serializer.save(last_update=datetime.now(tz=pytz.utc))
+            else:
+                raise PermissionDenied("You do not have the permission to create a student account with " +
+                                       "a class where you are not the teacher", 'permission_denied')
 
 
-class StudentDetail(generics.RetrieveUpdateDestroyAPIView):
+class StudentDetail(generics.RetrieveUpdateAPIView):
     """
-    Retrieve, update or delete a student instance.
-    EX: GET, PUT, PATCH or DELETE /api/students/
+    Retrieve or update a student of an authenticated user.
+    EX: GET or PUT or PATCH /api/students/<int:local_id>/
     """
     serializer_class = StudentSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, 
+                          IsTeacherOrReadOnly|IsSupportProfessional]
     queryset = Student.objects.all()
+
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('local_id', self.kwargs['local_id']))
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 
 class AudioFileList(generics.ListCreateAPIView):
     """
-    List all audio file instances or create a new audio file instance.
+    List all audio files or create a new audio file.
+    For last_sync GET use /api/audio-files/?last_sync=[TIME]
     EX: GET or POST /api/audio-files/
     """
     parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacher|IsSupportProfessional]
     serializer_class = AudioFileSerializer
-    queryset = AudioFile.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+    def get_queryset(self):
+        last_sync = self.request.query_params.get('last_sync')
+
+        if last_sync:
+            return AudioFile.objects.filter(last_update__gte=last_sync)
+        return AudioFile.objects.filter()
+
 
     def perform_create(self, serializer):
         student_class = Student.objects.filter(id=self.request.data['student']).values_list('_class', flat=True)
         class_tutor = Class.objects.filter(id=student_class[0]).values_list('tutor', flat=True)
-        if self.request.user.id in class_tutor:
-            serializer.save()
+        if(self.request.user.id in class_tutor):
+            serializer.save(last_update=datetime.now(tz=pytz.utc))
         else:
             raise PermissionDenied("You do not have the permission to upload students audio files from another class",
                                    'permission_denied')
@@ -300,10 +429,21 @@ class AudioFileList(generics.ListCreateAPIView):
 
 class AudioFileDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a student instance.
-    EX: GET, PUT, PATCH or DELETE /api/students/
+    Retrieve or update an audio file.
+    EX: GET or PUT or PATCH /api/students/<int:local_id>/
     """
     parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrReadOnlyAudioFile]
+    permission_classes = [permissions.IsAuthenticated,
+                          IsTeacherOrReadOnlyAudioFile|IsSupportProfessional]
     serializer_class = AudioFileSerializer
     queryset = AudioFile.objects.all()
+
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('local_id', self.kwargs['local_id']))
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
