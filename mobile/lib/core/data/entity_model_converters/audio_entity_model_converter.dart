@@ -13,7 +13,7 @@ class AudioEntityModelConverter {
     );
   }
 
-  Future<AudioModel> entityToModel(AudioEntity entity) async {
+  AudioModel entityToModel(AudioEntity entity) {
     return AudioModel(
       localId: entity.localId,
       audioData: entity.audioData,

@@ -4,8 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/entity_model_converters/audio_entity_model_converter.dart';
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
-import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
-import 'package:mockito/mockito.dart';
 
 
 void main() {
@@ -35,7 +33,7 @@ void main() {
   );
 
   group('modelToEntity', () {
-    test('should return a Audio entity with proper data', () async {
+    test('should return a Audio entity with proper data', ()  {
       final result = audioEntityModelConverter.modelToEntity(tAudioModel);
 
       expect(result, tAudioEntity);
@@ -43,9 +41,8 @@ void main() {
   });
 
   group('entityToModel', () {
-    test('should return a Classroom model with proper data', () async {
-      final result =
-          await audioEntityModelConverter.entityToModel(tAudioEntity);
+    test('should return a Classroom model with proper data', ()  {
+      final result = audioEntityModelConverter.entityToModel(tAudioEntity);
 
       expect(result, tAudioModel);
     });
