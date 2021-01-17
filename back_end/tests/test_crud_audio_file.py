@@ -39,7 +39,9 @@ class TestCRUDAudioFile(APITestCase):
             'student': 1,
             'text': 1,
             'local_id': 1,
-            'file': self.test_audio_file
+            'file': self.test_audio_file,
+            'reading_time':'00:01:21',
+            'words_per_minute':15
         }
 
         self.audio_file_data_deleted = {
@@ -48,7 +50,9 @@ class TestCRUDAudioFile(APITestCase):
             'text': 1,
             'file': test_audio_file_deleted,
             'deleted': 1,
-            'local_id': 1
+            'local_id': 1,
+            'reading_time':'00:00:57',
+            'words_per_minute':23
         }
 
         self.audio_file_data_update = {
@@ -56,7 +60,11 @@ class TestCRUDAudioFile(APITestCase):
             'student': 1,
             'text': 1,
             'file': self.test_audio_file_2,
-            'local_id': 2
+            'local_id': 2,
+            'reading_time':'00:01:15',
+            'words_per_minute':27,
+            'correct_words':48,
+            'mispelled_words':9
         }
     
     def test_get_audio_file(self):
@@ -77,7 +85,11 @@ class TestCRUDAudioFile(APITestCase):
             'title': 'Test audio',
             'student': 1,
             'text': 1,
-            'local_id': 1
+            'local_id': 1,
+            'reading_time':'00:01:21',
+            'words_per_minute':15,
+            'correct_words': None,
+            'mispelled_words': None
         })
         self.assertEqual(audio_link, regex_match)
 

@@ -62,4 +62,5 @@ class AudioFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AudioFile
         fields = ['id', 'title', 'file', 'student', 'text', 'local_id', 
-                  'deleted', 'last_update']
+                  'deleted', 'last_update', 'reading_time', 'words_per_minute', 
+                  'correct_words', 'mispelled_words']

@@ -88,6 +88,11 @@ class AudioFile(models.Model):
     local_id = models.IntegerField()
     deleted = models.BooleanField(default=0)
     last_update = models.DateTimeField()
+    reading_time = models.TimeField()
+    words_per_minute = models.IntegerField()
+    correct_words = models.IntegerField(null=True, blank=True)
+    mispelled_words = models.IntegerField(null=True, blank=True)
+
 
     def __str__(self):
         return f"Title: {self.title}; Path: {self.file}"
