@@ -1,3 +1,4 @@
+import 'package:mobile/features/audio_management/data/models/audio_model.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
 import 'package:mobile/features/text_correction/data/models/mistake_model.dart';
@@ -34,7 +35,8 @@ LazyDatabase openConnection() {
   ClassroomModels,
   StudentModels,
   TextModels,
-  MistakeModels
+  MistakeModels,
+  AudioModels,
 ])
 class Database extends _$Database {
   final clock = Clock();
