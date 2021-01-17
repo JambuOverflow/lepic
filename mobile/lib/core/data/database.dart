@@ -158,8 +158,54 @@ class Database extends _$Database {
 
   /// Returns all mistakes in database
   /// Returns an empty list if no entry is found
-  Future<List<MistakeModel>> getAllMistakes() {
-    return (select(mistakeModels)).get();
+  Future<List<MistakeModel>> getAllMistakes() async {
+    return await (select(mistakeModels)).get();
+  }
+
+  /// Returns the pk of the inserted model
+  /// Throws a sqliteException if it can't insert the model
+  Future<int> insertAudio(AudioModel model) async {
+    return await into(audioModels).insert(model);
+  }
+
+  /// Deletes a model
+  /// Throws a sqliteException if the model is not in the database
+  Future<void> deleteAudio(int pk) async {
+    var done =
+        await (delete(audioModels)..where((t) => t.localId.equals(pk))).go();
+    if (done != 1) {
+      throw SqliteException(
+          787, "The table doesn't have mistakes with this text and student");
+    }
+  }
+
+  /// Gets all audios of a student
+  /// Throws a sqliteException if the student is not present in the database
+  Future<List<AudioModel>> getAllAudiosOfStudent(int studentPk) async {
+    return await (select(audioModels)..where((t) => t.studentId.equals(studentPk)))
+        .get();
+  }
+
+  /// Gets one audio
+  /// Throws a sqliteException if audio is not present in the database
+  Future<AudioModel> getAudio({int studentPk, int textPk}) async {
+    var result = await (select(audioModels)
+          ..where(
+              (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
+        .get();
+    if (result.isEmpty) {
+      throw SqliteException(787, "");
+    }
+    return result[0];
+  }
+
+  /// Updates audio
+  /// Throws a sqliteException if audio is not present in the database
+  Future<void> updateAudio(AudioModel model) async {
+    final bool done = await update(audioModels).replace(model);
+    if (!done){
+      throw SqliteException(787, "Model is not in the database");
+    }
   }
 
   @override
