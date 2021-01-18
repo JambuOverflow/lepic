@@ -12,7 +12,7 @@ import 'package:mobile/features/audio_management/domain/use_cases/create_audio_u
 import 'package:mobile/features/audio_management/domain/use_cases/delete_audio_use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/get_audio_use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/update_audio_use_case.dart';
-import 'package:mobile/features/audio_management/presentation/bloc/bloc/audio_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_correction/domain/use_cases/get_correction_use_case.dart';
