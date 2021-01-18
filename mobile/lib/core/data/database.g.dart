@@ -1861,6 +1861,345 @@ class $MistakeModelsTable extends MistakeModels
   }
 }
 
+class AudioModel extends DataClass implements Insertable<AudioModel> {
+  final int localId;
+  final String title;
+  final Uint8List audioData;
+  final int textId;
+  final int studentId;
+  AudioModel(
+      {@required this.localId,
+      @required this.title,
+      @required this.audioData,
+      @required this.textId,
+      @required this.studentId});
+  factory AudioModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final uint8ListType = db.typeSystem.forDartType<Uint8List>();
+    return AudioModel(
+      localId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
+      title:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
+      audioData: uint8ListType
+          .mapFromDatabaseResponse(data['${effectivePrefix}audio_data']),
+      textId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}text_id']),
+      studentId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}student_id']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || localId != null) {
+      map['local_id'] = Variable<int>(localId);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || audioData != null) {
+      map['audio_data'] = Variable<Uint8List>(audioData);
+    }
+    if (!nullToAbsent || textId != null) {
+      map['text_id'] = Variable<int>(textId);
+    }
+    if (!nullToAbsent || studentId != null) {
+      map['student_id'] = Variable<int>(studentId);
+    }
+    return map;
+  }
+
+  AudioModelsCompanion toCompanion(bool nullToAbsent) {
+    return AudioModelsCompanion(
+      localId: localId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localId),
+      title:
+          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      audioData: audioData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioData),
+      textId:
+          textId == null && nullToAbsent ? const Value.absent() : Value(textId),
+      studentId: studentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(studentId),
+    );
+  }
+
+  factory AudioModel.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return AudioModel(
+      localId: serializer.fromJson<int>(json['local_id']),
+      title: serializer.fromJson<String>(json['title']),
+      audioData: serializer.fromJson<Uint8List>(json['audio_data']),
+      textId: serializer.fromJson<int>(json['text_id']),
+      studentId: serializer.fromJson<int>(json['student_id']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'local_id': serializer.toJson<int>(localId),
+      'title': serializer.toJson<String>(title),
+      'audio_data': serializer.toJson<Uint8List>(audioData),
+      'text_id': serializer.toJson<int>(textId),
+      'student_id': serializer.toJson<int>(studentId),
+    };
+  }
+
+  AudioModel copyWith(
+          {int localId,
+          String title,
+          Uint8List audioData,
+          int textId,
+          int studentId}) =>
+      AudioModel(
+        localId: localId ?? this.localId,
+        title: title ?? this.title,
+        audioData: audioData ?? this.audioData,
+        textId: textId ?? this.textId,
+        studentId: studentId ?? this.studentId,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('AudioModel(')
+          ..write('localId: $localId, ')
+          ..write('title: $title, ')
+          ..write('audioData: $audioData, ')
+          ..write('textId: $textId, ')
+          ..write('studentId: $studentId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      localId.hashCode,
+      $mrjc(
+          title.hashCode,
+          $mrjc(audioData.hashCode,
+              $mrjc(textId.hashCode, studentId.hashCode)))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is AudioModel &&
+          other.localId == this.localId &&
+          other.title == this.title &&
+          other.audioData == this.audioData &&
+          other.textId == this.textId &&
+          other.studentId == this.studentId);
+}
+
+class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
+  final Value<int> localId;
+  final Value<String> title;
+  final Value<Uint8List> audioData;
+  final Value<int> textId;
+  final Value<int> studentId;
+  const AudioModelsCompanion({
+    this.localId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.audioData = const Value.absent(),
+    this.textId = const Value.absent(),
+    this.studentId = const Value.absent(),
+  });
+  AudioModelsCompanion.insert({
+    this.localId = const Value.absent(),
+    @required String title,
+    @required Uint8List audioData,
+    @required int textId,
+    @required int studentId,
+  })  : title = Value(title),
+        audioData = Value(audioData),
+        textId = Value(textId),
+        studentId = Value(studentId);
+  static Insertable<AudioModel> custom({
+    Expression<int> localId,
+    Expression<String> title,
+    Expression<Uint8List> audioData,
+    Expression<int> textId,
+    Expression<int> studentId,
+  }) {
+    return RawValuesInsertable({
+      if (localId != null) 'local_id': localId,
+      if (title != null) 'title': title,
+      if (audioData != null) 'audio_data': audioData,
+      if (textId != null) 'text_id': textId,
+      if (studentId != null) 'student_id': studentId,
+    });
+  }
+
+  AudioModelsCompanion copyWith(
+      {Value<int> localId,
+      Value<String> title,
+      Value<Uint8List> audioData,
+      Value<int> textId,
+      Value<int> studentId}) {
+    return AudioModelsCompanion(
+      localId: localId ?? this.localId,
+      title: title ?? this.title,
+      audioData: audioData ?? this.audioData,
+      textId: textId ?? this.textId,
+      studentId: studentId ?? this.studentId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (localId.present) {
+      map['local_id'] = Variable<int>(localId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (audioData.present) {
+      map['audio_data'] = Variable<Uint8List>(audioData.value);
+    }
+    if (textId.present) {
+      map['text_id'] = Variable<int>(textId.value);
+    }
+    if (studentId.present) {
+      map['student_id'] = Variable<int>(studentId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioModelsCompanion(')
+          ..write('localId: $localId, ')
+          ..write('title: $title, ')
+          ..write('audioData: $audioData, ')
+          ..write('textId: $textId, ')
+          ..write('studentId: $studentId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AudioModelsTable extends AudioModels
+    with TableInfo<$AudioModelsTable, AudioModel> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $AudioModelsTable(this._db, [this._alias]);
+  final VerificationMeta _localIdMeta = const VerificationMeta('localId');
+  GeneratedIntColumn _localId;
+  @override
+  GeneratedIntColumn get localId => _localId ??= _constructLocalId();
+  GeneratedIntColumn _constructLocalId() {
+    return GeneratedIntColumn('local_id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _titleMeta = const VerificationMeta('title');
+  GeneratedTextColumn _title;
+  @override
+  GeneratedTextColumn get title => _title ??= _constructTitle();
+  GeneratedTextColumn _constructTitle() {
+    return GeneratedTextColumn(
+      'title',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _audioDataMeta = const VerificationMeta('audioData');
+  GeneratedBlobColumn _audioData;
+  @override
+  GeneratedBlobColumn get audioData => _audioData ??= _constructAudioData();
+  GeneratedBlobColumn _constructAudioData() {
+    return GeneratedBlobColumn(
+      'audio_data',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _textIdMeta = const VerificationMeta('textId');
+  GeneratedIntColumn _textId;
+  @override
+  GeneratedIntColumn get textId => _textId ??= _constructTextId();
+  GeneratedIntColumn _constructTextId() {
+    return GeneratedIntColumn('text_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES text_models(local_id)');
+  }
+
+  final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
+  GeneratedIntColumn _studentId;
+  @override
+  GeneratedIntColumn get studentId => _studentId ??= _constructStudentId();
+  GeneratedIntColumn _constructStudentId() {
+    return GeneratedIntColumn('student_id', $tableName, false,
+        $customConstraints: 'NOT NULL REFERENCES student_models(local_id)');
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [localId, title, audioData, textId, studentId];
+  @override
+  $AudioModelsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'audio_models';
+  @override
+  final String actualTableName = 'audio_models';
+  @override
+  VerificationContext validateIntegrity(Insertable<AudioModel> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('local_id')) {
+      context.handle(_localIdMeta,
+          localId.isAcceptableOrUnknown(data['local_id'], _localIdMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title'], _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('audio_data')) {
+      context.handle(_audioDataMeta,
+          audioData.isAcceptableOrUnknown(data['audio_data'], _audioDataMeta));
+    } else if (isInserting) {
+      context.missing(_audioDataMeta);
+    }
+    if (data.containsKey('text_id')) {
+      context.handle(_textIdMeta,
+          textId.isAcceptableOrUnknown(data['text_id'], _textIdMeta));
+    } else if (isInserting) {
+      context.missing(_textIdMeta);
+    }
+    if (data.containsKey('student_id')) {
+      context.handle(_studentIdMeta,
+          studentId.isAcceptableOrUnknown(data['student_id'], _studentIdMeta));
+    } else if (isInserting) {
+      context.missing(_studentIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {localId};
+  @override
+  AudioModel map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return AudioModel.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $AudioModelsTable createAlias(String alias) {
+    return $AudioModelsTable(_db, alias);
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $UserModelsTable _userModels;
@@ -1876,9 +2215,17 @@ abstract class _$Database extends GeneratedDatabase {
   $MistakeModelsTable _mistakeModels;
   $MistakeModelsTable get mistakeModels =>
       _mistakeModels ??= $MistakeModelsTable(this);
+  $AudioModelsTable _audioModels;
+  $AudioModelsTable get audioModels => _audioModels ??= $AudioModelsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [userModels, classroomModels, studentModels, textModels, mistakeModels];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        userModels,
+        classroomModels,
+        studentModels,
+        textModels,
+        mistakeModels,
+        audioModels
+      ];
 }
