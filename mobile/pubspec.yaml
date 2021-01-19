@@ -53,6 +53,9 @@ dependencies:
   # File Import
   file_picker: ^2.1.5+1
 
+  # Play audio from local file/uIntX objects
+  audioplayers: ^0.16.0
+
   # Tests
   bloc_test: ^7.1.0
 
