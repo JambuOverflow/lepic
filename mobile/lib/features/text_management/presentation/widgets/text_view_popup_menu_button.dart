@@ -40,7 +40,7 @@ class TextViewPopupMenuButton extends StatelessWidget {
             builder: (_) => BlocProvider.value(
               value: BlocProvider.of<TextBloc>(context),
               child: AudioPage(
-                myTextTest: text,
+                text: text,
               ),
             ),
           ),

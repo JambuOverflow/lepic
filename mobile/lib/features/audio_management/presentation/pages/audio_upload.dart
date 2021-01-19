@@ -1,120 +1,86 @@
-// import 'dart:async';
-
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
 import 'package:mobile/features/audio_management/presentation/widgets/stopwatch.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 
 class AudioPage extends StatefulWidget {
-  final MyText myTextTest;
-  AudioPage({this.myTextTest, Key key}) : super(key: key);
+  final MyText text;
+  AudioPage({this.text, Key key}) : super(key: key);
   @override
   _AudioPageState createState() => _AudioPageState();
 }
 
 class _AudioPageState extends State<AudioPage> {
-  bool recording = false;
-
-  StreamSubscription<int> timerSubscription;
-  String minutesStr = '00';
-  String secondsStr = '00';
+  bool _recording = false;
+  AudioPlayer _audioPlayer = AudioPlayer();
+  Uint8List _audio;
+  String _path;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: BackgroundAppBar(
+        title: 'Add audio',
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.replay),
-            tooltip: 'replay recording',
+            icon: Icon(Icons.attach_file),
+            tooltip: 'Attach audio',
             onPressed: () {
-              print('replay recording');
+              _uploadAudio();
             },
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            tooltip: 'delete recording',
-            onPressed: () {
-              print('record deleted');
-            },
+            tooltip: 'Delete record',
+            onPressed: () {},
           ),
         ],
-        title: Text('Record audio'),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.grey[700],
-        child: Container(
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(right: 5, left: 5),
-              ),
-              Expanded(
-                child: Text("$minutesStr:$secondsStr",
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.send,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  // Upload the audio file
-                  recording
-                      ? print('stop the recording first!')
-                      : print('audio sended - $minutesStr:$secondsStr');
-                },
-              ),
-            ],
-          ),
-        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Begin/stop the audio recording
-          setState(() {
-            recording = !recording;
-            stopWatch();
-          });
-        },
-        child: recording ? Icon(Icons.stop) : Icon(Icons.mic),
         tooltip: 'Record/Stop Audio',
+        child: _recording ? Icon(Icons.stop) : Icon(Icons.play_arrow),
+        onPressed: () {
+          _playAudio();
+        },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 32.0),
+        padding: EdgeInsets.all(32.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          // mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              widget.myTextTest.title,
+              widget.text.title,
               style: TextStyle(fontSize: 24.0),
             ),
-            Text(widget.myTextTest.body),
+            Text(widget.text.body),
           ],
         ),
       ),
     );
   }
 
-  void stopWatch() {
-    print("recording: $recording");
-    if (recording) {
-      Stream<int> timerStream = stopWatchStream();
-      timerSubscription = timerStream.listen((int newTick) {
-        setState(() {
-          minutesStr = ((newTick / 60) % 60).floor().toString().padLeft(2, '0');
-          secondsStr = (newTick % 60).floor().toString().padLeft(2, '0');
-        });
-      });
-    } else {
-      timerSubscription.cancel();
-      // timerStream = null;
+  void _uploadAudio() async {
+    try {
+      _path = (await FilePicker.platform.pickFiles(type: FileType.audio))
+          ?.files[0]
+          .path
+          .toString();
+      _audio = File(_path).readAsBytesSync();
+      print(_path);
+    } on PlatformException catch (e) {
+      print('Unsupported' + e.toString());
     }
+  }
+
+  void _playAudio() async {
+    int _ = await _audioPlayer.play(_path, isLocal: true);
   }
 }
