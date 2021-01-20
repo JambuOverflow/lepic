@@ -7,10 +7,10 @@ import 'package:mobile/features/audio_management/domain/repositories/audio_repos
 import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
 
 
-class GetAllAudiosFromStudent implements UseCase<List<AudioEntity>, StudentParams> {
+class GetAllAudiosFromStudentUseCase implements UseCase<List<AudioEntity>, StudentParams> {
   final AudioRepository repository;
 
-  GetAllAudiosFromStudent({@required this.repository});
+  GetAllAudiosFromStudentUseCase({@required this.repository});
 
   @override
   Future<Either<Failure, List<AudioEntity>>> call(

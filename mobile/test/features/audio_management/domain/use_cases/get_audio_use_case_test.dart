@@ -14,12 +14,12 @@ import 'package:mockito/mockito.dart';
 class MockAudioRepository extends Mock implements AudioRepository {}
 
 void main() {
-  GetAudio useCase;
+  GetAudioUseCase useCase;
   MockAudioRepository mockAudioRepository;
 
   setUp(() {
     mockAudioRepository = MockAudioRepository();
-    useCase = GetAudio(repository: mockAudioRepository);
+    useCase = GetAudioUseCase(repository: mockAudioRepository);
   });
 
   Uint8List audio_data;

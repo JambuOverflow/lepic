@@ -23,10 +23,10 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
 
   final MyText text;
   final Student student;
-  final CreateAudio createAudio;
-  final UpdateAudio updateAudio;
-  final GetAudio getAudio;
-  final DeleteAudio deleteAudio;
+  final CreateAudioUseCase createAudio;
+  final UpdateAudioUseCase updateAudio;
+  final GetAudioUseCase getAudio;
+  final DeleteAudioUseCase deleteAudio;
 
   AudioBloc({
     @required this.text,
