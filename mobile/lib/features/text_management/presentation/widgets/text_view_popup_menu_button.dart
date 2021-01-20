@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/audio_management/presentation/pages/audio_upload.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/pages/audio_page.dart';
+import 'package:mobile/features/student_management/domain/entities/student.dart';
 
 import '../../domain/entities/text.dart';
 import '../bloc/text_bloc.dart';
@@ -37,11 +40,18 @@ class TextViewPopupMenuButton extends StatelessWidget {
       case 'Add audio':
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => BlocProvider.value(
-              value: BlocProvider.of<TextBloc>(context),
-              child: AudioPage(
-                text: text,
+            builder: (_) => BlocProvider(
+              create: (_) => GetIt.instance<AudioBloc>(
+                param1: text,
+                // test student entity
+                param2: Student(
+                  classroomId: 0,
+                  firstName: 'cu',
+                  lastName: 'duro',
+                  id: 1,
+                ),
               ),
+              child: AudioPage(),
             ),
           ),
         );
