@@ -20,13 +20,13 @@ import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moor/moor.dart';
 
-class MockCreateAudioUseCase extends Mock implements CreateAudio {}
+class MockCreateAudioUseCase extends Mock implements CreateAudioUseCase {}
 
-class MockUpdateAudioEventUseCase extends Mock implements UpdateAudio {}
+class MockUpdateAudioEventUseCase extends Mock implements UpdateAudioUseCase {}
 
-class MockDeleteAudioEventUseCase extends Mock implements DeleteAudio {}
+class MockDeleteAudioEventUseCase extends Mock implements DeleteAudioUseCase {}
 
-class MockGetAudioEventUseCase extends Mock implements GetAudio {}
+class MockGetAudioEventUseCase extends Mock implements GetAudioUseCase {}
 
 void main() {
   AudioBloc bloc;
