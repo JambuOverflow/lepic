@@ -46,5 +46,25 @@ void main() {
       expect(await driver.getText(find.byValueKey("currentName")), "Class R");
       expect(await driver.getText(find.byValueKey("currentGrade")), "Grade: 9");
     });
+
+    test("Remove a classroom and check if class counter decreased", () async {
+      await driver.scroll(find.text("Class R"), 500, 0, Duration(milliseconds: 500));
+      expect(await driver.getText(find.byValueKey("classCounter")),
+          "Total classes:0");
+    });
   });
+
+  // group("CRUD class", () {
+  //   FlutterDriver driver;
+
+  //   setUpAll(() async {
+  //     driver = await FlutterDriver.connect();
+  //   });
+
+  //   tearDownAll(() async {
+  //     if (driver != null) {
+  //       driver.close();
+  //     }
+  //   });
+  // });
 }
