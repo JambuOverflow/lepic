@@ -36,4 +36,4 @@ class DeleteAudioEvent extends AudioEvent {
   DeleteAudioEvent({@required this.audio});
 }
 
-class GetAudioEvent extends AudioEvent {}
+class LoadAudioEvent extends AudioEvent {}

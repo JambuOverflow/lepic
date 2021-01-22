@@ -238,7 +238,7 @@ void main() {
           ];
 
           expectLater(bloc, emitsInOrder(expected));
-          bloc.add(GetAudioEvent());
+          bloc.add(LoadAudioEvent());
         },
       );
 
@@ -254,7 +254,7 @@ void main() {
           ];
 
           expectLater(bloc, emitsInOrder(expected));
-          bloc.add(GetAudioEvent());
+          bloc.add(LoadAudioEvent());
         },
       );
     },

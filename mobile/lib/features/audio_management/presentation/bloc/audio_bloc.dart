@@ -47,8 +47,10 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       yield* _updateAudioState(event);
     else if (event is DeleteAudioEvent)
       yield* _deleteAudioState(event);
-    else if (event is GetAudioEvent) yield* _getAudioState(event);
+    else if (event is LoadAudioEvent) yield* _getAudioState(event);
   }
+
+  bool get isAudioAttached => audio != null;
 
   Stream<AudioState> _createNewAudioState(CreateAudioEvent event) async* {
     final audio = AudioEntity(
@@ -103,7 +105,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     );
   }
 
-  Stream<AudioState> _getAudioState(GetAudioEvent event) async* {
+  Stream<AudioState> _getAudioState(LoadAudioEvent event) async* {
     yield AudioLoadInProgress();
 
     yield* _loadAndReplaceStudentText();
