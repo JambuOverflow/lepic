@@ -182,7 +182,8 @@ class Database extends _$Database {
   /// Gets all audios of a student
   /// Throws a sqliteException if the student is not present in the database
   Future<List<AudioModel>> getAllAudiosOfStudent(int studentPk) async {
-    return await (select(audioModels)..where((t) => t.studentId.equals(studentPk)))
+    return await (select(audioModels)
+          ..where((t) => t.studentId.equals(studentPk)))
         .get();
   }
 
@@ -192,18 +193,18 @@ class Database extends _$Database {
     var result = await (select(audioModels)
           ..where(
               (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
-        .get();
-    if (result.isEmpty) {
+        .getSingle();
+    if (result == null) {
       throw SqliteException(787, "");
     }
-    return result[0];
+    return result;
   }
 
   /// Updates audio
   /// Throws a sqliteException if audio is not present in the database
   Future<void> updateAudio(AudioModel model) async {
     final bool done = await update(audioModels).replace(model);
-    if (!done){
+    if (!done) {
       throw SqliteException(787, "Model is not in the database");
     }
   }
