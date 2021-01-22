@@ -17,15 +17,12 @@ class ClassroomItem extends StatelessWidget {
       child: ListTile(
         title: Hero(
           tag: 'name_${bloc.classrooms[index].id}',
-          child: Text(
-            '${bloc.classrooms[index].name}',
-            key: Key("currentName")
-          ),
+          child:
+              Text('${bloc.classrooms[index].name}', 
+              key: Key('${bloc.classrooms[index].id}_currentName')),
         ),
-        subtitle: Text(
-          'Grade: ${bloc.classrooms[index].grade}',
-          key: Key("currentGrade")
-        ),
+        subtitle: Text('Grade: ${bloc.classrooms[index].grade}',
+            key: Key('${bloc.classrooms[index].id}_currentGrade')),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ClassroomDetailPage(
@@ -37,7 +34,7 @@ class ClassroomItem extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
-              key: Key("updateClassButton"),
+              key: Key('${bloc.classrooms[index].id}_updateClassButton'),
               onPressed: () => showDialog(
                 barrierDismissible: true,
                 context: context,
