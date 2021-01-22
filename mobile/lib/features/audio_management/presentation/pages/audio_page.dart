@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
-import 'package:mobile/core/presentation/widgets/empty_list_text.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/audio_management/presentation/widgets/audio_item.dart';
 
@@ -19,15 +18,13 @@ class AudioPage extends StatefulWidget {
 
 class _AudioPageState extends State<AudioPage> {
   AudioBloc _bloc;
-
   @override
   void initState() {
     super.initState();
     _bloc = BlocProvider.of<AudioBloc>(context);
-    _bloc.add(GetAudioEvent());
+    _bloc.add(LoadAudioEvent());
   }
 
-  AudioPlayer _audioPlayer = AudioPlayer();
   Uint8List _audioBytes;
   String _path;
 
@@ -65,21 +62,12 @@ class _AudioPageState extends State<AudioPage> {
           children: <Widget>[
             BlocConsumer<AudioBloc, AudioState>(
               builder: (context, state) {
-                if (state is AudioLoaded) {
-                  if (state.audio == null)
-                    return EmptyListText(
-                      'Nothing here 😢 Try uploading an audio for your text!',
-                      fontSize: 16,
-                    );
-                  else
-                    return ListView.builder(
-                      itemBuilder: (context, index) {
-                        final audio = _bloc.audio;
-                        return AudioItem(audio);
-                      },
-                    );
-                } else
+                if (state is AudioLoadInProgress)
                   return CircularProgressIndicator();
+                else if (_bloc.audio == null) {
+                  return Container();
+                } else
+                  return AudioItem(_bloc.audio);
               },
               listener: (context, state) {
                 if (state is Error)
@@ -106,13 +94,16 @@ class _AudioPageState extends State<AudioPage> {
           .path
           .toString();
       _audioBytes = File(_path).readAsBytesSync();
-      print(_path);
     } on PlatformException catch (e) {
       print('Unsupported' + e.toString());
     }
   }
 
   void _playAudio() async {
-    int _ = await _audioPlayer.play(_path, isLocal: true);
+    // https://stackoverflow.com/questions/56044473/how-to-get-bytedata-from-a-file
+    // int _ = await _audioPlayer.playBytes(_audioBytes);
+    Audio.loadFromByteData(ByteData.view(_audioBytes.buffer))
+      ..play()
+      ..dispose();
   }
 }
