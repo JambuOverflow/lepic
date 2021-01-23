@@ -26,6 +26,7 @@ class StudentForm extends StatelessWidget {
       child: ListBody(
         children: <Widget>[
           TextFormField(
+            key: Key("studentFirstName"),
             autofocus: true,
             textInputAction: TextInputAction.next,
             controller: _firstNameController,
@@ -36,6 +37,7 @@ class StudentForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           TextFormField(
+            key: Key("studentLastName"),
             controller: _lastNameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),

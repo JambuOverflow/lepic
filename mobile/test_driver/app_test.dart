@@ -52,27 +52,39 @@ void main() {
       await driver.enterText("9");
       await driver.tap(find.text("Update"));
       expect(await driver.getText(find.byValueKey("1_currentName")), "Class R");
-      expect(await driver.getText(find.byValueKey("1_currentGrade")), "Grade: 9");
+      expect(
+          await driver.getText(find.byValueKey("1_currentGrade")), "Grade: 9");
     });
 
     test("Remove a classroom and check if class counter decreased", () async {
-      await driver.scroll(find.text("Class R"), 500, 0, Duration(milliseconds: 500));
+      await driver.scroll(
+          find.text("Class R"), 500, 0, Duration(milliseconds: 500));
       expect(await driver.getText(find.byValueKey("classCounter")),
           "Total classes:1");
     });
   });
+  group("CRUD Student", () {
+    FlutterDriver driver;
 
-  // group("CRUD class", () {
-  //   FlutterDriver driver;
+    setUpAll(() async {
+      driver = await FlutterDriver.connect();
+    });
 
-  //   setUpAll(() async {
-  //     driver = await FlutterDriver.connect();
-  //   });
+    tearDownAll(() async {
+      if (driver != null) {
+        driver.close();
+      }
+    });
 
-  //   tearDownAll(() async {
-  //     if (driver != null) {
-  //       driver.close();
-  //     }
-  //   });
-  // });
+    test("Create a valid student in a class", () async {
+      await driver.tap(find.text("Class B"));
+      await driver.tap(find.byValueKey("createStudentButton"));
+      await driver.tap(find.byValueKey("studentFirstName"));
+      await driver.enterText("Ronaldo");
+      await driver.tap(find.byValueKey("studentLastName"));
+      await driver.enterText("Azevedo");
+      await driver.tap(find.byValueKey("addStudent"));
+      expect(await driver.getText(find.byValueKey("1_fullName")), "Ronaldo Azevedo");
+    });
+  });
 }

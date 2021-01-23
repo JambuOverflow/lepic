@@ -45,7 +45,9 @@ class StudentItem extends StatelessWidget {
       child: ListTile(
         title: Hero(
           tag: 'firstName_${student.id}',
-          child: Text('${student.firstName} ${student.lastName}'),
+          child: Text('${student.firstName} ${student.lastName}', 
+            key: Key('${student.id}_fullName'),
+          ),
         ),
         trailing: Icon(Icons.arrow_forward_ios),
       ),

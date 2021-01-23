@@ -39,6 +39,7 @@ class _StudentsPageState extends State<StudentsPage> {
         },
       ),
       floatingActionButton: AddToListButton(
+        key: Key("createStudentButton"),
         bloc: _bloc,
         dialog: CreateStudentDialog(),
       ),

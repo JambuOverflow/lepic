@@ -31,6 +31,7 @@ class CreateStudentDialog extends StatelessWidget {
             );
             Navigator.pop(context);
           },
+          key: Key("addStudent"),
           child: Text('Add'),
         ),
       ],
