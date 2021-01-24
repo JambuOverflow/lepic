@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
 class AudioItem extends StatelessWidget {
-  final AudioEntity _audio;
-  AudioItem(this._audio);
+  final AudioBloc _bloc;
+  AudioItem(this._bloc);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Card(
         child: ListTile(
-            title: Hero(
-              tag: 'body_${_audio.localId}',
-              child: Text(
-                _audio.title,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ),
-            trailing: Icon(Icons.arrow_forward_ios)),
+            title: Text('${_bloc.student.firstName} ${_bloc.student.lastName}'),
+            subtitle: Text(_bloc.audio.title),
+            trailing: Icon(Icons.play_arrow_outlined)),
       ),
       // onTap: () => Navigator.of(context).push(
       //   MaterialPageRoute(
