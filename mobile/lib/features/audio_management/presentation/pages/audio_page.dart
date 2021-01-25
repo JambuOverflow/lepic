@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
-
-import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
@@ -18,6 +15,10 @@ class AudioPage extends StatefulWidget {
 
 class _AudioPageState extends State<AudioPage> {
   AudioBloc _bloc;
+  Uint8List _audioBytes;
+  String _path;
+  String _fileName;
+
   @override
   void initState() {
     super.initState();
@@ -25,38 +26,45 @@ class _AudioPageState extends State<AudioPage> {
     _bloc.add(LoadAudioEvent());
   }
 
-  Uint8List _audioBytes;
-  String _path;
+  void _uploadAudio() async {
+    var file =
+        (await FilePicker.platform.pickFiles(type: FileType.audio))?.files[0];
+    _path = file.path;
+    _fileName = file.name;
+    _audioBytes = File(_path).readAsBytesSync();
+    _bloc.add(CreateAudioEvent(audioData: _audioBytes, title: _fileName));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BackgroundAppBar(
-        title: 'Add audio',
+        title: 'Editing Audio',
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.attach_file),
-            tooltip: 'Attach audio',
-            onPressed: () {
-              _uploadAudio();
+          BlocBuilder<AudioBloc, AudioState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: Icon(_bloc.isAudioAttached
+                    ? Icons.delete
+                    : Icons.attach_file_sharp),
+                onPressed: () {
+                  if (_bloc.isAudioAttached) {
+                    _bloc.add(DeleteAudioEvent(audio: _bloc.audio));
+                    Navigator.pop(context);
+                  } else
+                    _uploadAudio();
+                },
+              );
             },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            tooltip: 'Delete record',
-            onPressed: () {},
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Record/Stop Audio',
-        onPressed: () {
-          _playAudio();
-        },
+        child: Icon(Icons.done),
+        onPressed: () => Navigator.pop(context),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(22.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -64,46 +72,24 @@ class _AudioPageState extends State<AudioPage> {
               builder: (context, state) {
                 if (state is AudioLoadInProgress)
                   return CircularProgressIndicator();
-                else if (_bloc.audio == null) {
-                  return Container();
-                } else
-                  return AudioItem(_bloc.audio);
+                else if (_bloc.audio == null)
+                  return ListTile(title: Text('No audio uploaded yet.'));
+                else
+                  return Column(children: [AudioItem(_bloc)]);
               },
               listener: (context, state) {
-                if (state is Error)
+                if (state is Error && _bloc.isAudioAttached)
                   Scaffold.of(context).showSnackBar(
                     SnackBar(content: Text(state.message)),
                   );
               },
             ),
-            Text(
-              _bloc.text.title,
-              style: TextStyle(fontSize: 24.0),
-            ),
+            SizedBox(height: 20),
+            Text(_bloc.text.title, style: TextStyle(fontSize: 24.0)),
             Text(_bloc.text.body),
           ],
         ),
       ),
     );
-  }
-
-  void _uploadAudio() async {
-    try {
-      _path = (await FilePicker.platform.pickFiles(type: FileType.audio))
-          ?.files[0]
-          .path
-          .toString();
-      _audioBytes = File(_path).readAsBytesSync();
-    } on PlatformException catch (e) {
-      print('Unsupported' + e.toString());
-    }
-  }
-
-  void _playAudio() async {
-    // https://stackoverflow.com/questions/56044473/how-to-get-bytedata-from-a-file
-    // int _ = await _audioPlayer.playBytes(_audioBytes);
-    Audio.loadFromByteData(ByteData.view(_audioBytes.buffer))
-      ..play()
-      ..dispose();
   }
 }
