@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/presentation/widgets/cancel_button.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/presentation/bloc/classroom_bloc.dart';
 
-import 'cancel_button.dart';
 import 'classroom_form.dart';
 
 class UpdateClassroomDialog extends StatelessWidget {
