@@ -16,8 +16,7 @@ class AudioPage extends StatefulWidget {
 class _AudioPageState extends State<AudioPage> {
   AudioBloc _bloc;
   Uint8List _audioBytes;
-  String _path;
-  String _fileName;
+  PlatformFile _file;
 
   @override
   void initState() {
@@ -27,12 +26,10 @@ class _AudioPageState extends State<AudioPage> {
   }
 
   void _uploadAudio() async {
-    var file =
+    _file =
         (await FilePicker.platform.pickFiles(type: FileType.audio))?.files[0];
-    _path = file.path;
-    _fileName = file.name;
-    _audioBytes = File(_path).readAsBytesSync();
-    _bloc.add(CreateAudioEvent(audioData: _audioBytes, title: _fileName));
+    _audioBytes = File(_file.path).readAsBytesSync();
+    _bloc.add(CreateAudioEvent(audioData: _audioBytes, title: _file.name));
   }
 
   @override
@@ -75,7 +72,7 @@ class _AudioPageState extends State<AudioPage> {
                 else if (_bloc.audio == null)
                   return ListTile(title: Text('No audio uploaded yet.'));
                 else
-                  return Column(children: [AudioItem(_bloc)]);
+                  return AudioItem(_bloc);
               },
               listener: (context, state) {
                 if (state is Error && _bloc.isAudioAttached)
