@@ -29,11 +29,11 @@ class CorrectionFloatingButtons extends StatelessWidget {
       child: bloc.indexToMistakes[_wordIndex].hasCommentary
           ? Container(
               width: 200,
-              child: buildCommentedIcons(bloc, context),
+              child: buildCommentedIcons(bloc, ancestorContext),
             )
           : Container(
               width: 115,
-              child: buildHighlightIcons(bloc, context),
+              child: buildHighlightIcons(bloc, ancestorContext),
             ),
     );
   }
