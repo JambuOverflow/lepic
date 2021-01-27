@@ -1,10 +1,10 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/utils/add_or_update_audio.dart';
+import 'package:mobile/features/audio_management/presentation/widgets/appbar_icon_builder.dart';
 import 'package:mobile/features/audio_management/presentation/widgets/audio_item.dart';
 
 class AudioPage extends StatefulWidget {
@@ -15,21 +15,12 @@ class AudioPage extends StatefulWidget {
 
 class _AudioPageState extends State<AudioPage> {
   AudioBloc _bloc;
-  Uint8List _audioBytes;
-  PlatformFile _file;
 
   @override
   void initState() {
     super.initState();
     _bloc = BlocProvider.of<AudioBloc>(context);
     _bloc.add(LoadAudioEvent());
-  }
-
-  void _uploadAudio() async {
-    _file =
-        (await FilePicker.platform.pickFiles(type: FileType.audio))?.files[0];
-    _audioBytes = File(_file.path).readAsBytesSync();
-    _bloc.add(CreateAudioEvent(audioData: _audioBytes, title: _file.name));
   }
 
   @override
@@ -40,17 +31,8 @@ class _AudioPageState extends State<AudioPage> {
         actions: <Widget>[
           BlocBuilder<AudioBloc, AudioState>(
             builder: (context, state) {
-              return IconButton(
-                icon: Icon(_bloc.isAudioAttached
-                    ? Icons.delete
-                    : Icons.attach_file_sharp),
-                onPressed: () {
-                  if (_bloc.isAudioAttached) {
-                    _bloc.add(DeleteAudioEvent(audio: _bloc.audio));
-                    Navigator.pop(context);
-                  } else
-                    _uploadAudio();
-                },
+              return AppBarIconBuilder(
+                bloc: _bloc,
               );
             },
           ),
@@ -72,7 +54,7 @@ class _AudioPageState extends State<AudioPage> {
                 else if (_bloc.audio == null)
                   return ListTile(title: Text('No audio uploaded yet.'));
                 else
-                  return AudioItem(_bloc);
+                  return AudioItem(bloc: _bloc);
               },
               listener: (context, state) {
                 if (state is Error && _bloc.isAudioAttached)

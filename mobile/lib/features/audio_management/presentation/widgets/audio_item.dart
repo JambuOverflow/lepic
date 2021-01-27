@@ -3,24 +3,23 @@ import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.da
 import 'package:mobile/features/audio_management/presentation/widgets/update_audio_dialog.dart';
 
 class AudioItem extends StatelessWidget {
-  final AudioBloc _bloc;
-  AudioItem(this._bloc);
+  final AudioBloc bloc;
+  AudioItem({@required this.bloc});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Card(
         child: ListTile(
-          title: Text(_bloc.audio.title),
-          subtitle:
-              Text('${_bloc.student.firstName} ${_bloc.student.lastName}'),
+          title: Text(bloc.audio.title),
+          subtitle: Text('${bloc.student.firstName} ${bloc.student.lastName}'),
           trailing: Icon(Icons.edit),
         ),
       ),
       onTap: () => showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (_) => UpdateAudioDialog(audio: _bloc.audio),
+        builder: (_) => UpdateAudioDialog(bloc: bloc),
       ),
     );
   }

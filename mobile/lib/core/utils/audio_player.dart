@@ -1,10 +1,6 @@
-import 'package:audiofileplayer/audiofileplayer.dart';
-import 'package:flutter/services.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-void _playAudio(_audioBytes) async {
-  Audio.loadFromByteData(ByteData.view(_audioBytes.buffer))
-    ..play()
-    ..dispose();
+void playAudio(audioBytes) async {
+  AudioPlayer audioPlayer = AudioPlayer();
+  int _ = await audioPlayer.playBytes(audioBytes);
 }
-
-// TODO: Implement another audio controllers (pause, forward, etc.), it may need Bloc
