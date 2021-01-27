@@ -1,12 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 import 'package:mobile/features/text_correction/domain/repositories/correction_repository.dart';
 import 'package:mobile/features/text_correction/domain/use_cases/get_correction_from_id_use_case.dart';
-import 'package:mobile/features/text_correction/domain/use_cases/get_correction_use_case.dart';
-import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mockito/mockito.dart';
 
 class MockCorrectionRepository extends Mock implements CorrectionRepository {}
