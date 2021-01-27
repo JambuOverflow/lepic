@@ -32,8 +32,13 @@ abstract class TextLocalDataSource {
 
   /// Updated in cache the [Text] passed.
   ///
-  /// Throws [CacheException] if [Clasroom] is not cached.
+  /// Throws [CacheException] if [Text] is not cached.
   Future<TextModel> updateCachedText(TextModel textModel);
+
+  /// Gets a single text with this local id
+  /// 
+  /// Throws [CacheExpection] if [Text] is not cached
+  Future<TextModel> getTextFromCache(int id);
 }
 
 class TextLocalDataSourceImpl implements TextLocalDataSource {
@@ -94,6 +99,15 @@ class TextLocalDataSourceImpl implements TextLocalDataSource {
     try {
       final tutorId = await userLocalDataSource.getUserId();
       return await this.database.getAllTextsOfUser(tutorId);
+    } on SqliteException {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<TextModel> getTextFromCache(int id) async {
+     try {
+      return await this.database.getText(id);
     } on SqliteException {
       throw CacheException();
     }

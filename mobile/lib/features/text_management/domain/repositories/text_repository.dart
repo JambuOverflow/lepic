@@ -9,5 +9,6 @@ abstract class TextRepository {
   Future<Either<Failure, List<MyText>>> getAllTextsOfUser();
   Future<Either<Failure, List<MyText>>> getTextsOfClassroom(
       Classroom classroom);
+  Future<Either<Failure, MyText>> getText(int id);
   Future<Either<Failure, void>> deleteText(MyText text);
 }

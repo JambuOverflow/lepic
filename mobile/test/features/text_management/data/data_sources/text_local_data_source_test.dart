@@ -130,7 +130,8 @@ Future<void> main() {
 
   group("getText", () {
     test("should correctly return a list of texts", () async {
-      when(mockDatabase.getAllTextsOfUser(1)).thenAnswer((_) async => tTextModels);
+      when(mockDatabase.getAllTextsOfUser(1))
+          .thenAnswer((_) async => tTextModels);
 
       final result = await textLocalDataSourceImpl.getAllUserTextsFromCache();
 
@@ -138,24 +139,23 @@ Future<void> main() {
       final testResult = listEquals(result, tTextModels);
       equals(testResult);
     });
-    
+
     test("should correctly return an empty list", () async {
       when(mockDatabase.getAllTextsOfUser(1)).thenAnswer((_) async => []);
 
-      final result =
-          await textLocalDataSourceImpl.getAllUserTextsFromCache();
+      final result = await textLocalDataSourceImpl.getAllUserTextsFromCache();
 
       verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, []);
       equals(testResult);
     });
-    
+
     test("should throw a CacheException", () async {
-      when(mockDatabase.getAllTextsOfUser(1)).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.getAllTextsOfUser(1))
+          .thenThrow(SqliteException(787, ""));
 
       expect(
-          () async =>
-              await textLocalDataSourceImpl.getAllUserTextsFromCache(),
+          () async => await textLocalDataSourceImpl.getAllUserTextsFromCache(),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
@@ -177,5 +177,26 @@ Future<void> main() {
               await textLocalDataSourceImpl.updateCachedText(tTextModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
+  });
+
+  group("getText", () {
+    test("should correctly get a cached text", () async {
+      when(mockDatabase.getText(1)).thenAnswer((_) async => tTextModel1);
+
+      final result = await textLocalDataSourceImpl.getTextFromCache(1);
+      expect(result, tTextModel1);
+      verify(mockDatabase.getText(1));
+    });
+    
+    test("should throw a cache expection if the update was not completed",
+        () async {
+      when(mockDatabase.getText(1)).thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async =>
+              await textLocalDataSourceImpl.getTextFromCache(1),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+    
   });
 }

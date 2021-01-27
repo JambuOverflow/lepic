@@ -203,16 +203,16 @@ void main() {
 
       expect(result, Right(tTextOutput));
     });
-    /*
+    
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getAllUserTextsFromCache())
+      when(mockLocalDataSource.getTextFromCache(1))
           .thenThrow(CacheException());
 
-      final result = await repository.getAllTextsOfUser();
+      final result = await repository.getText(1);
 
       expect(result, Left(CacheFailure()));
     });
-    */
+    
   });
 }
