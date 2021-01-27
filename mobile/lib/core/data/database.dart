@@ -117,6 +117,18 @@ class Database extends _$Database {
         .get();
   }
 
+  /// Returns a [TextModel]
+  Future<TextModel> getText(int textId) async {
+    var result = await (select(textModels)
+          ..where(
+              (t) => t.localId.equals(textId)))
+        .get();
+    if (result.isEmpty) {
+      throw SqliteException(787, "");
+    }
+    return result[0];
+  }
+
   /// Returns a list of [TextModel]
   Future<List<TextModel>> getAllTextsOfUser(int tutorId) async {
     return (select(textModels)..where((t) => t.tutorId.equals(tutorId))).get();

@@ -169,8 +169,40 @@ void main() {
       final texts = await database.getAllTextsOfUser(1);
       expect(texts, []);
     });
-    
 
+    test("should return a list with one text", () async {
+      await database.insertText(tValidTextCompanion);
+
+      final texts = await database.getAllTextsOfUser(1);
+      expect(texts, [tValidTextModel1]);
+    });
+
+    test("should return a list with two texts", () async {
+      await database.insertText(tValidTextCompanion);
+      await database.insertText(tValidTextCompanion);
+      await database.insertText(tInvalidUserText.toCompanion(true));
+
+      final texts = await database.getAllTextsOfUser(1);
+      expect(texts, [tValidTextModel1, tValidTextModel2]);
+    });
+  });
+
+  group("getText", () {
+    setUp(() async {
+      await database.insertText(tValidTextCompanion);
+    });
+
+    test("should throw an sqliteException", () async {
+      expect(() async => await database.getText(tInvalidTextPk),
+          throwsA(const TypeMatcher<SqliteException>()));
+    });
+
+    test("should return a text", () async {
+      final result = await database.getText(1);
+      expect(result, tValidTextModel1);
+    });
+
+    /*
     test("should return a list with one text", () async {
       await database.insertText(tValidTextCompanion);
 
@@ -187,7 +219,7 @@ void main() {
       final texts = await database.getAllTextsOfUser(1);
       expect(texts, [tValidTextModel1, tValidTextModel2]);
     });
-    
+    */
   });
 
   group("update", () {
