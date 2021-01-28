@@ -1,7 +1,12 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
+import 'package:path_provider/path_provider.dart';
 
 class LocalAudio extends StatefulWidget {
   @override
@@ -9,6 +14,7 @@ class LocalAudio extends StatefulWidget {
 }
 
 class _LocalAudioState extends State<LocalAudio> {
+  final String musicPath = "Music.ogg";
   MyText text = new MyText(
       title: 'titulo', body: 'asdasdasdadsadsadsadadadadas', classId: null);
   bool playing = false;
@@ -19,8 +25,6 @@ class _LocalAudioState extends State<LocalAudio> {
 
   Duration position = new Duration();
   Duration musicLength = new Duration();
-
-  //we will create a custom slider
 
   Widget slider() {
     return Container(
@@ -34,7 +38,6 @@ class _LocalAudioState extends State<LocalAudio> {
     );
   }
 
-  //let's create the seek function that will allow us to go to a certain position of the music
   void seekToSec(int sec) {
     Duration newPos = Duration(seconds: sec);
     _player.seek(newPos);
@@ -59,24 +62,26 @@ class _LocalAudioState extends State<LocalAudio> {
     _player.seek(newPos);
   }
 
-  //Now let's initialize our player
+  playLocal() async {
+    Uint8List byteData = await (await cache.load(musicPath)).readAsBytes();
+    await cache.playBytes(byteData);
+
+    // Uint8List bytes = await (await cache.load('Music.ogg')).readAsBytes();
+    // return bytes;
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _player = AudioPlayer();
     cache = AudioCache(fixedPlayer: _player);
 
-    //now let's handle the audioplayer time
-
-    //this function will allow you to get the music duration
     _player.durationHandler = (d) {
       setState(() {
         musicLength = d;
       });
     };
 
-    //this function will allow us to move the cursor of the slider while we are playing the song
     _player.positionHandler = (p) {
       setState(() {
         position = p;
@@ -87,7 +92,6 @@ class _LocalAudioState extends State<LocalAudio> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //let's start by creating the main UI of the app
       appBar: AppBar(
         title: const Text('Play audio'),
       ),
@@ -102,7 +106,6 @@ class _LocalAudioState extends State<LocalAudio> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //Let's add some text title
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
@@ -123,7 +126,6 @@ class _LocalAudioState extends State<LocalAudio> {
                     ),
                   ),
                 ),
-
                 SizedBox(
                   height: 500.0,
                 ),
@@ -131,18 +133,11 @@ class _LocalAudioState extends State<LocalAudio> {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      /* borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.0),
-                        topRight: Radius.circular(16.0),
-                      ), */
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        //Let's start by adding the controller
-                        //let's add the time indicator text
-
                         Container(
                           width: 500.0,
                           child: Row(
@@ -181,10 +176,8 @@ class _LocalAudioState extends State<LocalAudio> {
                               iconSize: 62.0,
                               color: Colors.blue,
                               onPressed: () {
-                                //here we will add the functionality of the play button
                                 if (!playing) {
-                                  //now let's play the song
-                                  cache.play("Music.ogg");
+                                  playLocal();
                                   setState(() {
                                     playBtn = Icons.pause_circle_filled;
                                     playing = true;
