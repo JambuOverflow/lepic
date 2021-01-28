@@ -481,3 +481,19 @@ class MistakeList(generics.ListCreateAPIView):
             else:
                 raise PermissionDenied("You do not have the permission to create a mistake instance from " +
                                        "a student that you are not the teacher", 'permission_denied')
+
+class MistakeDetail(generics.RetrieveUpdateAPIView):
+    serializer_class = MistakeSerializer
+    permission_classes = [permissions.IsAuthenticated, 
+                          IsTeacherOrReadOnly|IsSupportProfessional]
+    queryset = Mistake.objects.all()
+
+    def get_object(self, **kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, ('local_id', self.kwargs['local_id']))
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    
+    def perform_update(self, serializer):
+        serializer.save(last_update=datetime.now(tz=pytz.utc))
