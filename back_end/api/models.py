@@ -86,3 +86,14 @@ class AudioFile(models.Model):
 
     def __str__(self):
         return f"Title: {self.title}; Path: {self.file}"
+
+class Mistake(models.Model):
+    audio_file = models.ForeignKey(AudioFile, on_delete=models.CASCADE)
+    word_position = models.IntegerField()
+    description = models.CharField(max_length = 200)
+    local_id = models.IntegerField()
+    deleted = models.BooleanField(default=0)
+    last_update = models.DateTimeField()
+
+    def __str__(self):
+        return f"Audio File ID: {self.audio_file}; Misspelled word position: {self.word_position}; Description: {self.description}"
