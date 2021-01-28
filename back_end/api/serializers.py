@@ -65,9 +65,9 @@ class AudioFileSerializer(serializers.ModelSerializer):
                   'deleted', 'last_update']
 
 class MistakeSerializer(serializers.ModelSerializer):
-    last_update = serializers.ReadOnlyField
+    last_update = serializers.ReadOnlyField()
 
     class Meta:
         model = Mistake
         fields = ['id', 'audio_file', 'word_index', 'commentary', 'local_id',
-                    'deleted', 'last_updated']
+                    'deleted', 'last_update']
