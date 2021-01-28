@@ -17,7 +17,7 @@ from .serializers import ClassSerializer, UserSerializer, TextSerializer, Studen
     SchoolSerializer, MistakeSerializer
 from .models import Text, Class, User, Student, AudioFile, School, Mistake
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, \
-    IsCreator, IsTeacher, IsSupportProfessional
+    IsCreator, IsTeacher, IsSupportProfessional, IsTeacherOrReadOnlyMistake
 from .utils import EmailThread
 from django.shortcuts import get_object_or_404
 from datetime import datetime
@@ -485,7 +485,7 @@ class MistakeList(generics.ListCreateAPIView):
 class MistakeDetail(generics.RetrieveUpdateAPIView):
     serializer_class = MistakeSerializer
     permission_classes = [permissions.IsAuthenticated, 
-                          IsTeacherOrReadOnly|IsSupportProfessional]
+                          IsTeacherOrReadOnlyMistake|IsSupportProfessional]
     queryset = Mistake.objects.all()
 
     def get_object(self, **kwargs):
