@@ -34,7 +34,7 @@ class TestCRUDMistake(APITestCase):
 
         self.url_create_mistake = reverse('create-list-mistake')
         self.url_create_audio = reverse('upload-file')
-        #self.url_update_delete_audio = reverse('update-delete-file', kwargs={'local_id': 1})
+        self.url_update_mistake = reverse('update-mistake', kwargs={'local_id': 1})
         
         self.mistake_data = [{
             'audio_file': 1,
@@ -51,13 +51,13 @@ class TestCRUDMistake(APITestCase):
             'local_id': 1
         }
 
-        '''self.audio_file_data_2 = {
-            'title': 'Test audio 2',
-            'student': 1,
-            'text': 1,
-            'file': audio_2,
-            'local_id': 2
-        }'''
+        self.mistake_update = {
+            'audio_file': 1,
+            'word_index': 34,
+            'commentary': 'another commentary',
+            'local_id': 0,
+            'deleted': 0
+        }
     
     def test_get_mistake(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
@@ -75,4 +75,19 @@ class TestCRUDMistake(APITestCase):
         self.client.post(self.url_create_audio, self.audio_file_data, format='multipart')
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token_2))
         response = self.client.post(self.url_create_mistake, self.mistake_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_update_mistake(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
+        self.client.post(self.url_create_audio, self.audio_file_data, format='multipart')
+        self.client.post(self.url_create_mistake, self.mistake_data, format='json')
+        response = self.client.put(self.url_update_mistake, self.mistake_update, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_update_mistake_from_another_teacher(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
+        self.client.post(self.url_create_audio, self.audio_file_data, format='multipart')
+        self.client.post(self.url_create_mistake, self.mistake_data, format='json')
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token_2))
+        response = self.client.put(self.url_update_mistake, self.mistake_update, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
