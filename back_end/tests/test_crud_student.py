@@ -49,7 +49,6 @@ class TestCRUDStudent(APITestCase):
     def test_create_students(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
         response = self.client.post(self.student_url_list_create, self.student_data, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_student_from_another_class(self):
@@ -75,7 +74,6 @@ class TestCRUDStudent(APITestCase):
     def test_update_students_from_another_class(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token_2))
         response = self.client.put(self.student_url_update_delete, self.student_update_data, format='json')
-        print(response.data)
         student_original_first_name = Student.objects.filter(id=1).values_list('first_name', flat=True)[0]
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['detail'], "You do not have permission to perform this action.")
