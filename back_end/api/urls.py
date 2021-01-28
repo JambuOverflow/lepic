@@ -18,6 +18,7 @@ urlpatterns = [
   path('audio-file/', views.AudioFileList.as_view(), name='upload-file'),
   path('audio-file/<int:local_id>', views.AudioFileDetail.as_view(), name='update-delete-file'),
   path('mistake/', views.MistakeList.as_view(), name='create-list-mistake'),
+  path('mistake/<int:local_id>', views.MistakeDetail.as_view(), name='update-mistake'),
   path('verification/<str:uidb64>/<str:token>', views.EmailVerification.as_view(), name='email-verification'),
   path('forgot-my-password/', views.ForgotMyPassword.as_view(), name='request-reset-password'),
   path('forgot-my-password/<str:uidb64>/<str:token>/', views.ResetPassword.as_view(), name='reset-password')
