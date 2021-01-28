@@ -28,6 +28,7 @@ class TestCRUDMistake(APITestCase):
                             _class=_class, local_id=0, last_update=datetime.now(tz=pytz.utc))
 
         audio = open(Path(__file__).absolute().parent.parent / 'test_files/bensound-jazzyfrenchy.mp3', 'rb')
+        #audio_2 = open(Path(__file__).absolute().parent.parent / 'test_files/test-audiofile2.mp3', 'rb')
         #AudioFile.objects.create(title="Audio Test", text=text, student=student, file=audio_file, local_id=1, last_update=datetime.now(tz=pytz.utc))
 
 
@@ -50,11 +51,11 @@ class TestCRUDMistake(APITestCase):
             'local_id': 1
         }
 
-        '''self.audio_file_data_update = {
+        '''self.audio_file_data_2 = {
             'title': 'Test audio 2',
             'student': 1,
             'text': 1,
-            'file': self.test_audio_file_2,
+            'file': audio_2,
             'local_id': 2
         }'''
     
@@ -68,3 +69,10 @@ class TestCRUDMistake(APITestCase):
         self.client.post(self.url_create_audio, self.audio_file_data, format='multipart')
         response = self.client.post(self.url_create_mistake, self.mistake_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_mistake_from_another_teacher(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token))
+        self.client.post(self.url_create_audio, self.audio_file_data, format='multipart')
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(self.token_2))
+        response = self.client.post(self.url_create_mistake, self.mistake_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
