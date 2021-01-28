@@ -14,8 +14,8 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .serializers import ClassSerializer, UserSerializer, TextSerializer, StudentSerializer, AudioFileSerializer, \
-    SchoolSerializer
-from .models import Text, Class, User, Student, AudioFile, School
+    SchoolSerializer, MistakeSerializer
+from .models import Text, Class, User, Student, AudioFile, School, Mistake
 from .permissions import IsClassTutor, IsOwner, IsTeacherOrReadOnly, IsTextCreator, IsTeacherOrReadOnlyAudioFile, \
     IsCreator, IsTeacher, IsSupportProfessional
 from .utils import EmailThread
@@ -447,3 +447,37 @@ class AudioFileDetail(generics.RetrieveUpdateDestroyAPIView):
     
     def perform_update(self, serializer):
         serializer.save(last_update=datetime.now(tz=pytz.utc))
+
+class MistakeList(generics.ListCreateAPIView):
+    serializer_class = MistakeSerializer
+    permission_classes = [permissions.IsAuthenticated, 
+                          IsTeacher|IsSupportProfessional]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+    def get_queryset(self):
+        classes = Class.objects.filter(tutor=self.request.user.id)
+        students = Student.objects.filter(_class__in=classes)
+        audios = AudioFile.objects.filter(student__in=students)
+        last_sync = self.request.query_params.get('last_sync')
+        if last_sync:
+            return Mistake.objects.filter(audio_file__in=audios, last_update__gte=last_sync)
+        return Mistake.objects.filter(audio_file__in=audios)
+
+
+    def perform_create(self, serializer):
+        for mistake in self.request.data:
+            audio = AudioFile.objects.get(pk=mistake['audio_file'])
+            student = Student.objects.get(pk=audio.student.id)
+            class_tutor = Class.objects.filter(id=student._class.id).values_list('tutor', flat=True)
+            if(self.request.user.id in class_tutor):
+                serializer.save(last_update=datetime.now(tz=pytz.utc))
+            else:
+                raise PermissionDenied("You do not have the permission to create a mistake instance from " +
+                                       "a student that you are not the teacher", 'permission_denied')
