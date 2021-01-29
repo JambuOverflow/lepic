@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:mobile/features/audio_management/domain/entities/audio.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/utils/add_or_update_audio.dart';
 
 class AudioForm extends StatelessWidget {
   final TextEditingController titleController;
-  final AudioEntity audio;
+  final AudioBloc bloc;
 
   const AudioForm({
     Key key,
     @required this.titleController,
-    @required this.audio,
+    @required this.bloc,
   }) : super(key: key);
 
   @override
@@ -26,12 +26,12 @@ class AudioForm extends StatelessWidget {
           ),
           SizedBox(height: 16),
           ListTile(
-            title: Text(audio.title),
+            title: Text(bloc.audio.title),
             trailing: Icon(
               Icons.edit,
               size: 22,
             ),
-            onTap: () => print('Upload new audio'),
+            onTap: () => addOrUpdateAudio(bloc),
           ),
         ],
       ),
