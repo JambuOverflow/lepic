@@ -449,6 +449,12 @@ class AudioFileDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer.save(last_update=datetime.now(tz=pytz.utc))
 
 class MistakeList(generics.ListCreateAPIView):
+    """
+    List words misspelled by the students of authenticated user or 
+    create a new mistake instance.
+    For last_sync GET use /api/mistakes/?last_sync=[TIME]
+    EX: GET or POST or PATCH /api/mistakes/
+    """
     serializer_class = MistakeSerializer
     permission_classes = [permissions.IsAuthenticated, 
                           IsTeacher|IsSupportProfessional]
@@ -483,6 +489,10 @@ class MistakeList(generics.ListCreateAPIView):
                                        "a student that you are not the teacher", 'permission_denied')
 
 class MistakeDetail(generics.RetrieveUpdateAPIView):
+    """
+    Retrieve or update a mistake instance of a stundent of an authenticated user.
+    EX: GET or PUT or PATCH /api/mistakes/<int:local_id>/
+    """
     serializer_class = MistakeSerializer
     permission_classes = [permissions.IsAuthenticated, 
                           IsTeacherOrReadOnlyMistake|IsSupportProfessional]
