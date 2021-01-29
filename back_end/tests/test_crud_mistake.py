@@ -32,9 +32,9 @@ class TestCRUDMistake(APITestCase):
         #AudioFile.objects.create(title="Audio Test", text=text, student=student, file=audio_file, local_id=1, last_update=datetime.now(tz=pytz.utc))
 
 
-        self.url_create_mistake = reverse('create-list-mistake')
-        self.url_create_audio = reverse('upload-file')
-        self.url_update_mistake = reverse('update-mistake', kwargs={'local_id': 1})
+        self.url_create_mistake = reverse('create-list-mistakes')
+        self.url_update_mistake = reverse('update-mistakes', kwargs={'local_id': 1})
+        self.url_create_audio = reverse('upload-files')
         
         self.mistake_data = [{
             'audio_file': 1,
