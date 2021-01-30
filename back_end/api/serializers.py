@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db import IntegrityError
-from .models import Class, User, School, Text, Student, AudioFile
+from .models import Class, User, School, Text, Student, AudioFile, Mistake
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -63,3 +63,11 @@ class AudioFileSerializer(serializers.ModelSerializer):
         model = AudioFile
         fields = ['id', 'title', 'file', 'student', 'text', 'local_id', 
                   'deleted', 'last_update']
+
+class MistakeSerializer(serializers.ModelSerializer):
+    last_update = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Mistake
+        fields = ['id', 'audio_file', 'word_index', 'commentary', 'local_id',
+                    'deleted', 'last_update']
