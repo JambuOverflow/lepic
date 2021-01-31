@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/audio_params.dart';
@@ -20,33 +21,40 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
 
   @override
   Future<Either<Failure, double>> call(AudioParams params) async {
-    final output = await getTextUseCase(params.audio.textId);
-    int number_words;
-    if (output.isRight()) {
-      final MyText text = output.getOrElse(() => null);
-      number_words = text.numberOfWords;
+    try {
+      final int numberOfwords = await _getNumberOfWords(params);
+      final int numberMistakes = await _getNumberOfMistakes(params);
+      final Duration audioDuration = params.audio.audioDuration;
+
+      return Right((numberOfwords - numberMistakes) / audioDuration.inMinutes);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
     }
+  }
 
+  Future<int> _getNumberOfMistakes(AudioParams params) async {
     final int studentId = params.audio.studentId;
-    final int textId = params.audio.textId;
-
+      final int textId = params.audio.textId;
     final CorrectionIdParams correctionIdParams = CorrectionIdParams(
       textId: textId,
       studentId: studentId,
     );
     final correctionOutput =
         await getCorrectionFromIdUseCase(correctionIdParams);
-    Correction correction;
-    if (correctionOutput.isRight()) {
-      correction = correctionOutput.getOrElse(() => null);
-    }
 
-    final int numberMistakes = correction.numberOfMistakes;
+    return correctionOutput.fold((l) {
+      throw CacheException();
+    }, (r) {
+      return r.numberOfMistakes;
+    });
+  }
 
-    final Duration audioDuration = params.audio.audioDuration;
-
-    final double result =
-        (number_words - numberMistakes) / audioDuration.inMinutes;
-    return Right(result);
+  Future<int> _getNumberOfWords(AudioParams params) async {
+    final textEither = await getTextUseCase(params.audio.textId);
+    return textEither.fold((l) {
+      throw CacheException();
+    }, (r) {
+      return r.numberOfWords;
+    });
   }
 }
