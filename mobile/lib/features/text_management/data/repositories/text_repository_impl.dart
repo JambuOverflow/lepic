@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 
@@ -83,7 +83,8 @@ class TextRepositoryImpl implements TextRepository {
       var listTextModel =
           await localDataSource.getTextsFromCacheOfClassroom(classroomModel);
       var listTextEntity = [
-        for (var model in listTextModel) textEntityModelConverter.mytextModelToEntity(model)
+        for (var model in listTextModel)
+          textEntityModelConverter.mytextModelToEntity(model)
       ];
       return Right(listTextEntity);
     } on CacheException {
@@ -96,9 +97,21 @@ class TextRepositoryImpl implements TextRepository {
     try {
       var listTextModel = await localDataSource.getAllUserTextsFromCache();
       var listTextEntity = [
-        for (var model in listTextModel) textEntityModelConverter.mytextModelToEntity(model)
+        for (var model in listTextModel)
+          textEntityModelConverter.mytextModelToEntity(model)
       ];
       return Right(listTextEntity);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, MyText>> getText(int id) async {
+    try {
+      final TextModel textModel = await localDataSource.getTextFromCache(id);
+      final MyText textEntity = textEntityModelConverter.mytextModelToEntity(textModel);
+      return Right(textEntity);
     } on CacheException {
       return Left(CacheFailure());
     }

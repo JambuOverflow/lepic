@@ -14,6 +14,16 @@ abstract class MistakeLocalDataSource {
     TextModel textModel,
   });
 
+  /// Gets the cached list of [Mistake] of a specific correctiion (student and text).
+  ///
+  /// Returns an empty list if no [Mistake] is cache.
+  ///
+  /// Throws [CacheException] if something wrong happens.
+  Future<List<MistakeModel>> getCorrectionMistakesFromCacheUsingId({
+    int studentId,
+    int textId,
+  });
+
   /// Deletes all the [Mistake] from a specific collection.
   ///
   /// Throws [CacheException] if the [Collection] is not cached.
@@ -63,6 +73,18 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
       {StudentModel studentModel, TextModel textModel}) async {
     final int studentId = studentModel.localId;
     final int textId = textModel.localId;
+    try {
+      return await this.database.getMistakesOfCorrection(
+            textPk: textId,
+            studentPk: studentId,
+          );
+    } on SqliteException {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<List<MistakeModel>> getCorrectionMistakesFromCacheUsingId({int studentId, int textId}) async {
     try {
       return await this.database.getMistakesOfCorrection(
             textPk: textId,

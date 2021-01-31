@@ -96,4 +96,18 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
       return Right(r);
     });
   }
+
+  @override
+  Future<Either<Failure, Correction>> getCorrectionFromId({int textId, int studentId}) async {
+    try {
+      final List<MistakeModel> mistakes = await localDataSource
+          .getCorrectionMistakesFromCacheUsingId(studentId: studentId, textId: textId);
+
+      final Correction correction =
+          this.mistakeEntityModelConverter.modelToEntity(mistakes);
+      return Right(correction);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
 }

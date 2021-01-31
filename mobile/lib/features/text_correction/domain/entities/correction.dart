@@ -13,6 +13,10 @@ class Correction extends Equatable {
     @required this.mistakes,
   });
 
+  int get numberOfMistakes {
+    return mistakes.length;
+  }
+
   @override
   List<Object> get props => [textId, studentId, mistakes];
 }

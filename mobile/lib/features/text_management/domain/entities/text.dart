@@ -13,6 +13,10 @@ class MyText extends Equatable {
       this.localId,
       @required this.classId});
 
+  int get numberOfWords {
+    return body.split(" ").length;
+  }
+
   @override
   List<Object> get props => [title, body, localId, classId];
 }
