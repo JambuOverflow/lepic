@@ -23,7 +23,9 @@ class TextEditingPage extends StatelessWidget {
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
 
     return Scaffold(
-      appBar: BackgroundAppBar(title: 'Editing Text'),
+      appBar: BackgroundAppBar(
+        title: textToEdit == null ? 'Assign New Text' : 'Editing Text',
+      ),
       floatingActionButton: DoneFloatingActionButton(
         onPressed: () {
           _addOrUpdateText(context);
