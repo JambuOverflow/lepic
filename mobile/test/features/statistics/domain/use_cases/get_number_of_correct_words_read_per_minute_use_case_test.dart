@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/audio_params.dart';
 import 'package:mobile/features/statistics/domain/use_cases/get_number_of_correct_words_read_per_minute_use_case.dart';
-import 'package:mobile/features/statistics/domain/use_cases/get_number_of_mistaken_words_use_case.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 import 'package:mobile/features/text_correction/domain/use_cases/correction_params.dart';
@@ -16,8 +15,7 @@ import 'package:mockito/mockito.dart';
 
 class MockGetTextUseCase extends Mock implements GetTextUseCase {}
 
-class MockGetNumberOfMistakenWordsUseCase extends Mock
-    implements GetNumberOfMistakenWordsUseCase {}
+
 
 class MockGetCorrectionFromIdUseCase extends Mock
     implements GetCorrectionFromIdUseCase {}
@@ -25,16 +23,13 @@ class MockGetCorrectionFromIdUseCase extends Mock
 void main() {
   GetNumberOfCorrectWordsReadPerMinuteUseCase useCase;
   MockGetTextUseCase mockGetTextUseCase;
-  MockGetNumberOfMistakenWordsUseCase mockGetNumberOfMistakenWordsUseCase;
   MockGetCorrectionFromIdUseCase mockGetCorrectionFromIdUseCase;
 
   setUp(() {
     mockGetTextUseCase = MockGetTextUseCase();
-    mockGetNumberOfMistakenWordsUseCase = MockGetNumberOfMistakenWordsUseCase();
     mockGetCorrectionFromIdUseCase = MockGetCorrectionFromIdUseCase();
     useCase = GetNumberOfCorrectWordsReadPerMinuteUseCase(
         getTextUseCase: mockGetTextUseCase,
-        getNumberOfMistakenWordsUseCase: mockGetNumberOfMistakenWordsUseCase,
         getCorrectionFromIdUseCase: mockGetCorrectionFromIdUseCase);
   });
 
@@ -62,9 +57,6 @@ void main() {
   test('should return the number of correct words per minute', () async {
 
     when(mockGetTextUseCase.call(1)).thenAnswer((_) async => Right(tText));
-    when(mockGetNumberOfMistakenWordsUseCase
-            .call(CorrectionParams(correction: tCorrection)))
-        .thenAnswer((_) async => Right(1));
     when(mockGetCorrectionFromIdUseCase
             .call(CorrectionIdParams(textId: 1, studentId: 1)))
         .thenAnswer((_) async => Right(tCorrection));

@@ -3,9 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/audio_params.dart';
-import 'package:mobile/features/statistics/domain/use_cases/get_number_of_mistaken_words_use_case.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
-import 'package:mobile/features/text_correction/domain/use_cases/correction_params.dart';
 import 'package:mobile/features/text_correction/domain/use_cases/get_correction_from_id_use_case.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/get_text_use_case.dart';
@@ -13,12 +11,10 @@ import 'package:mobile/features/text_management/domain/use_cases/get_text_use_ca
 class GetNumberOfCorrectWordsReadPerMinuteUseCase
     implements UseCase<double, AudioParams> {
   final GetTextUseCase getTextUseCase;
-  final GetNumberOfMistakenWordsUseCase getNumberOfMistakenWordsUseCase;
   final GetCorrectionFromIdUseCase getCorrectionFromIdUseCase;
 
   GetNumberOfCorrectWordsReadPerMinuteUseCase({
     @required this.getTextUseCase,
-    @required this.getNumberOfMistakenWordsUseCase,
     @required this.getCorrectionFromIdUseCase,
   });
 
@@ -45,17 +41,13 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
       correction = correctionOutput.getOrElse(() => null);
     }
 
-    final mistakenOutput = await getNumberOfMistakenWordsUseCase(
-        CorrectionParams(correction: correction));
-    int numberMistakenWords;
-    if (mistakenOutput.isRight()) {
-      numberMistakenWords = mistakenOutput.getOrElse(() => null);
-    }
+    final int numberMistakes  = correction.numberOfMistakes;
+    
 
     final Duration audioDuration = params.audio.audioDuration;
 
     final double result =
-        (number_words - numberMistakenWords) / audioDuration.inMinutes;
+        (number_words - numberMistakes) / audioDuration.inMinutes;
     return Right(result);
   }
 }
