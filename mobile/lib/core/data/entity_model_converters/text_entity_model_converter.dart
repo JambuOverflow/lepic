@@ -14,20 +14,18 @@ class TextEntityModelConverter {
       localId: model.localId,
       title: model.title,
       body: model.body,
-      classId: model.classId,
+      studentId: model.studentId,
     );
   }
 
   Future<TextModel> mytextEntityToModel(MyText entity) async {
-
     final int userId = await userLocalDataSource.getUserId();
 
     return TextModel(
-      localId: entity.localId,
-      body: entity.body,
-      title: entity.title,
-      classId: entity.classId,
-      tutorId: userId
-    );
+        localId: entity.localId,
+        body: entity.body,
+        title: entity.title,
+        studentId: entity.studentId,
+        tutorId: userId);
   }
 }
