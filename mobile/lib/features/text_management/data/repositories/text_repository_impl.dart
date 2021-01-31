@@ -106,4 +106,15 @@ class TextRepositoryImpl implements TextRepository {
       return Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, MyText>> getText(int id) async {
+    try {
+      final TextModel textModel = await localDataSource.getTextFromCache(id);
+      final MyText textEntity = textEntityModelConverter.mytextModelToEntity(textModel);
+      return Right(textEntity);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
 }

@@ -294,4 +294,45 @@ void main() {
       verifyNoMoreInteractions(mockLocalDataSource);
     });
   });
+
+  group('getCorrectionsFromId', () {
+    test('should return a list of corrections when getCorrections is called',
+        () async {
+      when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: 1, textId: 1))
+          .thenAnswer((_) async => tMistakeModelsOutput);
+      when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
+
+      final result =
+          await repository.getCorrectionFromId(studentId: 1, textId: 1);
+
+      verifyInOrder([
+        mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: 1, textId: 1),
+        
+      ]);
+      expect(result, Right(tCorrectionOutput));
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+
+    
+    test('should return a CacheFailure when a CacheException is throw',
+        () async {
+      when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: 1, textId: 1)).thenThrow(CacheException());
+
+      final result =
+          await repository.getCorrectionFromId(studentId: 1, textId: 1);
+
+      verifyInOrder([
+        mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId:1, textId: 1),
+        
+      ]);
+      expect(result, Left(CacheFailure()));
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+    
+    
+  });
 }

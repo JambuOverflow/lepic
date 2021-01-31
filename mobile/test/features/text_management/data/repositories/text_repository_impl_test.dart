@@ -42,6 +42,8 @@ void main() {
     tutorId: 1,
   );
 
+  final tTextOutput = MyText(title: "a", body: "b", classId: 1, localId: 1);
+
   final tTextModelOutput = tTextModelInput.copyWith(localId: 1);
 
   final tTextsModels = [tTextModelInput, tTextModelInput];
@@ -89,7 +91,7 @@ void main() {
       final result = await repository.createText(tText);
 
       verify(mockLocalDataSource.cacheNewText(tTextModelInput));
-      expect(result, Right(tText));
+      expect(result, Right(tTextOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
   });
@@ -128,7 +130,7 @@ void main() {
       final result = await repository.updateText(tText);
 
       verify(mockLocalDataSource.updateCachedText(tTextModelInput));
-      expect(result, Right(tText));
+      expect(result, Right(tTextOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
 
@@ -190,5 +192,27 @@ void main() {
 
       expect(result, Left(CacheFailure()));
     });
+  });
+
+  group('getText', () {
+    test('should return a text when getText is called', () async {
+      when(mockLocalDataSource.getTextFromCache(1))
+          .thenAnswer((_) async => tTextModelOutput);
+
+      final result = await repository.getText(1);
+
+      expect(result, Right(tTextOutput));
+    });
+    
+    test('should return a CacheFailure when a CacheException is throw',
+        () async {
+      when(mockLocalDataSource.getTextFromCache(1))
+          .thenThrow(CacheException());
+
+      final result = await repository.getText(1);
+
+      expect(result, Left(CacheFailure()));
+    });
+    
   });
 }

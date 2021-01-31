@@ -185,4 +185,25 @@ Future<void> main() {
           throwsA(TypeMatcher<CacheException>()));
     });
   });
+
+  group("getText", () {
+    test("should correctly get a cached text", () async {
+      when(mockDatabase.getText(1)).thenAnswer((_) async => tTextModel1);
+
+      final result = await textLocalDataSourceImpl.getTextFromCache(1);
+      expect(result, tTextModel1);
+      verify(mockDatabase.getText(1));
+    });
+    
+    test("should throw a cache expection if the update was not completed",
+        () async {
+      when(mockDatabase.getText(1)).thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async =>
+              await textLocalDataSourceImpl.getTextFromCache(1),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+    
+  });
 }
