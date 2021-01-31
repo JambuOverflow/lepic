@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  expand_widget: ^1.1.0+1
+  align_positioned: ^1.2.14
+  
   # Value Equality
   equatable: ^1.2.5
 

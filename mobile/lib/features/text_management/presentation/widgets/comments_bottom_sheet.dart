@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/text_management/presentation/utils/word_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_correction/presentation/bloc/correction_bloc.dart';
 
 class CommentsBottomSheet extends StatelessWidget {
-  final String _word;
-  final WordSection _section;
+  final int _wordIndex;
+  final commentaryController = TextEditingController();
 
-  const CommentsBottomSheet({
+  CommentsBottomSheet({
     Key key,
-    @required String wordToComment,
-    @required WordSection section,
-  })  : _word = wordToComment,
-        _section = section,
+    @required int wordIndex,
+  })  : _wordIndex = wordIndex,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<CorrectionBloc>(context);
+    commentaryController.text = bloc.indexToMistakes[_wordIndex]?.commentary;
+
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.only(
@@ -24,10 +26,10 @@ class CommentsBottomSheet extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Column(
             children: [
-              buildWordAndDeleteRow(context),
+              buildWordAndDeleteRow(context, bloc),
               buildCommentField(),
               SizedBox(height: 16),
-              buildBottomButtons(context),
+              buildBottomButtons(context, bloc),
             ],
           ),
         ),
@@ -35,8 +37,10 @@ class CommentsBottomSheet extends StatelessWidget {
     );
   }
 
-  TextField buildCommentField() {
+  buildCommentField() {
     return TextField(
+      controller: commentaryController,
+      autofocus: commentaryController.text == '',
       decoration: InputDecoration(hintText: 'Comment'),
       keyboardType: TextInputType.multiline,
       minLines: 1,
@@ -44,13 +48,13 @@ class CommentsBottomSheet extends StatelessWidget {
     );
   }
 
-  Row buildWordAndDeleteRow(BuildContext context) {
+  Row buildWordAndDeleteRow(BuildContext context, CorrectionBloc bloc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
           child: Text(
-            _word,
+            bloc.indexToWord[_wordIndex],
             style: TextStyle(fontSize: 22, color: Colors.blue[900]),
           ),
         ),
@@ -59,26 +63,34 @@ class CommentsBottomSheet extends StatelessWidget {
             Icons.delete,
             color: Theme.of(context).accentColor,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            bloc.add(RemoveMistakeEvent(wordIndex: _wordIndex));
+            Navigator.pop(context);
+          },
         ),
       ],
     );
   }
 
-  Row buildBottomButtons(BuildContext context) {
+  Row buildBottomButtons(BuildContext context, CorrectionBloc bloc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FlatButton(
           child: Text('CANCEL'),
-          onPressed: () {
-            _section.hasComment = false;
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         FlatButton(
           child: Text('OK'),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            if (commentaryController.text.isNotEmpty)
+              bloc.add(CommentEvent(
+                wordIndex: _wordIndex,
+                commentary: commentaryController.text,
+              ));
+
+            Navigator.pop(context);
+          },
         ),
       ],
     );
