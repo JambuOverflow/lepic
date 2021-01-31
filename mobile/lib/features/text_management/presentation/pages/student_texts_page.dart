@@ -6,14 +6,14 @@ import '../bloc/text_bloc.dart';
 import '../widgets/text_item.dart';
 import 'text_editing_page.dart';
 
-class ClassroomTextsPage extends StatefulWidget {
-  ClassroomTextsPage({Key key}) : super(key: key);
+class StudentTextsPage extends StatefulWidget {
+  StudentTextsPage({Key key}) : super(key: key);
 
   @override
-  _ClassroomTextsPageState createState() => _ClassroomTextsPageState();
+  _StudentTextsPageState createState() => _StudentTextsPageState();
 }
 
-class _ClassroomTextsPageState extends State<ClassroomTextsPage> {
+class _StudentTextsPageState extends State<StudentTextsPage> {
   @override
   void initState() {
     super.initState();
@@ -42,7 +42,7 @@ class _ClassroomTextsPageState extends State<ClassroomTextsPage> {
                 },
               );
           } else
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
         },
         listener: (context, state) {
           if (state is Error)
