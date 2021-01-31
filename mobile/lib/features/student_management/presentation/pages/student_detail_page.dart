@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:mobile/features/text_management/presentation/pages/student_detail_overview_tab.dart';
 
-import '../widgets/update_student_dialog.dart';
+import '../../../text_management/presentation/bloc/text_bloc.dart';
+import '../../../text_management/presentation/pages/student_texts_page.dart';
 import '../bloc/student_bloc.dart';
 import '../widgets/student_detail_popup_menu_button.dart';
-import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
+import '../../../../core/presentation/widgets/flight_shuttle_builder.dart';
 
 class StudentDetailPage extends StatelessWidget {
   final int studentIndex;
@@ -17,30 +20,54 @@ class StudentDetailPage extends StatelessWidget {
 
     return BlocBuilder<StudentBloc, StudentState>(builder: (context, state) {
       final student = bloc.students[studentIndex];
+
       return Scaffold(
-        appBar: AppBar(
-          title: Hero(
-            tag: 'firstName_${student.id}',
-            child: Text('${student.firstName} ${student.lastName}'),
-            flightShuttleBuilder: flightShuttleBuilder,
-          ),
-          actions: <Widget>[StudentDetailPopupMenuButton(student: student)],
-        ),
-        floatingActionButton: FloatingActionButton(
-          elevation: 10,
-          child: Icon(Icons.edit),
-          onPressed: () => showDialog(
-            context: context,
-            builder: (_) => BlocProvider.value(
-              value: BlocProvider.of<StudentBloc>(context),
-              child: UpdateStudentDialog(student: student),
+        body: DefaultTabController(
+          length: 3,
+          child: NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  title: Hero(
+                    tag: 'firstName_${student.id}',
+                    child: Text('${student.firstName} ${student.lastName}'),
+                    flightShuttleBuilder: flightShuttleBuilder,
+                  ),
+                  actions: <Widget>[
+                    StudentDetailPopupMenuButton(student: student)
+                  ],
+                  pinned: true,
+                  floating: true,
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                    indicatorPadding: EdgeInsets.only(bottom: 2),
+                    indicatorColor: Colors.white,
+                    tabs: [
+                      Tab(text: 'OVERVIEW'),
+                      Tab(text: 'TEXTS'),
+                      Tab(text: 'STATISTICS'),
+                    ],
+                  ),
+                ),
+              ];
+            },
+            body: BlocProvider<TextBloc>(
+              create: (context) => GetIt.instance<TextBloc>(param1: student),
+              child: TabBarView(
+                children: <Widget>[
+                  StudentDetailOverviewTab(),
+                  StudentTextsPage(),
+                  Scaffold(),
+                ],
+              ),
             ),
           ),
         ),
-        body: Container(
-          padding: EdgeInsets.all(8.0),
-          child: Center(child: Text('Nothing to show here for now...')),
-        ),
+        // body: BlocProvider(
+        //   create: (_) => GetIt.instance.get<TextBloc>(param1: student),
+        //   child: StudentTextsPage(),
+        // ),
       );
     });
   }
