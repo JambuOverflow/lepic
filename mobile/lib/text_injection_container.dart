@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:mobile/core/data/entity_model_converters/student_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
@@ -44,5 +45,8 @@ void init() {
     ),
   );
 
-  sl.registerFactory(() => TextEntityModelConverter(userLocalDataSource: sl()));
+  sl.registerLazySingleton(() => StudentEntityModelConverter());
+  sl.registerLazySingleton(
+    () => TextEntityModelConverter(userLocalDataSource: sl()),
+  );
 }
