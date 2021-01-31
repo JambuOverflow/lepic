@@ -3,13 +3,12 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
+import 'package:mobile/features/student_management/domain/entities/student.dart';
+import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/use_cases/create_text_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/delete_text_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
-import 'package:mobile/features/text_management/domain/use_cases/get_texts_of_classroom_use_case.dart';
+import 'package:mobile/features/text_management/domain/use_cases/get_student_texts_use_case.dart';
 import 'package:mobile/features/text_management/domain/use_cases/update_text_use_case.dart';
 import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'package:mockito/mockito.dart';
@@ -20,7 +19,7 @@ class MockUpdateTextEventUseCase extends Mock implements UpdateTextUseCase {}
 
 class MockDeleteTextEventUseCase extends Mock implements DeleteTextUseCase {}
 
-class MockGetTextEventUseCase extends Mock implements GetTextsOfClassroomUseCase {}
+class MockGetTextEventUseCase extends Mock implements GetStudentTextsUseCase {}
 
 void main() {
   TextBloc bloc;
@@ -33,16 +32,12 @@ void main() {
     title: 'Title',
     body: 'lsfnlefnmsldkcnsdlivnir siicjsidcjsidj ifsdvjspijcekmdkcsie',
     localId: 001,
-    classId: 010,
+    studentId: 010,
   );
 
   final tTextList = <MyText>[tText];
 
-  final tClassroom = Classroom(
-    grade: 001,
-    name: 'textClassroomName',
-    id: 3,
-  );
+  final tStudent = Student(firstName: 'a', lastName: 'b', classroomId: 1);
 
   setUp(() {
     mockCreateNewText = MockCreateTextUseCase();
@@ -51,14 +46,14 @@ void main() {
     mockGetTextOfClassroom = MockGetTextEventUseCase();
 
     bloc = TextBloc(
-      classroom: tClassroom,
+      student: tStudent,
       createText: mockCreateNewText,
       updateText: mockUpdateText,
       deleteText: mockDeleteText,
       getTextsOfClassroom: mockGetTextOfClassroom,
     );
 
-    when(mockGetTextOfClassroom(ClassroomParams(classroom: tClassroom)))
+    when(mockGetTextOfClassroom(StudentParams(student: tStudent)))
         .thenAnswer((_) async => Right(tTextList));
   });
 
@@ -168,7 +163,7 @@ void main() {
 
   group('Get texts', () {
     test('Should emit [TextsLoaded] when texts loaded successfuly', () {
-      when(mockGetTextOfClassroom(ClassroomParams(classroom: tClassroom)))
+      when(mockGetTextOfClassroom(StudentParams(student: tStudent)))
           .thenAnswer((_) async => Right(tTextList));
 
       final expected = [
@@ -181,7 +176,8 @@ void main() {
     });
 
     test('Should emit [Error] when can not get the text list', () {
-      when(mockGetTextOfClassroom(any)).thenAnswer((_) async => Left(ServerFailure()));
+      when(mockGetTextOfClassroom(any))
+          .thenAnswer((_) async => Left(ServerFailure()));
 
       final expected = [
         TextsLoadInProgress(),

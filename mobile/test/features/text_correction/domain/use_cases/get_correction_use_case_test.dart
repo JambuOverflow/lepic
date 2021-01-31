@@ -32,7 +32,7 @@ void main() {
     title: "A",
     body: "A",
     localId: 1,
-    classId: 1,
+    studentId: 1,
   );
 
   final student = Student(

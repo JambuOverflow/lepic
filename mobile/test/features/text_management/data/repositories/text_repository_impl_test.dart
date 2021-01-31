@@ -2,13 +2,12 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
+import 'package:mobile/core/data/entity_model_converters/student_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
+import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
-import 'package:mobile/features/text_management/data/models/text_model.dart';
 import 'package:mobile/features/text_management/data/repositories/text_repository_impl.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mockito/mockito.dart';
@@ -18,32 +17,28 @@ class MockTextLocalDataSource extends Mock implements TextLocalDataSource {}
 class MockTextEntityModelConverter extends Mock
     implements TextEntityModelConverter {}
 
-class MockClassroomEntityModelConverter extends Mock
-    implements ClassroomEntityModelConverter {}
+class MockStudentEntityModelConverter extends Mock
+    implements StudentEntityModelConverter {}
 
 void main() {
   MockTextLocalDataSource mockLocalDataSource;
   TextRepositoryImpl repository;
-  ClassroomModel tClassroomModel;
   MockTextEntityModelConverter mockTextEntityModelConverter;
-  MockClassroomEntityModelConverter mockClassroomEntityModelConverter;
+  MockStudentEntityModelConverter mockStudentEntityModelConverter;
 
-  final tClassroom = Classroom(
-    grade: 1,
-    name: "A",
-    id: 1,
-  );
+  StudentModel tStudentModel;
+  final tStudent = Student(firstName: 'a', lastName: 'b', classroomId: 1);
 
   final tText = MyText(
     title: "a",
     body: "b",
-    classId: 1,
+    studentId: 1,
   );
 
   final tTextModelInput = TextModel(
     title: "a",
     body: "b",
-    classId: 1,
+    studentId: 1,
     tutorId: 1,
   );
 
@@ -55,21 +50,26 @@ void main() {
   setUp(() {
     mockLocalDataSource = MockTextLocalDataSource();
     mockTextEntityModelConverter = MockTextEntityModelConverter();
-    mockClassroomEntityModelConverter = MockClassroomEntityModelConverter();
+    mockStudentEntityModelConverter = MockStudentEntityModelConverter();
 
-    tClassroomModel = ClassroomModel(grade: 1, localId: 1, name: "A");
+    tStudentModel = StudentModel(
+      localId: 1,
+      firstName: 'a',
+      lastName: 'b',
+      classroomId: 1,
+    );
 
     repository = TextRepositoryImpl(
       localDataSource: mockLocalDataSource,
       textEntityModelConverter: mockTextEntityModelConverter,
-      classroomEntityModelConverter: mockClassroomEntityModelConverter,
+      studentEntityModelConverter: mockStudentEntityModelConverter,
     );
     when(mockTextEntityModelConverter.mytextEntityToModel(tText))
         .thenAnswer((_) async => tTextModelInput);
     when(mockTextEntityModelConverter.mytextModelToEntity(tTextModelOutput))
         .thenAnswer((_) => tText);
-    when(mockClassroomEntityModelConverter.classroomEntityToModel(tClassroom))
-        .thenAnswer((_) async => tClassroomModel);
+    when(mockStudentEntityModelConverter.classroomEntityToModel(tStudent))
+        .thenAnswer((_) async => tStudentModel);
   });
 
   group('createText', () {
@@ -148,10 +148,10 @@ void main() {
   group('getTextsOfClassroom', () {
     test('should return a list of texts when getTextsofClassroom is called',
         () async {
-      when(mockLocalDataSource.getTextsFromCacheOfClassroom(tClassroomModel))
+      when(mockLocalDataSource.getStudentTextsFromCache(tStudentModel))
           .thenAnswer((_) async => tTextsModels);
 
-      final result = await repository.getTextsOfClassroom(tClassroom);
+      final result = await repository.getStudentTexts(tStudent);
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
@@ -160,10 +160,10 @@ void main() {
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getTextsFromCacheOfClassroom(tClassroomModel))
+      when(mockLocalDataSource.getStudentTextsFromCache(tStudentModel))
           .thenThrow(CacheException());
 
-      final result = await repository.getTextsOfClassroom(tClassroom);
+      final result = await repository.getStudentTexts(tStudent);
 
       expect(result, Left(CacheFailure()));
     });
@@ -174,7 +174,7 @@ void main() {
       when(mockLocalDataSource.getAllUserTextsFromCache())
           .thenAnswer((_) async => tTextsModels);
 
-      final result = await repository.getAllTextsOfUser();
+      final result = await repository.getAllUserTexts();
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
@@ -183,9 +183,10 @@ void main() {
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
-      when(mockLocalDataSource.getAllUserTextsFromCache()).thenThrow(CacheException());
+      when(mockLocalDataSource.getAllUserTextsFromCache())
+          .thenThrow(CacheException());
 
-      final result = await repository.getAllTextsOfUser();
+      final result = await repository.getAllUserTexts();
 
       expect(result, Left(CacheFailure()));
     });
