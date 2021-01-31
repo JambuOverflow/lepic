@@ -20,18 +20,18 @@ class GetNumberOfWordsReadPerMinuteUseCase
   @override
   Future<Either<Failure, double>> call(AudioParams params) async {
     final output = await getTextUseCase(params.audio.textId);
-    int number_words;
+    int numberWords;
     int audioMinutes;
     if (output.isRight()) {
       final MyText text = output.getOrElse(() => null);
-      number_words = text.body.split(" ").length;
+      numberWords = text.body.split(" ").length;
     }
 
     final audioMinutesEither = await getAudioDurationInMinutesUseCase(params);
     if (audioMinutesEither.isRight()) {
       audioMinutes = audioMinutesEither.getOrElse(() => null);
     }
-    final double result = number_words / audioMinutes;
+    final double result = numberWords / audioMinutes;
     return Right(result);
   }
 }
