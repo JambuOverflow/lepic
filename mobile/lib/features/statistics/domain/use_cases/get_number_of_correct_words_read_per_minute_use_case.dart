@@ -24,7 +24,7 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
     int number_words;
     if (output.isRight()) {
       final MyText text = output.getOrElse(() => null);
-      number_words = text.body.split(" ").length;
+      number_words = text.numberOfWords;
     }
 
     final int studentId = params.audio.studentId;
@@ -41,8 +41,7 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
       correction = correctionOutput.getOrElse(() => null);
     }
 
-    final int numberMistakes  = correction.numberOfMistakes;
-    
+    final int numberMistakes = correction.numberOfMistakes;
 
     final Duration audioDuration = params.audio.audioDuration;
 
