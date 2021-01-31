@@ -52,7 +52,7 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(Icons.assignment),
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute<TextEditingPage>(
             builder: (_) => BlocProvider.value(
