@@ -19,6 +19,10 @@ class AudioEntity extends Equatable {
     this.localId,
   });
 
+  Duration get audioDuration {
+    return Duration(minutes: audioData.length);
+  }
+
   @override
   List<Object> get props => [
         localId,
