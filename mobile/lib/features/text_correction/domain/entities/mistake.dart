@@ -12,6 +12,12 @@ class Mistake extends Equatable {
     this.localId,
   });
 
+  Mistake.highlighted({@required this.wordIndex, this.localId})
+      : this.commentary = '';
+
+  bool get hasCommentary => commentary.isNotEmpty;
+  bool get isHighlighted => commentary.isEmpty;
+
   @override
   List<Object> get props => [wordIndex, commentary, localId];
 }
