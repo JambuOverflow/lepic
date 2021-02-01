@@ -46,8 +46,8 @@ class TextViewPopupMenuButton extends StatelessWidget {
                 // test student entity
                 param2: Student(
                   classroomId: 0,
-                  firstName: 'cu',
-                  lastName: 'duro',
+                  firstName: 'vitor',
+                  lastName: 'vitinho',
                   id: 1,
                 ),
               ),
