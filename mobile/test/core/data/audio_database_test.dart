@@ -1,25 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:matcher/matcher.dart';
 
 void main() {
   final tValidAudioPk1 = 1;
-  final tValidAudioPk2 = 2;
-  final tInvalidAudioPk = 3;
 
   final tValidTextPk = 1;
-  final tInvalidTextPk = 2;
 
   final tValidStudentPk = 1;
-  final tInvalidStudentPk = 2;
-
-  final firstName = "A";
-  final lastName = "B";
-  final updateFirstName = "C";
 
   Uint8List audioData = Uint8List.fromList([]);
 
@@ -51,7 +42,7 @@ void main() {
     body: Value(""),
     title: Value(""),
     tutorId: Value(1),
-    classId: Value(1),
+    studentId: Value(1),
   );
 
   Database database;
@@ -149,21 +140,17 @@ void main() {
     });
 
     test("should throw an sqliteException", () async {
-
-      expect(
-          () async => await database
-              .getAudio(studentPk: 1, textPk: 1),
+      expect(() async => await database.getAudio(studentPk: 1, textPk: 1),
           throwsA(TypeMatcher<SqliteException>()));
     });
-    
   });
 
   group("updateAudio", () {
     test("should update correclty", () async {
       await database.insertAudio(tValidAudioModelInput);
-      
-      await database.updateAudio(tValidAudioModelOutput.copyWith(title:"Arg"));
-      final AudioModel audio = await database.getAudio(studentPk:1, textPk:1);
+
+      await database.updateAudio(tValidAudioModelOutput.copyWith(title: "Arg"));
+      final AudioModel audio = await database.getAudio(studentPk: 1, textPk: 1);
       expect(audio.localId, 1);
       expect(audio.textId, tValidAudioModelInput.textId);
       expect(audio.studentId, tValidAudioModelInput.studentId);
@@ -172,13 +159,9 @@ void main() {
     });
 
     test("should throw an exception", () async {
-      
-      expect(
-          () async => await database
-              .updateAudio(tValidAudioModelOutput),
+      expect(() async => await database.updateAudio(tValidAudioModelOutput),
           throwsA(TypeMatcher<SqliteException>()));
     });
-    
   });
 }
 

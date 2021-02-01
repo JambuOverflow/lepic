@@ -46,7 +46,7 @@ void main() {
   final tText = MyText(
     title: "null",
     body: "ola amigos",
-    classId: 1,
+    studentId: 1,
     localId: 1,
   );
 

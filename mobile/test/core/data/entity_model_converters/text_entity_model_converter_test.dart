@@ -24,14 +24,14 @@ void main() {
     title: "B",
     localId: 1,
     tutorId: 2,
-    classId: 3,
+    studentId: 3,
   );
 
   final tTextEntity = MyText(
     body: "A",
     title: "B",
     localId: 1,
-    classId: 3,
+    studentId: 3,
   );
 
   group('modelToEntity', () {

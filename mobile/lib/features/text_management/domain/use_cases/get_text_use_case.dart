@@ -12,5 +12,5 @@ class GetTextUseCase implements UseCase<MyText, int> {
 
   @override
   Future<Either<Failure, MyText>> call(params) =>
-      repository.getText(params);
+      repository.getTextByID(params);
 }

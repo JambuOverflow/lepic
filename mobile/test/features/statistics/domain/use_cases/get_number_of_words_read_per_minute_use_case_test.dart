@@ -11,8 +11,6 @@ import 'package:mockito/mockito.dart';
 
 class MockGetTextUseCase extends Mock implements GetTextUseCase {}
 
-
-
 void main() {
   GetNumberOfWordsReadPerMinuteUseCase useCase;
   MockGetTextUseCase mockGetTextUseCase;
@@ -38,7 +36,7 @@ void main() {
   final tText = MyText(
     title: "null",
     body: "ola amigos",
-    classId: 1,
+    studentId: 1,
     localId: 1,
   );
 

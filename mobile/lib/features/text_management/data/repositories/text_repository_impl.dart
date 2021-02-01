@@ -1,24 +1,24 @@
 import 'package:flutter/foundation.dart';
-import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
-import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
-import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
-import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
-import 'package:mobile/features/text_management/domain/entities/text.dart';
+import 'package:mobile/core/data/database.dart';
 
+import '../../../student_management/domain/entities/student.dart';
+import '../../../../core/data/entity_model_converters/student_entity_model_converter.dart';
+import '../../../../core/data/entity_model_converters/text_entity_model_converter.dart';
+import '../../../../core/error/exceptions.dart';
+import '../../../../core/error/failures.dart';
+import '../../domain/repositories/text_repository.dart';
+import '../../domain/entities/text.dart';
 import '../data_sources/text_local_data_source.dart';
 
 class TextRepositoryImpl implements TextRepository {
   final TextLocalDataSource localDataSource;
-  final ClassroomEntityModelConverter classroomEntityModelConverter;
+  final StudentEntityModelConverter studentEntityModelConverter;
   final TextEntityModelConverter textEntityModelConverter;
 
   TextRepositoryImpl({
     @required this.localDataSource,
-    @required this.classroomEntityModelConverter,
+    @required this.studentEntityModelConverter,
     @required this.textEntityModelConverter,
   });
 
@@ -33,9 +33,8 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, List<MyText>>> getTextsOfClassroom(
-      Classroom classroom) async {
-    return await _tryGetTextsOfClassroom(classroom);
+  Future<Either<Failure, List<MyText>>> getStudentTexts(Student student) async {
+    return await _tryGetStudentTexts(student);
   }
 
   @override
@@ -75,17 +74,20 @@ class TextRepositoryImpl implements TextRepository {
     }
   }
 
-  Future<Either<Failure, List<MyText>>> _tryGetTextsOfClassroom(
-      Classroom classroom) async {
+  Future<Either<Failure, List<MyText>>> _tryGetStudentTexts(
+      Student student) async {
     try {
-      var classroomModel =
-          await classroomEntityModelConverter.classroomEntityToModel(classroom);
+      var studentModel =
+          await studentEntityModelConverter.classroomEntityToModel(student);
+
       var listTextModel =
-          await localDataSource.getTextsFromCacheOfClassroom(classroomModel);
+          await localDataSource.getStudentTextsFromCache(studentModel);
+
       var listTextEntity = [
         for (var model in listTextModel)
           textEntityModelConverter.mytextModelToEntity(model)
       ];
+
       return Right(listTextEntity);
     } on CacheException {
       return Left(CacheFailure());
@@ -93,7 +95,7 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, List<MyText>>> getAllTextsOfUser() async {
+  Future<Either<Failure, List<MyText>>> getAllUserTexts() async {
     try {
       var listTextModel = await localDataSource.getAllUserTextsFromCache();
       var listTextEntity = [
@@ -107,7 +109,7 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, MyText>> getText(int id) async {
+  Future<Either<Failure, MyText>> getTextByID(int id) async {
     try {
       final TextModel textModel = await localDataSource.getTextFromCache(id);
       final MyText textEntity = textEntityModelConverter.mytextModelToEntity(textModel);

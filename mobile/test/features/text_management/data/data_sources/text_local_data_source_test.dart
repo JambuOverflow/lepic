@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/text_management/data/data_sources/text_local_data_source.dart';
 import 'package:mobile/features/user_management/data/data_sources/user_local_data_source.dart';
 
@@ -19,22 +18,26 @@ Future<void> main() {
   MockDatabase mockDatabase;
   MockUserLocalDataSource mockUserLocalDataSource;
   TextLocalDataSourceImpl textLocalDataSourceImpl;
-  ClassroomModel tClassroomModel;
+  StudentModel tStudentModel;
 
   final tValidPk = 1;
 
-  final tClassroom = Classroom(
-    grade: 1,
-    name: "A",
-    id: 1,
+  final tTextInputModel1 = TextModel(
+    studentId: 1,
+    title: '1',
+    body: "A",
+    localId: null,
   );
 
-  final tTextInputModel1 =
-      TextModel(classId: 1, title: '1', body: "A", localId: null);
-  final tTextInputModel2 =
-      TextModel(classId: 1, title: '2', body: "B", localId: null);
+  final tTextInputModel2 = TextModel(
+    studentId: 1,
+    title: '2',
+    body: "B",
+    localId: null,
+  );
 
-  final tTextModel1 = TextModel(classId: 1, title: '1', body: "A", localId: 1);
+  final tTextModel1 =
+      TextModel(studentId: 1, title: '1', body: "A", localId: 1);
 
   final tTextCompanion1 = tTextInputModel1.toCompanion(true);
 
@@ -43,7 +46,12 @@ Future<void> main() {
   setUp(() async {
     mockDatabase = MockDatabase();
     mockUserLocalDataSource = MockUserLocalDataSource();
-    tClassroomModel = ClassroomModel(grade: 1, name: "A", localId: 1);
+    tStudentModel = StudentModel(
+      localId: 1,
+      firstName: 'a',
+      lastName: 'b',
+      classroomId: 1,
+    );
 
     textLocalDataSourceImpl = TextLocalDataSourceImpl(
         database: mockDatabase, userLocalDataSource: mockUserLocalDataSource);
@@ -94,36 +102,35 @@ Future<void> main() {
 
   group("getTextOfClassroom", () {
     test("should correctly return a list of texts", () async {
-      when(mockDatabase.getTextsOfClassroom(tValidPk))
+      when(mockDatabase.getStudentTexts(tValidPk))
           .thenAnswer((_) async => tTextModels);
 
-      final result = await textLocalDataSourceImpl
-          .getTextsFromCacheOfClassroom(tClassroomModel);
+      final result =
+          await textLocalDataSourceImpl.getStudentTextsFromCache(tStudentModel);
 
-      verify(mockDatabase.getTextsOfClassroom(tValidPk));
+      verify(mockDatabase.getStudentTexts(tValidPk));
       final testResult = listEquals(result, tTextModels);
       equals(testResult);
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getTextsOfClassroom(tValidPk))
-          .thenAnswer((_) async => []);
+      when(mockDatabase.getStudentTexts(tValidPk)).thenAnswer((_) async => []);
 
-      final result = await textLocalDataSourceImpl
-          .getTextsFromCacheOfClassroom(tClassroomModel);
+      final result =
+          await textLocalDataSourceImpl.getStudentTextsFromCache(tStudentModel);
 
-      verify(mockDatabase.getTextsOfClassroom(tValidPk));
+      verify(mockDatabase.getStudentTexts(tValidPk));
       final testResult = listEquals(result, []);
       equals(testResult);
     });
 
     test("should throw a CacheException", () async {
-      when(mockDatabase.getTextsOfClassroom(tValidPk))
+      when(mockDatabase.getStudentTexts(tValidPk))
           .thenThrow(SqliteException(787, ""));
 
       expect(
           () async => await textLocalDataSourceImpl
-              .getTextsFromCacheOfClassroom(tClassroomModel),
+              .getStudentTextsFromCache(tStudentModel),
           throwsA(TypeMatcher<CacheException>()));
     });
   });

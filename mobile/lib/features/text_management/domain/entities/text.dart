@@ -5,18 +5,19 @@ class MyText extends Equatable {
   final String title;
   final String body;
   final int localId;
-  final int classId;
+  final int studentId;
 
-  MyText(
-      {@required this.title,
-      @required this.body,
-      this.localId,
-      @required this.classId});
+  MyText({
+    @required this.title,
+    @required this.body,
+    @required this.studentId,
+    this.localId,
+  });
 
   int get numberOfWords {
     return body.split(" ").length;
   }
 
   @override
-  List<Object> get props => [title, body, localId, classId];
+  List<Object> get props => [title, body, localId, studentId];
 }

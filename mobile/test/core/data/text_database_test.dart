@@ -9,8 +9,10 @@ void main() {
   final tValidTextPk1 = 1;
   final tValidTextPk2 = 2;
   final tInvalidTextPk = 3;
-  final tValidClassroomPk = 1;
-  final tInvalidClassroomPk = 2;
+
+  final tValidStudentPk = 1;
+  final tInvalidStudentPk = 2;
+
   final title = "A";
   final updateBody = "C";
   final body = "B";
@@ -18,21 +20,21 @@ void main() {
   final tValidTextCompanion = TextModelsCompanion(
     title: Value(title),
     body: Value(body),
-    classId: Value(tValidClassroomPk),
+    studentId: Value(tValidStudentPk),
     tutorId: Value(1),
   );
 
   final tInvalidTextCompanion = TextModelsCompanion(
     title: Value(title),
     body: Value(body),
-    classId: Value(tInvalidClassroomPk),
+    studentId: Value(tInvalidStudentPk),
     tutorId: Value(2),
   );
 
   final tValidTextModel1 = TextModel(
     title: title,
     body: body,
-    classId: tValidClassroomPk,
+    studentId: tValidStudentPk,
     localId: tValidTextPk1,
     tutorId: 1,
   );
@@ -40,25 +42,9 @@ void main() {
   final tValidTextModel2 = TextModel(
     title: title,
     body: body,
-    classId: tValidClassroomPk,
+    studentId: tValidStudentPk,
     localId: tValidTextPk2,
     tutorId: 1,
-  );
-
-  final tValidUpdateTextModel = TextModel(
-    title: title,
-    body: updateBody,
-    classId: tValidClassroomPk,
-    localId: tValidTextPk1,
-    tutorId: 1,
-  );
-
-  final tInvalidUpdateTextModel = TextModel(
-    localId: tInvalidTextPk,
-    title: title,
-    body: updateBody,
-    classId: tValidClassroomPk,
-    tutorId: 2,
   );
 
   final tUserCompanion = UserModelsCompanion(
@@ -70,9 +56,6 @@ void main() {
     password: Value('123'),
   );
 
-  final tInvalidUserText =
-      TextModel(body: "A", title: "C", localId: 10, tutorId: 10, classId: 10);
-
   final tClassroomCompanion = ClassroomModelsCompanion(
     grade: Value(1),
     name: Value("varro"),
@@ -82,14 +65,10 @@ void main() {
     deleted: Value(false),
   );
 
-  final tInvalidClassroom = ClassroomModel(
-    grade: 1,
-    name: "varro",
-    tutorId: 10,
-    lastUpdated: DateTime.now(),
-    clientLastUpdated: DateTime.now(),
-    deleted: false,
-    localId: 10,
+  final tStudentCompanion = StudentModelsCompanion(
+    classroomId: Value(1),
+    firstName: Value('a'),
+    lastName: Value('b'),
   );
 
   Database database;
@@ -100,9 +79,10 @@ void main() {
       db.execute('PRAGMA foreign_keys = ON');
     });
     database = Database(vmDatabase);
+
     await database.into(database.userModels).insert(tUserCompanion);
     await database.into(database.classroomModels).insert(tClassroomCompanion);
-    await database.into(database.classroomModels).insert(tInvalidClassroom);
+    await database.into(database.studentModels).insert(tStudentCompanion);
   }
 
   setUp(() async {
@@ -144,14 +124,14 @@ void main() {
 
   group("getTextsOfClassroom", () {
     test("should return an empty list of texts", () async {
-      final texts = await database.getTextsOfClassroom(tValidClassroomPk);
+      final texts = await database.getStudentTexts(tValidStudentPk);
       expect(texts, []);
     });
 
     test("should return a list with one text", () async {
       await database.insertText(tValidTextCompanion);
 
-      final texts = await database.getTextsOfClassroom(tValidClassroomPk);
+      final texts = await database.getStudentTexts(tValidStudentPk);
       expect(texts, [tValidTextModel1]);
     });
 
@@ -159,7 +139,7 @@ void main() {
       await database.insertText(tValidTextCompanion);
       await database.insertText(tValidTextCompanion);
 
-      final texts = await database.getTextsOfClassroom(tValidClassroomPk);
+      final texts = await database.getStudentTexts(tValidStudentPk);
       expect(texts, [tValidTextModel1, tValidTextModel2]);
     });
   });
@@ -180,26 +160,9 @@ void main() {
     test("should return a list with two texts", () async {
       await database.insertText(tValidTextCompanion);
       await database.insertText(tValidTextCompanion);
-      await database.insertText(tInvalidUserText.toCompanion(true));
 
       final texts = await database.getAllTextsOfUser(1);
       expect(texts, [tValidTextModel1, tValidTextModel2]);
-    });
-  });
-
-  group("getText", () {
-    setUp(() async {
-      await database.insertText(tValidTextCompanion);
-    });
-
-    test("should throw an sqliteException", () async {
-      expect(() async => await database.getText(tInvalidTextPk),
-          throwsA(const TypeMatcher<SqliteException>()));
-    });
-
-    test("should return a text", () async {
-      final result = await database.getText(1);
-      expect(result, tValidTextModel1);
     });
   });
 
@@ -209,12 +172,30 @@ void main() {
     });
 
     test("should return true when updating a valid text", () async {
+      final tValidUpdateTextModel = TextModel(
+        title: title,
+        body: updateBody,
+        studentId: tValidStudentPk,
+        localId: tValidTextPk1,
+        tutorId: 1,
+      );
+
       final done = await database.updateText(tValidUpdateTextModel);
+
       expect(done, true);
     });
 
     test("should return false when updating an invalid text", () async {
+      final tInvalidUpdateTextModel = TextModel(
+        localId: tInvalidTextPk,
+        title: title,
+        body: updateBody,
+        studentId: tValidStudentPk,
+        tutorId: 2,
+      );
+
       final done = await database.updateText(tInvalidUpdateTextModel);
+
       expect(done, false);
     });
   });
