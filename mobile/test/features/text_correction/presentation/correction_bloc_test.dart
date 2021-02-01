@@ -43,7 +43,7 @@ void main() {
     title: 'Title',
     body: 'a b c',
     localId: 001,
-    classId: 010,
+    studentId: 010,
   );
 
   final tStudent = Student(
