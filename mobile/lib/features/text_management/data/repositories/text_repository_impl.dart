@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:dartz/dartz.dart';
+import 'package:mobile/core/data/database.dart';
 
 import '../../../student_management/domain/entities/student.dart';
 import '../../../../core/data/entity_model_converters/student_entity_model_converter.dart';
@@ -108,7 +109,7 @@ class TextRepositoryImpl implements TextRepository {
   }
 
   @override
-  Future<Either<Failure, MyText>> getText(int id) async {
+  Future<Either<Failure, MyText>> getTextByID(int id) async {
     try {
       final TextModel textModel = await localDataSource.getTextFromCache(id);
       final MyText textEntity = textEntityModelConverter.mytextModelToEntity(textModel);

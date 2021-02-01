@@ -10,4 +10,5 @@ abstract class TextRepository {
   Future<Either<Failure, List<MyText>>> getAllUserTexts();
   Future<Either<Failure, List<MyText>>> getStudentTexts(Student student);
   Future<Either<Failure, void>> deleteText(MyText text);
+  Future<Either<Failure, MyText>> getTextByID(int id);
 }
