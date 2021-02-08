@@ -40,6 +40,7 @@ class _StudentsPageState extends State<StudentsPage> {
       ),
       floatingActionButton: AddToListButton(
         bloc: _bloc,
+        text: 'Add Student',
         dialog: CreateStudentDialog(),
       ),
     );
