@@ -1,24 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/features/user_management/domain/entities/user.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:matcher/matcher.dart';
 
 void main() {
   final tValidMistakePk1 = 1;
-  final tValidMistakePk2 = 2;
-  final tInvalidMistakePk = 3;
-
   final tValidTextPk = 1;
-  final tInvalidTextPk = 2;
-
   final tValidStudentPk = 1;
-  final tInvalidStudentPk = 2;
-
-  final firstName = "A";
-  final lastName = "B";
-  final updateFirstName = "C";
 
   final tValidMistakeModelInput = MistakeModel(
     commentary: "",
@@ -46,7 +35,7 @@ void main() {
     body: Value(""),
     title: Value(""),
     tutorId: Value(1),
-    classId: Value(1),
+    studentId: Value(1),
   );
 
   Database database;

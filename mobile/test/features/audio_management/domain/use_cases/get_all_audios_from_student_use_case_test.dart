@@ -59,7 +59,7 @@ void main() {
   final tText = MyText(
     title: "",
     body: "",
-    classId: 1,
+    studentId: 1,
     localId: 1,
   );
 

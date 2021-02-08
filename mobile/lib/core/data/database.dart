@@ -111,10 +111,21 @@ class Database extends _$Database {
     }
   }
 
-  /// Returns a list of [TextModel] from a classroom
-  Future<List<TextModel>> getTextsOfClassroom(int classroomId) async {
-    return (select(textModels)..where((t) => t.classId.equals(classroomId)))
+  /// Returns a list of [TextModel] from a student
+  Future<List<TextModel>> getStudentTexts(int studentId) async {
+    return (select(textModels)..where((t) => t.studentId.equals(studentId)))
         .get();
+  }
+
+  /// Returns a [TextModel]
+  Future<TextModel> getText(int textId) async {
+    final TextModel result = await (select(textModels)
+          ..where((t) => t.localId.equals(textId)))
+        .getSingle();
+    if (result == null) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+    return result;
   }
 
   /// Returns a list of [TextModel]
@@ -210,5 +221,5 @@ class Database extends _$Database {
   }
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 }

@@ -2,13 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/audio_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/audio_management/data/data_sources/audio_local_data_source.dart';
 import 'package:mobile/features/audio_management/data/repositories/audio_repository_impl.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
@@ -73,14 +71,14 @@ void main() {
     title: "",
     body: "",
     tutorId: 1,
-    classId: 1,
+    studentId: 1,
   );
 
   final tText = MyText(
     localId: 1,
     title: "",
     body: "",
-    classId: 1,
+    studentId: 1,
   );
 
   final tAudioModelOutput = tAudioModelInput.copyWith(localId: 2);
@@ -224,18 +222,19 @@ void main() {
         mocktextEntityModelConverter.mytextEntityToModel(tText),
       );
     });
-    
+
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mocktextEntityModelConverter.mytextEntityToModel(tText))
           .thenAnswer((_) async => tTextModel);
-      when(mockLocalDataSource.getAudioFromCache(studentModel: tStudentModel,
-        textModel: tTextModel,)).thenThrow(CacheException());
+      when(mockLocalDataSource.getAudioFromCache(
+        studentModel: tStudentModel,
+        textModel: tTextModel,
+      )).thenThrow(CacheException());
 
       final result = await repository.getAudio(text: tText, student: tStudent);
 
       expect(result, Left(CacheFailure()));
     });
-    
   });
 }

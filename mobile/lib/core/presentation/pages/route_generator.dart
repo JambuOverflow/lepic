@@ -6,11 +6,10 @@ import 'package:mobile/features/audio_management/presentation/pages/audio_page.d
 import '../../../features/text_management/presentation/pages/text_editing_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_detail_page.dart';
 import '../../../features/class_management/presentation/pages/classrooms_page.dart';
-import '../../../features/class_management/presentation/pages/classroom_creation_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_update_page.dart';
 import '../../../features/student_management/presentation/pages/create_student_page.dart';
 import '../../../features/student_management/presentation/pages/students_page.dart';
-import '../../../features/text_management/presentation/pages/classroom_texts_page.dart';
+import '../../../features/text_management/presentation/pages/student_texts_page.dart';
 import '../../../features/user_management/presentation/bloc/login_form_bloc.dart';
 import '../../../features/user_management/presentation/pages/guest.dart';
 import '../../../features/user_management/presentation/bloc/signup_form_bloc.dart';
@@ -51,10 +50,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => CreateStudentPage());
       case '/list_classes':
         return MaterialPageRoute(builder: (_) => ClassroomsPage());
-      case '/add_class':
-        return MaterialPageRoute(builder: (_) => ClassroomCreationPage());
       case '/list_texts':
-        return MaterialPageRoute(builder: (_) => ClassroomTextsPage());
+        return MaterialPageRoute(builder: (_) => StudentTextsPage());
       case '/add_text':
         return MaterialPageRoute(builder: (_) {
           final Map arguments = settings.arguments as Map;

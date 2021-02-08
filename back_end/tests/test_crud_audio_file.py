@@ -31,8 +31,8 @@ class TestCRUDAudioFile(APITestCase):
         self.test_audio_file_2 = open(Path(__file__).absolute().parent.parent / 'test_files/test-audiofile2.mp3', 'rb')
         test_audio_file_deleted = open(Path(__file__).absolute().parent.parent / 'test_files/bensound-jazzyfrenchy.mp3', 'rb')
 
-        self.url_create_audio = reverse('upload-file')
-        self.url_update_delete_audio = reverse('update-delete-file', kwargs={'local_id': 1})
+        self.url_create_audio = reverse('upload-files')
+        self.url_update_delete_audio = reverse('update-delete-files', kwargs={'local_id': 1})
         
         self.audio_file_data = {
             'title': 'Test audio',

@@ -1,13 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/mistake_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
-import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_correction/data/data_sources/mistake_local_data_source.dart';
 import 'package:mobile/features/text_correction/data/repositories/correction_repository_impl.dart';
@@ -87,14 +84,14 @@ void main() {
 
   final text = MyText(
     localId: 1,
-    classId: 1,
+    studentId: 1,
     body: "",
     title: "",
   );
 
   final textModel = TextModel(
     localId: 1,
-    classId: 1,
+    studentId: 1,
     body: "",
     title: "",
     tutorId: 1,
@@ -134,11 +131,9 @@ void main() {
 
     when(mockMistakeEntityModelConverter.entityToModel(tCorrectionInput))
         .thenAnswer((_) => tMistakeModelsInput);
-    when(mockMistakeEntityModelConverter
-            .entityToModel(tCorrectionOutput))
+    when(mockMistakeEntityModelConverter.entityToModel(tCorrectionOutput))
         .thenAnswer((_) => tMistakeModelsOutput);
-    when(mockMistakeEntityModelConverter
-            .modelToEntity(tMistakeModelsOutput))
+    when(mockMistakeEntityModelConverter.modelToEntity(tMistakeModelsOutput))
         .thenAnswer((_) => tCorrectionOutput);
   });
 
@@ -264,7 +259,8 @@ void main() {
       when(mockLocalDataSource.getCorrectionMistakesFromCache(
               studentModel: studentModel, textModel: textModel))
           .thenAnswer((_) async => tMistakeModelsOutput);
-      when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
+      when(mockTextEntityModelConverter.mytextEntityToModel(text))
+          .thenAnswer((_) async => textModel);
 
       final result =
           await repository.getCorrection(student: student, text: text);
@@ -272,20 +268,19 @@ void main() {
       verifyInOrder([
         mockTextEntityModelConverter.mytextEntityToModel(text),
         mockLocalDataSource.getCorrectionMistakesFromCache(
-              studentModel: studentModel, textModel: textModel),
-        
+            studentModel: studentModel, textModel: textModel),
       ]);
       expect(result, Right(tCorrectionOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
-    
 
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource.getCorrectionMistakesFromCache(
               studentModel: studentModel, textModel: textModel))
           .thenThrow(CacheException());
-      when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
+      when(mockTextEntityModelConverter.mytextEntityToModel(text))
+          .thenAnswer((_) async => textModel);
 
       final result =
           await repository.getCorrection(student: student, text: text);
@@ -293,12 +288,51 @@ void main() {
       verifyInOrder([
         mockTextEntityModelConverter.mytextEntityToModel(text),
         mockLocalDataSource.getCorrectionMistakesFromCache(
-              studentModel:studentModel, textModel: textModel),
+            studentModel: studentModel, textModel: textModel),
+      ]);
+      expect(result, Left(CacheFailure()));
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+  });
+
+  group('getCorrectionsFromId', () {
+    test('should return a list of corrections when getCorrections is called',
+        () async {
+      when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: 1, textId: 1))
+          .thenAnswer((_) async => tMistakeModelsOutput);
+      when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
+
+      final result =
+          await repository.getCorrectionFromId(studentId: 1, textId: 1);
+
+      verifyInOrder([
+        mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: 1, textId: 1),
+        
+      ]);
+      expect(result, Right(tCorrectionOutput));
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+
+    
+    test('should return a CacheFailure when a CacheException is throw',
+        () async {
+      when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: 1, textId: 1)).thenThrow(CacheException());
+
+      final result =
+          await repository.getCorrectionFromId(studentId: 1, textId: 1);
+
+      verifyInOrder([
+        mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId:1, textId: 1),
         
       ]);
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
+    
     
   });
 }

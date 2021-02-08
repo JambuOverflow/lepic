@@ -20,7 +20,7 @@ void main() {
   final tText = MyText(
     title: "Test Title",
     body: "Test Body",
-    classId: 1,
+    studentId: 1,
   );
 
   test('should return a correct response when updating a Text', () async {

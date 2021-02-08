@@ -6,13 +6,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
-import '../../../class_management/domain/entities/classroom.dart';
-import '../../../class_management/domain/use_cases/classroom_params.dart';
+import '../../../student_management/domain/use_cases/student_params.dart';
+import '../../../student_management/domain/entities/student.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/text.dart';
 import '../../domain/use_cases/create_text_use_case.dart';
 import '../../domain/use_cases/delete_text_use_case.dart';
-import '../../domain/use_cases/get_texts_of_classroom_use_case.dart';
+import '../../domain/use_cases/get_student_texts_use_case.dart';
 import '../../domain/use_cases/text_params.dart';
 import '../../domain/use_cases/update_text_use_case.dart';
 
@@ -22,15 +22,15 @@ part 'text_state.dart';
 class TextBloc extends Bloc<TextEvent, TextState> {
   List<MyText> texts = const <MyText>[];
 
-  final Classroom classroom;
+  final Student student;
 
   final CreateTextUseCase createText;
   final UpdateTextUseCase updateText;
-  final GetTextsOfClassroomUseCase getTextsOfClassroom;
+  final GetStudentTextsUseCase getTextsOfClassroom;
   final DeleteTextUseCase deleteText;
 
   TextBloc({
-    @required this.classroom,
+    @required this.student,
     @required this.createText,
     @required this.updateText,
     @required this.deleteText,
@@ -52,7 +52,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
     final text = MyText(
       title: event.title,
       body: event.body,
-      classId: classroom.id,
+      studentId: student.id,
     );
 
     final failureOrSuccess = await createText(TextParams(text: text));
@@ -91,7 +91,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
       title: event.title,
       body: event.body,
       localId: event.oldText.localId,
-      classId: classroom.id,
+      studentId: student.id,
     );
 
     final failureOrClassroom = await updateText(TextParams(text: updatedText));
@@ -107,7 +107,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
 
   Stream<TextState> _loadAndReplaceClassrooms() async* {
     final failureOrClassrooms = await getTextsOfClassroom(
-      ClassroomParams(classroom: classroom),
+      StudentParams(student: student),
     );
 
     yield failureOrClassrooms.fold(

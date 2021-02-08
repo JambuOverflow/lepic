@@ -5,12 +5,12 @@ import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/domain/repositories/text_repository.dart';
 
-class GetAllUserTextsUseCase implements UseCase<List<MyText>, NoParams> {
+class GetTextUseCase implements UseCase<MyText, int> {
   final TextRepository repository;
 
-  GetAllUserTextsUseCase({@required this.repository});
+  GetTextUseCase({@required this.repository});
 
   @override
-  Future<Either<Failure, List<MyText>>> call(params) =>
-      repository.getAllTextsOfUser();
+  Future<Either<Failure, MyText>> call(params) =>
+      repository.getTextByID(params);
 }

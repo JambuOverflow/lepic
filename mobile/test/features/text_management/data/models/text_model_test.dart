@@ -1,12 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/core/data/database.dart';
-import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
-import 'package:mobile/features/text_management/data/models/text_model.dart';
-import 'package:mobile/features/text_management/domain/entities/text.dart';
 
-import '../../../../core/data/entity_model_converters/text_entity_model_converter_test.dart';
+import 'package:mobile/core/data/database.dart';
 import '../../../../core/fixtures/fixture_reader.dart';
 
 void main() {
@@ -14,7 +9,7 @@ void main() {
     title: '1',
     localId: 2,
     body: "A",
-    classId: 3,
+    studentId: 3,
     tutorId: 1,
   );
 
@@ -36,7 +31,7 @@ void main() {
         "local_id": 2,
         "title": '1',
         "body": "A",
-        "class_id": 3,
+        "student_id": 3,
         "tutor_id": 1,
       };
 

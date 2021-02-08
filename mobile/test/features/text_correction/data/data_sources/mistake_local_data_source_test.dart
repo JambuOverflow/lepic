@@ -27,7 +27,7 @@ void main() {
   );
 
   final textModel =
-      TextModel(body: "", title: "", tutorId: 1, classId: 1, localId: 1);
+      TextModel(body: "", title: "", tutorId: 1, studentId: 1, localId: 1);
 
   final tMistakeInputModel1 = MistakeModel(
     commentary: "",
