@@ -60,12 +60,15 @@ class TextPreviewCard extends StatelessWidget {
         splashColor: Colors.blue[100].withOpacity(0.5),
         highlightColor: Colors.blue[100].withAlpha(0),
         onTap: () => navigateToDetails(context),
-        child: Text(
-          _text.body,
-          maxLines: 6,
-          textAlign: TextAlign.justify,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 14),
+        child: Hero(
+          tag: '${_text.localId}_body',
+          child: Text(
+            _text.body,
+            maxLines: 6,
+            textAlign: TextAlign.justify,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 14),
+          ),
         ),
       ),
     );
