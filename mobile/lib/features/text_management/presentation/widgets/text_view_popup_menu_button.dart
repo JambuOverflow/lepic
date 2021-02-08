@@ -20,7 +20,7 @@ class TextViewPopupMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       itemBuilder: (BuildContext context) {
-        return {'Add audio', 'Delete'}.map((String choice) {
+        return {'Edit audio', 'Delete'}.map((String choice) {
           return PopupMenuItem<String>(
             value: choice,
             child: Text(choice),
@@ -37,7 +37,7 @@ class TextViewPopupMenuButton extends StatelessWidget {
         BlocProvider.of<TextBloc>(context).add(DeleteTextEvent(text: text));
         Navigator.pop(context);
         break;
-      case 'Add audio':
+      case 'Edit audio':
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => BlocProvider(
