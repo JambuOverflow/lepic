@@ -53,7 +53,7 @@ class _AudioPageState extends State<AudioPage> {
                 else if (_bloc.audio == null)
                   return ListTile(title: Text('No audio uploaded yet.'));
                 else
-                  return AudioItem(bloc: _bloc);
+                  return AudioItem(bloc: _bloc, dialog: true);
               },
               listener: (context, state) {
                 if (state is Error && _bloc.isAudioAttached)
