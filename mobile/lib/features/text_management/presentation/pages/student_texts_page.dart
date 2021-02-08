@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'assignment_detail_page.dart';
 import '../../../../core/presentation/widgets/empty_list_text.dart';
 import '../bloc/text_bloc.dart';
 import '../widgets/text_item.dart';
@@ -36,10 +37,7 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
             else
               return ListView.builder(
                 itemCount: _bloc.texts.length,
-                itemBuilder: (context, index) {
-                  final text = _bloc.texts[index];
-                  return TextItem(text);
-                },
+                itemBuilder: (context, index) => TextItem(index: index),
               );
           } else
             return Center(child: CircularProgressIndicator());
@@ -51,8 +49,9 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
             );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.assignment),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Assign Text'),
+        icon: Icon(Icons.assignment),
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute<TextEditingPage>(
             builder: (_) => BlocProvider.value(
