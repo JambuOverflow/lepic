@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/features/audio_management/presentation/pages/audio_play.dart';
 import 'package:mobile/features/audio_management/presentation/pages/audio_upload.dart';
-import 'package:mobile/features/audio_management/presentation/pages/generated_plugin_registrant.dart';
 
 import '../../domain/entities/text.dart';
 import '../bloc/text_bloc.dart';

@@ -17,7 +17,9 @@ class _LocalAudioState extends State<LocalAudio> {
   final String musicPath = "Music.ogg";
   MyText text = new MyText(
       title: 'titulo', body: 'asdasdasdadsadsadsadadadadas', classId: null);
+
   bool playing = false;
+  bool firstPlay = true;
   IconData playBtn = Icons.play_circle_filled;
 
   AudioPlayer _player;
@@ -64,8 +66,12 @@ class _LocalAudioState extends State<LocalAudio> {
 
   playLocal() async {
     Uint8List byteData = await (await cache.load(musicPath)).readAsBytes();
-    await cache.playBytes(byteData);
-
+    if (firstPlay) {
+      firstPlay = !firstPlay;
+      await cache.playBytes(byteData);
+    } else {
+      await _player.resume();
+    }
     // Uint8List bytes = await (await cache.load('Music.ogg')).readAsBytes();
     // return bytes;
   }
