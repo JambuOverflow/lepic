@@ -52,7 +52,7 @@ class TextViewPopupMenuButton extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => BlocProvider.value(
               value: BlocProvider.of<TextBloc>(context),
-              child: LocalAudio(),
+              child: LocalAudio(text),
             ),
           ),
         );

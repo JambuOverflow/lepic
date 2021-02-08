@@ -9,14 +9,17 @@ import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LocalAudio extends StatefulWidget {
+  final MyText text;
+
+  const LocalAudio(this.text);
+
   @override
   _LocalAudioState createState() => _LocalAudioState();
 }
 
 class _LocalAudioState extends State<LocalAudio> {
+  //add the upload file
   final String musicPath = "Music.ogg";
-  MyText text = new MyText(
-      title: 'titulo', body: 'asdasdasdadsadsadsadadadadas', classId: null);
 
   bool playing = false;
   bool firstPlay = true;
@@ -115,7 +118,7 @@ class _LocalAudioState extends State<LocalAudio> {
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    text.title,
+                    widget.text.title,
                     style: TextStyle(
                       fontSize: 38.0,
                       fontWeight: FontWeight.bold,
@@ -125,7 +128,7 @@ class _LocalAudioState extends State<LocalAudio> {
                 Padding(
                   padding: EdgeInsets.only(left: 16.0),
                   child: Text(
-                    text.body,
+                    widget.text.body,
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.w400,
