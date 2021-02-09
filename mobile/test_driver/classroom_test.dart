@@ -43,6 +43,17 @@ void main() {
           "Total classes:2");
     });
 
+    // test("Create a class without informations", () async {
+    //   await driver.tap(find.byValueKey("createClass"));
+    //   await driver.tap(find.byValueKey("classNameField"));
+    //   await driver.enterText("");
+    //   await driver.tap(find.byValueKey("classGradeField"));
+    //   await driver.enterText("");
+    //   await driver.tap(find.text("Add"));
+    //   expect(await driver.getText(find.byValueKey("classCounter")),
+    //       "Total classes:2");
+    // });
+
     test("Update a class and check if the informations were properly updated",
         () async {
       await driver.tap(find.byValueKey("1_updateClassButton"));
