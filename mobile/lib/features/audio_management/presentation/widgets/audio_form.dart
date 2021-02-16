@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
-import 'package:mobile/features/audio_management/presentation/widgets/audio_item.dart';
 
 class AudioForm extends StatelessWidget {
   final TextEditingController titleController;
@@ -24,8 +23,6 @@ class AudioForm extends StatelessWidget {
               labelText: 'Audio title',
             ),
           ),
-          SizedBox(height: 16),
-          AudioItem(bloc: bloc, dialog: false),
         ],
       ),
     );
