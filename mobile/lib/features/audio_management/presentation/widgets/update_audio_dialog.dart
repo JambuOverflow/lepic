@@ -13,7 +13,7 @@ class UpdateAudioDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Update audio'),
+      title: Text('Update title'),
       content: AudioForm(
         titleController: _titleController,
         bloc: bloc,
