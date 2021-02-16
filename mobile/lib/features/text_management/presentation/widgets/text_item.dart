@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
-import '../pages/text_detail_page.dart';
-import '../../domain/entities/text.dart';
+import '../pages/assignment_detail_page.dart';
+import '../bloc/text_bloc.dart';
 
 class TextItem extends StatelessWidget {
-  final MyText _text;
-  TextItem(this._text);
+  final int index;
+
+  const TextItem({
+    Key key,
+    @required this.index,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<TextBloc>(context);
+    final text = bloc.texts[index];
+
     return GestureDetector(
       child: Card(
         child: ListTile(
             title: Text(
-              _text.title,
+              text.title,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
             subtitle: Hero(
-              tag: 'body_${_text.localId}',
+              tag: 'body_${text.localId}',
               child: Text(
-                _text.body,
+                text.body,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 3,
               ),
@@ -32,8 +38,8 @@ class TextItem extends StatelessWidget {
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => BlocProvider.value(
-            value: BlocProvider.of<TextBloc>(context),
-            child: TextDetailPage(_text),
+            value: bloc,
+            child: AssigmentDetailPage(textIndex: index),
           ),
         ),
       ),
