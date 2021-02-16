@@ -60,7 +60,7 @@ void main() {
     title: 'Cantinho',
     body: 'ablublubelbue',
     localId: 010,
-    classId: 100,
+    studentId: 100,
   );
 
   setUp(
