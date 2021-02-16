@@ -16,7 +16,6 @@ class TextBodyField extends StatelessWidget {
     insertTextIfExists();
 
     return TextField(
-      autofocus: true,
       controller: _textController,
       decoration: InputDecoration(
         hintText: 'Text',
