@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/statistics/presentation/pages/statistics_page.dart';
+import 'package:mobile/features/text_management/presentation/widgets/preview_card.dart';
 
 import '../../../text_correction/domain/use_cases/get_correction_use_case.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
@@ -76,7 +78,25 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
                     params: StudentTextParams(student: student, text: _text),
                   ),
                   SizedBox(height: 8),
-                  Card(child: Container(height: 200)),
+                  PreviewCard(
+                    title: 'STATISTICS',
+                    content: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 5),
+                        child: Text(
+                            'The student ${student.firstName} ${student.lastName} had his/her fluency assessed in DATE; He/She read the text in X minutes and Y seconds.'),
+                      ),
+                      FlatButton(
+                        child: Text('SEE MORE'),
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => StatisticsPage(),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                   SizedBox(height: 64),
                 ],
               ),
