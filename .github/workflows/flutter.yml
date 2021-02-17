@@ -50,7 +50,7 @@ jobs:
 
       - name: Build .apk
         working-directory: ./mobile
-        run: flutter build apk
+        run: flutter build apk --profile
         
       - uses: actions/upload-artifact@v1
         with:
