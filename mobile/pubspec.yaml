@@ -54,10 +54,7 @@ dependencies:
   email_validator: ^1.0.5
 
   # File Import
-  file_picker: ^2.1.5+1
-
-  # Play audio from local file/uIntX objects
-  audioplayers: ^0.17.3
+  file_picker: ^2.1.6
 
   # Tests
   bloc_test: ^7.1.0
