@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
-import 'package:mobile/features/audio_management/presentation/utils/upload_audio.dart';
+
+import '../../domain/entities/audio.dart';
+import '../bloc/audio_bloc.dart';
+import '../utils/audio_picker.dart';
 
 class AppBarIconBuilder extends StatelessWidget {
   final AudioBloc bloc;
@@ -13,17 +15,9 @@ class AppBarIconBuilder extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.attach_file_sharp),
           onPressed: () async {
-            final audio = await uploadAudio();
-            bloc.isAudioAttached
-                ? bloc.add(
-                    UpdateAudioEvent(
-                      oldAudio: bloc.audio,
-                      audioData: audio[0],
-                      title: bloc.audio.title,
-                    ),
-                  )
-                : bloc.add(
-                    CreateAudioEvent(audioData: audio[0], title: audio[1]));
+            final audio = await AudioPicker.pick();
+
+            if (audio != null) updateOrCreateEvent(audio);
           },
         ),
         if (bloc.isAudioAttached)
@@ -35,6 +29,21 @@ class AppBarIconBuilder extends StatelessWidget {
             },
           ),
       ],
+    );
+  }
+
+  void updateOrCreateEvent(AudioEntity audio) {
+    bloc.add(
+      bloc.isAudioAttached
+          ? UpdateAudioEvent(
+              oldAudio: bloc.audio,
+              audioData: audio.audioData,
+              title: audio.title,
+            )
+          : CreateAudioEvent(
+              audioData: audio.audioData,
+              title: audio.title,
+            ),
     );
   }
 }
