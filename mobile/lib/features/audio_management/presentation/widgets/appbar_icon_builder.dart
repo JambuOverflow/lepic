@@ -15,9 +15,12 @@ class AppBarIconBuilder extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.attach_file_sharp),
           onPressed: () async {
-            final audio = await AudioPicker.pick();
+            final pickedFile = await AudioPicker.pick();
 
-            if (audio != null) updateOrCreateEvent(audio);
+            if (pickedFile != null)
+              updateOrCreateEvent(
+                AudioPicker.pickerResultToAudioEntity(pickedFile),
+              );
           },
         ),
         if (bloc.isAudioAttached)
