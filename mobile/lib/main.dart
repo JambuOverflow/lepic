@@ -8,7 +8,7 @@ import 'core/presentation/pages/route_generator.dart';
 import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
-import 'injection_container.dart';
+import 'injection_containers/injection_container.dart';
 
 const IS_IN_DEVELOPMENT = false;
 
@@ -16,7 +16,7 @@ void main() async {
   // This setting overrides the default serializer to our custom one
   moorRuntimeOptions.defaultSerializer = UserSerializer();
   WidgetsFlutterBinding.ensureInitialized();
-  await setUpLocator();
+  await setUpServiceLocator();
 
   final authBloc = await GetIt.instance<AuthBloc>();
   authBloc.add(AppStartedEvent());
