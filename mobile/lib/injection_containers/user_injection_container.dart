@@ -1,41 +1,29 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/core/presentation/bloc/bottom_navigation_bloc.dart';
-import 'package:mobile/core/utils/input_converter.dart';
-import 'package:mobile/features/user_management/domain/use_cases/login.dart';
-import 'package:mobile/features/user_management/domain/use_cases/logout_use_case.dart';
-import 'package:mobile/features/user_management/domain/use_cases/retrieve_token_use_case.dart';
-import 'package:mobile/features/user_management/presentation/bloc/auth_bloc.dart';
-import 'package:mobile/features/user_management/presentation/bloc/login_form_bloc.dart';
-import 'package:mobile/features/user_management/presentation/bloc/signup_form_bloc.dart';
-import 'core/data/database.dart';
-import 'features/user_management/data/data_sources/user_local_data_source.dart';
-import 'features/user_management/data/data_sources/user_remote_data_source.dart';
-import 'features/user_management/data/repositories/user_repository_impl.dart';
-import 'features/user_management/domain/repositories/user_repository.dart';
-import 'features/user_management/domain/use_cases/create_user_use_case.dart';
-import 'features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
-import 'features/user_management/domain/use_cases/update_user_use_case.dart';
 import 'package:http/http.dart' as http;
 import 'package:clock/clock.dart';
-import 'core/network/network_info.dart';
 
-import 'class_injection_container.dart' as ci;
-import 'student_injection_container.dart' as si;
-import 'text_injection_container.dart' as ti;
-import 'audio_injection_container.dart' as ai;
-import 'injection_containers/correction_container.dart' as correctionSl;
+import '../features/user_management/presentation/bloc/auth_bloc.dart';
+import '../core/data/database.dart';
+import '../core/network/network_info.dart';
+import '../core/presentation/bloc/bottom_navigation_bloc.dart';
+import '../core/utils/input_converter.dart';
+import '../features/user_management/data/data_sources/user_local_data_source.dart';
+import '../features/user_management/data/data_sources/user_remote_data_source.dart';
+import '../features/user_management/data/repositories/user_repository_impl.dart';
+import '../features/user_management/domain/repositories/user_repository.dart';
+import '../features/user_management/domain/use_cases/create_user_use_case.dart';
+import '../features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
+import '../features/user_management/domain/use_cases/login.dart';
+import '../features/user_management/domain/use_cases/logout_use_case.dart';
+import '../features/user_management/domain/use_cases/retrieve_token_use_case.dart';
+import '../features/user_management/domain/use_cases/update_user_use_case.dart';
+import '../features/user_management/presentation/bloc/login_form_bloc.dart';
+import '../features/user_management/presentation/bloc/signup_form_bloc.dart';
 
-
-void setUpLocator() {
+void init() {
   final getIt = GetIt.instance;
-
-  ci.init();
-  si.init();
-  ti.init();
-  ai.init();
-  correctionSl.init();
 
   getIt.registerLazySingleton(
     () => AuthBloc(
