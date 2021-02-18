@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:clock/clock.dart';
 
+import '../features/user_management/presentation/bloc/auth_bloc.dart';
 import '../core/data/database.dart';
 import '../core/network/network_info.dart';
 import '../core/presentation/bloc/bottom_navigation_bloc.dart';
@@ -23,6 +24,13 @@ import '../features/user_management/presentation/bloc/signup_form_bloc.dart';
 
 void init() {
   final getIt = GetIt.instance;
+
+  getIt.registerLazySingleton(
+    () => AuthBloc(
+      getLoggedInUserCase: getIt(),
+      logoutCase: getIt(),
+    ),
+  );
 
   getIt.registerLazySingleton(() => BottomNavigationBloc());
   getIt.registerFactory(() => SignupFormBloc(createNewUser: getIt()));

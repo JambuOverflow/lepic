@@ -16,7 +16,7 @@ void main() async {
   // This setting overrides the default serializer to our custom one
   moorRuntimeOptions.defaultSerializer = UserSerializer();
   WidgetsFlutterBinding.ensureInitialized();
-  await setUpServiceLocator();
+  setUpServiceLocator();
 
   final authBloc = await GetIt.instance<AuthBloc>();
   authBloc.add(AppStartedEvent());
