@@ -204,11 +204,11 @@ class Database extends _$Database {
     var result = await (select(audioModels)
           ..where(
               (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
-        .get();
-    if (result.isEmpty) {
+        .getSingle();
+    if (result == null) {
       throw SqliteException(787, "");
     }
-    return result[0];
+    return result;
   }
 
   /// Updates audio

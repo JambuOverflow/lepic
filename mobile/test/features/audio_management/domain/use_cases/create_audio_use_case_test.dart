@@ -11,12 +11,12 @@ import 'package:moor/moor.dart';
 class MockAudioRepository extends Mock implements AudioRepository {}
 
 void main() {
-  CreateAudio useCase;
+  CreateAudioUseCase useCase;
   MockAudioRepository mockAudioRepository;
 
   setUp(() {
     mockAudioRepository = MockAudioRepository();
-    useCase = CreateAudio(repository: mockAudioRepository);
+    useCase = CreateAudioUseCase(repository: mockAudioRepository);
   });
   Uint8List audio_data;
 

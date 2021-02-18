@@ -24,7 +24,9 @@ import 'core/network/network_info.dart';
 import 'class_injection_container.dart' as ci;
 import 'student_injection_container.dart' as si;
 import 'text_injection_container.dart' as ti;
+import 'audio_injection_container.dart' as ai;
 import 'injection_containers/correction_container.dart' as correctionSl;
+
 
 void setUpLocator() {
   final getIt = GetIt.instance;
@@ -32,6 +34,7 @@ void setUpLocator() {
   ci.init();
   si.init();
   ti.init();
+  ai.init();
   correctionSl.init();
 
   getIt.registerLazySingleton(
