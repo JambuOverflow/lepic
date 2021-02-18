@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mobile/features/text_management/presentation/widgets/preview_card.dart';
 
+import 'preview_card.dart';
 import '../../../text_correction/presentation/pages/correction_page.dart';
-import '../../../text_correction/domain/use_cases/get_correction_use_case.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 
 class CorrectionPreviewCard extends StatelessWidget {
-  final StudentTextParams params;
-
-  const CorrectionPreviewCard({
-    Key key,
-    @required this.params,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
@@ -24,9 +15,8 @@ class CorrectionPreviewCard extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => BlocProvider(
-                  create: (_) =>
-                      GetIt.instance.get<CorrectionBloc>(param1: params),
+                builder: (_) => BlocProvider.value(
+                  value: BlocProvider.of<CorrectionBloc>(context),
                   child: CorrectionPage(),
                 ),
               ),

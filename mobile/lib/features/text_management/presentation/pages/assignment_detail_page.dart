@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 
 import '../../../text_correction/domain/use_cases/get_correction_use_case.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
@@ -29,6 +30,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
   final _scrollController = ScrollController();
 
   TextBloc textBloc;
+  AudioBloc audioBloc;
   CorrectionBloc correctionBloc;
 
   Student student;
@@ -40,7 +42,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
     super.initState();
   }
 
-  MyText get _text => textBloc.texts[widget.textIndex];
+  MyText get text => textBloc.texts[widget.textIndex];
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,12 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
       providers: [
         BlocProvider(
           create: (_) => correctionBloc = GetIt.instance.get<CorrectionBloc>(
-            param1: StudentTextParams(text: _text, student: student),
+            param1: StudentTextParams(text: text, student: student),
+          ),
+        ),
+        BlocProvider(
+          create: (_) => audioBloc = GetIt.instance.get<AudioBloc>(
+            param1: StudentTextParams(text: text, student: student),
           ),
         ),
       ],
@@ -57,7 +64,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
           return Scaffold(
             appBar: AppBar(
               title: Text('${student.firstName} ${student.lastName}'),
-              bottom: AppBarBottomTextTitle(title: _text.title),
+              bottom: AppBarBottomTextTitle(title: text.title),
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
@@ -68,13 +75,11 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
               child: ListView(
                 padding: EdgeInsets.all(16),
                 children: [
-                  TextPreviewCard(text: _text),
+                  TextPreviewCard(text: text),
                   SizedBox(height: 8),
                   AudioPreviewCard(),
                   SizedBox(height: 8),
-                  CorrectionPreviewCard(
-                    params: StudentTextParams(student: student, text: _text),
-                  ),
+                  CorrectionPreviewCard(),
                   SizedBox(height: 8),
                   Card(child: Container(height: 200)),
                   SizedBox(height: 64),
