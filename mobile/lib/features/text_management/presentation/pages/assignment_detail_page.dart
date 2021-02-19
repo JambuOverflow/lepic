@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-<<<<<<< HEAD
 import 'package:mobile/features/statistics/presentation/pages/statistics_page.dart';
 import 'package:mobile/features/text_management/presentation/widgets/preview_card.dart';
 import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
 
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
-
 
 import '../../../text_correction/domain/use_cases/get_correction_use_case.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
