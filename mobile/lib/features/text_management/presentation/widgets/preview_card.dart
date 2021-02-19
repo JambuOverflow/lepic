@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PreviewCard extends StatelessWidget {
+  final bool enabled;
   final bool includeTitle;
   final Color titleBackgroundColor;
   final Color titleColor;
@@ -14,11 +15,13 @@ class PreviewCard extends StatelessWidget {
     this.includeTitle = true,
     @required this.title,
     @required this.content,
+    @required this.enabled,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: enabled ? 4 : 0,
       child: Column(
         children: [
           if (includeTitle) buildTitleBar(),

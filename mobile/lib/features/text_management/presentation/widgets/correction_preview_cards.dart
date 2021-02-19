@@ -9,6 +9,7 @@ class CorrectionPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
+      enabled: false,
       title: 'READING CORRECTION',
       content: [
         InkWell(

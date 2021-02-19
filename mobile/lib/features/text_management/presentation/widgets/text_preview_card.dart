@@ -19,6 +19,7 @@ class TextPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
+      enabled: true,
       title: 'TEXT',
       content: [
         buildTextPreviewArea(context),
