@@ -13,6 +13,7 @@ class UserLoginInputField extends StatelessWidget {
     return BlocBuilder<LoginFormBloc, LoginFormState>(
       builder: (context, state) {
         return TextFormField(
+          keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             border: UnderlineInputBorder(),
             labelText: 'E-mail',
