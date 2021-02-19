@@ -19,14 +19,16 @@ part 'audio_event.dart';
 part 'audio_state.dart';
 
 class AudioBloc extends Bloc<AudioEvent, AudioState> {
-  AudioEntity audio;
-
   final MyText text;
   final Student student;
+
   final CreateAudioUseCase createAudio;
   final UpdateAudioUseCase updateAudio;
   final GetAudioUseCase getAudio;
   final DeleteAudioUseCase deleteAudio;
+
+  AudioEntity _audio;
+  AudioEntity get audio => this._audio;
 
   AudioBloc({
     @required this.text,
@@ -73,7 +75,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
         yield Error(message: _mapFailureToMessage(failure));
       },
       (_) async* {
-        yield* _loadAndReplaceStudentText();
+        yield* _loadAndReplaceAudio();
       },
     );
   }
@@ -93,14 +95,15 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   }
 
   Stream<AudioState> _deleteAudioState(DeleteAudioEvent event) async* {
-    final failureOrSuccess = await deleteAudio(AudioParams(audio: event.audio));
+    final failureOrSuccess = await deleteAudio(AudioParams(audio: this.audio));
 
     yield* failureOrSuccess.fold(
       (failure) async* {
         yield Error(message: _mapFailureToMessage(CacheFailure()));
       },
       (_) async* {
-        yield* _loadAndReplaceStudentText();
+        this._audio = null;
+        yield* _loadAndReplaceAudio();
       },
     );
   }
@@ -108,10 +111,10 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   Stream<AudioState> _getAudioState(LoadAudioEvent event) async* {
     yield AudioLoadInProgress();
 
-    yield* _loadAndReplaceStudentText();
+    yield* _loadAndReplaceAudio();
   }
 
-  Stream<AudioState> _loadAndReplaceStudentText() async* {
+  Stream<AudioState> _loadAndReplaceAudio() async* {
     final failureOrAudio = await getAudio(
       StudentTextParams(student: student, text: text),
     );
@@ -119,7 +122,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     yield failureOrAudio.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
       (audio) {
-        this.audio = audio;
+        this._audio = audio;
 
         return AudioLoaded(audio: audio);
       },
