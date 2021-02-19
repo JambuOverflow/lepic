@@ -14,13 +14,13 @@ class StatisticsPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String content =
+    final String content =
         '${_student.firstName} ${_student.lastName} had his/her fluency assessed in DATE. He/She read the text in X minutes and Y seconds with Z% of correctness.';
     return PreviewCard(
       title: 'STATISTICS',
       content: [
         buildTextPreviewArea(context, content),
-        buildButtons(context, content),
+        buildButtons(context),
       ],
     );
   }
@@ -61,11 +61,11 @@ class StatisticsPreviewCard extends StatelessWidget {
     );
   }
 
-  void navigateToDetails(BuildContext context, String content) {
+  void navigateToDetails(BuildContext context) {
     print('navigate');
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => StatisticsPage(student: _student, content: content),
+        builder: (_) => StatisticsPage(student: _student, content: ),
       ),
     );
   }
