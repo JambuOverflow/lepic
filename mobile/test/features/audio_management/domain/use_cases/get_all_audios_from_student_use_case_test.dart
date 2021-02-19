@@ -16,7 +16,7 @@ import 'package:mockito/mockito.dart';
 class MockAudioRepository extends Mock implements AudioRepository {}
 
 void main() {
-  GetAllAudiosFromStudent useCase;
+  GetAllAudiosFromStudentUseCase useCase;
   MockAudioRepository mockAudioRepository;
 
   // Returns the sum of a and b
@@ -29,7 +29,7 @@ void main() {
 
   setUp(() {
     mockAudioRepository = MockAudioRepository();
-    useCase = GetAllAudiosFromStudent(repository: mockAudioRepository);
+    useCase = GetAllAudiosFromStudentUseCase(repository: mockAudioRepository);
   });
 
   Uint8List audio_data;

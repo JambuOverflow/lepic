@@ -18,6 +18,7 @@ class TextTitleField extends StatelessWidget {
     insertTextIfExists();
 
     return TextField(
+      autofocus: true,
       maxLines: 1,
       controller: _titleController,
       decoration: InputDecoration(

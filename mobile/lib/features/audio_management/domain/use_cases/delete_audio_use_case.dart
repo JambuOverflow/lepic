@@ -7,10 +7,10 @@ import '../../../../core/use_cases/use_case.dart';
 import '../repositories/audio_repository.dart';
 import 'audio_params.dart';
 
-class DeleteAudio implements UseCase<void, AudioParams> {
+class DeleteAudioUseCase implements UseCase<void, AudioParams> {
   final AudioRepository repository;
 
-  DeleteAudio({@required this.repository});
+  DeleteAudioUseCase({@required this.repository});
 
   @override
   Future<Either<Failure, void>> call(AudioParams params) =>

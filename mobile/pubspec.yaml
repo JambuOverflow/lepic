@@ -53,6 +53,9 @@ dependencies:
   formz: ^0.3.2
   email_validator: ^1.0.5
 
+  # File Import
+  file_picker: ^2.1.6
+
   # Tests
   bloc_test: ^7.1.0
 
@@ -83,6 +86,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
       - assets/images/JambuOverflow.png
+      - assets/audios/test_sample.mp3
       - assets/images/no-audio.png
       - assets/images/highlight.png
       - assets/images/highlight-disabled.png
