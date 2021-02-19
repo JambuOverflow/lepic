@@ -30,10 +30,6 @@ class UpdateAudioEvent extends AudioEvent {
   });
 }
 
-class DeleteAudioEvent extends AudioEvent {
-  final AudioEntity audio;
-
-  DeleteAudioEvent({@required this.audio});
-}
+class DeleteAudioEvent extends AudioEvent {}
 
 class LoadAudioEvent extends AudioEvent {}
