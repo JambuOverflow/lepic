@@ -30,8 +30,6 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
   final _scrollController = ScrollController();
 
   TextBloc textBloc;
-  AudioBloc audioBloc;
-  CorrectionBloc correctionBloc;
 
   Student student;
 
@@ -49,12 +47,12 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => correctionBloc = GetIt.instance.get<CorrectionBloc>(
+          create: (_) => GetIt.instance.get<CorrectionBloc>(
             param1: StudentTextParams(text: text, student: student),
           ),
         ),
         BlocProvider(
-          create: (_) => audioBloc = GetIt.instance.get<AudioBloc>(
+          create: (_) => GetIt.instance.get<AudioBloc>(
             param1: StudentTextParams(text: text, student: student),
           ),
         ),
