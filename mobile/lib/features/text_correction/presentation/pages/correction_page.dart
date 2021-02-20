@@ -15,7 +15,10 @@ class CorrectionPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => showDialog(
         context: context,
-        child: BackConfirmationDialog(),
+        child: BlocProvider.value(
+          value: BlocProvider.of<CorrectionBloc>(context),
+          child: BackConfirmationDialog(),
+        ),
       ),
       child: Scaffold(
         floatingActionButton: _buildFloatingActionButton(context),

@@ -47,6 +47,8 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
     _buildIndexToWordMap(text);
   }
 
+  void clearMistakes() => indexToMistakes.clear();
+
   @override
   Stream<CorrectionState> mapEventToState(
     CorrectionEvent event,
