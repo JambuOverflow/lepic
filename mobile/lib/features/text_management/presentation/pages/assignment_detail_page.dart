@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 
+import '../bloc/assignment_status_cubit.dart';
+import '../../../audio_management/presentation/bloc/audio_bloc.dart';
 import '../../../text_correction/domain/use_cases/get_correction_use_case.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 import '../widgets/assignment_contextual_floating_action_button.dart';
@@ -30,6 +31,8 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
   final _scrollController = ScrollController();
 
   TextBloc textBloc;
+  AudioBloc audioBloc;
+  CorrectionBloc correctionBloc;
 
   Student student;
 
@@ -47,13 +50,22 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => GetIt.instance.get<CorrectionBloc>(
+          lazy: false,
+          create: (_) => correctionBloc = GetIt.instance.get<CorrectionBloc>(
             param1: StudentTextParams(text: text, student: student),
           ),
         ),
         BlocProvider(
-          create: (_) => GetIt.instance.get<AudioBloc>(
+          lazy: false,
+          create: (_) => audioBloc = GetIt.instance.get<AudioBloc>(
             param1: StudentTextParams(text: text, student: student),
+          ),
+        ),
+        BlocProvider(
+          create: (_) => AssignmentStatusCubit(
+            audioBloc: audioBloc,
+            textBloc: textBloc,
+            correctionBloc: correctionBloc,
           ),
         ),
       ],
