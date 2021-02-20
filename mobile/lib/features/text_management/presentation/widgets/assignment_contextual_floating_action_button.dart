@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'correction_assignment_floating_button.dart';
 import '../bloc/assignment_status_cubit.dart';
 import 'audio_assignment_floating_button.dart';
 
@@ -25,10 +26,10 @@ class _AssignmentContextualFloatingActionButtonState
   Widget getContextualButton(AssignmentStatus status) {
     print(status);
     switch (status) {
-      case AssignmentStatus.waiting_audio:
-        return AudioAssignmentFloatingButton(parentKey: key);
       case AssignmentStatus.loading:
         return loadingButton();
+      case AssignmentStatus.waiting_audio:
+        return AudioAssignmentFloatingButton(parentKey: key);
       case AssignmentStatus.waiting_correction:
         return CorrectionAssignmentFloatingButton();
       default:
@@ -44,21 +45,6 @@ class _AssignmentContextualFloatingActionButtonState
       label: Text(' Loading...'),
       backgroundColor: Colors.grey,
       onPressed: null,
-    );
-  }
-}
-
-class CorrectionAssignmentFloatingButton extends StatelessWidget {
-  const CorrectionAssignmentFloatingButton({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      onPressed: () {},
-      label: Text('Correct Text'),
-      icon: Icon(Icons.assignment_turned_in),
     );
   }
 }
