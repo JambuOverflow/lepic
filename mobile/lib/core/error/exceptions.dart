@@ -9,3 +9,9 @@ class CacheException implements Exception {
 
   CacheException({this.message});
 }
+
+class EmptyDataException implements Exception {
+  final String message;
+
+  EmptyDataException({this.message});
+}
