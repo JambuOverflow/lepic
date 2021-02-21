@@ -7,7 +7,7 @@ import '../../../../core/error/failures.dart';
 abstract class AudioRepository {
   Future<Either<Failure, AudioEntity>> createAudio(AudioEntity audio);
   Future<Either<Failure, AudioEntity>> updateAudio(AudioEntity audio);
-  Future<Either<Failure, AudioEntity>> getAudio({
+  Future<Either<Null, AudioEntity>> getAudio({
     Student student,
     MyText text,
   });

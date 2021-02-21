@@ -223,7 +223,7 @@ void main() {
       );
     });
 
-    test('should return a CacheFailure when a CacheException is throw',
+    test('should return null when a CacheException is throw',
         () async {
       when(mocktextEntityModelConverter.mytextEntityToModel(tText))
           .thenAnswer((_) async => tTextModel);
@@ -234,7 +234,7 @@ void main() {
 
       final result = await repository.getAudio(text: tText, student: tStudent);
 
-      expect(result, Left(CacheFailure()));
+      expect(result, Left(null));
     });
   });
 }

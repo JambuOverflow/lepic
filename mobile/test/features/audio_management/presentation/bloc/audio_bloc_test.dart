@@ -2,18 +2,15 @@ import 'dart:io';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/core/network/response.dart';
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
-import 'package:mobile/features/audio_management/domain/use_cases/audio_params.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/create_audio_use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/delete_audio_use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/get_audio_use_case.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/update_audio_use_case.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
-import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_correction/domain/use_cases/get_correction_use_case.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
@@ -246,7 +243,7 @@ void main() {
         'Should emit [Error] when can not get the audio',
         () {
           when(mockGetAudio(any))
-              .thenAnswer((_) async => Left(ServerFailure()));
+              .thenAnswer((_) async => Left(null));
 
           final expected = [
             AudioLoadInProgress(),
