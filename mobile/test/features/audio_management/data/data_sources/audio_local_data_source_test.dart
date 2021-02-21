@@ -143,16 +143,16 @@ Future<void> main() {
       expect(result, tAudioOutputModel1);
     });
 
-    test("should throw a CacheException", () async {
+    test("should throw a EmptyDataException", () async {
       when(mockDatabase.getAudio(studentPk: 1, textPk: 1))
-          .thenThrow(SqliteException(787, ""));
+          .thenThrow(EmptyDataException());
 
       expect(
           () async => await audioLocalDataSourceImpl.getAudioFromCache(
                 studentModel: tStudentModel,
                 textModel: tTextModel,
               ),
-          throwsA(TypeMatcher<CacheException>()));
+          throwsA(TypeMatcher<EmptyDataException>()));
     });
   });
 
