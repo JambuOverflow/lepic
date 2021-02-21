@@ -82,7 +82,7 @@ class AudioRepositoryImpl implements AudioRepository {
       );
       return Right(audioEntity);
     } on CacheException {
-      return Left(CacheFailure());
+      return Left(EmptyDataFailure());
     }
   }
 

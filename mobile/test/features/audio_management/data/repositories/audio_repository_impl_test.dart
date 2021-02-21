@@ -234,7 +234,7 @@ void main() {
 
       final result = await repository.getAudio(text: tText, student: tStudent);
 
-      expect(result, Left(CacheFailure()));
+      expect(result, Left(EmptyDataFailure()));
     });
   });
 }
