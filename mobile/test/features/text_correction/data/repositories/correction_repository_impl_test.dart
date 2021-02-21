@@ -274,11 +274,11 @@ void main() {
       verifyNoMoreInteractions(mockLocalDataSource);
     });
 
-    test('should return a CacheFailure when a CacheException is throw',
+    test('should return a EmptyDataFailure when a EmptyDataException is throw',
         () async {
       when(mockLocalDataSource.getCorrectionMistakesFromCache(
               studentModel: studentModel, textModel: textModel))
-          .thenThrow(CacheException());
+          .thenThrow(EmptyDataException());
       when(mockTextEntityModelConverter.mytextEntityToModel(text))
           .thenAnswer((_) async => textModel);
 
@@ -290,7 +290,7 @@ void main() {
         mockLocalDataSource.getCorrectionMistakesFromCache(
             studentModel: studentModel, textModel: textModel),
       ]);
-      expect(result, Left(CacheFailure()));
+      expect(result, Left(EmptyDataFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
   });
@@ -316,10 +316,10 @@ void main() {
     });
 
     
-    test('should return a CacheFailure when a CacheException is throw',
+    test('should return a EmptyDataFailure when a EmptyDataException is throw',
         () async {
       when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
-              studentId: 1, textId: 1)).thenThrow(CacheException());
+              studentId: 1, textId: 1)).thenThrow(EmptyDataException());
 
       final result =
           await repository.getCorrectionFromId(studentId: 1, textId: 1);
@@ -329,7 +329,7 @@ void main() {
               studentId:1, textId: 1),
         
       ]);
-      expect(result, Left(CacheFailure()));
+      expect(result, Left(EmptyDataFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
     
