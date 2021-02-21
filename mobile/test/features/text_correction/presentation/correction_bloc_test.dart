@@ -1,8 +1,8 @@
-import 'dart:wasm';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
 import 'package:mobile/core/error/failures.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
@@ -13,7 +13,6 @@ import 'package:mobile/features/text_correction/domain/use_cases/get_correction_
 import 'package:mobile/features/text_correction/domain/use_cases/update_correction_use_case.dart';
 import 'package:mobile/features/text_correction/presentation/bloc/correction_bloc.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
-import 'package:mockito/mockito.dart';
 
 class MockCreateCorrectionUseCase extends Mock
     implements CreateCorrectionUseCase {}
@@ -90,7 +89,7 @@ void main() {
       build: () => bloc,
       act: (bloc) => bloc.add(HighlightEvent(wordIndex: firstIndex)),
       verify: (bloc) => bloc.indexToMistakes[firstIndex].isHighlighted,
-      expect: [CorrectionLoaded(tCorrectionMistake)],
+      expect: [CorrectionInProgress(tCorrectionMistake)],
     );
   });
 
@@ -111,7 +110,7 @@ void main() {
         commentary: tComment,
       )),
       verify: (bloc) => bloc.indexToMistakes[firstIndex].hasCommentary,
-      expect: [CorrectionLoaded(tCorrectionMistake)],
+      expect: [CorrectionInProgress(tCorrectionMistake)],
     );
   });
 
@@ -127,7 +126,7 @@ void main() {
       },
       skip: 1,
       verify: (bloc) => bloc.indexToMistakes[firstIndex] == null,
-      expect: [CorrectionLoaded(tCorrection)],
+      expect: [CorrectionInProgress(tCorrection)],
     );
   });
 

@@ -26,11 +26,12 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   final MyText text;
   final Student student;
 
+  Correction _finishedCorrection;
   final Map<int, Mistake> indexToMistakes = {};
   final Map<int, String> indexToWord = {};
 
   List<Mistake> get mistakes => indexToMistakes.values.toList();
-  Correction get _correction => Correction(
+  Correction get _currentCorrection => Correction(
         textId: text.localId,
         studentId: student.id,
         mistakes: mistakes,
@@ -91,7 +92,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
       RemoveMistakeEvent event) async* {
     indexToMistakes.remove(event.wordIndex);
 
-    yield CorrectionLoaded(_correction);
+    yield CorrectionInProgress(_currentCorrection);
   }
 
   Stream<CorrectionState> _loadCorrectionState() async* {
@@ -116,7 +117,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
 
   Stream<CorrectionState> _createCorrectionAndYieldState() async* {
     final correctionEither = await createCorrectionUseCase(
-      CorrectionParams(correction: _correction),
+      CorrectionParams(correction: _currentCorrection),
     );
 
     yield correctionEither.fold(
@@ -127,7 +128,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
 
   Stream<CorrectionState> _updateCorrectionState() async* {
     final updateOrFailure = await updateCorrectionUseCase(
-      CorrectionParams(correction: _correction),
+      CorrectionParams(correction: _currentCorrection),
     );
 
     yield updateOrFailure.fold(
@@ -138,14 +139,14 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
 
   Stream<CorrectionState> _deleteCorrectionState() async* {
     final deleteOrFailure = await deleteCorrectionUseCase(
-      CorrectionParams(correction: _correction),
+      CorrectionParams(correction: _currentCorrection),
     );
 
     yield deleteOrFailure.fold(
       (failure) => CorrectionDeletionError(),
       (success) {
         indexToMistakes.clear();
-        return CorrectionLoaded(_correction);
+        return CorrectionLoaded(_currentCorrection);
       },
     );
   }
@@ -153,7 +154,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   Stream<CorrectionState> _addMistakeAndYieldState(Mistake mistake) async* {
     indexToMistakes[mistake.wordIndex] = mistake;
 
-    yield CorrectionLoaded(_correction);
+    yield CorrectionInProgress(_currentCorrection);
   }
 
   void _buildIndexToWordMap(MyText text) {
