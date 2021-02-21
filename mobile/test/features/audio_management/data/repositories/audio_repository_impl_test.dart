@@ -237,4 +237,39 @@ void main() {
       expect(result, Left(EmptyDataFailure()));
     });
   });
+
+  group('getAudioFromId', () {
+    test('should return a list of audios when getAudios is called', () async {
+      when(mockLocalDataSource.getAudioFromCacheWithId(
+        studentId: 1,
+        textId: 1,
+      )).thenAnswer((_) async => tAudioModelOutput);
+      when(mocktextEntityModelConverter.mytextEntityToModel(tText))
+          .thenAnswer((_) async => tTextModel);
+
+      final result = await repository.getAudioFromId(textId: 1, 
+      studentId: 1);
+
+      expect(result, Right(tAudioOutput));
+      verify(mockLocalDataSource.getAudioFromCacheWithId(
+        studentId: 1,
+        textId: 1,
+      ));
+      
+    });
+
+    test('should return null when a CacheException is throw',
+        () async {
+      when(mocktextEntityModelConverter.mytextEntityToModel(tText))
+          .thenAnswer((_) async => tTextModel);
+      when(mockLocalDataSource.getAudioFromCacheWithId(
+        studentId: 1,
+        textId: 1,
+      )).thenThrow(EmptyDataException());
+
+      final result = await repository.getAudioFromId(textId: 1, studentId: 1);
+
+      expect(result, Left(EmptyDataFailure()));
+    });
+  });
 }

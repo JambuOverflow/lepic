@@ -156,6 +156,33 @@ Future<void> main() {
     });
   });
 
+  group("getAudioWithId", () {
+    test("should correctly one audio", () async {
+      when(mockDatabase.getAudio(studentPk: 1, textPk: 1))
+          .thenAnswer((_) async => tAudioOutputModel1);
+
+      final result = await audioLocalDataSourceImpl.getAudioFromCacheWithId(
+        studentId: 1,
+        textId: 1,
+      );
+
+      verify(mockDatabase.getAudio(studentPk: 1, textPk: 1));
+      expect(result, tAudioOutputModel1);
+    });
+
+    test("should throw a EmptyDataException", () async {
+      when(mockDatabase.getAudio(studentPk: 1, textPk: 1))
+          .thenThrow(EmptyDataException());
+
+      expect(
+          () async => await audioLocalDataSourceImpl.getAudioFromCacheWithId(
+                studentId: 1,
+                textId: 1,
+              ),
+          throwsA(TypeMatcher<EmptyDataException>()));
+    });
+  });
+
   group("updateAudio", () {
     test("should correctly update a cached audio", () async {
       when(mockDatabase.updateAudio(tAudioOutputModel1))
