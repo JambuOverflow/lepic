@@ -2,6 +2,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/entity_model_converters/mistake_entity_model_converter.dart';
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 import 'package:matcher/matcher.dart';
@@ -39,22 +40,22 @@ void main() {
       expect(result, tCorrection);
     });
 
-    test('should throw an error when mistakes have different text_ids', () async {
+    test('should throw an ErrorDescription when mistakes have different text_ids', () async {
       expect(
           () => mistakeEntityModelConverter.modelToEntity([tMistakeModel, tMistakeModel.copyWith(localId: 2, textId: 1)]),
           throwsA(TypeMatcher<ErrorDescription>()));
     });
 
-    test('should throw an error when mistakes have different student_ids', () async {
+    test('should throw an ErrorDescription when mistakes have different student_ids', () async {
       expect(
           () => mistakeEntityModelConverter.modelToEntity([tMistakeModel, tMistakeModel.copyWith(localId: 2, studentId: 1)]),
           throwsA(TypeMatcher<ErrorDescription>()));
     });
 
-    test('should throw an error when mistake list is empty', () async {
+    test('should throw an EmptyDataException when mistake list is empty', () async {
       expect(
           () => mistakeEntityModelConverter.modelToEntity([]),
-          throwsA(TypeMatcher<ErrorDescription>()));
+          throwsA(TypeMatcher<EmptyDataException>()));
     });
 
   });
