@@ -230,7 +230,7 @@ void main() {
       when(mockLocalDataSource.getAudioFromCache(
         studentModel: tStudentModel,
         textModel: tTextModel,
-      )).thenThrow(CacheException());
+      )).thenThrow(EmptyDataException());
 
       final result = await repository.getAudio(text: tText, student: tStudent);
 

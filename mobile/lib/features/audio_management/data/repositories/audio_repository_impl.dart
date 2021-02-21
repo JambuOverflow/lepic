@@ -82,6 +82,8 @@ class AudioRepositoryImpl implements AudioRepository {
       );
       return Right(audioEntity);
     } on CacheException {
+      return Left(CacheFailure());
+    } on EmptyDataException {
       return Left(EmptyDataFailure());
     }
   }
