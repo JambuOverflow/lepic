@@ -65,7 +65,7 @@ class AudioRepositoryImpl implements AudioRepository {
   }
 
   @override
-  Future<Either<Null, AudioEntity>> getAudio(
+  Future<Either<Failure, AudioEntity>> getAudio(
       {Student student, MyText text}) async {
     try {
       final StudentModel studentModel = studentEntityToModel(student);
@@ -82,7 +82,7 @@ class AudioRepositoryImpl implements AudioRepository {
       );
       return Right(audioEntity);
     } on CacheException {
-      return Left(null);
+      return Left(EmptyDataFailure());
     }
   }
 

@@ -12,7 +12,7 @@ class GetAudioUseCase implements UseCase<AudioEntity, StudentTextParams> {
   GetAudioUseCase({@required this.repository});
 
   @override
-  Future<Either<Null, AudioEntity>> call(
+  Future<Either<Failure, AudioEntity>> call(
     StudentTextParams params,
   ) =>
       repository.getAudio(
