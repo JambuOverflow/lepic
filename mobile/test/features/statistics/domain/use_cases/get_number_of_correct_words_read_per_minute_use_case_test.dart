@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
-import 'package:mobile/features/audio_management/domain/use_cases/audio_params.dart';
+import 'package:mobile/features/audio_management/domain/use_cases/get_audio_from_id_use_case.dart';
 import 'package:mobile/features/statistics/domain/use_cases/get_number_of_correct_words_read_per_minute_use_case.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
@@ -15,22 +15,19 @@ import 'package:mockito/mockito.dart';
 
 class MockGetTextUseCase extends Mock implements GetTextUseCase {}
 
-
-
-class MockGetCorrectionFromIdUseCase extends Mock
-    implements GetCorrectionFromIdUseCase {}
+class MockGetAudioFromId extends Mock implements GetAudioFromIdUseCase {}
 
 void main() {
   GetNumberOfCorrectWordsReadPerMinuteUseCase useCase;
   MockGetTextUseCase mockGetTextUseCase;
-  MockGetCorrectionFromIdUseCase mockGetCorrectionFromIdUseCase;
+  MockGetAudioFromId mockGetAudioFromId;
 
   setUp(() {
     mockGetTextUseCase = MockGetTextUseCase();
-    mockGetCorrectionFromIdUseCase = MockGetCorrectionFromIdUseCase();
+    mockGetAudioFromId = MockGetAudioFromId();
     useCase = GetNumberOfCorrectWordsReadPerMinuteUseCase(
         getTextUseCase: mockGetTextUseCase,
-        getCorrectionFromIdUseCase: mockGetCorrectionFromIdUseCase);
+        getAudioFromIdUseCase: mockGetAudioFromId);
   });
 
   Uint8List audio_data = Uint8List.fromList([1, 2]);
@@ -55,12 +52,11 @@ void main() {
   final tCorrection = Correction(textId: 1, studentId: 1, mistakes: mistakes);
 
   test('should return the number of correct words per minute', () async {
-
-    when(mockGetTextUseCase.call(1)).thenAnswer((_) async => Right(tText));
-    when(mockGetCorrectionFromIdUseCase
-            .call(CorrectionIdParams(textId: 1, studentId: 1)))
-        .thenAnswer((_) async => Right(tCorrection));
-    final result = await useCase(AudioParams(audio: tAudio));
+    final CorrectionIdParams params =
+        CorrectionIdParams(textId: 1, studentId: 1);
+    when(mockGetTextUseCase(1)).thenAnswer((_) async => Right(tText));
+    when(mockGetAudioFromId(params)).thenAnswer((_) async => Right(tAudio));
+    final result = await useCase(CorrectionParams(correction: tCorrection));
 
     expect(result, Right(0.5));
   });

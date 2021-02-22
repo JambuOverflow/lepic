@@ -89,6 +89,26 @@ class AudioRepositoryImpl implements AudioRepository {
   }
 
   @override
+  Future<Either<Failure, AudioEntity>> getAudioFromId(
+      {int studentId, int textId}) async {
+    try {
+      
+      var audioModel = await localDataSource.getAudioFromCacheWithId(
+        studentId: studentId,
+        textId: textId,
+      );
+      final AudioEntity audioEntity = audioEntityModelConverter.modelToEntity(
+        audioModel,
+      );
+      return Right(audioEntity);
+    } on CacheException {
+      return Left(CacheFailure());
+    } on EmptyDataException {
+      return Left(EmptyDataFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, AudioEntity>> updateAudio(AudioEntity audio) async {
     try {
       var model = audioEntityModelConverter.entityToModel(audio);

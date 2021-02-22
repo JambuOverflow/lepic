@@ -22,6 +22,16 @@ abstract class AudioLocalDataSource {
     TextModel textModel,
   });
 
+  /// Gets the cached list of [Audio].
+  ///
+  /// Returns an empty list if no [Audio] is cached.
+  ///
+  /// Throws [CacheException] if something wrong happens.
+  Future<AudioModel> getAudioFromCacheWithId({
+    int studentId,
+    int textId,
+  });
+
   /// Deletes the [Audio] passed.
   ///
   /// Throws [CacheException] if the [Audio] is not cached.
@@ -99,6 +109,21 @@ class AudioLocalDataSourceImpl implements AudioLocalDataSource {
       return audioModel;
     } on SqliteException {
       throw CacheException();
+    }
+  }
+
+  @override
+  Future<AudioModel> getAudioFromCacheWithId(
+      {int studentId, int textId}) async {
+    try {
+      return await this.database.getAudio(
+            studentPk: studentId,
+            textPk: textId,
+          );
+    } on SqliteException {
+      throw CacheException();
+    } on EmptyDataException {
+      throw EmptyDataException();
     }
   }
 }
