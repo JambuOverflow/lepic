@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 
 class Correction extends Equatable {
-  final int audioId;
+  final int textId;
+  final int studentId;
   final List<Mistake> mistakes;
 
   Correction({
-    @required this.audioId,
+    @required this.textId,
+    @required this.studentId,
     @required this.mistakes,
   });
 
@@ -16,5 +18,5 @@ class Correction extends Equatable {
   }
 
   @override
-  List<Object> get props => [audioId, mistakes];
+  List<Object> get props => [textId, studentId, mistakes];
 }
