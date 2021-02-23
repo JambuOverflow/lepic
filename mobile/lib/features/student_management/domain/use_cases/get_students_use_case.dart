@@ -5,7 +5,6 @@ import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/domain/repositories/student_repository.dart';
-import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
 
 class GetStudents implements UseCase<List<Student>, ClassroomParams> {
   final StudentRepository repository;

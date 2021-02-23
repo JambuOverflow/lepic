@@ -6,11 +6,8 @@ class MistakeModels extends Table {
   @JsonKey("word_index")
   IntColumn get wordIndex => integer()();
   TextColumn get commentary => text()();
-  @JsonKey('student_id')
-  IntColumn get studentId => integer()
-      .customConstraint('NOT NULL REFERENCES student_models(local_id)')();
-  @JsonKey('text_id')
-  IntColumn get textId => integer()
-      .customConstraint('NOT NULL REFERENCES text_models(local_id)')();
+  @JsonKey('correction_id')
+  IntColumn get correctionId => integer()
+      .customConstraint('NOT NULL REFERENCES correction_models(local_id)')();
   
 }
