@@ -1,7 +1,10 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/data/entity_model_converters/correction_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/mistake_entity_model_converter.dart';
+import 'package:mobile/core/data/entity_model_converters/student_entity_model_converter.dart';
 import 'package:mobile/core/data/entity_model_converters/text_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/error/failures.dart';
@@ -16,16 +19,18 @@ import 'package:mockito/mockito.dart';
 class MockMistakeLocalDataSource extends Mock
     implements MistakeLocalDataSource {}
 
-class MockMistakeEntityModelConverter extends Mock
-    implements MistakeEntityModelConverter {}
-
 class MockTextEntityModelConverter extends Mock
     implements TextEntityModelConverter {}
 
+class MockStudentEntityModelConverter extends Mock
+    implements StudentEntityModelConverter {}
+
 void main() {
   MockMistakeLocalDataSource mockLocalDataSource;
-  MockMistakeEntityModelConverter mockMistakeEntityModelConverter;
+  MistakeEntityModelConverter mistakeEntityModelConverter;
+  CorrectionEntityModelConverter correctionEntityModelConverter;
   MockTextEntityModelConverter mockTextEntityModelConverter;
+  MockStudentEntityModelConverter mockStudentEntityModelConverter;
   CorrectionRepositoryImpl repository;
 
   final tMistakeInput1 = Mistake(
@@ -60,6 +65,7 @@ void main() {
   );
 
   final tCorrectionOutput = Correction(
+    localId: 1,
     textId: 1,
     studentId: 1,
     mistakes: [
@@ -68,18 +74,27 @@ void main() {
     ],
   );
 
+  final tCorrectionModelInput1 = CorrectionModel(
+    textId: 1,
+    studentId: 1,
+  );
+
+  final tCorrectionModelOutput1 = CorrectionModel(
+    textId: 1,
+    studentId: 1,
+    localId: 1,
+  );
+
   final tMistakeModelInput1 = MistakeModel(
     wordIndex: 1,
     commentary: "",
-    studentId: 1,
-    textId: 1,
+    correctionId: 1,
   );
 
   final tMistakeModelInput2 = MistakeModel(
     wordIndex: 10,
     commentary: "",
-    studentId: 1,
-    textId: 1,
+    correctionId: 1,
   );
 
   final text = MyText(
@@ -121,25 +136,22 @@ void main() {
 
   setUp(() async {
     mockLocalDataSource = MockMistakeLocalDataSource();
-    mockMistakeEntityModelConverter = MockMistakeEntityModelConverter();
+    mistakeEntityModelConverter = MistakeEntityModelConverter();
+    correctionEntityModelConverter = CorrectionEntityModelConverter();
     mockTextEntityModelConverter = MockTextEntityModelConverter();
+    mockStudentEntityModelConverter = MockStudentEntityModelConverter();
 
     repository = CorrectionRepositoryImpl(
         localDataSource: mockLocalDataSource,
-        mistakeEntityModelConverter: mockMistakeEntityModelConverter,
-        textEntityModelConverter: mockTextEntityModelConverter);
-
-    when(mockMistakeEntityModelConverter.entityToModel(tCorrectionInput))
-        .thenAnswer((_) => tMistakeModelsInput);
-    when(mockMistakeEntityModelConverter.entityToModel(tCorrectionOutput))
-        .thenAnswer((_) => tMistakeModelsOutput);
-    when(mockMistakeEntityModelConverter.modelToEntity(tMistakeModelsOutput))
-        .thenAnswer((_) => tCorrectionOutput);
+        mistakeEntityModelConverter: mistakeEntityModelConverter,
+        textEntityModelConverter: mockTextEntityModelConverter,
+        correctionEntityModelConverter: correctionEntityModelConverter,
+        studentEntityModelConverter: mockStudentEntityModelConverter);
   });
 
   group('createCorrection', () {
     test('should return CacheFailure when cache is unsuccessful', () async {
-      when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput1))
+      when(mockLocalDataSource.cacheNewCorrection(tCorrectionModelInput1))
           .thenThrow(CacheException());
 
       final result = await repository.createCorrection(tCorrectionInput);
@@ -152,29 +164,37 @@ void main() {
           .thenAnswer((_) async => tMistakeModelOutput1);
       when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput2))
           .thenAnswer((_) async => tMistakeModelOutput2);
+      when(mockLocalDataSource.cacheNewCorrection(tCorrectionModelInput1))
+          .thenAnswer((_) async => tCorrectionModelOutput1);
 
       final result = await repository.createCorrection(tCorrectionInput);
 
       verifyInOrder([
+        mockLocalDataSource.cacheNewCorrection(tCorrectionModelInput1),
         mockLocalDataSource.cacheNewMistake(tMistakeModelInput1),
         mockLocalDataSource.cacheNewMistake(tMistakeModelInput2),
       ]);
-      expect(result, Right(tCorrectionOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
+
+      result.fold((l) => null, (r) {
+        expect(r.localId, tCorrectionOutput.localId);
+        expect(r.studentId, tCorrectionOutput.studentId);
+        expect(r.textId, tCorrectionOutput.textId);
+        equals(listEquals(r.mistakes, tCorrectionOutput.mistakes));
+      });
     });
   });
 
   group('deleteCorrection', () {
     test('should delete a correction', () async {
       when(mockLocalDataSource
-              .deleteCorrectionMistakesFromCache(tMistakeModelOutput1))
+              .deleteCorrectionFromCache(tCorrectionModelOutput1))
           .thenAnswer((_) => null);
 
       await repository.deleteCorrection(tCorrectionOutput);
 
       verifyInOrder([
-        mockLocalDataSource
-            .deleteCorrectionMistakesFromCache(tMistakeModelOutput1),
+        mockLocalDataSource.deleteCorrectionFromCache(tCorrectionModelOutput1),
       ]);
       verifyNoMoreInteractions(mockLocalDataSource);
     });
@@ -182,12 +202,12 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource
-              .deleteCorrectionMistakesFromCache(tMistakeModelOutput1))
+              .deleteCorrectionFromCache(tCorrectionModelOutput1))
           .thenThrow(CacheException());
 
       final result = await repository.deleteCorrection(tCorrectionOutput);
       verify(mockLocalDataSource
-          .deleteCorrectionMistakesFromCache(tMistakeModelOutput1));
+          .deleteCorrectionFromCache(tCorrectionModelOutput1));
 
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -198,20 +218,22 @@ void main() {
     test('should return a correction when updateCorrection is called',
         () async {
       when(mockLocalDataSource
-              .deleteCorrectionMistakesFromCache(tMistakeModelInput1))
+              .deleteCorrectionFromCache(tCorrectionModelOutput1))
           .thenAnswer((_) async => null);
-      when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput1))
+      when(mockLocalDataSource.cacheNewMistake(tMistakeModelOutput1))
           .thenAnswer((_) async => tMistakeModelOutput1);
-      when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput2))
+      when(mockLocalDataSource.cacheNewMistake(tMistakeModelOutput2))
           .thenAnswer((_) async => tMistakeModelOutput2);
+      when(mockLocalDataSource.cacheNewCorrection(tCorrectionModelOutput1))
+          .thenAnswer((_) async => tCorrectionModelOutput1);
 
-      final result = await repository.updateCorrection(tCorrectionInput);
+      final result = await repository.updateCorrection(tCorrectionOutput);
 
       verifyInOrder([
-        mockLocalDataSource
-            .deleteCorrectionMistakesFromCache(tMistakeModelInput1),
-        mockLocalDataSource.cacheNewMistake(tMistakeModelInput1),
-        mockLocalDataSource.cacheNewMistake(tMistakeModelInput2),
+        mockLocalDataSource.deleteCorrectionFromCache(tCorrectionModelOutput1),
+        mockLocalDataSource.cacheNewCorrection(tCorrectionModelOutput1),
+        mockLocalDataSource.cacheNewMistake(tMistakeModelOutput1),
+        mockLocalDataSource.cacheNewMistake(tMistakeModelOutput2),
       ]);
       expect(result, Right(tCorrectionOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -220,14 +242,13 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource
-              .deleteCorrectionMistakesFromCache(tMistakeModelInput1))
+              .deleteCorrectionFromCache(tCorrectionModelOutput1))
           .thenThrow(CacheException());
 
-      final result = await repository.updateCorrection(tCorrectionInput);
+      final result = await repository.updateCorrection(tCorrectionOutput);
 
       verifyInOrder([
-        mockLocalDataSource
-            .deleteCorrectionMistakesFromCache(tMistakeModelInput1),
+        mockLocalDataSource.deleteCorrectionFromCache(tCorrectionModelOutput1),
       ]);
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -236,17 +257,16 @@ void main() {
     test('should return a CacheFailure when a CacheException is throw',
         () async {
       when(mockLocalDataSource
-              .deleteCorrectionMistakesFromCache(tMistakeModelInput1))
+              .deleteCorrectionFromCache(tCorrectionModelOutput1))
           .thenAnswer((_) async => null);
-      when(mockLocalDataSource.cacheNewMistake(tMistakeModelInput1))
+      when(mockLocalDataSource.cacheNewCorrection(tCorrectionModelOutput1))
           .thenThrow(CacheException());
 
-      final result = await repository.updateCorrection(tCorrectionInput);
+      final result = await repository.updateCorrection(tCorrectionOutput);
 
       verifyInOrder([
-        mockLocalDataSource
-            .deleteCorrectionMistakesFromCache(tMistakeModelInput1),
-        mockLocalDataSource.cacheNewMistake(tMistakeModelInput1),
+        mockLocalDataSource.deleteCorrectionFromCache(tCorrectionModelOutput1),
+        mockLocalDataSource.cacheNewCorrection(tCorrectionModelOutput1),
       ]);
       expect(result, Left(CacheFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
@@ -256,59 +276,74 @@ void main() {
   group('getCorrections', () {
     test('should return a list of corrections when getCorrections is called',
         () async {
-      when(mockLocalDataSource.getCorrectionMistakesFromCache(
+      when(mockLocalDataSource.getCorrectionFromCache(
               studentModel: studentModel, textModel: textModel))
+          .thenAnswer((_) async => tCorrectionModelOutput1);
+      when(mockLocalDataSource.getMistakesFromCache(tCorrectionModelOutput1))
           .thenAnswer((_) async => tMistakeModelsOutput);
       when(mockTextEntityModelConverter.mytextEntityToModel(text))
           .thenAnswer((_) async => textModel);
+      when(mockStudentEntityModelConverter.entityToModel(student))
+          .thenAnswer((_) async => studentModel);
 
       final result =
           await repository.getCorrection(student: student, text: text);
 
       verifyInOrder([
+        mockStudentEntityModelConverter.entityToModel(student),
         mockTextEntityModelConverter.mytextEntityToModel(text),
-        mockLocalDataSource.getCorrectionMistakesFromCache(
-            studentModel: studentModel, textModel: textModel),
+        mockLocalDataSource.getCorrectionFromCache(
+              studentModel: studentModel, textModel: textModel),
+        mockLocalDataSource.getMistakesFromCache(tCorrectionModelOutput1)
       ]);
       expect(result, Right(tCorrectionOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
-
+    
     test('should return a EmptyDataFailure when a EmptyDataException is throw',
         () async {
-      when(mockLocalDataSource.getCorrectionMistakesFromCache(
+      when(mockLocalDataSource.getCorrectionFromCache(
               studentModel: studentModel, textModel: textModel))
           .thenThrow(EmptyDataException());
       when(mockTextEntityModelConverter.mytextEntityToModel(text))
           .thenAnswer((_) async => textModel);
+      when(mockStudentEntityModelConverter.entityToModel(student))
+          .thenAnswer((_) async => studentModel);
 
       final result =
           await repository.getCorrection(student: student, text: text);
 
       verifyInOrder([
+        mockStudentEntityModelConverter.entityToModel(student),
         mockTextEntityModelConverter.mytextEntityToModel(text),
-        mockLocalDataSource.getCorrectionMistakesFromCache(
-            studentModel: studentModel, textModel: textModel),
+        mockLocalDataSource.getCorrectionFromCache(
+              studentModel: studentModel, textModel: textModel),
       ]);
       expect(result, Left(EmptyDataFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
+    
   });
-
+  
   group('getCorrectionsFromId', () {
     test('should return a list of corrections when getCorrections is called',
         () async {
-      when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+      when(mockLocalDataSource.getCorrectionFromCacheUsingId(
               studentId: 1, textId: 1))
-          .thenAnswer((_) async => tMistakeModelsOutput);
+          .thenAnswer((_) async => tCorrectionModelOutput1);
       when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
+      when(mockStudentEntityModelConverter.entityToModel(student))
+          .thenAnswer((_) async => studentModel);
+      when(mockLocalDataSource.getMistakesFromCacheUsingId(1))
+          .thenAnswer((_) async => tMistakeModelsOutput);
 
       final result =
           await repository.getCorrectionFromId(studentId: 1, textId: 1);
 
       verifyInOrder([
-        mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+        mockLocalDataSource.getCorrectionFromCacheUsingId(
               studentId: 1, textId: 1),
+        mockLocalDataSource.getMistakesFromCacheUsingId(1)
         
       ]);
       expect(result, Right(tCorrectionOutput));
@@ -318,21 +353,21 @@ void main() {
     
     test('should return a EmptyDataFailure when a EmptyDataException is throw',
         () async {
-      when(mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
+      when(mockLocalDataSource.getCorrectionFromCacheUsingId(
               studentId: 1, textId: 1)).thenThrow(EmptyDataException());
 
       final result =
           await repository.getCorrectionFromId(studentId: 1, textId: 1);
 
       verifyInOrder([
-        mockLocalDataSource.getCorrectionMistakesFromCacheUsingId(
-              studentId:1, textId: 1),
+        mockLocalDataSource.getCorrectionFromCacheUsingId(
+              studentId: 1, textId: 1),
         
       ]);
       expect(result, Left(EmptyDataFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
     
-    
   });
+  
 }
