@@ -72,7 +72,7 @@ void main() {
         .thenAnswer((_) async => tTextModelInput);
     when(mockTextEntityModelConverter.mytextModelToEntity(tTextModelOutput))
         .thenAnswer((_) => tText);
-    when(mockStudentEntityModelConverter.classroomEntityToModel(tStudent))
+    when(mockStudentEntityModelConverter.entityToModel(tStudent))
         .thenAnswer((_) async => tStudentModel);
   });
 
