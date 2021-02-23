@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/statistics/presentation/pages/statistics_page.dart';
-import 'package:mobile/features/text_management/presentation/widgets/preview_card.dart';
+import 'package:mobile/features/statistics/domain/entities/statistic.dart';
 import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
 
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
@@ -48,6 +47,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    Statistic statistic = Statistic(student: student);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -83,7 +83,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
                   SizedBox(height: 8),
                   CorrectionPreviewCard(),
                   SizedBox(height: 8),
-                  StatisticsPreviewCard(student: student),
+                  StatisticsPreviewCard(statistic: statistic),
                   SizedBox(height: 64),
                 ],
               ),

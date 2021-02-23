@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
+import 'package:mobile/features/statistics/domain/entities/statistic.dart';
 import 'package:mobile/features/statistics/presentation/pages/statistics_page.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'preview_card.dart';
 
 class StatisticsPreviewCard extends StatelessWidget {
+  final Statistic _statistic;
+
   const StatisticsPreviewCard({
     Key key,
-    @required Student student,
-  })  : _student = student,
+    @required Statistic statistic,
+  })  : _statistic = statistic,
         super(key: key);
-
-  final Student _student;
 
   @override
   Widget build(BuildContext context) {
-    final String content =
-        '${_student.firstName} ${_student.lastName} had his/her fluency assessed in DATE. He/She read the text in X minutes and Y seconds with Z% of correctness.';
     return PreviewCard(
+      enabled: true,
       title: 'STATISTICS',
       content: [
-        buildTextPreviewArea(context, content),
+        buildTextPreviewArea(context),
         buildButtons(context),
       ],
     );
@@ -40,7 +40,7 @@ class StatisticsPreviewCard extends StatelessWidget {
     );
   }
 
-  Padding buildTextPreviewArea(BuildContext context, String content) {
+  Padding buildTextPreviewArea(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: InkWell(
@@ -48,9 +48,10 @@ class StatisticsPreviewCard extends StatelessWidget {
         highlightColor: Colors.blue[100].withAlpha(0),
         onTap: () => navigateToDetails(context),
         child: Hero(
-          tag: '${_student.id}_body',
+          tag: '${_statistic.cardContent}_stat',
+          flightShuttleBuilder: flightShuttleBuilder,
           child: Text(
-            content,
+            _statistic.cardContent,
             maxLines: 6,
             textAlign: TextAlign.justify,
             overflow: TextOverflow.ellipsis,
@@ -62,10 +63,9 @@ class StatisticsPreviewCard extends StatelessWidget {
   }
 
   void navigateToDetails(BuildContext context) {
-    print('navigate');
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => StatisticsPage(student: _student, content: ),
+        builder: (_) => StatisticsPage(statistic: _statistic),
       ),
     );
   }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
+import 'package:mobile/features/statistics/domain/entities/statistic.dart';
+import 'package:mobile/features/text_management/presentation/widgets/text_area.dart';
 
 class StatisticsPage extends StatelessWidget {
-  final Student _student;
-  final String _content;
+  final Statistic _statistic;
+  final _scrollController = ScrollController();
 
-  const StatisticsPage(
-      {Key key, @required Student student, @required String content})
-      : _student = student,
-        _content = content,
+  StatisticsPage({Key key, @required Statistic statistic})
+      : _statistic = statistic,
         super(key: key);
 
   @override
@@ -17,9 +17,16 @@ class StatisticsPage extends StatelessWidget {
     return Scaffold(
       appBar: BackgroundAppBar(title: 'Statistics'),
       body: Scrollbar(
-        child: Hero(
-          tag: '${_student.id}_body',
-          child: Text(_content),
+        isAlwaysShown: true,
+        controller: _scrollController,
+        child: Column(
+          children: [
+            TextArea(
+              scrollControler: _scrollController,
+              textBody: _statistic.cardContent,
+              tag: '${_statistic.cardContent}_stat',
+            ),
+          ],
         ),
       ),
     );
