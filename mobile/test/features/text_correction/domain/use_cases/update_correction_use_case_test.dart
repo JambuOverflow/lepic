@@ -21,8 +21,7 @@ void main() {
     final List<Mistake> mistakes = [Mistake(localId: 1, wordIndex: 0, commentary: "ola")];
   
     final tCorrection = Correction(
-      studentId: 1,
-      textId: 2,
+      audioId: 1,
       mistakes: mistakes,
     );
   

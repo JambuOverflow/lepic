@@ -20,19 +20,18 @@ void main() {
   final List<Mistake> mistakes= [Mistake(localId: 1, wordIndex: 0, commentary: "ola")];
 
   final tCorrection1 = Correction(
-    studentId: 1,
-    textId: 2,
+    audioId: 2,
     mistakes: mistakes,
   );
 
   test('should return list of corrections', () async {
-    when(mockCorrectionRepository.getCorrectionFromId(textId: 1, studentId: 1))
+    when(mockCorrectionRepository.getCorrectionFromId(1))
         .thenAnswer((_) async => Right(tCorrection1));
 
-    final result = await useCase(CorrectionIdParams(textId: 1, studentId: 1));
+    final result = await useCase(AudioIdParams(1));
 
     expect(result, Right(tCorrection1));
-    verify(mockCorrectionRepository.getCorrectionFromId(textId: 1, studentId: 1));
+    verify(mockCorrectionRepository.getCorrectionFromId(1));
     verifyNoMoreInteractions(mockCorrectionRepository);
   });
 }
