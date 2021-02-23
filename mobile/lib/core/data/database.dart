@@ -151,8 +151,7 @@ class Database extends _$Database {
   /// Throws SqliteException if no entry is found
   Future<void> deleteMistakesOfCorrection(int correctionPk) async {
     var done = await (delete(mistakeModels)
-          ..where(
-              (t) => t.correctionId.equals(correctionPk)))
+          ..where((t) => t.correctionId.equals(correctionPk)))
         .go();
     if (done != 1) {
       throw SqliteException(
@@ -164,8 +163,7 @@ class Database extends _$Database {
   /// Returns an empty list if no entry is found
   Future<List<MistakeModel>> getMistakesOfCorrection(int correctionPk) async {
     return await (select(mistakeModels)
-          ..where(
-              (t) => t.correctionId.equals(correctionPk)))
+          ..where((t) => t.correctionId.equals(correctionPk)))
         .get();
   }
 
@@ -173,6 +171,29 @@ class Database extends _$Database {
   /// Returns an empty list if no entry is found
   Future<List<MistakeModel>> getAllMistakes() async {
     return await (select(mistakeModels)).get();
+  }
+
+  Future<int> insertCorrection(CorrectionModel correctionModel) async {
+    return await into(correctionModels).insert(correctionModel);
+  }
+
+  Future<void> deleteCorrection(int correctionPk) async {
+    var done =
+        await (delete(correctionModels)..where((t) => t.localId.equals(correctionPk))).go();
+    if (done != 1) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+  }
+
+  Future<CorrectionModel> getCorrection({int studentId, int textId}) async {
+    var result = await (select(correctionModels)
+          ..where(
+              (t) => t.textId.equals(textId) & t.studentId.equals(studentId)))
+        .getSingle();
+    if (result == null) {
+      throw EmptyDataException();
+    }
+    return result;
   }
 
   /// Returns the pk of the inserted model
@@ -221,6 +242,8 @@ class Database extends _$Database {
       throw SqliteException(787, "Model is not in the database");
     }
   }
+
+  
 
   @override
   int get schemaVersion => 6;
