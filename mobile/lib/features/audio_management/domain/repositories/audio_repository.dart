@@ -11,6 +11,10 @@ abstract class AudioRepository {
     Student student,
     MyText text,
   });
+  Future<Either<Failure, AudioEntity>> getAudioFromId({
+    int studentId,
+    int textId,
+  });
   Future<Either<Failure, List<AudioEntity>>> getAllAudiosFromStudent(Student student);
   Future<Either<Failure, void>> deleteAudio(AudioEntity audio);
 }

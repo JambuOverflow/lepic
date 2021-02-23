@@ -143,16 +143,43 @@ Future<void> main() {
       expect(result, tAudioOutputModel1);
     });
 
-    test("should throw a CacheException", () async {
+    test("should throw a EmptyDataException", () async {
       when(mockDatabase.getAudio(studentPk: 1, textPk: 1))
-          .thenThrow(SqliteException(787, ""));
+          .thenThrow(EmptyDataException());
 
       expect(
           () async => await audioLocalDataSourceImpl.getAudioFromCache(
                 studentModel: tStudentModel,
                 textModel: tTextModel,
               ),
-          throwsA(TypeMatcher<CacheException>()));
+          throwsA(TypeMatcher<EmptyDataException>()));
+    });
+  });
+
+  group("getAudioWithId", () {
+    test("should correctly one audio", () async {
+      when(mockDatabase.getAudio(studentPk: 1, textPk: 1))
+          .thenAnswer((_) async => tAudioOutputModel1);
+
+      final result = await audioLocalDataSourceImpl.getAudioFromCacheWithId(
+        studentId: 1,
+        textId: 1,
+      );
+
+      verify(mockDatabase.getAudio(studentPk: 1, textPk: 1));
+      expect(result, tAudioOutputModel1);
+    });
+
+    test("should throw a EmptyDataException", () async {
+      when(mockDatabase.getAudio(studentPk: 1, textPk: 1))
+          .thenThrow(EmptyDataException());
+
+      expect(
+          () async => await audioLocalDataSourceImpl.getAudioFromCacheWithId(
+                studentId: 1,
+                textId: 1,
+              ),
+          throwsA(TypeMatcher<EmptyDataException>()));
     });
   });
 

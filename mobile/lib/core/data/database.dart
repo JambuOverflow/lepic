@@ -1,3 +1,4 @@
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/audio_management/data/models/audio_model.dart';
 import 'package:mobile/features/class_management/data/models/classroom_model.dart';
 import 'package:mobile/features/student_management/data/models/student_model.dart';
@@ -206,7 +207,7 @@ class Database extends _$Database {
               (t) => t.textId.equals(textPk) & t.studentId.equals(studentPk)))
         .getSingle();
     if (result == null) {
-      throw SqliteException(787, "");
+      throw EmptyDataException();
     }
     return result;
   }

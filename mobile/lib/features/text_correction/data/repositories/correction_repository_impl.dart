@@ -68,14 +68,17 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
       final TextModel textModel =
           await this.textEntityModelConverter.mytextEntityToModel(text);
 
-      final List<MistakeModel> mistakes = await localDataSource
-          .getCorrectionMistakesFromCache(studentModel: studentModel, textModel: textModel);
+      final List<MistakeModel> mistakes =
+          await localDataSource.getCorrectionMistakesFromCache(
+              studentModel: studentModel, textModel: textModel);
 
       final Correction correction =
           this.mistakeEntityModelConverter.modelToEntity(mistakes);
       return Right(correction);
     } on CacheException {
       return Left(CacheFailure());
+    } on EmptyDataException {
+      return Left(EmptyDataFailure());
     }
   }
 
@@ -98,16 +101,20 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
   }
 
   @override
-  Future<Either<Failure, Correction>> getCorrectionFromId({int textId, int studentId}) async {
+  Future<Either<Failure, Correction>> getCorrectionFromId(
+      {int textId, int studentId}) async {
     try {
-      final List<MistakeModel> mistakes = await localDataSource
-          .getCorrectionMistakesFromCacheUsingId(studentId: studentId, textId: textId);
+      final List<MistakeModel> mistakes =
+          await localDataSource.getCorrectionMistakesFromCacheUsingId(
+              studentId: studentId, textId: textId);
 
       final Correction correction =
           this.mistakeEntityModelConverter.modelToEntity(mistakes);
       return Right(correction);
     } on CacheException {
       return Left(CacheFailure());
+    } on EmptyDataException {
+      return Left(EmptyDataFailure());
     }
   }
 }

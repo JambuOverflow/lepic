@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 
@@ -7,9 +8,7 @@ import '../database.dart';
 class MistakeEntityModelConverter {
   Correction modelToEntity(List<MistakeModel> models) {
     if (models.isEmpty){
-      throw ErrorDescription(
-          "'model' is empty",
-        );
+      throw EmptyDataException();
     }
     
     final int studentId = models[0].studentId;

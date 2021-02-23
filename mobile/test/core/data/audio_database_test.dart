@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
+import 'package:mobile/core/error/exceptions.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:matcher/matcher.dart';
@@ -141,7 +142,7 @@ void main() {
 
     test("should throw an sqliteException", () async {
       expect(() async => await database.getAudio(studentPk: 1, textPk: 1),
-          throwsA(TypeMatcher<SqliteException>()));
+          throwsA(TypeMatcher<EmptyDataException>()));
     });
   });
 
