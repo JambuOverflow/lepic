@@ -97,8 +97,15 @@ class Database extends _$Database {
     return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
   }
 
-  Future<StudentModel> getStudent(int params) {}
-
+  Future<StudentModel> getStudent(int params) async {
+    final StudentModel result = await (select(studentModels)
+          ..where((t) => t.localId.equals(params)))
+        .getSingle();
+    if (result == null) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+    return result;
+  }
 
   /// Returns a List of [StudentModel]
   ///
