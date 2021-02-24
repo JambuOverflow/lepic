@@ -51,6 +51,17 @@ class Database extends _$Database {
     return into(classroomModels).insert(modelCompanion);
   }
 
+  /// Returns a [Classroom]
+  Future<ClassroomModel> getClassroom(int classroomId) async {
+    final ClassroomModel result = await (select(classroomModels)
+          ..where((t) => t.localId.equals(classroomId)))
+        .getSingle();
+    if (result == null) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+    return result;
+  }
+
   /// Returns a list of [ClassroomModel] that weren't deleted
   ///
   /// Returns an empty list when the table is empty
@@ -248,5 +259,4 @@ class Database extends _$Database {
   @override
   int get schemaVersion => 6;
 
-  getClassroom(int i) {}
 }
