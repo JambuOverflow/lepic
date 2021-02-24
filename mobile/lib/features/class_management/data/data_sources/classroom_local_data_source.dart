@@ -108,8 +108,11 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
   }
 
   @override
-  Future<ClassroomModel> getClassroomFromCacheWithId(int i) {
-    // TODO: implement getClassroomFromCacheWithId
-    throw UnimplementedError();
+  Future<ClassroomModel> getClassroomFromCacheWithId(int i) async {
+    try {
+      return await this.database.getClassroom(i);
+    } on SqliteException {
+      throw CacheException();
+    }
   }
 }

@@ -247,4 +247,6 @@ class Database extends _$Database {
 
   @override
   int get schemaVersion => 6;
+
+  getClassroom(int i) {}
 }

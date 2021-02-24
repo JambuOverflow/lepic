@@ -136,6 +136,29 @@ Future<void> main() {
     });
   });
 
+  group("getClassroomFromId", () {
+    test("should correctly return a classroom", () async {
+      when(mockDatabase.getClassroom(tValidPk))
+          .thenAnswer((_) async => tClassroomModel1);
+
+      final result = await classroomLocalDataSourceImpl
+          .getClassroomFromCacheWithId(tValidPk);
+
+      verify(mockDatabase.getClassroom(tValidPk));
+      expect(result, tClassroomModel1);
+    });
+
+    test("should throw a CacheException", () async {
+      when(mockDatabase.getClassroom(tValidPk))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async =>
+              await classroomLocalDataSourceImpl.getClassroomFromCacheWithId(1),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+  });
+
   group("updateClassroom", () {
     test("should correctly update a cached classroom", () async {
       when(mockDatabase.updateClassroom(tClassroomModel1))
