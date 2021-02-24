@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/correction_bloc.dart';
-import '../../../text_management/presentation/widgets/comments_bottom_sheet.dart';
+import 'comments_bottom_sheet.dart';
 
 class CorrectionFloatingButtons extends StatelessWidget {
   final int _wordIndex;
