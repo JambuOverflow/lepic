@@ -111,4 +111,10 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
       return Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, void>> getClassroomFromId(int id) {
+    // TODO: implement getClassroomFromId
+    throw UnimplementedError();
+  }
 }
