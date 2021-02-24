@@ -106,7 +106,7 @@ void main() {
     });
 
     test("should run without throwing an exception", () async {
-      await database.deleteMistakesOfCorrection(1);
+      await database.deleteCorrectionMistakes(1);
 
       final result = await database.getAllMistakes();
 
@@ -115,7 +115,7 @@ void main() {
 
     test("""should throw an exception when the database does not contain
          mistakes with the correctionPk passed""", () async {
-      expect(() => database.deleteMistakesOfCorrection(2),
+      expect(() => database.deleteCorrectionMistakes(2),
           throwsA(TypeMatcher<SqliteException>()));
     });
   });

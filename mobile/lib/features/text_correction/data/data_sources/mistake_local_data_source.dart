@@ -73,7 +73,7 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
       CorrectionModel correctionModel) async {
     final int correctionPk = correctionModel.localId;
     try {
-      await this.database.deleteMistakesOfCorrection(correctionPk);
+      await this.database.deleteCorrectionMistakes(correctionPk);
       await this.database.deleteCorrection(correctionPk);
     } on SqliteException {
       throw CacheException();

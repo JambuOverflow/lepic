@@ -149,7 +149,7 @@ class Database extends _$Database {
 
   /// Deletes all mistakes from  a correction
   /// Throws SqliteException if no entry is found
-  Future<void> deleteMistakesOfCorrection(int correctionPk) async {
+  Future<void> deleteCorrectionMistakes(int correctionPk) async {
     var done = await (delete(mistakeModels)
           ..where((t) => t.correctionId.equals(correctionPk)))
         .go();

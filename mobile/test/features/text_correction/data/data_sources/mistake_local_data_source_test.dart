@@ -88,14 +88,14 @@ void main() {
 
   group("deleteCorrectionFromCache", () {
     test("should correctly delete a correction and its mistakes", () async {
-      when(mockDatabase.deleteMistakesOfCorrection(1))
+      when(mockDatabase.deleteCorrectionMistakes(1))
           .thenAnswer((_) async => _);
       when(mockDatabase.deleteCorrection(1)).thenAnswer((_) async => _);
 
       await mistakeLocalDataSourceImpl
           .deleteCorrectionFromCache(tCorrectionOutputModel1);
       verifyInOrder([
-        mockDatabase.deleteMistakesOfCorrection(1),
+        mockDatabase.deleteCorrectionMistakes(1),
         mockDatabase.deleteCorrection(1)
       ]);
       verifyNoMoreInteractions(mockDatabase);
@@ -103,7 +103,7 @@ void main() {
 
     test("should throw CacheException when trying to delete an invalid mistake",
         () {
-      when(mockDatabase.deleteMistakesOfCorrection(1))
+      when(mockDatabase.deleteCorrectionMistakes(1))
           .thenThrow(SqliteException(787, ""));
 
       expect(
