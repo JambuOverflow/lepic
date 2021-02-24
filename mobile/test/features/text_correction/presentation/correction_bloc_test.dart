@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:mobile/core/error/failures.dart';
@@ -25,12 +26,15 @@ class MockUpdateCorrectionUseCase extends Mock
 
 class MockGetCorrectionUseCase extends Mock implements GetCorrectionUseCase {}
 
+class MockSingleTextCubit extends Mock implements SingleTextCubit {}
+
 void main() {
   CorrectionBloc bloc;
   MockCreateCorrectionUseCase mockCreateCorrection;
   MockUpdateCorrectionUseCase mockUpdateCorrection;
   MockDeleteCorrectionUseCase mockDeleteCorrection;
   MockGetCorrectionUseCase mockGetCorrection;
+  MockSingleTextCubit mockSingleTextCubit;
 
   final tCorrection = Correction(
     textId: 1,
@@ -57,6 +61,9 @@ void main() {
     mockUpdateCorrection = MockUpdateCorrectionUseCase();
     mockDeleteCorrection = MockDeleteCorrectionUseCase();
     mockGetCorrection = MockGetCorrectionUseCase();
+    mockSingleTextCubit = MockSingleTextCubit();
+
+    when(mockSingleTextCubit.state).thenReturn(tText);
 
     bloc = CorrectionBloc(
       createCorrectionUseCase: mockCreateCorrection,
@@ -64,7 +71,7 @@ void main() {
       getCorrectionUseCase: mockGetCorrection,
       deleteCorrectionUseCase: mockDeleteCorrection,
       student: tStudent,
-      text: tText,
+      textCubit: mockSingleTextCubit,
     );
   });
 

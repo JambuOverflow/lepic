@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../text_management/presentation/bloc/single_text_cubit.dart';
 import '../../domain/use_cases/correction_params.dart';
 import '../../domain/use_cases/create_correction_use_case.dart';
 import '../../domain/use_cases/delete_correction_use_case.dart';
@@ -23,12 +24,15 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   final DeleteCorrectionUseCase deleteCorrectionUseCase;
   final UpdateCorrectionUseCase updateCorrectionUseCase;
 
-  final MyText text;
   final Student student;
 
-  Correction _finishedCorrection;
+  final SingleTextCubit textCubit;
+  MyText get text => textCubit.state;
+
   final Map<int, Mistake> indexToMistakes = {};
   final Map<int, String> indexToWord = {};
+
+  bool get hasCorrection => state is CorrectionLoaded && mistakes.isNotEmpty;
 
   List<Mistake> get mistakes => indexToMistakes.values.toList();
   Correction get _currentCorrection => Correction(
@@ -38,7 +42,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
       );
 
   CorrectionBloc({
-    @required this.text,
+    @required this.textCubit,
     @required this.student,
     @required this.getCorrectionUseCase,
     @required this.createCorrectionUseCase,
@@ -46,6 +50,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
     @required this.updateCorrectionUseCase,
   }) : super(CorrectionLoading()) {
     _buildIndexToWordMap(text);
+    textCubit.listen((_) => _buildIndexToWordMap(text));
   }
 
   void clearMistakes() => indexToMistakes.clear();
