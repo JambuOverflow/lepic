@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
@@ -6,7 +7,7 @@ import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/text_correction/domain/entities/correction.dart';
 import 'package:mobile/features/text_correction/domain/entities/mistake.dart';
 import 'package:matcher/matcher.dart';
-
+import 'package:collection/collection.dart';
 
 void main() {
   MistakeEntityModelConverter mistakeEntityModelConverter;
@@ -19,53 +20,51 @@ void main() {
     wordIndex: 1,
     commentary: "B",
     localId: 1,
-    studentId: 2,
-    textId: 3,
+    correctionId: 1,
   );
 
-  final tMistakeEntity = Mistake(
+  final tMistakeEntity1 = Mistake(
     wordIndex: 1,
     commentary: "B",
     localId: 1,
   );
 
-  final tCorrection =
-      Correction(mistakes: [tMistakeEntity], studentId: 2, textId: 3);
+  final tMistakeEntity2 = Mistake(
+    wordIndex: 1,
+    commentary: "B",
+    localId: 2,
+  );
 
   group('modelToEntity', () {
     test('should return a Mistake entity with proper data', () async {
-      final result =
-          mistakeEntityModelConverter.modelToEntity([tMistakeModel]);
+      final result = mistakeEntityModelConverter.modelToEntity(tMistakeModel);
 
-      expect(result, tCorrection);
+      expect(result, tMistakeEntity1);
     });
 
-    test('should throw an ErrorDescription when mistakes have different text_ids', () async {
-      expect(
-          () => mistakeEntityModelConverter.modelToEntity([tMistakeModel, tMistakeModel.copyWith(localId: 2, textId: 1)]),
-          throwsA(TypeMatcher<ErrorDescription>()));
+    test(
+        'should return a list Mistake entities with proper data',
+        () async {
+      final result = mistakeEntityModelConverter.modelsToEntityList(
+          [tMistakeModel, tMistakeModel.copyWith(localId: 2)]);
+      equals(listEquals(result, [tMistakeEntity1, tMistakeEntity2]));
     });
-
-    test('should throw an ErrorDescription when mistakes have different student_ids', () async {
-      expect(
-          () => mistakeEntityModelConverter.modelToEntity([tMistakeModel, tMistakeModel.copyWith(localId: 2, studentId: 1)]),
-          throwsA(TypeMatcher<ErrorDescription>()));
-    });
-
-    test('should throw an EmptyDataException when mistake list is empty', () async {
-      expect(
-          () => mistakeEntityModelConverter.modelToEntity([]),
-          throwsA(TypeMatcher<EmptyDataException>()));
-    });
-
   });
 
   group('entityToModel', () {
     test('should return a Classroom model with proper data', () {
-      final result = mistakeEntityModelConverter
-          .entityToModel(tCorrection);
+      final MistakeModel result = mistakeEntityModelConverter.entityToModel(entity: tMistakeEntity1, 
+      correctionId: 1);
 
-      expect(result, [tMistakeModel]);
+      expect(result, tMistakeModel);
+    });
+
+    test(
+        'should return a list of Classroom models with proper data',
+        () async {
+      final result = mistakeEntityModelConverter.entitiesToModelList(
+          entities: [tMistakeEntity1, tMistakeEntity2], correctionId: 1);
+      equals(listEquals(result, [tMistakeModel, tMistakeModel.copyWith(localId: 2)]));
     });
   });
 }
