@@ -184,4 +184,26 @@ void main() {
       expect(result, Left(CacheFailure()));
     });
   });
+
+  group('getFromId', () {
+    test('should return a classroom when getClassroomFromId is called',
+        () async {
+      when(mockLocalDataSource.getClassroomFromCacheWithId(1))
+          .thenAnswer((_) async => tClassroomModel);
+
+      final result = await repository.getClassroomFromId(1);
+
+      expect(result, Right(tClassroom));
+    });
+
+    test('should return a CacheFailure when a CacheException is throw',
+        () async {
+      when(mockLocalDataSource.getClassroomFromCacheWithId(1))
+          .thenThrow(CacheException());
+
+      final result = await repository.getClassroomFromId(1);
+
+      expect(result, Left(CacheFailure()));
+    });
+  });
 }

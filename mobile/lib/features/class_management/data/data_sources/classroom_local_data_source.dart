@@ -32,6 +32,8 @@ abstract class ClassroomLocalDataSource {
   /// Creates the [Classroom] if it does not yet exists.
   /// Throws [CacheException] if something wrong happens.
   Future<ClassroomModel> cacheClassroom(ClassroomModel classroomModel);
+
+  Future<ClassroomModel> getClassroomFromCacheWithId(int i);
 }
 
 class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
@@ -103,5 +105,11 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
     } on SqliteException {
       throw CacheException();
     }
+  }
+
+  @override
+  Future<ClassroomModel> getClassroomFromCacheWithId(int i) {
+    // TODO: implement getClassroomFromCacheWithId
+    throw UnimplementedError();
   }
 }
