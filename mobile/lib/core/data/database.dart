@@ -97,6 +97,9 @@ class Database extends _$Database {
     return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
   }
 
+  Future<StudentModel> getStudent(int params) {}
+
+
   /// Returns a List of [StudentModel]
   ///
   /// Returns an empty list if the table is empty
@@ -258,5 +261,6 @@ class Database extends _$Database {
 
   @override
   int get schemaVersion => 6;
+
 
 }

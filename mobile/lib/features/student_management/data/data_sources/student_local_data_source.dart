@@ -85,8 +85,11 @@ class StudentLocalDataSourceImpl implements StudentLocalDataSource {
   }
 
   @override
-  Future<StudentModel> getStudentFromCacheWithId(int params) {
-    // TODO: implement getStudentFromCacheWithId
-    throw UnimplementedError();
+  Future<StudentModel> getStudentFromCacheWithId(int params) async {
+    try {
+      return await this.database.getStudent(params);
+    } on SqliteException {
+      throw CacheException();
+    }
   }
 }
