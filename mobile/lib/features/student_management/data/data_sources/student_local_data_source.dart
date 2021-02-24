@@ -25,6 +25,8 @@ abstract class StudentLocalDataSource {
   ///
   /// Throws [CacheException] if [Student] is not cached.
   Future<StudentModel> updateCachedStudent(StudentModel studentModel);
+
+  Future<StudentModel> getStudentFromCacheWithId(int params);
 }
 
 class StudentLocalDataSourceImpl implements StudentLocalDataSource {
@@ -80,5 +82,11 @@ class StudentLocalDataSourceImpl implements StudentLocalDataSource {
     } else {
       throw CacheException();
     }
+  }
+
+  @override
+  Future<StudentModel> getStudentFromCacheWithId(int params) {
+    // TODO: implement getStudentFromCacheWithId
+    throw UnimplementedError();
   }
 }
