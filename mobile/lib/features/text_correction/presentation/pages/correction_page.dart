@@ -5,10 +5,23 @@ import '../bloc/correction_bloc.dart';
 import '../widgets/back_confirmation_dialog.dart';
 import '../widgets/audio_sliver_app_bar_delegate.dart';
 import 'package:mobile/features/text_correction/presentation/widgets/done_confirmation_dialog.dart';
-import '../../../text_management/presentation/pages/text_mistake.dart';
+import '../widgets/text_mistake.dart';
 
-class CorrectionPage extends StatelessWidget {
+class CorrectionPage extends StatefulWidget {
+  @override
+  _CorrectionPageState createState() => _CorrectionPageState();
+}
+
+class _CorrectionPageState extends State<CorrectionPage> {
   final _scrollController = ScrollController();
+  CorrectionBloc bloc;
+
+  @override
+  void initState() {
+    bloc = BlocProvider.of<CorrectionBloc>(context);
+    bloc.add(LoadCorrectionEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +29,12 @@ class CorrectionPage extends StatelessWidget {
       onWillPop: () => showDialog(
         context: context,
         child: BlocProvider.value(
-          value: BlocProvider.of<CorrectionBloc>(context),
+          value: bloc,
           child: BackConfirmationDialog(),
         ),
       ),
       child: Scaffold(
-        floatingActionButton: _buildFloatingActionButton(context),
+        floatingActionButton: _buildFloatingActionButton(),
         body: CustomScrollView(
           slivers: <Widget>[
             _buildSliverAppBar(),
@@ -34,14 +47,14 @@ class CorrectionPage extends StatelessWidget {
     );
   }
 
-  FloatingActionButton _buildFloatingActionButton(BuildContext context) {
+  FloatingActionButton _buildFloatingActionButton() {
     return FloatingActionButton(
       child: Icon(Icons.done),
       elevation: 6,
       onPressed: () => showDialog(
           context: context,
           child: BlocProvider.value(
-            value: BlocProvider.of<CorrectionBloc>(context),
+            value: bloc,
             child: DoneConfirmationDialog(),
           )),
     );
@@ -67,7 +80,7 @@ class CorrectionPage extends StatelessWidget {
     return SliverAppBar(
       floating: true,
       title: Text(
-        'Correcting Joãozinho e o Pé de Feijão',
+        'Correcting ${bloc.text.title}',
         overflow: TextOverflow.fade,
       ),
       elevation: 0,
