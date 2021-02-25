@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_management/presentation/bloc/assignment_status_cubit.dart';
 
 import '../widgets/word_count_area.dart';
 import '../bloc/text_bloc.dart';
@@ -16,6 +17,8 @@ class TextDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusCubit = BlocProvider.of<AssignmentStatusCubit>(context);
+
     return Scaffold(
       appBar: BackgroundAppBar(
         title: '${_text.title}',
@@ -23,14 +26,19 @@ class TextDetailPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: Text('Edit'),
         icon: Icon(Icons.edit),
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => BlocProvider.value(
-              value: BlocProvider.of<TextBloc>(context),
-              child: TextEditingPage(textToEdit: _text),
-            ),
-          ),
-        ),
+        backgroundColor: statusCubit.hasCorrectionFinished
+            ? Theme.of(context).disabledColor
+            : Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        onPressed: statusCubit.hasCorrectionFinished
+            ? null
+            : () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: BlocProvider.of<TextBloc>(context),
+                      child: TextEditingPage(textToEdit: _text),
+                    ),
+                  ),
+                ),
       ),
       body: Scrollbar(
         isAlwaysShown: true,

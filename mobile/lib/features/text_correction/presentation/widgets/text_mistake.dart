@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../text_correction/presentation/widgets/correction_positioned_overlay.dart';
-import '../../../text_correction/presentation/widgets/highlightable_text.dart';
-import '../../../text_correction/presentation/bloc/correction_bloc.dart';
+import 'correction_positioned_overlay.dart';
+import 'highlightable_text.dart';
+import '../bloc/correction_bloc.dart';
 
 class TextMistake extends StatefulWidget {
+  const TextMistake({Key key}) : super(key: key);
+
   @override
   _TextMistakeState createState() => _TextMistakeState();
 }
@@ -60,19 +62,20 @@ class _TextMistakeState extends State<TextMistake> {
       style: TextStyle(color: Colors.black, fontSize: 22),
       children: <InlineSpan>[
         WidgetSpan(
-          child: HighlightableText(
-            index: index,
-            key: key,
-            onTap: () {
-              if (bloc.indexToMistakes[index] == null)
-                bloc.add(HighlightEvent(wordIndex: index));
+          child: Container(
+            child: InkWell(
+              onTap: () {
+                final mistake = bloc.indexToMistakes[index];
+                if (mistake == null) bloc.add(HighlightEvent(wordIndex: index));
 
-              _buildCorrectionOverlay(
-                wordIndex: index,
-                context: context,
-                renderBox: key.currentContext.findRenderObject(),
-              );
-            },
+                _buildCorrectionOverlay(
+                  wordIndex: index,
+                  context: context,
+                  renderBox: key.currentContext.findRenderObject(),
+                );
+              },
+              child: HighlightableText(index: index, key: key),
+            ),
           ),
         ),
       ],

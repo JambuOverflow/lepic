@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
 
 import '../bloc/assignment_status_cubit.dart';
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
@@ -33,6 +34,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
   TextBloc textBloc;
   AudioBloc audioBloc;
   CorrectionBloc correctionBloc;
+  SingleTextCubit textCubit;
 
   Student student;
 
@@ -51,8 +53,16 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
       providers: [
         BlocProvider(
           lazy: false,
+          create: (_) => textCubit = SingleTextCubit(
+            textBloc: textBloc,
+            assignmentIndex: widget.textIndex,
+          ),
+        ),
+        BlocProvider(
+          lazy: false,
           create: (_) => correctionBloc = GetIt.instance.get<CorrectionBloc>(
-            param1: StudentTextParams(text: text, student: student),
+            param1: textCubit,
+            param2: student,
           ),
         ),
         BlocProvider(
@@ -62,6 +72,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
           ),
         ),
         BlocProvider(
+          lazy: false,
           create: (_) => AssignmentStatusCubit(
             audioBloc: audioBloc,
             textBloc: textBloc,
