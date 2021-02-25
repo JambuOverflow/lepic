@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AudioTextProgressIndicator extends StatelessWidget {
+  final String audioDuration;
+  final String audioPosition;
+
   const AudioTextProgressIndicator({
     Key key,
+    @required this.audioDuration,
+    @required this.audioPosition,
   }) : super(key: key);
 
   @override
@@ -11,13 +16,13 @@ class AudioTextProgressIndicator extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            '0:15',
+            audioPosition,
             style: TextStyle(color: Colors.white, fontSize: 16),
             textAlign: TextAlign.left,
           ),
         ),
         Text(
-          '1:10',
+          audioDuration,
           style: TextStyle(color: Colors.white, fontSize: 16),
           textAlign: TextAlign.right,
         ),
