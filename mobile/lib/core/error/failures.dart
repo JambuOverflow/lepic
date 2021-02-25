@@ -19,3 +19,12 @@ class CacheFailure extends Failure {
   @override
   List<Object> get props => [CacheFailure];
 }
+
+class EmptyDataFailure extends Failure {
+  final String message;
+
+  EmptyDataFailure({this.message});
+
+  @override
+  List<Object> get props => [EmptyDataFailure];
+}

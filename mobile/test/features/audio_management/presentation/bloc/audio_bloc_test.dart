@@ -243,7 +243,7 @@ void main() {
         'Should emit [Error] when can not get the audio',
         () {
           when(mockGetAudio(any))
-              .thenAnswer((_) async => Left(ServerFailure()));
+              .thenAnswer((_) async => Left(null));
 
           final expected = [
             AudioLoadInProgress(),

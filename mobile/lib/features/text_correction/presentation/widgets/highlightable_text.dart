@@ -6,12 +6,12 @@ import '../bloc/correction_bloc.dart';
 
 class HighlightableText extends StatelessWidget {
   final int index;
-  final Function onTap;
+  final double fontSize;
 
   const HighlightableText({
     Key key,
+    this.fontSize = 24,
     @required this.index,
-    @required this.onTap,
   }) : super(key: key);
 
   @override
@@ -19,21 +19,16 @@ class HighlightableText extends StatelessWidget {
     final bloc = BlocProvider.of<CorrectionBloc>(context);
     final mistake = bloc.indexToMistakes[index];
 
-    return Container(
-      child: InkWell(
-        onTap: () => onTap(),
-        child: Text(
-          bloc.indexToWord[index],
-          style: TextStyle(
-            backgroundColor: _highlightText(mistake),
-            decoration: mistake != null && mistake.hasCommentary
-                ? TextDecoration.underline
-                : null,
-            decorationThickness: 1.3,
-            fontWeight: FontWeight.w300,
-            fontSize: 24,
-          ),
-        ),
+    return Text(
+      bloc.indexToWord[index],
+      style: TextStyle(
+        backgroundColor: _highlightText(mistake),
+        decoration: mistake != null && mistake.hasCommentary
+            ? TextDecoration.underline
+            : null,
+        decorationThickness: 1.3,
+        fontWeight: FontWeight.w300,
+        fontSize: fontSize,
       ),
     );
   }

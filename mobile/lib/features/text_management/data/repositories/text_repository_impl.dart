@@ -78,7 +78,7 @@ class TextRepositoryImpl implements TextRepository {
       Student student) async {
     try {
       var studentModel =
-          await studentEntityModelConverter.classroomEntityToModel(student);
+          await studentEntityModelConverter.entityToModel(student);
 
       var listTextModel =
           await localDataSource.getStudentTextsFromCache(studentModel);

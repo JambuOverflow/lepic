@@ -14,10 +14,7 @@ class UpdateAudioDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Update title'),
-      content: AudioForm(
-        titleController: _titleController,
-        bloc: bloc,
-      ),
+      content: AudioForm(titleController: _titleController),
       actions: <Widget>[
         CancelButton(),
         FlatButton(

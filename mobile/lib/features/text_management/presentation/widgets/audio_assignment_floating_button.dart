@@ -7,13 +7,18 @@ import '../../../audio_management/presentation/pages/audio_page.dart';
 import '../../../audio_management/presentation/utils/audio_picker.dart';
 
 class AudioAssignmentFloatingButton extends StatelessWidget {
+  final GlobalKey parentKey;
+
+  const AudioAssignmentFloatingButton({Key key, @required this.parentKey})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () async {
-        showAudioBottomSheet(context);
+        showAudioBottomSheet(parentKey.currentContext);
 
-        await showAudioPicker(context);
+        await showAudioPicker(parentKey.currentContext);
       },
       label: Text('Add Recording'),
       icon: Icon(Icons.music_note),

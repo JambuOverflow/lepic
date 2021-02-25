@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/text_management/presentation/pages/text_mistake.dart';
+import 'package:mobile/features/text_correction/presentation/widgets/text_mistake.dart';
 
 import 'account_page.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';

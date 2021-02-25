@@ -31,17 +31,26 @@ void main() {
 
   final tMistakeInputModel1 = MistakeModel(
     commentary: "",
-    textId: 1,
-    studentId: 1,
+    correctionId: 1,
     wordIndex: 1,
   );
 
   final tMistakeOutputModel1 = MistakeModel(
     commentary: "",
-    textId: 1,
-    studentId: 1,
+    correctionId: 1,
     wordIndex: 1,
     localId: 1,
+  );
+
+  final tCorrectionOutputModel1 = CorrectionModel(
+    localId: 1,
+    studentId: 1,
+    textId: 1,
+  );
+
+  final tCorrectionInputModel1 = CorrectionModel(
+    studentId: 1,
+    textId: 1,
   );
 
   final textPk = 1;
@@ -77,31 +86,29 @@ void main() {
     });
   });
 
-  group("deleteMistake", () {
-    test("should correctly delete a cached mistake", () async {
-      when(mockDatabase.deleteMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      )).thenAnswer((_) async => _);
+  group("deleteCorrectionFromCache", () {
+    test("should correctly delete a correction and its mistakes", () async {
+      when(mockDatabase.deleteCorrectionMistakes(1))
+          .thenAnswer((_) async => _);
+      when(mockDatabase.deleteCorrection(1)).thenAnswer((_) async => _);
 
       await mistakeLocalDataSourceImpl
-          .deleteCorrectionMistakesFromCache(tMistakeInputModel1);
-      verify(mockDatabase.deleteMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      ));
+          .deleteCorrectionFromCache(tCorrectionOutputModel1);
+      verifyInOrder([
+        mockDatabase.deleteCorrectionMistakes(1),
+        mockDatabase.deleteCorrection(1)
+      ]);
+      verifyNoMoreInteractions(mockDatabase);
     });
 
     test("should throw CacheException when trying to delete an invalid mistake",
         () {
-      when(mockDatabase.deleteMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      )).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.deleteCorrectionMistakes(1))
+          .thenThrow(SqliteException(787, ""));
 
       expect(
           () async => await mistakeLocalDataSourceImpl
-              .deleteCorrectionMistakesFromCache(tMistakeInputModel1),
+              .deleteCorrectionFromCache(tCorrectionOutputModel1),
           throwsA(TypeMatcher<CacheException>()));
     });
   });
@@ -109,20 +116,13 @@ void main() {
   group("getMistake", () {
     test("should correctly return a list of mistakes", () async {
       when(mockDatabase.getMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
+        1,
       )).thenAnswer((_) async => [tMistakeOutputModel1]);
 
-      final result =
-          await mistakeLocalDataSourceImpl.getCorrectionMistakesFromCache(
-        studentModel: studentModel,
-        textModel: textModel,
-      );
+      final result = await mistakeLocalDataSourceImpl
+          .getMistakesFromCache(tCorrectionOutputModel1);
 
-      verify(mockDatabase.getMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      ));
+      verify(mockDatabase.getMistakesOfCorrection(1));
 
       final testResult = listEquals(result, [tMistakeOutputModel1]);
 
@@ -130,37 +130,87 @@ void main() {
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      )).thenAnswer((_) async => []);
+      when(mockDatabase.getMistakesOfCorrection(1)).thenAnswer((_) async => []);
 
-      final result =
-          await mistakeLocalDataSourceImpl.getCorrectionMistakesFromCache(
-        studentModel: studentModel,
-        textModel: textModel,
-      );
+      final result = await mistakeLocalDataSourceImpl
+          .getMistakesFromCache(tCorrectionOutputModel1);
 
-      verify(mockDatabase.getMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      ));
+      verify(mockDatabase.getMistakesOfCorrection(1));
       final testResult = listEquals(result, []);
       equals(testResult);
     });
 
     test("should throw a CacheException", () async {
-      when(mockDatabase.getMistakesOfCorrection(
-        textPk: textPk,
-        studentPk: studentPk,
-      )).thenThrow(SqliteException(787, ""));
+      when(mockDatabase.getMistakesOfCorrection(1))
+          .thenThrow(SqliteException(787, ""));
 
       expect(
-          () async => await mistakeLocalDataSourceImpl.getCorrectionMistakesFromCache(
-        studentModel: studentModel,
-        textModel: textModel,
-      ),
+          () async => await mistakeLocalDataSourceImpl
+              .getMistakesFromCache(tCorrectionOutputModel1),
           throwsA(TypeMatcher<CacheException>()));
+    });
+  });
+
+  group("cacheCorrection", () {
+    test("should correctly cache and return a valid correction", () async {
+      when(mockDatabase.insertCorrection(tCorrectionInputModel1))
+          .thenAnswer((_) async => tValidPk);
+
+      final result = await mistakeLocalDataSourceImpl
+          .cacheNewCorrection(tCorrectionInputModel1);
+      verify(mockDatabase.insertCorrection(tCorrectionInputModel1));
+      expect(result, tCorrectionOutputModel1);
+    });
+
+    test("should throw CacheException when trying to insert an invalid mistake",
+        () {
+      when(mockDatabase.insertCorrection(tCorrectionInputModel1))
+          .thenThrow(SqliteException(787, ""));
+      expect(
+          () async => await mistakeLocalDataSourceImpl
+              .cacheNewCorrection(tCorrectionInputModel1),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+  });
+
+  group("getCorrection", () {
+    test("should correctly return a correction", () async {
+      when(mockDatabase.getCorrection(textId: 1, studentId: 1))
+          .thenAnswer((_) async => tCorrectionOutputModel1);
+
+      final result = await mistakeLocalDataSourceImpl.getCorrectionFromCache(
+          studentModel: studentModel, textModel: textModel);
+
+      verify(mockDatabase.getCorrection(
+        textId: 1,
+        studentId: 1,
+      ));
+
+      expect(result, tCorrectionOutputModel1);
+    });
+
+    test("should throw a cacheException", () async {
+      when(mockDatabase.getCorrection(textId: 1, studentId: 1))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async => await mistakeLocalDataSourceImpl.getCorrectionFromCache(
+                textModel: textModel,
+                studentModel: studentModel,
+              ),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+
+     test("should throw an EmptyDataException", () async {
+      when(mockDatabase.getCorrection(textId: 1, studentId: 1))
+          .thenThrow(EmptyDataException());
+
+      expect(
+          () async => await mistakeLocalDataSourceImpl.getCorrectionFromCache(
+                textModel: textModel,
+                studentModel: studentModel,
+              ),
+          throwsA(TypeMatcher<EmptyDataException>()));
     });
   });
 }

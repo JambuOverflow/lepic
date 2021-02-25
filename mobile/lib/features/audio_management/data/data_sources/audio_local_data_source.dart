@@ -22,6 +22,16 @@ abstract class AudioLocalDataSource {
     TextModel textModel,
   });
 
+  /// Gets the cached list of [Audio].
+  ///
+  /// Returns an empty list if no [Audio] is cached.
+  ///
+  /// Throws [CacheException] if something wrong happens.
+  Future<AudioModel> getAudioFromCacheWithId({
+    int studentId,
+    int textId,
+  });
+
   /// Deletes the [Audio] passed.
   ///
   /// Throws [CacheException] if the [Audio] is not cached.
@@ -87,6 +97,8 @@ class AudioLocalDataSourceImpl implements AudioLocalDataSource {
           );
     } on SqliteException {
       throw CacheException();
+    } on EmptyDataException {
+      throw EmptyDataException();
     }
   }
 
@@ -100,66 +112,18 @@ class AudioLocalDataSourceImpl implements AudioLocalDataSource {
     }
   }
 
-  /*
   @override
-  Future<AudioModel> cacheNewAudio(
-      AudioModel audioModel) async {
+  Future<AudioModel> getAudioFromCacheWithId(
+      {int studentId, int textId}) async {
     try {
-      bool nullToAbsent = true;
-      final classCompanion = audioModel.toCompanion(nullToAbsent);
-      final classPk = await this.database.insertAudio(classCompanion);
-
-      return audioModel.copyWith(localId: classPk, deleted: false);
+      return await this.database.getAudio(
+            studentPk: studentId,
+            textPk: textId,
+          );
     } on SqliteException {
       throw CacheException();
+    } on EmptyDataException {
+      throw EmptyDataException();
     }
   }
-
-  @override
-  Future<void> deleteAudioFromCache(AudioModel audioModel) async {
-    AudioModel deletedAudioModel =
-        audioModel.copyWith(deleted: true);
-    try {
-      await this.database.updateAudio(deletedAudioModel);
-    } on SqliteException {
-      throw CacheException();
-    }
-  }
-
-  @override
-  Future<List<AudioModel>> getAudiosFromCache() async {
-    try {
-      final tutorId = await userLocalDataSource.getUserId();
-      return await this.database.getAudios(tutorId);
-    } on SqliteException {
-      throw CacheException();
-    }
-  }
-
-  @override
-  Future<AudioModel> cacheAudio(AudioModel audioModel) async {
-    bool audioExists;
-    if (audioModel.localId == null) {
-      audioExists = false;
-    } else {
-      audioExists =
-          await this.database.audioExists(audioModel.localId);
-    }
-    if (audioExists) {
-      return updateCachedAudio(audioModel);
-    } else {
-      return cacheNewAudio(audioModel);
-    }
-  }
-
-  @override
-  Future<AudioModel> updateCachedAudio(
-      AudioModel audioModel) async {
-    try {
-      await this.database.updateAudio(audioModel);
-      return audioModel;
-    } on SqliteException {
-      throw CacheException();
-    }
-  }*/
 }

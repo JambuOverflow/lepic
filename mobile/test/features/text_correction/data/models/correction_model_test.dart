@@ -9,32 +9,30 @@ import '../../../../core/fixtures/fixture_reader.dart';
 void main() {
   moorRuntimeOptions.defaultSerializer = Serializer();
 
-  final tMistakeModel = MistakeModel(
+  final tCorrectionModel = CorrectionModel(
     localId: 1,
-    commentary: ";)",
-    wordIndex: 1,
-    correctionId: 1,
+    textId: 1,
+    studentId: 1,
   );
 
   group("from json", () {
     test("should return a valid Correction model", () async {
-      final Map<String, dynamic> jsonMap = json.decode(fixture('mistake'));
+      final Map<String, dynamic> jsonMap = json.decode(fixture('correction'));
 
-      final result = MistakeModel.fromJson(jsonMap);
+      final result = CorrectionModel.fromJson(jsonMap);
 
-      expect(result, tMistakeModel);
+      expect(result, tCorrectionModel);
     });
   });
 
   group('toJson', () {
     test('should return a Correction JSON map with proper data', () async {
-      final result = tMistakeModel.toJson();
+      final result = tCorrectionModel.toJson();
 
       final expectedMap = {
         "local_id": 1,
-        "word_index": 1,
-        "commentary": ";)",
-        "correction_id": 1,
+        "text_id": 1,
+        "student_id": 1,
       };
 
       expect(result, expectedMap);

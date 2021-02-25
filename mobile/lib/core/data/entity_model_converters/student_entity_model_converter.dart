@@ -2,7 +2,7 @@ import 'package:mobile/features/student_management/domain/entities/student.dart'
 import '../database.dart';
 
 class StudentEntityModelConverter {
-  Student classroomModelToEntity(StudentModel model) {
+  Student modelToEntity(StudentModel model) {
     return Student(
       firstName: model.firstName,
       lastName: model.lastName,
@@ -10,7 +10,7 @@ class StudentEntityModelConverter {
     );
   }
 
-  Future<StudentModel> classroomEntityToModel(Student entity) async {
+  Future<StudentModel> entityToModel(Student entity) async {
     return StudentModel(
       localId: entity.id,
       firstName: entity.firstName,

@@ -9,6 +9,15 @@ abstract class CorrectionState extends Equatable {
 
 class CorrectionLoading extends CorrectionState {}
 
+class CorrectionInProgress extends CorrectionState {
+  final Correction correction;
+
+  CorrectionInProgress(this.correction);
+
+  @override
+  List<Object> get props => [correction];
+}
+
 class CorrectionLoaded extends CorrectionState {
   final Correction correction;
 
