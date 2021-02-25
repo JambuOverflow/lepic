@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import '../widgets/result_card.dart';
 import '../../../../core/presentation/widgets/background_app_bar.dart';
-import '../../domain/entities/statistic.dart';
 import '../../../text_management/presentation/widgets/text_area.dart';
 
 class StatisticsPage extends StatelessWidget {
-  final Statistic _statistic;
+  final StatisticBloc bloc;
   final _scrollController = ScrollController();
 
-  StatisticsPage({Key key, @required Statistic statistic})
-      : _statistic = statistic,
-        super(key: key);
+  StatisticsPage({Key key, @required this.bloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +22,8 @@ class StatisticsPage extends StatelessWidget {
           children: [
             TextArea(
               scrollControler: _scrollController,
-              textBody: _statistic.cardContent,
-              tag: '${_statistic.cardContent}_stat',
+              textBody: bloc.cardContent,
+              tag: '${bloc.cardContent}_stat',
             ),
             ResultCard(title: 'Results'),
             SizedBox(height: 8),

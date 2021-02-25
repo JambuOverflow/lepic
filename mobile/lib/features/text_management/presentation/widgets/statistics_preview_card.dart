@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
-import 'package:mobile/features/statistics/domain/entities/statistic.dart';
+import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/statistics/presentation/pages/statistics_page.dart';
 import 'preview_card.dart';
 
-class StatisticsPreviewCard extends StatelessWidget {
-  final Statistic _statistic;
-
+class StatisticsPreviewCard extends StatefulWidget {
   const StatisticsPreviewCard({
     Key key,
-    @required Statistic statistic,
-  })  : _statistic = statistic,
-        super(key: key);
+  }) : super(key: key);
+
+  @override
+  _StatisticsPreviewCardState createState() => _StatisticsPreviewCardState();
+}
+
+class _StatisticsPreviewCardState extends State<StatisticsPreviewCard> {
+  StatisticBloc bloc;
+  @override
+  void initState() {
+    bloc = BlocProvider.of<StatisticBloc>(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +28,13 @@ class StatisticsPreviewCard extends StatelessWidget {
       enabled: true,
       title: 'STATISTICS',
       content: [
-        buildTextPreviewArea(context),
-        buildButtons(context),
+        buildTextPreviewArea(),
+        buildButtons(),
       ],
     );
   }
 
-  Padding buildButtons(BuildContext context) {
+  Padding buildButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -33,25 +42,25 @@ class StatisticsPreviewCard extends StatelessWidget {
         children: [
           FlatButton(
             child: Text('SEE MORE'),
-            onPressed: () => navigateToDetails(context),
+            onPressed: () => navigateToDetails(),
           ),
         ],
       ),
     );
   }
 
-  Padding buildTextPreviewArea(BuildContext context) {
+  Padding buildTextPreviewArea() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: InkWell(
         splashColor: Colors.blue[100].withOpacity(0.5),
         highlightColor: Colors.blue[100].withAlpha(0),
-        onTap: () => navigateToDetails(context),
+        onTap: () => navigateToDetails(),
         child: Hero(
-          tag: '${_statistic.cardContent}_stat',
+          tag: '${bloc.cardContent}_stat',
           flightShuttleBuilder: flightShuttleBuilder,
           child: Text(
-            _statistic.cardContent,
+            bloc.cardContent,
             maxLines: 6,
             textAlign: TextAlign.justify,
             overflow: TextOverflow.ellipsis,
@@ -62,10 +71,13 @@ class StatisticsPreviewCard extends StatelessWidget {
     );
   }
 
-  void navigateToDetails(BuildContext context) {
+  void navigateToDetails() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => StatisticsPage(statistic: _statistic),
+        builder: (_) => BlocProvider.value(
+          value: BlocProvider.of<StatisticBloc>(context),
+          child: StatisticsPage(bloc: bloc),
+        ),
       ),
     );
   }
