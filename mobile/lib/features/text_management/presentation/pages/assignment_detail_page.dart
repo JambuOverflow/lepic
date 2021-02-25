@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 
 import '../bloc/assignment_status_cubit.dart';
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
@@ -70,6 +71,9 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
           create: (_) => audioBloc = GetIt.instance.get<AudioBloc>(
             param1: StudentTextParams(text: text, student: student),
           ),
+        ),
+        BlocProvider(
+          create: (_) => PlayerCubit(audioBloc),
         ),
         BlocProvider(
           lazy: false,
