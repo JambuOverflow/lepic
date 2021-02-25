@@ -29,13 +29,9 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
               case 1:
                 return ClassroomsPage();
               case 2:
-                return StudentTextsPage();
-              case 3:
-                return TextMistake();
-              case 4:
                 return AccountPage();
               default:
-                return null;
+                return HomePreview();
             }
           } else {
             return HomePreview();

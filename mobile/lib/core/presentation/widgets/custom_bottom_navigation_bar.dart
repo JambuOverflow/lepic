@@ -26,16 +26,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
               label: 'Classrooms',
             ),
             BottomNavigationBarItem(
-              activeIcon: Icon(Icons.text_format_rounded),
-              icon: Icon(Icons.text_format_outlined),
-              label: 'Texts',
-            ),
-            BottomNavigationBarItem(
-              activeIcon: Icon(Icons.text_fields_rounded),
-              icon: Icon(Icons.text_fields_outlined),
-              label: 'Demo',
-            ),
-            BottomNavigationBarItem(
               activeIcon: Icon(Icons.account_circle),
               icon: Icon(Icons.account_circle_outlined),
               label: 'Account',
