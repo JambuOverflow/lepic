@@ -57,7 +57,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   Stream<AudioState> _createNewAudioState(CreateAudioEvent event) async* {
     final audio = AudioEntity(
       title: event.title,
-      audioData: event.audioData,
+      data: event.audioData,
       studentId: student.id,
       textId: text.localId,
     );
@@ -83,7 +83,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
   Stream<AudioState> _updateAudioState(UpdateAudioEvent event) async* {
     final updatedAudio = AudioEntity(
       title: event.title,
-      audioData: event.audioData,
+      data: event.audioData,
       localId: event.oldAudio.localId,
       studentId: student.id,
       textId: text.localId,

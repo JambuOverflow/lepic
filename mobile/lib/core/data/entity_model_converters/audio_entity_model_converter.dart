@@ -7,7 +7,7 @@ class AudioEntityModelConverter {
     return AudioEntity(
       localId: model.localId,
       title: model.title,
-      audioData: model.audioData,
+      data: model.audioData,
       studentId: model.studentId,
       textId: model.textId,
     );
@@ -16,7 +16,7 @@ class AudioEntityModelConverter {
   AudioModel entityToModel(AudioEntity entity) {
     return AudioModel(
       localId: entity.localId,
-      audioData: entity.audioData,
+      audioData: entity.data,
       title: entity.title,
       studentId: entity.studentId,
       textId: entity.textId,
