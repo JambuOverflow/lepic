@@ -37,7 +37,7 @@ void main() {
   final String tTitle = 'bom dia grupo';
 
   final tAudio = AudioEntity(
-    audioData: tAudioData,
+    data: tAudioData,
     title: tTitle,
     localId: 1,
     studentId: 001,
@@ -242,8 +242,7 @@ void main() {
       test(
         'Should emit [Error] when can not get the audio',
         () {
-          when(mockGetAudio(any))
-              .thenAnswer((_) async => Left(null));
+          when(mockGetAudio(any)).thenAnswer((_) async => Left(null));
 
           final expected = [
             AudioLoadInProgress(),

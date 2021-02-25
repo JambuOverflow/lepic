@@ -21,7 +21,7 @@ class UpdateAudioDialog extends StatelessWidget {
           onPressed: () {
             bloc.add(UpdateAudioEvent(
               oldAudio: bloc.audio,
-              audioData: bloc.audio.audioData,
+              audioData: bloc.audio.data,
               title: _titleController.text,
             ));
             Navigator.pop(context);

@@ -27,7 +27,7 @@ void main() {
   final tAudioEntity = AudioEntity(
     title: '1',
     localId: 2,
-    audioData: audio_data,
+    data: audio_data,
     studentId: 1,
     textId: 1,
   );

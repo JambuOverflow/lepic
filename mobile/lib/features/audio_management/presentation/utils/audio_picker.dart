@@ -18,7 +18,7 @@ class AudioPicker {
 
     final audioEntity = AudioEntity(
       title: platformFile.name,
-      audioData: audioBytes,
+      data: audioBytes,
     );
 
     return audioEntity;
