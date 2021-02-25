@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AudioProgressBar extends StatelessWidget {
+  final double progress;
+
   const AudioProgressBar({
     Key key,
+    @required this.progress,
   }) : super(key: key);
 
   @override
@@ -17,7 +20,7 @@ class AudioProgressBar extends StatelessWidget {
           ),
         ),
         FractionallySizedBox(
-          widthFactor: 0.2,
+          widthFactor: progress,
           child: Container(
             height: 8,
             decoration: BoxDecoration(

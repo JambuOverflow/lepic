@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/audio_management/presentation/pages/audio_page.dart';
 
+import '../../../audio_management/presentation/bloc/player_cubit.dart';
+import '../../../audio_management/presentation/pages/audio_page.dart';
+import '../../../audio_management/presentation/widgets/audio_preview_player.dart';
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
 import 'preview_card.dart';
 
@@ -31,22 +33,66 @@ class _AvailableAudioCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return PreviewCard(
       enabled: true,
+      titleBackgroundColor: Colors.black87,
+      titleColor: Colors.white,
       title: 'AUDIO',
       content: [
         InkWell(
-          onTap: () => showModalBottomSheet(
-            context: context,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-            ),
-            builder: (_) => BlocProvider.value(
-              value: BlocProvider.of<AudioBloc>(context),
-              child: AudioPage(),
-            ),
+          onTap: () => openBottomSheet(context),
+          child: BlocBuilder<PlayerCubit, PlayerState>(
+            builder: (context, state) {
+              final playerBloc = BlocProvider.of<PlayerCubit>(context);
+              return Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(color: Colors.black87),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        bottom: 8,
+                      ),
+                      child: AudioPreviewPlayer(playerBloc: playerBloc),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FlatButton(
+                          child: Text('EDIT'),
+                          onPressed: () => openBottomSheet(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-          child: Container(height: 50),
         ),
       ],
+    );
+  }
+
+  void openBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: BlocProvider.of<AudioBloc>(context),
+          ),
+          BlocProvider.value(
+            value: BlocProvider.of<PlayerCubit>(context),
+          ),
+        ],
+        child: AudioPage(),
+      ),
     );
   }
 }

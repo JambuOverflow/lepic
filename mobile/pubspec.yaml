@@ -26,6 +26,9 @@ dependencies:
 
   expand_widget: ^1.1.0+1
   align_positioned: ^1.2.14
+
+  # Audio Player
+  audiofileplayer: ^1.3.3
   
   # Value Equality
   equatable: ^1.2.5

@@ -54,11 +54,11 @@ class AudioAssignmentFloatingButton extends StatelessWidget {
       bloc.isAudioAttached
           ? UpdateAudioEvent(
               oldAudio: bloc.audio,
-              audioData: audio.audioData,
+              audioData: audio.data,
               title: audio.title,
             )
           : CreateAudioEvent(
-              audioData: audio.audioData,
+              audioData: audio.data,
               title: audio.title,
             ),
     );

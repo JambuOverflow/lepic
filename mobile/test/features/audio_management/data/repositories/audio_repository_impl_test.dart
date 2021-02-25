@@ -33,14 +33,14 @@ void main() {
   final tAudioOutput = AudioEntity(
     title: '1',
     localId: 2,
-    audioData: audio_data,
+    data: audio_data,
     studentId: 1,
     textId: 1,
   );
 
   final tAudioInput = AudioEntity(
     title: '1',
-    audioData: audio_data,
+    data: audio_data,
     studentId: 1,
     textId: 1,
   );

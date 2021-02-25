@@ -7,6 +7,7 @@ import 'package:mobile/features/text_management/presentation/widgets/statistics_
 
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 
 import '../bloc/assignment_status_cubit.dart';
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
@@ -78,6 +79,9 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
           ),
         ),
         BlocProvider(
+          create: (_) => PlayerCubit(audioBloc),
+        ),
+        BlocProvider(
           lazy: false,
           create: (_) => statisticBloc = GetIt.instance.get<StatisticBloc>(
             param1: student,
@@ -107,6 +111,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
               controller: _scrollController,
               isAlwaysShown: true,
               child: ListView(
+                controller: _scrollController,
                 padding: EdgeInsets.all(16),
                 children: [
                   TextPreviewCard(text: text),
