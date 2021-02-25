@@ -1,7 +1,8 @@
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/student_management/domain/entities/student.dart';
-import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
 
+import '../core/data/entity_model_converters/correction_entity_model_converter.dart';
+import '../features/student_management/domain/entities/student.dart';
+import '../features/text_management/presentation/bloc/single_text_cubit.dart';
 import '../core/data/entity_model_converters/mistake_entity_model_converter.dart';
 import '../features/text_correction/domain/use_cases/create_correction_use_case.dart';
 import '../features/text_correction/domain/use_cases/delete_correction_use_case.dart';
@@ -36,6 +37,8 @@ void init() {
 
   getIt.registerLazySingleton<CorrectionRepository>(
     () => CorrectionRepositoryImpl(
+      correctionEntityModelConverter: getIt(),
+      studentEntityModelConverter: getIt(),
       localDataSource: getIt(),
       mistakeEntityModelConverter: getIt(),
       textEntityModelConverter: getIt(),
@@ -47,4 +50,5 @@ void init() {
   );
 
   getIt.registerLazySingleton(() => MistakeEntityModelConverter());
+  getIt.registerLazySingleton(() => CorrectionEntityModelConverter());
 }
