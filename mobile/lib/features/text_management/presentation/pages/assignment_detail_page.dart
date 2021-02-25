@@ -98,6 +98,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
               controller: _scrollController,
               isAlwaysShown: true,
               child: ListView(
+                controller: _scrollController,
                 padding: EdgeInsets.all(16),
                 children: [
                   TextPreviewCard(text: text),
