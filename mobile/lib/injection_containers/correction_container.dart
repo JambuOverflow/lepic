@@ -1,4 +1,6 @@
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/student_management/domain/entities/student.dart';
+import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
 
 import '../core/data/entity_model_converters/mistake_entity_model_converter.dart';
 import '../features/text_correction/domain/use_cases/create_correction_use_case.dart';
@@ -13,10 +15,10 @@ import '../features/text_correction/presentation/bloc/correction_bloc.dart';
 void init() {
   final getIt = GetIt.instance;
 
-  getIt.registerFactoryParam<CorrectionBloc, StudentTextParams, void>(
-    (params, _) => CorrectionBloc(
-      student: params.student,
-      text: params.text,
+  getIt.registerFactoryParam<CorrectionBloc, SingleTextCubit, Student>(
+    (textCubit, student) => CorrectionBloc(
+      student: student,
+      textCubit: textCubit,
       getCorrectionUseCase: getIt(),
       createCorrectionUseCase: getIt(),
       deleteCorrectionUseCase: getIt(),

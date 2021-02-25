@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../text_management/presentation/bloc/single_text_cubit.dart';
 import '../../domain/use_cases/correction_params.dart';
 import '../../domain/use_cases/create_correction_use_case.dart';
 import '../../domain/use_cases/delete_correction_use_case.dart';
@@ -23,21 +24,25 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   final DeleteCorrectionUseCase deleteCorrectionUseCase;
   final UpdateCorrectionUseCase updateCorrectionUseCase;
 
-  final MyText text;
   final Student student;
+
+  final SingleTextCubit textCubit;
+  MyText get text => textCubit.state;
 
   final Map<int, Mistake> indexToMistakes = {};
   final Map<int, String> indexToWord = {};
 
+  bool get hasCorrection => state is CorrectionLoaded && mistakes.isNotEmpty;
+
   List<Mistake> get mistakes => indexToMistakes.values.toList();
-  Correction get _correction => Correction(
+  Correction get _currentCorrection => Correction(
         textId: text.localId,
         studentId: student.id,
         mistakes: mistakes,
       );
 
   CorrectionBloc({
-    @required this.text,
+    @required this.textCubit,
     @required this.student,
     @required this.getCorrectionUseCase,
     @required this.createCorrectionUseCase,
@@ -45,7 +50,10 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
     @required this.updateCorrectionUseCase,
   }) : super(CorrectionLoading()) {
     _buildIndexToWordMap(text);
+    textCubit.listen((_) => _buildIndexToWordMap(text));
   }
+
+  void clearMistakes() => indexToMistakes.clear();
 
   @override
   Stream<CorrectionState> mapEventToState(
@@ -89,7 +97,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
       RemoveMistakeEvent event) async* {
     indexToMistakes.remove(event.wordIndex);
 
-    yield CorrectionLoaded(_correction);
+    yield CorrectionInProgress(_currentCorrection);
   }
 
   Stream<CorrectionState> _loadCorrectionState() async* {
@@ -114,7 +122,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
 
   Stream<CorrectionState> _createCorrectionAndYieldState() async* {
     final correctionEither = await createCorrectionUseCase(
-      CorrectionParams(correction: _correction),
+      CorrectionParams(correction: _currentCorrection),
     );
 
     yield correctionEither.fold(
@@ -125,7 +133,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
 
   Stream<CorrectionState> _updateCorrectionState() async* {
     final updateOrFailure = await updateCorrectionUseCase(
-      CorrectionParams(correction: _correction),
+      CorrectionParams(correction: _currentCorrection),
     );
 
     yield updateOrFailure.fold(
@@ -136,14 +144,14 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
 
   Stream<CorrectionState> _deleteCorrectionState() async* {
     final deleteOrFailure = await deleteCorrectionUseCase(
-      CorrectionParams(correction: _correction),
+      CorrectionParams(correction: _currentCorrection),
     );
 
     yield deleteOrFailure.fold(
       (failure) => CorrectionDeletionError(),
       (success) {
         indexToMistakes.clear();
-        return CorrectionLoaded(_correction);
+        return CorrectionLoaded(_currentCorrection);
       },
     );
   }
@@ -151,7 +159,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   Stream<CorrectionState> _addMistakeAndYieldState(Mistake mistake) async* {
     indexToMistakes[mistake.wordIndex] = mistake;
 
-    yield CorrectionLoaded(_correction);
+    yield CorrectionInProgress(_currentCorrection);
   }
 
   void _buildIndexToWordMap(MyText text) {
