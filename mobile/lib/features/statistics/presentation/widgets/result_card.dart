@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/statistics/presentation/pages/results_page.dart';
 
 import 'more_info_dialog.dart';
@@ -71,8 +73,14 @@ class ResultCard extends StatelessWidget {
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
           onPressed: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => ResultsPage()));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: BlocProvider.of<StatisticBloc>(context),
+                  child: ResultsPage(),
+                ),
+              ),
+            );
           },
         ),
       ],

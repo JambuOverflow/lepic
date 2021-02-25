@@ -20,7 +20,9 @@ class MoreInfoDialog extends StatelessWidget {
             child: Text('Close'), onPressed: () => Navigator.pop(context))
       ],
       content: Text(
-          "The $title report is generated automatically by calculating measures related to the student's reading fluency"),
+        "The $title report is generated automatically by calculating measures related to the student's reading fluency.",
+        textAlign: TextAlign.justify,
+      ),
     );
   }
 }
