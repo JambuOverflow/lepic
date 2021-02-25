@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
-import 'package:mobile/features/statistics/domain/entities/statistic.dart';
-import 'package:mobile/features/text_management/presentation/widgets/text_area.dart';
+import '../../../../core/presentation/widgets/background_app_bar.dart';
+import '../../domain/entities/statistic.dart';
+import '../widgets/info_card.dart';
+import '../../../text_management/presentation/widgets/text_area.dart';
 
 class StatisticsPage extends StatelessWidget {
   final Statistic _statistic;
@@ -19,16 +19,57 @@ class StatisticsPage extends StatelessWidget {
       body: Scrollbar(
         isAlwaysShown: true,
         controller: _scrollController,
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.all(10),
           children: [
             TextArea(
               scrollControler: _scrollController,
               textBody: _statistic.cardContent,
               tag: '${_statistic.cardContent}_stat',
             ),
+            InfoCard(
+              content: [buildButtons(context)],
+              enabled: true,
+              title: 'Results',
+              titleBackgroundColor: Colors.blueGrey.shade800,
+              titleColor: Colors.white,
+            ),
+            SizedBox(height: 8),
+            InfoCard(
+              content: [buildButtons(context)],
+              enabled: true,
+              title: 'Comparative Table',
+              titleBackgroundColor: Colors.blueGrey.shade800,
+              titleColor: Colors.white,
+            ),
+            SizedBox(height: 8),
+            InfoCard(
+              content: [buildButtons(context)],
+              enabled: true,
+              title: 'Comparative Graph',
+              titleBackgroundColor: Colors.blueGrey.shade800,
+              titleColor: Colors.white,
+            ),
+            SizedBox(height: 64),
           ],
         ),
       ),
+    );
+  }
+
+  buildButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FlatButton(
+          textColor: Colors.black87,
+          child: Text(
+            'View',
+            style: TextStyle(fontSize: 12),
+          ),
+          onPressed: () {},
+        ),
+      ],
     );
   }
 }
