@@ -20,6 +20,9 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
       getNumberOfCorrectWordsReadPerMinute;
   final AudioEntity audio;
 
+  double numberOfWordsReadPerMinute;
+  double numberOfCorrectWordsReadPerMinute;
+
   String get cardContent =>
       '${student.firstName} ${student.lastName} had his/her fluency assessed in DATE. He/She read the text in X minutes and Y seconds with Z% of correctness.';
 
@@ -44,13 +47,15 @@ class StatisticBloc extends Bloc<StatisticEvent, StatisticState> {
 
     yield wordsPerMinutesOrFailure.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
-      (numberOfWordsReadPerMinute) {
+      (result) {
+        numberOfWordsReadPerMinute = result;
         return StatisticsLoaded();
       },
     );
     yield correctWordsPerMinutesOrFailure.fold(
       (failure) => Error(message: _mapFailureToMessage(failure)),
-      (numberOfWordsReadPerMinute) {
+      (result) {
+        numberOfCorrectWordsReadPerMinute = result;
         return StatisticsLoaded();
       },
     );
