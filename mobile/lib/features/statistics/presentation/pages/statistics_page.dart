@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../widgets/result_card.dart';
 import '../../../../core/presentation/widgets/background_app_bar.dart';
 import '../../domain/entities/statistic.dart';
-import '../widgets/info_card.dart';
 import '../../../text_management/presentation/widgets/text_area.dart';
 
 class StatisticsPage extends StatelessWidget {
@@ -27,49 +27,15 @@ class StatisticsPage extends StatelessWidget {
               textBody: _statistic.cardContent,
               tag: '${_statistic.cardContent}_stat',
             ),
-            InfoCard(
-              content: [buildButtons(context)],
-              enabled: true,
-              title: 'Results',
-              titleBackgroundColor: Colors.blueGrey.shade800,
-              titleColor: Colors.white,
-            ),
+            ResultCard(title: 'Results'),
             SizedBox(height: 8),
-            InfoCard(
-              content: [buildButtons(context)],
-              enabled: true,
-              title: 'Comparative Table',
-              titleBackgroundColor: Colors.blueGrey.shade800,
-              titleColor: Colors.white,
-            ),
+            ResultCard(title: 'Comparative Table'),
             SizedBox(height: 8),
-            InfoCard(
-              content: [buildButtons(context)],
-              enabled: true,
-              title: 'Comparative Graph',
-              titleBackgroundColor: Colors.blueGrey.shade800,
-              titleColor: Colors.white,
-            ),
+            ResultCard(title: 'Comparative Graph'),
             SizedBox(height: 64),
           ],
         ),
       ),
-    );
-  }
-
-  buildButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        FlatButton(
-          textColor: Colors.black87,
-          child: Text(
-            'View',
-            style: TextStyle(fontSize: 12),
-          ),
-          onPressed: () {},
-        ),
-      ],
     );
   }
 }
