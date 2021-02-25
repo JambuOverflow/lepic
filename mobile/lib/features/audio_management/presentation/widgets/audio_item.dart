@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
-import 'package:mobile/features/audio_management/presentation/widgets/update_audio_dialog.dart';
+
+import '../bloc/player_cubit.dart';
+import '../bloc/audio_bloc.dart';
+import 'update_audio_dialog.dart';
 
 class AudioItem extends StatelessWidget {
   final AudioBloc bloc;
