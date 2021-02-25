@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../audio_management/presentation/bloc/player_cubit.dart';
 import '../bloc/correction_bloc.dart';
 import '../widgets/back_confirmation_dialog.dart';
 import '../widgets/audio_sliver_app_bar_delegate.dart';
@@ -26,13 +27,16 @@ class _CorrectionPageState extends State<CorrectionPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => showDialog(
-        context: context,
-        child: BlocProvider.value(
-          value: bloc,
-          child: BackConfirmationDialog(),
-        ),
-      ),
+      onWillPop: () {
+        BlocProvider.of<PlayerCubit>(context).stop();
+        return showDialog(
+          context: context,
+          child: BlocProvider.value(
+            value: bloc,
+            child: BackConfirmationDialog(),
+          ),
+        );
+      },
       child: Scaffold(
         floatingActionButton: _buildFloatingActionButton(),
         body: CustomScrollView(
@@ -51,12 +55,16 @@ class _CorrectionPageState extends State<CorrectionPage> {
     return FloatingActionButton(
       child: Icon(Icons.done),
       elevation: 6,
-      onPressed: () => showDialog(
+      onPressed: () {
+        BlocProvider.of<PlayerCubit>(context).stop();
+        return showDialog(
           context: context,
           child: BlocProvider.value(
             value: bloc,
             child: DoneConfirmationDialog(),
-          )),
+          ),
+        );
+      },
     );
   }
 
