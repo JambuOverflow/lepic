@@ -13,23 +13,14 @@ class CorrectionPreviewCard extends StatelessWidget {
     return BlocBuilder<CorrectionBloc, CorrectionState>(
       builder: (context, state) {
         return bloc.hasCorrection
-            ? _AvailableCorrectionCard(
-                bloc: bloc,
-              )
-            : _UnavailableCorrectionCard(bloc: bloc);
+            ? _AvailableCorrectionCard()
+            : _UnavailableCorrectionCard();
       },
     );
   }
 }
 
 class _UnavailableCorrectionCard extends StatelessWidget {
-  const _UnavailableCorrectionCard({
-    Key key,
-    @required this.bloc,
-  }) : super(key: key);
-
-  final CorrectionBloc bloc;
-
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
@@ -59,13 +50,6 @@ class _UnavailableCorrectionCard extends StatelessWidget {
 }
 
 class _AvailableCorrectionCard extends StatelessWidget {
-  const _AvailableCorrectionCard({
-    Key key,
-    @required this.bloc,
-  }) : super(key: key);
-
-  final CorrectionBloc bloc;
-
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
@@ -129,7 +113,7 @@ class _CardTitle extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 16,
-          horizontal: 16,
+          horizontal: 32,
         ),
         child: Image.asset(
           enabled
