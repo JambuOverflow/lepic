@@ -95,7 +95,9 @@ flutter:
       - assets/audios/test_sample.mp3
       - assets/images/no-audio.png
       - assets/images/highlight.png
+      - assets/images/statistics.png
       - assets/images/highlight-disabled.png
+      - assets/images/statistics-disabled.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
