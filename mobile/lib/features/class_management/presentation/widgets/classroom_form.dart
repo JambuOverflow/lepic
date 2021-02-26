@@ -15,17 +15,22 @@ class ClassroomForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _nameController.clear();
+    _gradeController.clear();
+
     return SingleChildScrollView(
-      child: ListBody(
+      child: Column(
         children: <Widget>[
           TextFormField(
+            autofocus: true,
             controller: _nameController,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Class name',
+              border: UnderlineInputBorder(),
+              icon: Icon(Icons.group_rounded),
+              labelText: 'Name',
             ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           TextFormField(
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
@@ -34,8 +39,9 @@ class ClassroomForm extends StatelessWidget {
             keyboardType: TextInputType.number,
             controller: _gradeController,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Class grade',
+              border: UnderlineInputBorder(),
+              icon: Icon(Icons.format_list_numbered),
+              labelText: 'Grade',
             ),
           ),
         ],
