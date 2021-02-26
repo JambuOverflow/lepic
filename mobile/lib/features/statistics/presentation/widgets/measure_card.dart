@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MeasureCard extends StatelessWidget {
   final String measure;
-  final String result;
+  final double result;
 
   const MeasureCard({
     Key key,
@@ -13,7 +13,7 @@ class MeasureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 3,
+      elevation: 1,
       child: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Row(
@@ -23,7 +23,7 @@ class MeasureCard extends StatelessWidget {
               measure,
               style: TextStyle(fontWeight: FontWeight.w700),
             ),
-            Text(result),
+            Text(result.toString()),
           ],
         ),
       ),

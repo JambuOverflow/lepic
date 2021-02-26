@@ -15,11 +15,23 @@ class ResultsPage extends StatelessWidget {
       ),
       body: Scrollbar(
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 5),
+          // padding: EdgeInsets.symmetric(horizontal: 10),
           children: [
             MeasureCard(
                 measure: 'Total Reading Time*',
-                result: '${bloc.numberOfWordsReadPerMinute}'),
+                result: bloc.numberOfWordsReadPerMinute),
+            MeasureCard(
+                measure: 'Number of Words Read Per Minute*',
+                result: bloc.numberOfWordsReadPerMinute),
+            MeasureCard(
+                measure: 'Number of Words Read in the First Minute*',
+                result: bloc.numberOfWordsReadPerMinute),
+            MeasureCard(
+                measure: 'Number of Correct Words Read in the First Minute*',
+                result: bloc.numberOfWordsReadPerMinute),
+            MeasureCard(
+                measure: 'Total Words Misread*',
+                result: bloc.numberOfWordsReadPerMinute),
             Footnote(),
           ],
         ),
