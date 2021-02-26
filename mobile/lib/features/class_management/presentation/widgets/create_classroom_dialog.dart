@@ -14,11 +14,11 @@ class CreateClassroomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Create Classroom'),
       content: ClassroomForm(
         nameController: _nameController,
         gradeController: _gradeController,
       ),
+      actionsPadding: EdgeInsets.only(right: 8),
       actions: <Widget>[
         CancelButton(),
         FlatButton(
@@ -31,7 +31,7 @@ class CreateClassroomDialog extends StatelessWidget {
             );
             Navigator.pop(context);
           },
-          child: Text('Add'),
+          child: Text('CREATE'),
         ),
       ],
     );
