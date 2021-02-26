@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
+import 'package:mobile/features/class_management/presentation/widgets/classroom_detail_popup_menu_button.dart';
 
-import '../../../student_management/presentation/bloc/student_bloc.dart';
 import '../../domain/entities/classroom.dart';
 import '../../../student_management/presentation/pages/students_page.dart';
 import '../../../../core/presentation/widgets/flight_shuttle_builder.dart';
@@ -23,11 +21,9 @@ class ClassroomDetailPage extends StatelessWidget {
           child: Text('${classroom.name}'),
           flightShuttleBuilder: flightShuttleBuilder,
         ),
+        actions: [ClassroomDetailPopupMenuButton(classroom: classroom)],
       ),
-      body: BlocProvider(
-        create: (context) => GetIt.instance<StudentBloc>(param1: classroom),
-        child: StudentsPage(),
-      ),
+      body: StudentsPage(),
     );
   }
 }

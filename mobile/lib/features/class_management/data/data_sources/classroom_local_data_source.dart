@@ -32,6 +32,8 @@ abstract class ClassroomLocalDataSource {
   /// Creates the [Classroom] if it does not yet exists.
   /// Throws [CacheException] if something wrong happens.
   Future<ClassroomModel> cacheClassroom(ClassroomModel classroomModel);
+
+  Future<ClassroomModel> getClassroomFromCacheWithId(int i);
 }
 
 class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
@@ -100,6 +102,15 @@ class ClassroomLocalDataSourceImpl implements ClassroomLocalDataSource {
     try {
       await this.database.updateClassroom(classroomModel);
       return classroomModel;
+    } on SqliteException {
+      throw CacheException();
+    }
+  }
+
+  @override
+  Future<ClassroomModel> getClassroomFromCacheWithId(int i) async {
+    try {
+      return await this.database.getClassroom(i);
     } on SqliteException {
       throw CacheException();
     }

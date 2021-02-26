@@ -137,6 +137,29 @@ void main() {
     });
   });
 
+  group("getStudentFromId", () {
+    test("should correctly return a student", () async {
+      when(mockDatabase.getStudent(tValidPk))
+          .thenAnswer((_) async => tStudentModel1);
+
+      final result =
+          await studentLocalDataSourceImpl.getStudentFromCacheWithId(tValidPk);
+
+      verify(mockDatabase.getStudent(tValidPk));
+      expect(result, tStudentModel1);
+    });
+
+    test("should throw a CacheException", () async {
+      when(mockDatabase.getStudent(tValidPk))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async => await studentLocalDataSourceImpl
+              .getStudentFromCacheWithId(tValidPk),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+  });
+
   group("updateStudent", () {
     test("should correctly update a cached student", () async {
       when(mockDatabase.updateStudent(tStudentModel1))

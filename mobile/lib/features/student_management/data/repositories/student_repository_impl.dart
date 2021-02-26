@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
@@ -84,6 +85,18 @@ class StudentRepositoryImpl implements StudentRepository {
       var localModel = await localDataSource.updateCachedStudent(model);
       var localStudent = studentModelToEntity(localModel);
       return Right(localStudent);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Student>> getStudentFromId(int params) async {
+    try {
+      final StudentModel studentModel =
+          await localDataSource.getStudentFromCacheWithId(params);
+      final Student student = studentModelToEntity(studentModel);
+      return Right(student);
     } on CacheException {
       return Left(CacheFailure());
     }

@@ -8,4 +8,6 @@ abstract class StudentRepository {
   Future<Either<Failure, Student>> updateStudent(Student student);
   Future<Either<Failure, List<Student>>> getStudents(Classroom classroom);
   Future<Either<Failure, void>> deleteStudent(Student student);
+
+  Future<Either<Failure, Student>> getStudentFromId(int params);
 }

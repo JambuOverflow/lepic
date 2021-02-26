@@ -143,7 +143,22 @@ void main() {
     });
   });
 
-  group("getStudents", () {
+  group("getStudent", () {
+    test("should return a student", () async {
+      await database.insertStudent(tValidStudentCompanion);
+
+      final student = await database.getStudent(1);
+      expect(student, tValidStudentModel1);
+    });
+
+    test("should throw an exception", () async {
+
+       expect(() => database.getStudent(1),
+          throwsA(TypeMatcher<SqliteException>()));
+    });
+  });
+
+  group("updateStudent", () {
     setUp(() async {
       await database.insertStudent(tValidStudentCompanion);
     });

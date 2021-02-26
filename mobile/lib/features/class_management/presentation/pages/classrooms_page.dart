@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/presentation/widgets/background_app_bar.dart';
 import 'package:mobile/features/class_management/presentation/widgets/create_classroom_dialog.dart';
 
 import '../../../../core/presentation/widgets/add_to_list_button.dart';
@@ -24,7 +25,10 @@ class _ClassroomsPageState extends State<ClassroomsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Classes')),
+      appBar: BackgroundAppBar(
+        title: 'My Classrooms',
+        elevation: 1,
+      ),
       body: Center(
         child: BlocConsumer<ClassroomBloc, ClassroomState>(
           listener: (context, state) {

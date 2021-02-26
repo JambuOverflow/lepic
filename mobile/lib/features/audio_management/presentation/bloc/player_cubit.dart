@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
+import '../utils/audio_text_utils.dart';
 import 'audio_bloc.dart';
 
 part 'player_state.dart';
@@ -14,12 +15,11 @@ class PlayerCubit extends Cubit<PlayerState> {
 
   Audio _audio;
   double durationInSeconds;
-  double currentPositon;
+  double currentPositon = 0;
 
   ByteData get _audioByteData => audioBloc.audio.byteData;
 
   PlayerCubit(this.audioBloc) : super(PlayerInitial()) {
-    currentPositon = 0;
     loadAudio();
     audioBloc.listen((state) {
       if (state is AudioLoaded) loadAudio();
@@ -47,6 +47,7 @@ class PlayerCubit extends Cubit<PlayerState> {
         this.currentPositon = position;
         emit(PlayerPlaying(position: position));
       },
+      onComplete: () => stop(),
     );
   }
 
@@ -81,38 +82,19 @@ class PlayerCubit extends Cubit<PlayerState> {
   void backwards({int seconds}) {
     if (state is PlayerInitial) return;
 
-    final newPosition =
-        (currentPositon + (-seconds)).clamp(0, durationInSeconds);
+    final double offset = 0.01;
+    final double newPosition =
+        (currentPositon + (-seconds)).clamp(offset, durationInSeconds - offset);
 
     _audio..seek(newPosition);
     emit(PlayerPlaying(position: newPosition));
   }
 
-  String formattedDuration() {
-    if (durationInSeconds == null) return '--:--';
+  String formattedDuration() =>
+      AudioTextUtils.formattedDuration(durationInSeconds: durationInSeconds);
 
-    final duration = Duration(seconds: durationInSeconds.toInt());
-
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-
-    var minutes = twoDigits(duration.inMinutes.remainder(60));
-    var seconds = twoDigits((duration.inSeconds.remainder(60)));
-
-    return '$minutes:$seconds';
-  }
-
-  String formattedPosition() {
-    if (durationInSeconds == null) return '00:00';
-
-    final position = Duration(seconds: currentPositon.toInt());
-
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-
-    var minutes = twoDigits(position.inMinutes.remainder(60));
-    var seconds = twoDigits((position.inSeconds.remainder(60)));
-
-    return '$minutes:$seconds';
-  }
+  String formattedPosition() =>
+      AudioTextUtils.formattedPosition(currentPosition: currentPositon);
 
   double progressPercentage() {
     if (state is PlayerPlaying || state is PlayerPaused)

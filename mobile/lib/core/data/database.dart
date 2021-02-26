@@ -51,6 +51,17 @@ class Database extends _$Database {
     return into(classroomModels).insert(modelCompanion);
   }
 
+  /// Returns a [Classroom]
+  Future<ClassroomModel> getClassroom(int classroomId) async {
+    final ClassroomModel result = await (select(classroomModels)
+          ..where((t) => t.localId.equals(classroomId)))
+        .getSingle();
+    if (result == null) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+    return result;
+  }
+
   /// Returns a list of [ClassroomModel] that weren't deleted
   ///
   /// Returns an empty list when the table is empty
@@ -84,6 +95,16 @@ class Database extends _$Database {
   /// Returns the number of deleted rows
   Future<int> deleteStudent(int id) async {
     return (delete(studentModels)..where((t) => t.localId.equals(id))).go();
+  }
+
+  Future<StudentModel> getStudent(int params) async {
+    final StudentModel result = await (select(studentModels)
+          ..where((t) => t.localId.equals(params)))
+        .getSingle();
+    if (result == null) {
+      throw SqliteException(787, "The table doesn't have this entry");
+    }
+    return result;
   }
 
   /// Returns a List of [StudentModel]
@@ -247,4 +268,6 @@ class Database extends _$Database {
 
   @override
   int get schemaVersion => 6;
+
+
 }
