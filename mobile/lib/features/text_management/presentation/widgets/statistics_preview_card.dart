@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobile/core/presentation/widgets/flight_shuttle_builder.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/statistics/presentation/pages/statistics_page.dart';
+import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 import 'preview_card.dart';
 
 class StatisticsPreviewCard extends StatefulWidget {
@@ -15,13 +18,6 @@ class StatisticsPreviewCard extends StatefulWidget {
 }
 
 class _StatisticsPreviewCardState extends State<StatisticsPreviewCard> {
-  StatisticBloc bloc;
-  @override
-  void initState() {
-    bloc = BlocProvider.of<StatisticBloc>(context);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
@@ -55,12 +51,15 @@ class _StatisticsPreviewCardState extends State<StatisticsPreviewCard> {
       child: InkWell(
         splashColor: Colors.blue[100].withOpacity(0.5),
         highlightColor: Colors.blue[100].withAlpha(0),
-        onTap: () => navigateToDetails(),
+        onTap: () {
+          print('aqui');
+          navigateToDetails();
+        },
         child: Hero(
-          tag: '${bloc.cardContent}_stat',
+          tag: 'bunda',
           flightShuttleBuilder: flightShuttleBuilder,
           child: Text(
-            bloc.cardContent,
+            "bloc.cardContent",
             maxLines: 6,
             textAlign: TextAlign.justify,
             overflow: TextOverflow.ellipsis,
@@ -74,9 +73,12 @@ class _StatisticsPreviewCardState extends State<StatisticsPreviewCard> {
   void navigateToDetails() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: BlocProvider.of<StatisticBloc>(context),
-          child: StatisticsPage(bloc: bloc),
+        builder: (_) => BlocProvider(
+          create: (_) => GetIt.instance.get<StatisticBloc>(
+            param1: BlocProvider.of<TextBloc>(context).student,
+            param2: BlocProvider.of<AudioBloc>(context).audio,
+          ),
+          child: StatisticsPage(),
         ),
       ),
     );
