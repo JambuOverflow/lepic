@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/core/data/database.dart';
 import '../../../../core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
@@ -107,6 +108,19 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
       var localClassroom =
           clasrooomEntityModelConverter.classroomModelToEntity(localModel);
       return Right(localClassroom);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, Classroom>> getClassroomFromId(int id) async {
+    try {
+      final ClassroomModel classroomModel =
+          await localDataSource.getClassroomFromCacheWithId(1);
+      final Classroom classroom =
+          clasrooomEntityModelConverter.classroomModelToEntity(classroomModel);
+      return Right(classroom);
     } on CacheException {
       return Left(CacheFailure());
     }

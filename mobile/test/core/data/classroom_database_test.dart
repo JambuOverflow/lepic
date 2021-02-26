@@ -151,6 +151,21 @@ void main() {
     });
   });
 
+  group("getClassroom", () {
+  
+    test("should return a classroom", () async {
+      await database.insertClassroom(tValidClassCompanion);
+
+      final classrooms = await database.getClassroom(tValidUserPk);
+      expect(classrooms, tValidClassModel1);
+    });
+
+    test("should return throw an exception", () async {
+      expect(() => database.getClassroom(tValidUserPk),
+          throwsA(TypeMatcher<SqliteException>()));
+    });
+  });
+
   group("UpdateClassroom", () {
     setUp(() async {
       await database.insertClassroom(tValidClassCompanion);

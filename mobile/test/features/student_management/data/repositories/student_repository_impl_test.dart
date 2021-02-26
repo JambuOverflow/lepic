@@ -151,4 +151,25 @@ void main() {
       expect(result, Left(CacheFailure()));
     });
   });
+
+  group('getStudentFromId', () {
+    test('should return a lstudent', () async {
+      when(mockLocalDataSource.getStudentFromCacheWithId(1))
+          .thenAnswer((_) async => tStudentModel);
+
+      final result = await repository.getStudentFromId(1);
+
+      expect(result, Right(tStudent));
+    });
+
+    test('should return a CacheFailure when a CacheException is throw',
+        () async {
+      when(mockLocalDataSource.getStudentFromCacheWithId(1))
+          .thenThrow(CacheException());
+
+      final result = await repository.getStudentFromId(1);
+
+      expect(result, Left(CacheFailure()));
+    });
+  });
 }

@@ -7,4 +7,5 @@ abstract class ClassroomRepository {
   Future<Either<Failure, Classroom>> updateClassroom(Classroom classroom);
   Future<Either<Failure, List<Classroom>>> getClassrooms();
   Future<Either<Failure, void>> deleteClassroom(Classroom classroom);
+  Future<Either<Failure, Classroom>> getClassroomFromId(int id);
 }
