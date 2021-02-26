@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class BackgroundAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
+  final double elevation;
   final List<Widget> actions;
 
-  BackgroundAppBar({this.title, this.actions});
+  BackgroundAppBar({this.title, this.actions, this.elevation = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class BackgroundAppBar extends StatelessWidget with PreferredSizeWidget {
 
     return AppBar(
       backgroundColor: Theme.of(context).canvasColor,
-      elevation: 0,
+      elevation: elevation,
       iconTheme: IconThemeData(color: theme.iconTheme.color),
       title: Text(
         title,
