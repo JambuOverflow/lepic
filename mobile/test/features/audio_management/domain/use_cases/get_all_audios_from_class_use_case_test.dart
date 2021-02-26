@@ -39,14 +39,14 @@ void main() {
     title: "a",
     textId: 1,
     studentId: 1,
-    audioData: audio_data,
+    data: audio_data,
     localId: 1,
   );
   final tAudio2 = AudioEntity(
     title: "a",
     textId: 1,
     studentId: 1,
-    audioData: audio_data,
+    data: audio_data,
     localId: 2,
   );
 
@@ -54,7 +54,7 @@ void main() {
     title: "a",
     textId: 1,
     studentId: 2,
-    audioData: audio_data,
+    data: audio_data,
     localId: 3,
   );
 

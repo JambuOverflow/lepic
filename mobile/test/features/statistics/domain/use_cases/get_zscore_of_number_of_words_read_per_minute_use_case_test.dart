@@ -1,11 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:mobile/features/audio_management/domain/entities/audio.dart';
 import 'package:mobile/features/audio_management/domain/use_cases/audio_params.dart';
-import 'package:mobile/features/audio_management/domain/use_cases/get_all_audios_from_class_use_case.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/class_management/domain/use_cases/get_classroom_from_id_use_case.dart';
@@ -58,7 +57,7 @@ void main() {
     title: "a",
     textId: 1,
     studentId: 1,
-    audioData: audio_data,
+    data: audio_data,
     localId: 1,
   );
 
@@ -66,7 +65,7 @@ void main() {
     title: "a",
     textId: 1,
     studentId: 1,
-    audioData: audio_data,
+    data: audio_data,
     localId: 2,
   );
 

@@ -42,7 +42,7 @@ void main() {
     title: "a",
     textId: 1,
     studentId: 1,
-    audioData: audio_data,
+    data: audio_data,
     localId: 1,
   );
 
@@ -50,7 +50,7 @@ void main() {
     title: "a",
     textId: 1,
     studentId: 1,
-    audioData: audio_data,
+    data: audio_data,
     localId: 2,
   );
 
