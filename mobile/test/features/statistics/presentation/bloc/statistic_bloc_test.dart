@@ -27,8 +27,8 @@ void main() {
 
   final tTitle = 'Title';
 
-  final tAudio = AudioEntity(
-      audioData: tAudioData, studentId: 1, textId: 1, title: tTitle);
+  final tAudio =
+      AudioEntity(data: tAudioData, studentId: 1, textId: 1, title: tTitle);
 
   final tStudent = Student(firstName: 'a', lastName: 'b', classroomId: 1);
 
