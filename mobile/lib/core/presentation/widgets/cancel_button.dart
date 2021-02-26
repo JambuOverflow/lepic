@@ -9,7 +9,7 @@ class CancelButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () => Navigator.pop(context),
-      child: Text('Cancel'),
+      child: Text('CANCEL'),
     );
   }
 }
