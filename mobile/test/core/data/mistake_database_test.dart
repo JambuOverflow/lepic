@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/core/data/database.dart';
 import 'package:mobile/core/error/exceptions.dart';
@@ -184,6 +185,22 @@ void main() {
     });
 
    
+  });
+
+  group("getAllCorrectionsOfStudent", () {
+    setUp(() async {
+      await database.insertCorrection(tCorrectionModel);
+    });
+    test("should return a correction", () async {
+      final mistakes = await database.getAllCorrectionsOfStudent(1);
+      expect(true, listEquals(mistakes, [tCorrectionModel.copyWith(localId: 1)]));
+    });
+
+    test("""should throw an exception when the database does not contain
+         mistakes with the correctionPk passed""", () async {
+      expect(() => database.getAllCorrectionsOfStudent(2),
+          throwsA(TypeMatcher<EmptyDataException>()));
+    });
   });
 }
 

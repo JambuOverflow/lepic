@@ -49,6 +49,9 @@ abstract class MistakeLocalDataSource {
   ///
   /// Throws [CacheException] if something wrong happens.
   Future<CorrectionModel> cacheNewCorrection(CorrectionModel correctionModel);
+
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudentFromCache(
+      StudentModel studentModel);
 }
 
 class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
@@ -135,6 +138,18 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
       return await this
           .database
           .getCorrection(studentId: studentId, textId: textId);
+    } on SqliteException {
+      throw CacheException();
+    } on EmptyDataException {
+      throw EmptyDataException();
+    }
+  }
+
+  @override
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudentFromCache(StudentModel studentModel) async {
+    try {
+      return await this.database
+          .getAllCorrectionsOfStudent(studentModel.localId);
     } on SqliteException {
       throw CacheException();
     } on EmptyDataException {

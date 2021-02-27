@@ -213,4 +213,40 @@ void main() {
           throwsA(TypeMatcher<EmptyDataException>()));
     });
   });
+
+  group("getAllCorrectionsOfStudentFromCache", () {
+    test("should correctly return a correction", () async {
+      when(mockDatabase.getAllCorrectionsOfStudent(1))
+          .thenAnswer((_) async => [tCorrectionOutputModel1]);
+
+      final result = await mistakeLocalDataSourceImpl.getAllCorrectionsOfStudentFromCache(studentModel);
+
+      verify(mockDatabase.getAllCorrectionsOfStudent(1));
+
+
+      expect(true, listEquals(result, [tCorrectionOutputModel1]));
+    });
+
+    test("should throw a cacheException", () async {
+      when(mockDatabase.getAllCorrectionsOfStudent(1))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async => await mistakeLocalDataSourceImpl.getAllCorrectionsOfStudentFromCache(
+                studentModel,
+              ),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+
+     test("should throw an EmptyDataException", () async {
+      when(mockDatabase.getAllCorrectionsOfStudent(1))
+          .thenThrow(EmptyDataException());
+
+      expect(
+          () async => await mistakeLocalDataSourceImpl.getAllCorrectionsOfStudentFromCache(
+                studentModel,
+              ),
+          throwsA(TypeMatcher<EmptyDataException>()));
+    });
+  });
 }
