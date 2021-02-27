@@ -43,7 +43,7 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
     return audioOutput.fold((l) {
       throw CacheException();
     }, (r) {
-      return r.audioDuration;
+      return r.getAudioDuration;
     });
   }
 

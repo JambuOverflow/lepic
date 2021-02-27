@@ -10,19 +10,21 @@ class AudioEntity extends Equatable {
   final int textId;
   final int studentId;
   final Uint8List data;
+  final Duration audioDuration;
 
   AudioEntity({
     @required this.title,
     @required this.textId,
     @required this.studentId,
     @required this.data,
+    @required this.audioDuration,
     this.localId,
   });
 
   ByteData get byteData => ByteData.view(data.buffer);
 
-  Duration get audioDuration {
-    return Duration(minutes: data.length);
+  Duration get getAudioDuration {
+    return audioDuration;
   }
 
   @override
