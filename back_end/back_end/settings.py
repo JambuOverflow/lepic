@@ -49,8 +49,8 @@ INSTALLED_APPS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
 MAILER_EMAIL_BACKEND = EMAIL_BACKEND  
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_HOST_PASSWORD = '#lepic123Production'
+EMAIL_HOST = 'smtp.office365.com'  
+EMAIL_HOST_PASSWORD = 'Production#lepic123'
 EMAIL_HOST_USER = 'productionlepic@gmail.com'  
 EMAIL_PORT = 587  
 EMAIL_USE_TLS = True  
