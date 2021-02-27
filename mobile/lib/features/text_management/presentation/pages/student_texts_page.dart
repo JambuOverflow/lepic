@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'assignment_detail_page.dart';
 import '../../../../core/presentation/widgets/empty_list_text.dart';
 import '../bloc/text_bloc.dart';
 import '../widgets/text_item.dart';
