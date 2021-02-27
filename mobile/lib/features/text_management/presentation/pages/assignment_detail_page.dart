@@ -86,6 +86,8 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
       ],
       child: BlocBuilder<TextBloc, TextState>(
         builder: (context, state) {
+          audioBloc.add(LoadAudioEvent());
+
           return Scaffold(
             appBar: AppBar(
               title: Text('${student.firstName} ${student.lastName}'),

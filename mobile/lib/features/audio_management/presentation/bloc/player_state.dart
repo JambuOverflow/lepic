@@ -18,4 +18,13 @@ class PlayerPlaying extends PlayerState {
   List<Object> get props => [position];
 }
 
+class PlayerDurationLoaded extends PlayerState {
+  final Duration duration;
+
+  PlayerDurationLoaded(this.duration);
+
+  @override
+  List<Object> get props => [duration];
+}
+
 class PlayerPaused extends PlayerState {}

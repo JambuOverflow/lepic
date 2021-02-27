@@ -4,6 +4,7 @@ import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/features/audio_management/domain/entities/audio.dart';
 
 import '../utils/audio_text_utils.dart';
 import 'audio_bloc.dart';
@@ -14,15 +15,14 @@ class PlayerCubit extends Cubit<PlayerState> {
   final AudioBloc audioBloc;
 
   Audio _audio;
+  AudioEntity currentAudioEntity;
+
   double durationInSeconds;
   double currentPositon = 0;
 
-  ByteData get _audioByteData => audioBloc.audio.byteData;
-
   PlayerCubit(this.audioBloc) : super(PlayerInitial()) {
-    loadAudio();
     audioBloc.listen((state) {
-      if (state is AudioLoaded) loadAudio();
+      if (state is AudioLoaded) loadAudio(audioBloc.audio);
     });
   }
 
@@ -37,12 +37,16 @@ class PlayerCubit extends Cubit<PlayerState> {
     return super.close();
   }
 
-  void loadAudio() {
+  void loadAudio(AudioEntity audio) {
     _audio?.dispose();
+    currentAudioEntity = audio;
 
     _audio = Audio.loadFromByteData(
-      _audioByteData,
-      onDuration: (duration) => this.durationInSeconds = duration,
+      ByteData.view(audio.data.buffer),
+      onDuration: (duration) {
+        this.durationInSeconds = duration;
+        emit(PlayerDurationLoaded(Duration(seconds: duration.round())));
+      },
       onPosition: (position) {
         this.currentPositon = position;
         emit(PlayerPlaying(position: position));
