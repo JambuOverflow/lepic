@@ -28,7 +28,7 @@ class BottomNavigationBloc
   }
 
   final _indexToPageRouteName = {
-    0: "/home",
+    0: "home",
     1: "/list_classes",
     2: "/list_students",
     3: "/account",

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/audio_management/presentation/pages/audio_page.dart';
 
+import '../../../features/audio_management/presentation/pages/audio_page.dart';
 import '../../../features/text_management/presentation/pages/text_editing_page.dart';
 import '../../../features/class_management/presentation/pages/classroom_detail_page.dart';
 import '../../../features/class_management/presentation/pages/classrooms_page.dart';
@@ -22,14 +22,14 @@ import 'home.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/login':
+      case 'login':
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => GetIt.instance<LoginFormBloc>(),
             child: Login(),
           ),
         );
-      case '/home':
+      case 'home':
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/signup':
         return MaterialPageRoute(
@@ -67,11 +67,12 @@ class RouteGenerator {
       case '/audio_page':
         return MaterialPageRoute(builder: (_) => AudioPage());
       default:
-        return _errorRoute();
+        return _errorRoute(settings.name);
     }
   }
 
-  static Route<dynamic> _errorRoute() {
+  static Route<dynamic> _errorRoute(String name) {
+    print('Error! Tried to go to page: $name');
     return MaterialPageRoute(
       builder: (_) {
         return Scaffold(

@@ -48,7 +48,7 @@ class LoginButton extends StatelessWidget {
 
   void _reactToAuthState(AuthState state, BuildContext context) {
     if (state.status == AuthStatus.authenticated)
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('home');
   }
 
   void _reactToLoginFormState(LoginFormState state, BuildContext context) {

@@ -39,7 +39,7 @@ class FakeAccountDetail extends StatelessWidget {
               child: Text('Logout'),
               onPressed: () {
                 BlocProvider.of<AuthBloc>(context).add(UserLoggedOutEvent());
-                Navigator.of(context).pushReplacementNamed('/login');
+                Navigator.of(context).pushReplacementNamed('login');
               },
             )
           ],

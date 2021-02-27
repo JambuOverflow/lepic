@@ -50,8 +50,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: BlocProvider.of<AuthBloc>(context).state.status ==
               AuthStatus.authenticated
-          ? '/home'
-          : '/login',
+          ? 'home'
+          : 'login',
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
