@@ -96,7 +96,7 @@ void main() {
     final result = await useCase(classroomParams);
     List<Correction> correctionsList;
     result.fold((l) {
-      equals(false);
+      expect(false, true);
     }, (r) {
       correctionsList = r;
     });

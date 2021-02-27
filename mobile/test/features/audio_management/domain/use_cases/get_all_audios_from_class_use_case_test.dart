@@ -97,7 +97,7 @@ void main() {
     final result = await useCase(classroomParams);
     List<AudioEntity> audiosList;
     result.fold((l) {
-      equals(false);
+      expect(true, false);
     }, (r) {
       audiosList = r;
     });

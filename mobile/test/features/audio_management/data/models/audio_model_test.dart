@@ -26,7 +26,7 @@ void main() {
 
       expect(result.localId, 2);
       expect(result.title, '1');
-      equals(listEquals(result.audioData, [1, 2]));
+      expect(true, listEquals(result.audioData, [1, 2]));
       expect(result.textId, 1);
       expect(result.studentId, 1);
     });
@@ -46,7 +46,7 @@ void main() {
 
       expect(result['local_id'], 2);
       expect(result['title'], '1');
-      equals(listEquals(result['audio_data'], [1, 2]));
+      expect(true, listEquals(result['audio_data'], [1, 2]));
       expect(result['text_id'], 1);
       expect(result['student_id'], 1);
     });

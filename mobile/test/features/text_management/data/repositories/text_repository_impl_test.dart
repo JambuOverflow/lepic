@@ -168,7 +168,7 @@ void main() {
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
-      equals(resultTest);
+      expect(true, resultTest);
     });
 
     test('should return a CacheFailure when a CacheException is throw',
@@ -191,7 +191,7 @@ void main() {
       final List<MyText> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tTexts);
-      equals(resultTest);
+      expect(true, resultTest);
     });
 
     test('should return a CacheFailure when a CacheException is throw',

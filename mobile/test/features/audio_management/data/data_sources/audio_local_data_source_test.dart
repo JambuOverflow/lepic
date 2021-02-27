@@ -104,7 +104,7 @@ Future<void> main() {
 
       verify(mockDatabase.getAllAudiosOfStudent(1));
       final testResult = listEquals(result, tAudioModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -115,7 +115,7 @@ Future<void> main() {
 
       verify(mockDatabase.getAllAudiosOfStudent(1));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {
