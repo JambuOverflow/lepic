@@ -1826,12 +1826,14 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
   final int localId;
   final String title;
   final Uint8List audioData;
+  final int audioDurationInSeconds;
   final int textId;
   final int studentId;
   AudioModel(
       {@required this.localId,
       @required this.title,
       @required this.audioData,
+      @required this.audioDurationInSeconds,
       @required this.textId,
       @required this.studentId});
   factory AudioModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -1847,6 +1849,8 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
       audioData: uint8ListType
           .mapFromDatabaseResponse(data['${effectivePrefix}audio_data']),
+      audioDurationInSeconds: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}audio_duration_in_seconds']),
       textId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}text_id']),
       studentId:
@@ -1864,6 +1868,9 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
     }
     if (!nullToAbsent || audioData != null) {
       map['audio_data'] = Variable<Uint8List>(audioData);
+    }
+    if (!nullToAbsent || audioDurationInSeconds != null) {
+      map['audio_duration_in_seconds'] = Variable<int>(audioDurationInSeconds);
     }
     if (!nullToAbsent || textId != null) {
       map['text_id'] = Variable<int>(textId);
@@ -1884,6 +1891,9 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       audioData: audioData == null && nullToAbsent
           ? const Value.absent()
           : Value(audioData),
+      audioDurationInSeconds: audioDurationInSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioDurationInSeconds),
       textId:
           textId == null && nullToAbsent ? const Value.absent() : Value(textId),
       studentId: studentId == null && nullToAbsent
@@ -1899,6 +1909,8 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       localId: serializer.fromJson<int>(json['local_id']),
       title: serializer.fromJson<String>(json['title']),
       audioData: serializer.fromJson<Uint8List>(json['audio_data']),
+      audioDurationInSeconds:
+          serializer.fromJson<int>(json['audio_duration_in_seconds']),
       textId: serializer.fromJson<int>(json['text_id']),
       studentId: serializer.fromJson<int>(json['student_id']),
     );
@@ -1910,6 +1922,8 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       'local_id': serializer.toJson<int>(localId),
       'title': serializer.toJson<String>(title),
       'audio_data': serializer.toJson<Uint8List>(audioData),
+      'audio_duration_in_seconds':
+          serializer.toJson<int>(audioDurationInSeconds),
       'text_id': serializer.toJson<int>(textId),
       'student_id': serializer.toJson<int>(studentId),
     };
@@ -1919,12 +1933,15 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           {int localId,
           String title,
           Uint8List audioData,
+          int audioDurationInSeconds,
           int textId,
           int studentId}) =>
       AudioModel(
         localId: localId ?? this.localId,
         title: title ?? this.title,
         audioData: audioData ?? this.audioData,
+        audioDurationInSeconds:
+            audioDurationInSeconds ?? this.audioDurationInSeconds,
         textId: textId ?? this.textId,
         studentId: studentId ?? this.studentId,
       );
@@ -1934,6 +1951,7 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           ..write('localId: $localId, ')
           ..write('title: $title, ')
           ..write('audioData: $audioData, ')
+          ..write('audioDurationInSeconds: $audioDurationInSeconds, ')
           ..write('textId: $textId, ')
           ..write('studentId: $studentId')
           ..write(')'))
@@ -1945,8 +1963,10 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       localId.hashCode,
       $mrjc(
           title.hashCode,
-          $mrjc(audioData.hashCode,
-              $mrjc(textId.hashCode, studentId.hashCode)))));
+          $mrjc(
+              audioData.hashCode,
+              $mrjc(audioDurationInSeconds.hashCode,
+                  $mrjc(textId.hashCode, studentId.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1954,6 +1974,7 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           other.localId == this.localId &&
           other.title == this.title &&
           other.audioData == this.audioData &&
+          other.audioDurationInSeconds == this.audioDurationInSeconds &&
           other.textId == this.textId &&
           other.studentId == this.studentId);
 }
@@ -1962,12 +1983,14 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
   final Value<int> localId;
   final Value<String> title;
   final Value<Uint8List> audioData;
+  final Value<int> audioDurationInSeconds;
   final Value<int> textId;
   final Value<int> studentId;
   const AudioModelsCompanion({
     this.localId = const Value.absent(),
     this.title = const Value.absent(),
     this.audioData = const Value.absent(),
+    this.audioDurationInSeconds = const Value.absent(),
     this.textId = const Value.absent(),
     this.studentId = const Value.absent(),
   });
@@ -1975,16 +1998,19 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
     this.localId = const Value.absent(),
     @required String title,
     @required Uint8List audioData,
+    @required int audioDurationInSeconds,
     @required int textId,
     @required int studentId,
   })  : title = Value(title),
         audioData = Value(audioData),
+        audioDurationInSeconds = Value(audioDurationInSeconds),
         textId = Value(textId),
         studentId = Value(studentId);
   static Insertable<AudioModel> custom({
     Expression<int> localId,
     Expression<String> title,
     Expression<Uint8List> audioData,
+    Expression<int> audioDurationInSeconds,
     Expression<int> textId,
     Expression<int> studentId,
   }) {
@@ -1992,6 +2018,8 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
       if (localId != null) 'local_id': localId,
       if (title != null) 'title': title,
       if (audioData != null) 'audio_data': audioData,
+      if (audioDurationInSeconds != null)
+        'audio_duration_in_seconds': audioDurationInSeconds,
       if (textId != null) 'text_id': textId,
       if (studentId != null) 'student_id': studentId,
     });
@@ -2001,12 +2029,15 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
       {Value<int> localId,
       Value<String> title,
       Value<Uint8List> audioData,
+      Value<int> audioDurationInSeconds,
       Value<int> textId,
       Value<int> studentId}) {
     return AudioModelsCompanion(
       localId: localId ?? this.localId,
       title: title ?? this.title,
       audioData: audioData ?? this.audioData,
+      audioDurationInSeconds:
+          audioDurationInSeconds ?? this.audioDurationInSeconds,
       textId: textId ?? this.textId,
       studentId: studentId ?? this.studentId,
     );
@@ -2024,6 +2055,10 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
     if (audioData.present) {
       map['audio_data'] = Variable<Uint8List>(audioData.value);
     }
+    if (audioDurationInSeconds.present) {
+      map['audio_duration_in_seconds'] =
+          Variable<int>(audioDurationInSeconds.value);
+    }
     if (textId.present) {
       map['text_id'] = Variable<int>(textId.value);
     }
@@ -2039,6 +2074,7 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
           ..write('localId: $localId, ')
           ..write('title: $title, ')
           ..write('audioData: $audioData, ')
+          ..write('audioDurationInSeconds: $audioDurationInSeconds, ')
           ..write('textId: $textId, ')
           ..write('studentId: $studentId')
           ..write(')'))
@@ -2084,6 +2120,20 @@ class $AudioModelsTable extends AudioModels
     );
   }
 
+  final VerificationMeta _audioDurationInSecondsMeta =
+      const VerificationMeta('audioDurationInSeconds');
+  GeneratedIntColumn _audioDurationInSeconds;
+  @override
+  GeneratedIntColumn get audioDurationInSeconds =>
+      _audioDurationInSeconds ??= _constructAudioDurationInSeconds();
+  GeneratedIntColumn _constructAudioDurationInSeconds() {
+    return GeneratedIntColumn(
+      'audio_duration_in_seconds',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _textIdMeta = const VerificationMeta('textId');
   GeneratedIntColumn _textId;
   @override
@@ -2104,7 +2154,7 @@ class $AudioModelsTable extends AudioModels
 
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, title, audioData, textId, studentId];
+      [localId, title, audioData, audioDurationInSeconds, textId, studentId];
   @override
   $AudioModelsTable get asDslTable => this;
   @override
@@ -2131,6 +2181,14 @@ class $AudioModelsTable extends AudioModels
           audioData.isAcceptableOrUnknown(data['audio_data'], _audioDataMeta));
     } else if (isInserting) {
       context.missing(_audioDataMeta);
+    }
+    if (data.containsKey('audio_duration_in_seconds')) {
+      context.handle(
+          _audioDurationInSecondsMeta,
+          audioDurationInSeconds.isAcceptableOrUnknown(
+              data['audio_duration_in_seconds'], _audioDurationInSecondsMeta));
+    } else if (isInserting) {
+      context.missing(_audioDurationInSecondsMeta);
     }
     if (data.containsKey('text_id')) {
       context.handle(_textIdMeta,
