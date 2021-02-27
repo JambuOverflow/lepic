@@ -22,6 +22,7 @@ void main() {
     body: Value(body),
     studentId: Value(tValidStudentPk),
     tutorId: Value(1),
+    dateCreated: Value(DateTime(2020))
   );
 
   final tInvalidTextCompanion = TextModelsCompanion(
@@ -29,6 +30,8 @@ void main() {
     body: Value(body),
     studentId: Value(tInvalidStudentPk),
     tutorId: Value(2),
+    dateCreated: Value(DateTime(2020))
+
   );
 
   final tValidTextModel1 = TextModel(
@@ -37,6 +40,8 @@ void main() {
     studentId: tValidStudentPk,
     localId: tValidTextPk1,
     tutorId: 1,
+    dateCreated: DateTime(2020),
+
   );
 
   final tValidTextModel2 = TextModel(
@@ -45,6 +50,8 @@ void main() {
     studentId: tValidStudentPk,
     localId: tValidTextPk2,
     tutorId: 1,
+    dateCreated: DateTime(2020),
+
   );
 
   final tUserCompanion = UserModelsCompanion(
@@ -178,6 +185,8 @@ void main() {
         studentId: tValidStudentPk,
         localId: tValidTextPk1,
         tutorId: 1,
+        dateCreated: DateTime(2020),
+
       );
 
       final done = await database.updateText(tValidUpdateTextModel);
@@ -192,6 +201,8 @@ void main() {
         body: updateBody,
         studentId: tValidStudentPk,
         tutorId: 2,
+        dateCreated: DateTime(2020),
+
       );
 
       final done = await database.updateText(tInvalidUpdateTextModel);
