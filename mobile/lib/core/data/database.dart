@@ -218,6 +218,16 @@ class Database extends _$Database {
     return result;
   }
 
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudent(
+      int studentId) async {
+    final List<CorrectionModel> result = await (select(correctionModels)
+      ..where((t) => t.studentId.equals(studentId))).get();
+    if (result == null || result.isEmpty) {
+      throw EmptyDataException();
+    }
+    return result;
+  }
+
   /// Returns the pk of the inserted model
   /// Throws a sqliteException if it can't insert the model
   Future<int> insertAudio(AudioModel model) async {
@@ -267,8 +277,4 @@ class Database extends _$Database {
 
   @override
   int get schemaVersion => 6;
-
-  Future<List<CorrectionModel>> getAllCorrectionsOfStudent(int studentId) async {
-    
-  }
 }
