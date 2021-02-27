@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/statistics/presentation/pages/results_page.dart';
 
@@ -75,9 +76,14 @@ class ResultCard extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: BlocProvider.of<StatisticBloc>(context),
+                builder: (_) => MultiBlocProvider(
                   child: ResultsPage(),
+                  providers: [
+                    BlocProvider.value(
+                        value: BlocProvider.of<StatisticBloc>(context)),
+                    BlocProvider.value(
+                        value: BlocProvider.of<PlayerCubit>(context))
+                  ],
                 ),
               ),
             );
