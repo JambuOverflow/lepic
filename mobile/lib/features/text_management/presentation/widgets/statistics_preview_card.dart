@@ -6,13 +6,17 @@ import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
 import '../../../statistics/presentation/bloc/statistic_bloc.dart';
 import '../../../statistics/presentation/pages/statistics_page.dart';
+import '../../../text_correction/presentation/bloc/correction_bloc.dart';
+import '../../domain/entities/text.dart';
 import '../bloc/assignment_status_cubit.dart';
 import '../bloc/text_bloc.dart';
 import 'preview_card.dart';
 
 class StatisticsPreviewCard extends StatefulWidget {
+  final MyText text;
   const StatisticsPreviewCard({
     Key key,
+    @required this.text,
   }) : super(key: key);
 
   @override
@@ -27,7 +31,7 @@ class _StatisticsPreviewCardState extends State<StatisticsPreviewCard> {
     return BlocBuilder<AssignmentStatusCubit, AssignmentStatus>(
       builder: (context, state) {
         return bloc.state.index >= AssignmentStatus.waiting_report.index
-            ? _AvailableStatisticsCard()
+            ? _AvailableStatisticsCard(text: widget.text)
             : _UnavailableStatisticsCard();
       },
     );
@@ -64,6 +68,11 @@ class _UnavailableStatisticsCard extends StatelessWidget {
 }
 
 class _AvailableStatisticsCard extends StatelessWidget {
+  final MyText text;
+
+  const _AvailableStatisticsCard({Key key, @required this.text})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return PreviewCard(
@@ -104,7 +113,7 @@ class _AvailableStatisticsCard extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => MultiBlocProvider(
-          child: StatisticsPage(),
+          child: StatisticsPage(text: text),
           providers: [
             BlocProvider(
               create: (_) => GetIt.instance.get<StatisticBloc>(
@@ -112,7 +121,8 @@ class _AvailableStatisticsCard extends StatelessWidget {
                 param2: BlocProvider.of<AudioBloc>(context).audio,
               ),
             ),
-            BlocProvider.value(value: BlocProvider.of<PlayerCubit>(context))
+            BlocProvider.value(value: BlocProvider.of<PlayerCubit>(context)),
+            BlocProvider.value(value: BlocProvider.of<CorrectionBloc>(context))
           ],
         ),
       ),

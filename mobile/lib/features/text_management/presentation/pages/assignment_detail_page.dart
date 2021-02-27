@@ -120,7 +120,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
                   SizedBox(height: 8),
                   CorrectionPreviewCard(),
                   SizedBox(height: 8),
-                  StatisticsPreviewCard(),
+                  StatisticsPreviewCard(text: text),
                   SizedBox(height: 64),
                 ],
               ),
