@@ -10,16 +10,19 @@ abstract class TextEvent extends Equatable {
 class CreateTextEvent extends TextEvent {
   final String title;
   final String body;
+  final DateTime creationDate;
 
   CreateTextEvent({
     @required this.title,
     @required this.body,
+    @required this.creationDate,
   });
 }
 
 class UpdateTextEvent extends TextEvent {
   final String title;
   final String body;
+  final DateTime creationDate;
 
   final MyText oldText;
 
@@ -27,6 +30,7 @@ class UpdateTextEvent extends TextEvent {
     this.title,
     this.body,
     @required this.oldText,
+    this.creationDate,
   });
 }
 

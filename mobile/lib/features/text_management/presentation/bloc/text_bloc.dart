@@ -53,6 +53,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
       title: event.title,
       body: event.body,
       studentId: student.id,
+      creationDate: event.creationDate,
     );
 
     final failureOrSuccess = await createText(TextParams(text: text));
@@ -92,6 +93,7 @@ class TextBloc extends Bloc<TextEvent, TextState> {
       body: event.body,
       localId: event.oldText.localId,
       studentId: student.id,
+      creationDate: event.creationDate,
     );
 
     final failureOrClassroom = await updateText(TextParams(text: updatedText));
