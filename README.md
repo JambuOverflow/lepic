@@ -25,7 +25,7 @@ Then, the app automatically calculates these statistics:
 * Number of correct words read per minute.
 * If the student has a deficit in his/her class.
 
-With this information, the teachers will know which students need the most attention in their reading skills.
+With this information, the teachers will know which students need the most attention in their reading.
 
 // some screenshots here
 
@@ -57,7 +57,7 @@ Distributed under the GPL License. See `LICENSE` for more information.
 This repository was also developed as the project of the Software Engineering Laboratory class, with the guidance of [Cleidson de Souza](https://www.linkedin.com/in/cdesouza/?originalSubdomain=br),
 a professor at the Federal University of Pará. 
 
-We also thank our clients during the project, who had this ideal and helped us throghout the competition. 
+We thank our SCORE clients, who had this idea and helped us throughout the entire competition.
 * [Fabiana Mendes](http://fga.unb.br/fabiana.mendes)
 * [Letícia Celeste](http://www.pesquisar.unb.br/professores/view/5663)
 * [Luciana Mendonça Alves](http://somos.ufmg.br/professor/luciana-mendonca-alves)
