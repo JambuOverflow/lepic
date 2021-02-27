@@ -34,6 +34,7 @@ void main() {
     body: "b",
     studentId: 1,
     localId: 1,
+    creationDate: DateTime(2020),
   );
 
   final tTextModelInput = TextModel(
@@ -42,9 +43,17 @@ void main() {
     studentId: 1,
     tutorId: 1,
     localId: 1,
+    creationDate: DateTime(2020),
   );
 
-  final tTextOutput = MyText(title: "a", body: "b", studentId: 1, localId: 1);
+  final tTextOutput = MyText(
+    title: "a",
+    body: "b",
+    studentId: 1,
+    localId: 1,
+    creationDate: DateTime(2020),
+
+  );
 
   final tTextModelOutput = tTextModelInput.copyWith(localId: 1);
 

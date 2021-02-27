@@ -64,4 +64,4 @@ We also thank our clients during the project, who had this ideal and helped us t
 
 Click [here](LINK AQUI) to see the report about the project.
 
-[![UFPA](https://upload.wikimedia.org/wikipedia/pt/a/a2/Brasao_UFPA.jpg)](https://portal.ufpa.br/ "Visite o site da UFPA")
+[![UFPA](docs/logo_ufpa_github_footer.png)](https://portal.ufpa.br/ "Visite o site da UFPA")

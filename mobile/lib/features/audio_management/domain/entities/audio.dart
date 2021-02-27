@@ -33,5 +33,6 @@ class AudioEntity extends Equatable {
         title,
         textId,
         studentId,
+        audioDuration
       ];
 }

@@ -15,6 +15,7 @@ class TextEntityModelConverter {
       title: model.title,
       body: model.body,
       studentId: model.studentId,
+      creationDate: model.creationDate,
     );
   }
 
@@ -26,6 +27,7 @@ class TextEntityModelConverter {
         body: entity.body,
         title: entity.title,
         studentId: entity.studentId,
+        creationDate: entity.creationDate,
         tutorId: userId);
   }
 }

@@ -1192,18 +1192,21 @@ class TextModel extends DataClass implements Insertable<TextModel> {
   final String title;
   final String body;
   final int tutorId;
+  final DateTime creationDate;
   final int studentId;
   TextModel(
       {@required this.localId,
       @required this.title,
       @required this.body,
       @required this.tutorId,
+      @required this.creationDate,
       @required this.studentId});
   factory TextModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return TextModel(
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
@@ -1212,6 +1215,8 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       body: stringType.mapFromDatabaseResponse(data['${effectivePrefix}body']),
       tutorId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}tutor_id']),
+      creationDate: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}creation_date']),
       studentId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}student_id']),
     );
@@ -1231,6 +1236,9 @@ class TextModel extends DataClass implements Insertable<TextModel> {
     if (!nullToAbsent || tutorId != null) {
       map['tutor_id'] = Variable<int>(tutorId);
     }
+    if (!nullToAbsent || creationDate != null) {
+      map['creation_date'] = Variable<DateTime>(creationDate);
+    }
     if (!nullToAbsent || studentId != null) {
       map['student_id'] = Variable<int>(studentId);
     }
@@ -1248,6 +1256,9 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       tutorId: tutorId == null && nullToAbsent
           ? const Value.absent()
           : Value(tutorId),
+      creationDate: creationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(creationDate),
       studentId: studentId == null && nullToAbsent
           ? const Value.absent()
           : Value(studentId),
@@ -1262,6 +1273,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       title: serializer.fromJson<String>(json['title']),
       body: serializer.fromJson<String>(json['body']),
       tutorId: serializer.fromJson<int>(json['tutor_id']),
+      creationDate: serializer.fromJson<DateTime>(json['creation_date']),
       studentId: serializer.fromJson<int>(json['student_id']),
     );
   }
@@ -1273,6 +1285,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       'title': serializer.toJson<String>(title),
       'body': serializer.toJson<String>(body),
       'tutor_id': serializer.toJson<int>(tutorId),
+      'creation_date': serializer.toJson<DateTime>(creationDate),
       'student_id': serializer.toJson<int>(studentId),
     };
   }
@@ -1282,12 +1295,14 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           String title,
           String body,
           int tutorId,
+          DateTime creationDate,
           int studentId}) =>
       TextModel(
         localId: localId ?? this.localId,
         title: title ?? this.title,
         body: body ?? this.body,
         tutorId: tutorId ?? this.tutorId,
+        creationDate: creationDate ?? this.creationDate,
         studentId: studentId ?? this.studentId,
       );
   @override
@@ -1297,6 +1312,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('tutorId: $tutorId, ')
+          ..write('creationDate: $creationDate, ')
           ..write('studentId: $studentId')
           ..write(')'))
         .toString();
@@ -1305,8 +1321,12 @@ class TextModel extends DataClass implements Insertable<TextModel> {
   @override
   int get hashCode => $mrjf($mrjc(
       localId.hashCode,
-      $mrjc(title.hashCode,
-          $mrjc(body.hashCode, $mrjc(tutorId.hashCode, studentId.hashCode)))));
+      $mrjc(
+          title.hashCode,
+          $mrjc(
+              body.hashCode,
+              $mrjc(tutorId.hashCode,
+                  $mrjc(creationDate.hashCode, studentId.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1315,6 +1335,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           other.title == this.title &&
           other.body == this.body &&
           other.tutorId == this.tutorId &&
+          other.creationDate == this.creationDate &&
           other.studentId == this.studentId);
 }
 
@@ -1323,12 +1344,14 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
   final Value<String> title;
   final Value<String> body;
   final Value<int> tutorId;
+  final Value<DateTime> creationDate;
   final Value<int> studentId;
   const TextModelsCompanion({
     this.localId = const Value.absent(),
     this.title = const Value.absent(),
     this.body = const Value.absent(),
     this.tutorId = const Value.absent(),
+    this.creationDate = const Value.absent(),
     this.studentId = const Value.absent(),
   });
   TextModelsCompanion.insert({
@@ -1336,16 +1359,19 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
     @required String title,
     @required String body,
     @required int tutorId,
+    @required DateTime creationDate,
     @required int studentId,
   })  : title = Value(title),
         body = Value(body),
         tutorId = Value(tutorId),
+        creationDate = Value(creationDate),
         studentId = Value(studentId);
   static Insertable<TextModel> custom({
     Expression<int> localId,
     Expression<String> title,
     Expression<String> body,
     Expression<int> tutorId,
+    Expression<DateTime> creationDate,
     Expression<int> studentId,
   }) {
     return RawValuesInsertable({
@@ -1353,6 +1379,7 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
       if (title != null) 'title': title,
       if (body != null) 'body': body,
       if (tutorId != null) 'tutor_id': tutorId,
+      if (creationDate != null) 'creation_date': creationDate,
       if (studentId != null) 'student_id': studentId,
     });
   }
@@ -1362,12 +1389,14 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
       Value<String> title,
       Value<String> body,
       Value<int> tutorId,
+      Value<DateTime> creationDate,
       Value<int> studentId}) {
     return TextModelsCompanion(
       localId: localId ?? this.localId,
       title: title ?? this.title,
       body: body ?? this.body,
       tutorId: tutorId ?? this.tutorId,
+      creationDate: creationDate ?? this.creationDate,
       studentId: studentId ?? this.studentId,
     );
   }
@@ -1387,6 +1416,9 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
     if (tutorId.present) {
       map['tutor_id'] = Variable<int>(tutorId.value);
     }
+    if (creationDate.present) {
+      map['creation_date'] = Variable<DateTime>(creationDate.value);
+    }
     if (studentId.present) {
       map['student_id'] = Variable<int>(studentId.value);
     }
@@ -1400,6 +1432,7 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('tutorId: $tutorId, ')
+          ..write('creationDate: $creationDate, ')
           ..write('studentId: $studentId')
           ..write(')'))
         .toString();
@@ -1456,6 +1489,20 @@ class $TextModelsTable extends TextModels
     );
   }
 
+  final VerificationMeta _creationDateMeta =
+      const VerificationMeta('creationDate');
+  GeneratedDateTimeColumn _creationDate;
+  @override
+  GeneratedDateTimeColumn get creationDate =>
+      _creationDate ??= _constructCreationDate();
+  GeneratedDateTimeColumn _constructCreationDate() {
+    return GeneratedDateTimeColumn(
+      'creation_date',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
   GeneratedIntColumn _studentId;
   @override
@@ -1467,7 +1514,7 @@ class $TextModelsTable extends TextModels
 
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, title, body, tutorId, studentId];
+      [localId, title, body, tutorId, creationDate, studentId];
   @override
   $TextModelsTable get asDslTable => this;
   @override
@@ -1500,6 +1547,14 @@ class $TextModelsTable extends TextModels
           tutorId.isAcceptableOrUnknown(data['tutor_id'], _tutorIdMeta));
     } else if (isInserting) {
       context.missing(_tutorIdMeta);
+    }
+    if (data.containsKey('creation_date')) {
+      context.handle(
+          _creationDateMeta,
+          creationDate.isAcceptableOrUnknown(
+              data['creation_date'], _creationDateMeta));
+    } else if (isInserting) {
+      context.missing(_creationDateMeta);
     }
     if (data.containsKey('student_id')) {
       context.handle(_studentIdMeta,
