@@ -1192,18 +1192,21 @@ class TextModel extends DataClass implements Insertable<TextModel> {
   final String title;
   final String body;
   final int tutorId;
+  final DateTime creationDate;
   final int studentId;
   TextModel(
       {@required this.localId,
       @required this.title,
       @required this.body,
       @required this.tutorId,
+      @required this.creationDate,
       @required this.studentId});
   factory TextModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return TextModel(
       localId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}local_id']),
@@ -1212,6 +1215,8 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       body: stringType.mapFromDatabaseResponse(data['${effectivePrefix}body']),
       tutorId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}tutor_id']),
+      creationDate: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}creation_date']),
       studentId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}student_id']),
     );
@@ -1231,6 +1236,9 @@ class TextModel extends DataClass implements Insertable<TextModel> {
     if (!nullToAbsent || tutorId != null) {
       map['tutor_id'] = Variable<int>(tutorId);
     }
+    if (!nullToAbsent || creationDate != null) {
+      map['creation_date'] = Variable<DateTime>(creationDate);
+    }
     if (!nullToAbsent || studentId != null) {
       map['student_id'] = Variable<int>(studentId);
     }
@@ -1248,6 +1256,9 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       tutorId: tutorId == null && nullToAbsent
           ? const Value.absent()
           : Value(tutorId),
+      creationDate: creationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(creationDate),
       studentId: studentId == null && nullToAbsent
           ? const Value.absent()
           : Value(studentId),
@@ -1262,6 +1273,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       title: serializer.fromJson<String>(json['title']),
       body: serializer.fromJson<String>(json['body']),
       tutorId: serializer.fromJson<int>(json['tutor_id']),
+      creationDate: serializer.fromJson<DateTime>(json['creation_date']),
       studentId: serializer.fromJson<int>(json['student_id']),
     );
   }
@@ -1273,6 +1285,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
       'title': serializer.toJson<String>(title),
       'body': serializer.toJson<String>(body),
       'tutor_id': serializer.toJson<int>(tutorId),
+      'creation_date': serializer.toJson<DateTime>(creationDate),
       'student_id': serializer.toJson<int>(studentId),
     };
   }
@@ -1282,12 +1295,14 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           String title,
           String body,
           int tutorId,
+          DateTime creationDate,
           int studentId}) =>
       TextModel(
         localId: localId ?? this.localId,
         title: title ?? this.title,
         body: body ?? this.body,
         tutorId: tutorId ?? this.tutorId,
+        creationDate: creationDate ?? this.creationDate,
         studentId: studentId ?? this.studentId,
       );
   @override
@@ -1297,6 +1312,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('tutorId: $tutorId, ')
+          ..write('creationDate: $creationDate, ')
           ..write('studentId: $studentId')
           ..write(')'))
         .toString();
@@ -1305,8 +1321,12 @@ class TextModel extends DataClass implements Insertable<TextModel> {
   @override
   int get hashCode => $mrjf($mrjc(
       localId.hashCode,
-      $mrjc(title.hashCode,
-          $mrjc(body.hashCode, $mrjc(tutorId.hashCode, studentId.hashCode)))));
+      $mrjc(
+          title.hashCode,
+          $mrjc(
+              body.hashCode,
+              $mrjc(tutorId.hashCode,
+                  $mrjc(creationDate.hashCode, studentId.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1315,6 +1335,7 @@ class TextModel extends DataClass implements Insertable<TextModel> {
           other.title == this.title &&
           other.body == this.body &&
           other.tutorId == this.tutorId &&
+          other.creationDate == this.creationDate &&
           other.studentId == this.studentId);
 }
 
@@ -1323,12 +1344,14 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
   final Value<String> title;
   final Value<String> body;
   final Value<int> tutorId;
+  final Value<DateTime> creationDate;
   final Value<int> studentId;
   const TextModelsCompanion({
     this.localId = const Value.absent(),
     this.title = const Value.absent(),
     this.body = const Value.absent(),
     this.tutorId = const Value.absent(),
+    this.creationDate = const Value.absent(),
     this.studentId = const Value.absent(),
   });
   TextModelsCompanion.insert({
@@ -1336,16 +1359,19 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
     @required String title,
     @required String body,
     @required int tutorId,
+    @required DateTime creationDate,
     @required int studentId,
   })  : title = Value(title),
         body = Value(body),
         tutorId = Value(tutorId),
+        creationDate = Value(creationDate),
         studentId = Value(studentId);
   static Insertable<TextModel> custom({
     Expression<int> localId,
     Expression<String> title,
     Expression<String> body,
     Expression<int> tutorId,
+    Expression<DateTime> creationDate,
     Expression<int> studentId,
   }) {
     return RawValuesInsertable({
@@ -1353,6 +1379,7 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
       if (title != null) 'title': title,
       if (body != null) 'body': body,
       if (tutorId != null) 'tutor_id': tutorId,
+      if (creationDate != null) 'creation_date': creationDate,
       if (studentId != null) 'student_id': studentId,
     });
   }
@@ -1362,12 +1389,14 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
       Value<String> title,
       Value<String> body,
       Value<int> tutorId,
+      Value<DateTime> creationDate,
       Value<int> studentId}) {
     return TextModelsCompanion(
       localId: localId ?? this.localId,
       title: title ?? this.title,
       body: body ?? this.body,
       tutorId: tutorId ?? this.tutorId,
+      creationDate: creationDate ?? this.creationDate,
       studentId: studentId ?? this.studentId,
     );
   }
@@ -1387,6 +1416,9 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
     if (tutorId.present) {
       map['tutor_id'] = Variable<int>(tutorId.value);
     }
+    if (creationDate.present) {
+      map['creation_date'] = Variable<DateTime>(creationDate.value);
+    }
     if (studentId.present) {
       map['student_id'] = Variable<int>(studentId.value);
     }
@@ -1400,6 +1432,7 @@ class TextModelsCompanion extends UpdateCompanion<TextModel> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('tutorId: $tutorId, ')
+          ..write('creationDate: $creationDate, ')
           ..write('studentId: $studentId')
           ..write(')'))
         .toString();
@@ -1456,6 +1489,20 @@ class $TextModelsTable extends TextModels
     );
   }
 
+  final VerificationMeta _creationDateMeta =
+      const VerificationMeta('creationDate');
+  GeneratedDateTimeColumn _creationDate;
+  @override
+  GeneratedDateTimeColumn get creationDate =>
+      _creationDate ??= _constructCreationDate();
+  GeneratedDateTimeColumn _constructCreationDate() {
+    return GeneratedDateTimeColumn(
+      'creation_date',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
   GeneratedIntColumn _studentId;
   @override
@@ -1467,7 +1514,7 @@ class $TextModelsTable extends TextModels
 
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, title, body, tutorId, studentId];
+      [localId, title, body, tutorId, creationDate, studentId];
   @override
   $TextModelsTable get asDslTable => this;
   @override
@@ -1500,6 +1547,14 @@ class $TextModelsTable extends TextModels
           tutorId.isAcceptableOrUnknown(data['tutor_id'], _tutorIdMeta));
     } else if (isInserting) {
       context.missing(_tutorIdMeta);
+    }
+    if (data.containsKey('creation_date')) {
+      context.handle(
+          _creationDateMeta,
+          creationDate.isAcceptableOrUnknown(
+              data['creation_date'], _creationDateMeta));
+    } else if (isInserting) {
+      context.missing(_creationDateMeta);
     }
     if (data.containsKey('student_id')) {
       context.handle(_studentIdMeta,
@@ -1826,12 +1881,14 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
   final int localId;
   final String title;
   final Uint8List audioData;
+  final int audioDurationInSeconds;
   final int textId;
   final int studentId;
   AudioModel(
       {@required this.localId,
       @required this.title,
       @required this.audioData,
+      @required this.audioDurationInSeconds,
       @required this.textId,
       @required this.studentId});
   factory AudioModel.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -1847,6 +1904,8 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
       audioData: uint8ListType
           .mapFromDatabaseResponse(data['${effectivePrefix}audio_data']),
+      audioDurationInSeconds: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}audio_duration_in_seconds']),
       textId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}text_id']),
       studentId:
@@ -1864,6 +1923,9 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
     }
     if (!nullToAbsent || audioData != null) {
       map['audio_data'] = Variable<Uint8List>(audioData);
+    }
+    if (!nullToAbsent || audioDurationInSeconds != null) {
+      map['audio_duration_in_seconds'] = Variable<int>(audioDurationInSeconds);
     }
     if (!nullToAbsent || textId != null) {
       map['text_id'] = Variable<int>(textId);
@@ -1884,6 +1946,9 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       audioData: audioData == null && nullToAbsent
           ? const Value.absent()
           : Value(audioData),
+      audioDurationInSeconds: audioDurationInSeconds == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioDurationInSeconds),
       textId:
           textId == null && nullToAbsent ? const Value.absent() : Value(textId),
       studentId: studentId == null && nullToAbsent
@@ -1899,6 +1964,8 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       localId: serializer.fromJson<int>(json['local_id']),
       title: serializer.fromJson<String>(json['title']),
       audioData: serializer.fromJson<Uint8List>(json['audio_data']),
+      audioDurationInSeconds:
+          serializer.fromJson<int>(json['audio_duration_in_seconds']),
       textId: serializer.fromJson<int>(json['text_id']),
       studentId: serializer.fromJson<int>(json['student_id']),
     );
@@ -1910,6 +1977,8 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       'local_id': serializer.toJson<int>(localId),
       'title': serializer.toJson<String>(title),
       'audio_data': serializer.toJson<Uint8List>(audioData),
+      'audio_duration_in_seconds':
+          serializer.toJson<int>(audioDurationInSeconds),
       'text_id': serializer.toJson<int>(textId),
       'student_id': serializer.toJson<int>(studentId),
     };
@@ -1919,12 +1988,15 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           {int localId,
           String title,
           Uint8List audioData,
+          int audioDurationInSeconds,
           int textId,
           int studentId}) =>
       AudioModel(
         localId: localId ?? this.localId,
         title: title ?? this.title,
         audioData: audioData ?? this.audioData,
+        audioDurationInSeconds:
+            audioDurationInSeconds ?? this.audioDurationInSeconds,
         textId: textId ?? this.textId,
         studentId: studentId ?? this.studentId,
       );
@@ -1934,6 +2006,7 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           ..write('localId: $localId, ')
           ..write('title: $title, ')
           ..write('audioData: $audioData, ')
+          ..write('audioDurationInSeconds: $audioDurationInSeconds, ')
           ..write('textId: $textId, ')
           ..write('studentId: $studentId')
           ..write(')'))
@@ -1945,8 +2018,10 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
       localId.hashCode,
       $mrjc(
           title.hashCode,
-          $mrjc(audioData.hashCode,
-              $mrjc(textId.hashCode, studentId.hashCode)))));
+          $mrjc(
+              audioData.hashCode,
+              $mrjc(audioDurationInSeconds.hashCode,
+                  $mrjc(textId.hashCode, studentId.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -1954,6 +2029,7 @@ class AudioModel extends DataClass implements Insertable<AudioModel> {
           other.localId == this.localId &&
           other.title == this.title &&
           other.audioData == this.audioData &&
+          other.audioDurationInSeconds == this.audioDurationInSeconds &&
           other.textId == this.textId &&
           other.studentId == this.studentId);
 }
@@ -1962,12 +2038,14 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
   final Value<int> localId;
   final Value<String> title;
   final Value<Uint8List> audioData;
+  final Value<int> audioDurationInSeconds;
   final Value<int> textId;
   final Value<int> studentId;
   const AudioModelsCompanion({
     this.localId = const Value.absent(),
     this.title = const Value.absent(),
     this.audioData = const Value.absent(),
+    this.audioDurationInSeconds = const Value.absent(),
     this.textId = const Value.absent(),
     this.studentId = const Value.absent(),
   });
@@ -1975,16 +2053,19 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
     this.localId = const Value.absent(),
     @required String title,
     @required Uint8List audioData,
+    @required int audioDurationInSeconds,
     @required int textId,
     @required int studentId,
   })  : title = Value(title),
         audioData = Value(audioData),
+        audioDurationInSeconds = Value(audioDurationInSeconds),
         textId = Value(textId),
         studentId = Value(studentId);
   static Insertable<AudioModel> custom({
     Expression<int> localId,
     Expression<String> title,
     Expression<Uint8List> audioData,
+    Expression<int> audioDurationInSeconds,
     Expression<int> textId,
     Expression<int> studentId,
   }) {
@@ -1992,6 +2073,8 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
       if (localId != null) 'local_id': localId,
       if (title != null) 'title': title,
       if (audioData != null) 'audio_data': audioData,
+      if (audioDurationInSeconds != null)
+        'audio_duration_in_seconds': audioDurationInSeconds,
       if (textId != null) 'text_id': textId,
       if (studentId != null) 'student_id': studentId,
     });
@@ -2001,12 +2084,15 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
       {Value<int> localId,
       Value<String> title,
       Value<Uint8List> audioData,
+      Value<int> audioDurationInSeconds,
       Value<int> textId,
       Value<int> studentId}) {
     return AudioModelsCompanion(
       localId: localId ?? this.localId,
       title: title ?? this.title,
       audioData: audioData ?? this.audioData,
+      audioDurationInSeconds:
+          audioDurationInSeconds ?? this.audioDurationInSeconds,
       textId: textId ?? this.textId,
       studentId: studentId ?? this.studentId,
     );
@@ -2024,6 +2110,10 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
     if (audioData.present) {
       map['audio_data'] = Variable<Uint8List>(audioData.value);
     }
+    if (audioDurationInSeconds.present) {
+      map['audio_duration_in_seconds'] =
+          Variable<int>(audioDurationInSeconds.value);
+    }
     if (textId.present) {
       map['text_id'] = Variable<int>(textId.value);
     }
@@ -2039,6 +2129,7 @@ class AudioModelsCompanion extends UpdateCompanion<AudioModel> {
           ..write('localId: $localId, ')
           ..write('title: $title, ')
           ..write('audioData: $audioData, ')
+          ..write('audioDurationInSeconds: $audioDurationInSeconds, ')
           ..write('textId: $textId, ')
           ..write('studentId: $studentId')
           ..write(')'))
@@ -2084,6 +2175,20 @@ class $AudioModelsTable extends AudioModels
     );
   }
 
+  final VerificationMeta _audioDurationInSecondsMeta =
+      const VerificationMeta('audioDurationInSeconds');
+  GeneratedIntColumn _audioDurationInSeconds;
+  @override
+  GeneratedIntColumn get audioDurationInSeconds =>
+      _audioDurationInSeconds ??= _constructAudioDurationInSeconds();
+  GeneratedIntColumn _constructAudioDurationInSeconds() {
+    return GeneratedIntColumn(
+      'audio_duration_in_seconds',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _textIdMeta = const VerificationMeta('textId');
   GeneratedIntColumn _textId;
   @override
@@ -2104,7 +2209,7 @@ class $AudioModelsTable extends AudioModels
 
   @override
   List<GeneratedColumn> get $columns =>
-      [localId, title, audioData, textId, studentId];
+      [localId, title, audioData, audioDurationInSeconds, textId, studentId];
   @override
   $AudioModelsTable get asDslTable => this;
   @override
@@ -2131,6 +2236,14 @@ class $AudioModelsTable extends AudioModels
           audioData.isAcceptableOrUnknown(data['audio_data'], _audioDataMeta));
     } else if (isInserting) {
       context.missing(_audioDataMeta);
+    }
+    if (data.containsKey('audio_duration_in_seconds')) {
+      context.handle(
+          _audioDurationInSecondsMeta,
+          audioDurationInSeconds.isAcceptableOrUnknown(
+              data['audio_duration_in_seconds'], _audioDurationInSecondsMeta));
+    } else if (isInserting) {
+      context.missing(_audioDurationInSecondsMeta);
     }
     if (data.containsKey('text_id')) {
       context.handle(_textIdMeta,

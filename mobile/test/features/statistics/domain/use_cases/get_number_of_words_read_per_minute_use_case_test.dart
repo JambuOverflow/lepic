@@ -31,6 +31,7 @@ void main() {
     studentId: 1,
     data: audio_data,
     localId: 1,
+    audioDuration: Duration(seconds: 240)
   );
 
   final tText = MyText(
@@ -44,6 +45,6 @@ void main() {
     when(mockGetTextUseCase.call(1)).thenAnswer((_) async => Right(tText));
     final result = await useCase(AudioParams(audio: tAudio));
 
-    expect(result, Right(1));
+    expect(result, Right(0.5));
   });
 }

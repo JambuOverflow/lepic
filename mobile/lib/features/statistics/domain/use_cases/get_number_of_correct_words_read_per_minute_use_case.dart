@@ -24,15 +24,15 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
       final int numberOfwords = await _getNumberOfWords(params);
       final int numberMistakes = params.correction.numberOfMistakes;
 
-      final Duration audioDuration = await _getAudioDuration(params);
+      final double audioDuration = await _getAudioDuration(params);
 
-      return Right((numberOfwords - numberMistakes) / audioDuration.inMinutes);
+      return Right((numberOfwords - numberMistakes) / audioDuration);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     }
   }
 
-  Future<Duration> _getAudioDuration(CorrectionParams params) async {
+  Future<double> _getAudioDuration(CorrectionParams params) async {
     final int studentId = params.correction.studentId;
     final int textId = params.correction.textId;
     final CorrectionIdParams correctionIdParams = CorrectionIdParams(
@@ -43,7 +43,7 @@ class GetNumberOfCorrectWordsReadPerMinuteUseCase
     return audioOutput.fold((l) {
       throw CacheException();
     }, (r) {
-      return r.audioDuration;
+      return r.getAudioDurationInMinutes;
     });
   }
 

@@ -188,7 +188,7 @@ void main() {
       final List<AudioEntity> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tAudios);
-      equals(resultTest);
+      expect(true, resultTest);
     });
 
     test('should return a CacheFailure when a CacheException is throw',

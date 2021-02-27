@@ -27,6 +27,7 @@ Future<void> main() {
     title: '1',
     body: "A",
     localId: null,
+    creationDate: DateTime(2020),
   );
 
   final tTextInputModel2 = TextModel(
@@ -34,10 +35,16 @@ Future<void> main() {
     title: '2',
     body: "B",
     localId: null,
+    creationDate: DateTime(2020),
   );
 
-  final tTextModel1 =
-      TextModel(studentId: 1, title: '1', body: "A", localId: 1);
+  final tTextModel1 = TextModel(
+    studentId: 1,
+    title: '1',
+    body: "A",
+    localId: 1,
+    creationDate: DateTime(2020),
+  );
 
   final tTextCompanion1 = tTextInputModel1.toCompanion(true);
 
@@ -110,7 +117,7 @@ Future<void> main() {
 
       verify(mockDatabase.getStudentTexts(tValidPk));
       final testResult = listEquals(result, tTextModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -121,7 +128,7 @@ Future<void> main() {
 
       verify(mockDatabase.getStudentTexts(tValidPk));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {
@@ -144,7 +151,7 @@ Future<void> main() {
 
       verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, tTextModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -154,7 +161,7 @@ Future<void> main() {
 
       verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {
@@ -194,16 +201,13 @@ Future<void> main() {
       expect(result, tTextModel1);
       verify(mockDatabase.getText(1));
     });
-    
+
     test("should throw a cache expection if the update was not completed",
         () async {
       when(mockDatabase.getText(1)).thenThrow(SqliteException(787, ""));
 
-      expect(
-          () async =>
-              await textLocalDataSourceImpl.getTextFromCache(1),
+      expect(() async => await textLocalDataSourceImpl.getTextFromCache(1),
           throwsA(TypeMatcher<CacheException>()));
     });
-    
   });
 }

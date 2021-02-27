@@ -126,7 +126,7 @@ void main() {
 
       final testResult = listEquals(result, [tMistakeOutputModel1]);
 
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -137,7 +137,7 @@ void main() {
 
       verify(mockDatabase.getMistakesOfCorrection(1));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {
@@ -209,6 +209,42 @@ void main() {
           () async => await mistakeLocalDataSourceImpl.getCorrectionFromCache(
                 textModel: textModel,
                 studentModel: studentModel,
+              ),
+          throwsA(TypeMatcher<EmptyDataException>()));
+    });
+  });
+
+  group("getAllCorrectionsOfStudentFromCache", () {
+    test("should correctly return a correction", () async {
+      when(mockDatabase.getAllCorrectionsOfStudent(1))
+          .thenAnswer((_) async => [tCorrectionOutputModel1]);
+
+      final result = await mistakeLocalDataSourceImpl.getAllCorrectionsOfStudentFromCache(studentModel);
+
+      verify(mockDatabase.getAllCorrectionsOfStudent(1));
+
+
+      expect(true, listEquals(result, [tCorrectionOutputModel1]));
+    });
+
+    test("should throw a cacheException", () async {
+      when(mockDatabase.getAllCorrectionsOfStudent(1))
+          .thenThrow(SqliteException(787, ""));
+
+      expect(
+          () async => await mistakeLocalDataSourceImpl.getAllCorrectionsOfStudentFromCache(
+                studentModel,
+              ),
+          throwsA(TypeMatcher<CacheException>()));
+    });
+
+     test("should throw an EmptyDataException", () async {
+      when(mockDatabase.getAllCorrectionsOfStudent(1))
+          .thenThrow(EmptyDataException());
+
+      expect(
+          () async => await mistakeLocalDataSourceImpl.getAllCorrectionsOfStudentFromCache(
+                studentModel,
               ),
           throwsA(TypeMatcher<EmptyDataException>()));
     });

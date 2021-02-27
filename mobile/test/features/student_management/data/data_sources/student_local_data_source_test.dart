@@ -112,18 +112,18 @@ void main() {
 
       verify(mockDatabase.getStudents(tValidPk));
       final testResult = listEquals(result, tStudentModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
-      when(mockDatabase.getClassrooms(tValidPk)).thenAnswer((_) async => []);
+      when(mockDatabase.getStudents(tValidPk)).thenAnswer((_) async => []);
 
       final result = await studentLocalDataSourceImpl
           .getStudentsFromCache(tClassroomModel);
 
       verify(mockDatabase.getStudents(tValidPk));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {

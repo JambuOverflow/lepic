@@ -180,7 +180,7 @@ void main() {
         expect(r.localId, tCorrectionOutput.localId);
         expect(r.studentId, tCorrectionOutput.studentId);
         expect(r.textId, tCorrectionOutput.textId);
-        equals(listEquals(r.mistakes, tCorrectionOutput.mistakes));
+        expect(true, listEquals(r.mistakes, tCorrectionOutput.mistakes));
       });
     });
   });
@@ -293,13 +293,13 @@ void main() {
         mockStudentEntityModelConverter.entityToModel(student),
         mockTextEntityModelConverter.mytextEntityToModel(text),
         mockLocalDataSource.getCorrectionFromCache(
-              studentModel: studentModel, textModel: textModel),
+            studentModel: studentModel, textModel: textModel),
         mockLocalDataSource.getMistakesFromCache(tCorrectionModelOutput1)
       ]);
       expect(result, Right(tCorrectionOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
-    
+
     test('should return a EmptyDataFailure when a EmptyDataException is throw',
         () async {
       when(mockLocalDataSource.getCorrectionFromCache(
@@ -317,21 +317,69 @@ void main() {
         mockStudentEntityModelConverter.entityToModel(student),
         mockTextEntityModelConverter.mytextEntityToModel(text),
         mockLocalDataSource.getCorrectionFromCache(
-              studentModel: studentModel, textModel: textModel),
+            studentModel: studentModel, textModel: textModel),
       ]);
       expect(result, Left(EmptyDataFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
-    
   });
-  
+
+  group('getCorrectionsOfStudent', () {
+    test('should return a list of corrections when getCorrections is called',
+        () async {
+      when(mockLocalDataSource
+              .getAllCorrectionsOfStudentFromCache(studentModel))
+          .thenAnswer((_) async => [tCorrectionModelOutput1]);
+      when(mockLocalDataSource.getMistakesFromCache(tCorrectionModelOutput1))
+          .thenAnswer((_) async => tMistakeModelsOutput);
+      when(mockStudentEntityModelConverter.entityToModel(student))
+          .thenAnswer((_) async => studentModel);
+
+      final result = await repository.getAllCorrectionsOfStudent(student);
+
+      verifyInOrder([
+        mockStudentEntityModelConverter.entityToModel(student),
+        mockLocalDataSource.getAllCorrectionsOfStudentFromCache(studentModel),
+        mockLocalDataSource.getMistakesFromCache(tCorrectionModelOutput1)
+      ]);
+      result.fold((l) => expect(false, true), (r) {
+        expect(true, listEquals(r, [tCorrectionOutput]));
+      });
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+
+    test('should return a EmptyDataFailure when a EmptyDataException is throw',
+        () async {
+      when(mockLocalDataSource.getCorrectionFromCache(
+              studentModel: studentModel, textModel: textModel))
+          .thenThrow(EmptyDataException());
+      when(mockTextEntityModelConverter.mytextEntityToModel(text))
+          .thenAnswer((_) async => textModel);
+      when(mockStudentEntityModelConverter.entityToModel(student))
+          .thenAnswer((_) async => studentModel);
+
+      final result =
+          await repository.getCorrection(student: student, text: text);
+
+      verifyInOrder([
+        mockStudentEntityModelConverter.entityToModel(student),
+        mockTextEntityModelConverter.mytextEntityToModel(text),
+        mockLocalDataSource.getCorrectionFromCache(
+            studentModel: studentModel, textModel: textModel),
+      ]);
+      expect(result, Left(EmptyDataFailure()));
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+  });
+
   group('getCorrectionsFromId', () {
     test('should return a list of corrections when getCorrections is called',
         () async {
       when(mockLocalDataSource.getCorrectionFromCacheUsingId(
               studentId: 1, textId: 1))
           .thenAnswer((_) async => tCorrectionModelOutput1);
-      when(mockTextEntityModelConverter.mytextEntityToModel(text)).thenAnswer((_) async => textModel);
+      when(mockTextEntityModelConverter.mytextEntityToModel(text))
+          .thenAnswer((_) async => textModel);
       when(mockStudentEntityModelConverter.entityToModel(student))
           .thenAnswer((_) async => studentModel);
       when(mockLocalDataSource.getMistakesFromCacheUsingId(1))
@@ -342,32 +390,28 @@ void main() {
 
       verifyInOrder([
         mockLocalDataSource.getCorrectionFromCacheUsingId(
-              studentId: 1, textId: 1),
+            studentId: 1, textId: 1),
         mockLocalDataSource.getMistakesFromCacheUsingId(1)
-        
       ]);
       expect(result, Right(tCorrectionOutput));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
 
-    
     test('should return a EmptyDataFailure when a EmptyDataException is throw',
         () async {
       when(mockLocalDataSource.getCorrectionFromCacheUsingId(
-              studentId: 1, textId: 1)).thenThrow(EmptyDataException());
+              studentId: 1, textId: 1))
+          .thenThrow(EmptyDataException());
 
       final result =
           await repository.getCorrectionFromId(studentId: 1, textId: 1);
 
       verifyInOrder([
         mockLocalDataSource.getCorrectionFromCacheUsingId(
-              studentId: 1, textId: 1),
-        
+            studentId: 1, textId: 1),
       ]);
       expect(result, Left(EmptyDataFailure()));
       verifyNoMoreInteractions(mockLocalDataSource);
     });
-    
   });
-  
 }

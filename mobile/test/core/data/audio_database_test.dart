@@ -20,6 +20,7 @@ void main() {
     studentId: tValidStudentPk,
     title: "",
     audioData: audioData,
+    audioDurationInSeconds: 60,
   );
 
   final tClassroomCompanion = ClassroomModelsCompanion(
@@ -44,6 +45,7 @@ void main() {
     title: Value(""),
     tutorId: Value(1),
     studentId: Value(1),
+    creationDate: Value(DateTime(2020)),
   );
 
   Database database;
@@ -120,12 +122,12 @@ void main() {
       await database.insertAudio(tValidAudioModelInput.copyWith(studentId: 2));
 
       final audios = await database.getAllAudiosOfStudent(1);
-      equals(audios.length == 0);
+      expect(true, audios.length == 1);
       expect(audios[0].localId, 1);
       expect(audios[0].textId, tValidAudioModelInput.textId);
       expect(audios[0].studentId, tValidAudioModelInput.studentId);
       expect(audios[0].title, tValidAudioModelInput.title);
-      equals(listEquals(audios[0].audioData, tValidAudioModelInput.audioData));
+      expect(true, listEquals(audios[0].audioData, tValidAudioModelInput.audioData));
     });
   });
 
@@ -137,7 +139,7 @@ void main() {
       expect(audio.textId, tValidAudioModelInput.textId);
       expect(audio.studentId, tValidAudioModelInput.studentId);
       expect(audio.title, tValidAudioModelInput.title);
-      equals(listEquals(audio.audioData, tValidAudioModelInput.audioData));
+      expect(true, listEquals(audio.audioData, tValidAudioModelInput.audioData));
     });
 
     test("should throw an sqliteException", () async {
@@ -156,7 +158,7 @@ void main() {
       expect(audio.textId, tValidAudioModelInput.textId);
       expect(audio.studentId, tValidAudioModelInput.studentId);
       expect(audio.title, "Arg");
-      equals(listEquals(audio.audioData, tValidAudioModelInput.audioData));
+      expect(true, listEquals(audio.audioData, tValidAudioModelInput.audioData));
     });
 
     test("should throw an exception", () async {

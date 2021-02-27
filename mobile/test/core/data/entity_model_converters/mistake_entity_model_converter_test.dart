@@ -47,7 +47,7 @@ void main() {
         () async {
       final result = mistakeEntityModelConverter.modelsToEntityList(
           [tMistakeModel, tMistakeModel.copyWith(localId: 2)]);
-      equals(listEquals(result, [tMistakeEntity1, tMistakeEntity2]));
+      expect(true, listEquals(result, [tMistakeEntity1, tMistakeEntity2]));
     });
   });
 
@@ -64,7 +64,7 @@ void main() {
         () async {
       final result = mistakeEntityModelConverter.entitiesToModelList(
           entities: [tMistakeEntity1, tMistakeEntity2], correctionId: 1);
-      equals(listEquals(result, [tMistakeModel, tMistakeModel.copyWith(localId: 2)]));
+      expect(true, listEquals(result, [tMistakeModel, tMistakeModel.copyWith(localId: 2)]));
     });
   });
 }

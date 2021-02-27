@@ -3,58 +3,57 @@ import 'dart:typed_data';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/features/audio_management/domain/entities/audio.dart';
-import 'package:mobile/features/audio_management/domain/use_cases/get_all_audios_from_class_use_case.dart';
-import 'package:mobile/features/audio_management/domain/use_cases/get_all_audios_from_student_use_case.dart';
 import 'package:mobile/features/class_management/domain/entities/classroom.dart';
 import 'package:mobile/features/class_management/domain/use_cases/classroom_params.dart';
 import 'package:mobile/features/student_management/domain/entities/student.dart';
 import 'package:mobile/features/student_management/domain/use_cases/get_students_use_case.dart';
 import 'package:mobile/features/student_management/domain/use_cases/student_params.dart';
+import 'package:mobile/features/text_correction/domain/entities/correction.dart';
+import 'package:mobile/features/text_correction/domain/use_cases/get_all_corrections_of_class_use_case.dart';
+import 'package:mobile/features/text_correction/domain/use_cases/get_all_corrections_of_student_use_case.dart';
 import 'package:mockito/mockito.dart';
 
-class MockGetAllAudiosFromStudentUseCase extends Mock
-    implements GetAllAudiosFromStudentUseCase {}
+class MockGetAllCorrectionsOfStudentUseCase extends Mock
+    implements GetAllCorrectionsOfStudentUseCase {}
 
 class MockGetStudents extends Mock implements GetStudents {}
 
 void main() {
-  GetAllAudiosFromClassUseCase useCase;
-  MockGetAllAudiosFromStudentUseCase mockGetAllAudiosFromStudentUseCase;
+  GetAllCorrectionsFromClassUseCase useCase;
+  MockGetAllCorrectionsOfStudentUseCase mockGetAllCorrectionsOfStudentUseCase;
   MockGetStudents mockGetStudents;
 
   setUp(() {
-    mockGetAllAudiosFromStudentUseCase = MockGetAllAudiosFromStudentUseCase();
+    mockGetAllCorrectionsOfStudentUseCase = MockGetAllCorrectionsOfStudentUseCase();
     mockGetStudents = MockGetStudents();
 
-    useCase = GetAllAudiosFromClassUseCase(
-      getAllAudiosFromStudentUseCase: mockGetAllAudiosFromStudentUseCase,
+    useCase =   GetAllCorrectionsFromClassUseCase(
+      getAllCorrectionsFromStudentUseCase: mockGetAllCorrectionsOfStudentUseCase,
       getStudents: mockGetStudents,
     );
   });
 
-  Uint8List audio_data;
+  Uint8List correction_data;
 
-  final tAudio1 = AudioEntity(
-    title: "a",
+  final tCorrection1 = Correction(
     textId: 1,
     studentId: 1,
-    data: audio_data,
+    mistakes: [],
     localId: 1,
   );
-  final tAudio2 = AudioEntity(
-    title: "a",
-    textId: 1,
+
+
+  final tCorrection2 = Correction(
+     textId: 1,
     studentId: 1,
-    data: audio_data,
+    mistakes: [],
     localId: 2,
   );
 
-  final tAudio3 = AudioEntity(
-    title: "a",
+  final tCorrection3 = Correction(
     textId: 1,
     studentId: 2,
-    data: audio_data,
+    mistakes: [],
     localId: 3,
   );
 
@@ -74,9 +73,9 @@ void main() {
 
   final tClassroom = Classroom(grade: 1, name: "", id: 1);
 
-  final List<AudioEntity> tAudiosStudent1 = [tAudio1, tAudio2];
-  final List<AudioEntity> tAudiosStudent2 = [tAudio3];
-  final List<AudioEntity> tAllAudios = tAudiosStudent1 + tAudiosStudent1;
+  final List<Correction> tCorrectionsStudent1 = [tCorrection1, tCorrection2];
+  final List<Correction> tCorrectionsStudent2 = [tCorrection3];
+  final List<Correction> tAllCorrections = tCorrectionsStudent1 + tCorrectionsStudent1;
 
   final List<Student> students = [tStudent1, tStudent2];
 
@@ -86,28 +85,28 @@ void main() {
   final ClassroomParams classroomParams =
       ClassroomParams(classroom: tClassroom);
 
-  test('should correctly return the audio list', () async {
+  test('should correctly return the correction list', () async {
     when(mockGetStudents(classroomParams))
         .thenAnswer((_) async => Right(students));
-    when(mockGetAllAudiosFromStudentUseCase.call(studentParams2))
-        .thenAnswer((_) async => Right(tAudiosStudent2));
-    when(mockGetAllAudiosFromStudentUseCase.call(studentParams1))
-        .thenAnswer((_) async => Right(tAudiosStudent1));
+    when(mockGetAllCorrectionsOfStudentUseCase.call(studentParams2))
+        .thenAnswer((_) async => Right(tCorrectionsStudent2));
+    when(mockGetAllCorrectionsOfStudentUseCase.call(studentParams1))
+        .thenAnswer((_) async => Right(tCorrectionsStudent1));
     
     final result = await useCase(classroomParams);
-    List<AudioEntity> audiosList;
+    List<Correction> correctionsList;
     result.fold((l) {
-      expect(true, false);
+      expect(false, true);
     }, (r) {
-      audiosList = r;
+      correctionsList = r;
     });
-    expect(true, listEquals(audiosList, tAllAudios));
+    expect(true, listEquals(correctionsList, tAllCorrections));
     verifyInOrder([
       mockGetStudents(classroomParams),
-      mockGetAllAudiosFromStudentUseCase(studentParams1),
-      mockGetAllAudiosFromStudentUseCase(studentParams2),
+      mockGetAllCorrectionsOfStudentUseCase(studentParams1),
+      mockGetAllCorrectionsOfStudentUseCase(studentParams2),
     ]);
     verifyNoMoreInteractions(mockGetStudents);
-    verifyNoMoreInteractions(mockGetAllAudiosFromStudentUseCase);
+    verifyNoMoreInteractions(mockGetAllCorrectionsOfStudentUseCase);
   });
 }
