@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import '../widgets/result_card.dart';
 import '../../../../core/presentation/widgets/background_app_bar.dart';
@@ -15,10 +16,13 @@ class StatisticsPage extends StatefulWidget {
 class _StatisticsPageState extends State<StatisticsPage> {
   final _scrollController = ScrollController();
   StatisticBloc bloc;
+  PlayerCubit playerCubit;
 
   @override
   void initState() {
     bloc = BlocProvider.of<StatisticBloc>(context);
+    playerCubit = BlocProvider.of<PlayerCubit>(context);
+
     bloc.add(GetStatisticsEvent());
     super.initState();
   }
@@ -33,16 +37,16 @@ class _StatisticsPageState extends State<StatisticsPage> {
         child: ListView(
           padding: EdgeInsets.all(10),
           children: [
-            TextArea(
-              scrollControler: _scrollController,
-              textBody: bloc.cardContent,
-              tag: '${bloc.cardContent}_stat',
-            ),
+            // TODO: improve readability
+            Text(
+                '${bloc.student.firstName} ${bloc.student.lastName} had his/her fluency assessed in DATE. He/She read the text in ${playerCubit.durationInSeconds} seconds with Z% of correctness.'),
+            SizedBox(height: 8),
+
             ResultCard(title: 'Results'),
-            SizedBox(height: 8),
-            ResultCard(title: 'Comparative Table'),
-            SizedBox(height: 8),
-            ResultCard(title: 'Comparative Graph'),
+            // SizedBox(height: 8),
+            // ResultCard(title: 'Comparative Table'),
+            // SizedBox(height: 8),
+            // ResultCard(title: 'Comparative Graph'),
             SizedBox(height: 64),
           ],
         ),

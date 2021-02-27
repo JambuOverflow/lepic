@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
 import '../../../statistics/presentation/bloc/statistic_bloc.dart';
@@ -102,12 +103,17 @@ class _AvailableStatisticsCard extends StatelessWidget {
   void navigateToDetails(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider(
-          create: (_) => GetIt.instance.get<StatisticBloc>(
-            param1: BlocProvider.of<TextBloc>(context).student,
-            param2: BlocProvider.of<AudioBloc>(context).audio,
-          ),
+        builder: (_) => MultiBlocProvider(
           child: StatisticsPage(),
+          providers: [
+            BlocProvider(
+              create: (_) => GetIt.instance.get<StatisticBloc>(
+                param1: BlocProvider.of<TextBloc>(context).student,
+                param2: BlocProvider.of<AudioBloc>(context).audio,
+              ),
+            ),
+            BlocProvider.value(value: BlocProvider.of<PlayerCubit>(context))
+          ],
         ),
       ),
     );
