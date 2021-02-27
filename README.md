@@ -8,31 +8,31 @@ Supporting the assessment and management of reading fluency.
 
 ## About the Project
 
-This project was made during the Student Contest on Software Engineering (SCORE), that was part of the [43rd International Conference on Software Engineering (ICSE 2021)](https://conf.researchr.org/home/icse-2021/score-2021#About). It consists of a mobile app, and its main goal is to develop a tool to support reading fluency assessment and management. The software aims to help teachers and other professionals that work with students' literacy and kid's relatives.
+This project was done during the Student Contest on Software Engineering (SCORE), that was part of the [43rd International Conference on Software Engineering (ICSE 2021)](https://conf.researchr.org/home/icse-2021/score-2021#About). It consists of a mobile app for Android and iOS, and its main goal is to help teachers and other professionals that work with students' literacy and kid's relatives.
 
 ### Features
 
-In the app, the teacher can.
+In the app, the teacher can:
 
 * Add classes, students and texts.
 * Upload recordings of the students reading the texts.
-* Listen to the students' recordings, and indicate the mistakes they did while reading.
+* Listen to the students' recordings, and indicate the mistakes they did when reading.
 
 Then, the app automatically calculates these statistics:
  
-* Time of the reading.
+* Duration of the reading.
 * Number of words read per minute.
 * Number of correct words read per minute.
 * If the student has a deficit in his/her class.
 
-With this information, the teachers will know which students need more attentional in their reading skills.
+With this information, the teachers will know which students need the most attention in their reading skills.
 
 // some screenshots here
 
 ### Built With
 
-* Dart/Flutter
-* Python/Django
+* Dart and Flutter
+* Python and Django
 
 ## Getting Started
 
@@ -50,9 +50,18 @@ accept pull requests in the moment.
 
 ## License
 
+Distributed under the GPL License. See `LICENSE` for more information.
+
 ## Acknowledgments
 
 This repository was also developed as the project of the Software Engineering Laboratory class, with the guidance of [Cleidson de Souza](https://www.linkedin.com/in/cdesouza/?originalSubdomain=br),
-a professor at the Federal University of Pará. Click [here](https://docs.google.com/presentation/d/1j5E7s0f4vdqB3NgDm9Xl38Vo6kSPYseHy_20xzKqSos/edit?usp=sharing) to see the report about the project.
+a professor at the Federal University of Pará. 
 
-[![UFPA](docs/logo_ufpa_github_footer.png)](https://portal.ufpa.br/ "Visite o site da UFPA")
+We also thank our clients during the project, who had this ideal and helped us throghout the competition. 
+* [Fabiana Mendes](http://fga.unb.br/fabiana.mendes)
+* [Letícia Celeste](http://www.pesquisar.unb.br/professores/view/5663)
+* [Luciana Mendonça Alves](http://somos.ufmg.br/professor/luciana-mendonca-alves)
+
+Click [here](LINK AQUI) to see the report about the project.
+
+[![UFPA](https://upload.wikimedia.org/wikipedia/pt/a/a2/Brasao_UFPA.jpg)](https://portal.ufpa.br/ "Visite o site da UFPA")
