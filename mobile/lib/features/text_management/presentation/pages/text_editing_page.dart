@@ -71,6 +71,7 @@ class TextEditingPage extends StatelessWidget {
         CreateTextEvent(
           title: _titleController.text,
           body: _textController.text,
+          creationDate: DateTime.now(),
         ),
       );
     } else {
@@ -78,6 +79,7 @@ class TextEditingPage extends StatelessWidget {
         UpdateTextEvent(
           title: _titleController.text,
           body: _textController.text,
+          creationDate: DateTime.now(),
           oldText: textToEdit,
         ),
       );
