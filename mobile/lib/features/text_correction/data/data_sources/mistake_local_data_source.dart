@@ -49,6 +49,9 @@ abstract class MistakeLocalDataSource {
   ///
   /// Throws [CacheException] if something wrong happens.
   Future<CorrectionModel> cacheNewCorrection(CorrectionModel correctionModel);
+
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudentFromCache(
+      StudentModel studentModel);
 }
 
 class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
@@ -140,5 +143,11 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
     } on EmptyDataException {
       throw EmptyDataException();
     }
+  }
+
+  @override
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudentFromCache(StudentModel studentModel) {
+    // TODO: implement getAllCorrectionsOfStudentFromCache
+    throw UnimplementedError();
   }
 }

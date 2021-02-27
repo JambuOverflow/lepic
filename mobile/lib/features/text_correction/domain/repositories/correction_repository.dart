@@ -7,7 +7,12 @@ import '../entities/correction.dart';
 abstract class CorrectionRepository {
   Future<Either<Failure, Correction>> createCorrection(Correction correction);
   Future<Either<Failure, Correction>> updateCorrection(Correction correction);
-  Future<Either<Failure, Correction>> getCorrection({MyText text, Student student});
-  Future<Either<Failure, Correction>> getCorrectionFromId({int textId, int studentId});
+  Future<Either<Failure, Correction>> getCorrection(
+      {MyText text, Student student});
+  Future<Either<Failure, Correction>> getCorrectionFromId(
+      {int textId, int studentId});
   Future<Either<Failure, void>> deleteCorrection(Correction correction);
+
+  Future<Either<Failure, List<Correction>>> getAllCorrectionsOfStudent(
+      Student student);
 }

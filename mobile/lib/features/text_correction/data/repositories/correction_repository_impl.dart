@@ -179,4 +179,46 @@ class CorrectionRepositoryImpl implements CorrectionRepository {
       return Left(EmptyDataFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<Correction>>> getAllCorrectionsOfStudent(
+      Student student) async {
+    try {
+      final StudentModel studentModel =
+          await studentEntityModelConverter.entityToModel(student);
+
+      final List<CorrectionModel> correctionModels =
+          await localDataSource.getAllCorrectionsOfStudentFromCache(
+        studentModel,
+      );
+
+      List<Correction> corrections = await _correctionsToModels(correctionModels);
+
+      return Right(corrections);
+    } on CacheException {
+      return Left(CacheFailure());
+    } on EmptyDataException {
+      return Left(EmptyDataFailure());
+    }
+  }
+
+  Future<List<Correction>> _correctionsToModels(List<CorrectionModel> correctionModels) async {
+    List<Correction> corrections = [];
+    for (var i = 0; i < correctionModels.length; i++) {
+      final CorrectionModel correctionModel = correctionModels[i];
+    
+      final List<MistakeModel> mistakeModels =
+          await localDataSource.getMistakesFromCache(correctionModel);
+      final List<Mistake> mistakes =
+          mistakeEntityModelConverter.modelsToEntityList(mistakeModels);
+    
+      final Correction correction =
+          correctionEntityModelConverter.modelToEntity(
+        model: correctionModel,
+        mistakes: mistakes,
+      );
+      corrections.add(correction);
+    }
+    return corrections;
+  }
 }
