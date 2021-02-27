@@ -171,7 +171,7 @@ void main() {
       final List<Classroom> resultList = result.getOrElse(() => null);
 
       final resultTest = listEquals(resultList, tClassrooms);
-      equals(resultTest);
+      expect(true, resultTest);
     });
 
     test('should return a CacheFailure when a CacheException is throw',

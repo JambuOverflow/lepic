@@ -117,7 +117,7 @@ Future<void> main() {
 
       verify(mockDatabase.getStudentTexts(tValidPk));
       final testResult = listEquals(result, tTextModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -128,7 +128,7 @@ Future<void> main() {
 
       verify(mockDatabase.getStudentTexts(tValidPk));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {
@@ -151,7 +151,7 @@ Future<void> main() {
 
       verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, tTextModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -161,7 +161,7 @@ Future<void> main() {
 
       verify(mockDatabase.getAllTextsOfUser(1));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {

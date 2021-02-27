@@ -180,7 +180,7 @@ void main() {
         expect(r.localId, tCorrectionOutput.localId);
         expect(r.studentId, tCorrectionOutput.studentId);
         expect(r.textId, tCorrectionOutput.textId);
-        equals(listEquals(r.mistakes, tCorrectionOutput.mistakes));
+        expect(true, listEquals(r.mistakes, tCorrectionOutput.mistakes));
       });
     });
   });

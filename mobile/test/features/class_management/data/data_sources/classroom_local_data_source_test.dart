@@ -111,7 +111,7 @@ Future<void> main() {
 
       verify(mockDatabase.getClassrooms(tValidPk));
       final testResult = listEquals(result, tClassroomModels);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -122,7 +122,7 @@ Future<void> main() {
 
       verify(mockDatabase.getClassrooms(tValidPk));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {

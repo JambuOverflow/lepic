@@ -126,7 +126,7 @@ void main() {
 
       final testResult = listEquals(result, [tMistakeOutputModel1]);
 
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should correctly return an empty list", () async {
@@ -137,7 +137,7 @@ void main() {
 
       verify(mockDatabase.getMistakesOfCorrection(1));
       final testResult = listEquals(result, []);
-      equals(testResult);
+      expect(true, testResult);
     });
 
     test("should throw a CacheException", () async {
