@@ -25,7 +25,7 @@ Then, the app automatically calculates these statistics:
 * Number of correct words read per minute.
 * If the student has a deficit in his/her class.
 
-With this information, the teachers can know which students and need more attentional in their reading skills.
+With this information, the teachers will know which students need more attentional in their reading skills.
 
 // some screenshots here
 
