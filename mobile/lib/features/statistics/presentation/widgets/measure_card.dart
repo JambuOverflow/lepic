@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MeasureCard extends StatelessWidget {
   final String measure;
-  final double result;
+  final String result;
 
   const MeasureCard({
     Key key,

@@ -4,6 +4,7 @@ import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/statistics/presentation/pages/results_page.dart';
 
+import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 import 'more_info_dialog.dart';
 
 class ResultCard extends StatelessWidget {
@@ -82,7 +83,9 @@ class ResultCard extends StatelessWidget {
                     BlocProvider.value(
                         value: BlocProvider.of<StatisticBloc>(context)),
                     BlocProvider.value(
-                        value: BlocProvider.of<PlayerCubit>(context))
+                        value: BlocProvider.of<PlayerCubit>(context)),
+                    BlocProvider.value(
+                        value: BlocProvider.of<CorrectionBloc>(context))
                   ],
                 ),
               ),
