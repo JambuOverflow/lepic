@@ -23,8 +23,8 @@ class AudioEntity extends Equatable {
 
   ByteData get byteData => ByteData.view(data.buffer);
 
-  Duration get getAudioDuration {
-    return audioDuration;
+  double get getAudioDurationInMinutes {
+    return (audioDuration.inSeconds) / 60;
   }
 
   @override

@@ -38,6 +38,7 @@ void main() {
     studentId: 1,
     data: audio_data,
     localId: 1,
+    audioDuration: Duration(seconds: 120)
   );
 
   final tText = MyText(

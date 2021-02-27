@@ -23,8 +23,8 @@ class GetNumberOfWordsReadPerMinuteUseCase
       numberWords = text.body.split(" ").length;
     } 
 
-    final Duration audioDuration = params.audio.getAudioDuration;
-    final double result = numberWords / audioDuration.inMinutes;
+    final double audioDuration = params.audio.getAudioDurationInMinutes;
+    final double result = numberWords / audioDuration;
     return Right(result);
   }
 }

@@ -22,6 +22,7 @@ void main() {
     audioData: audio_data,
     studentId: 1,
     textId: 1,
+    audioDurationInSeconds: 120
   );
 
   final tAudioEntity = AudioEntity(
@@ -30,6 +31,7 @@ void main() {
     data: audio_data,
     studentId: 1,
     textId: 1,
+    audioDuration: Duration(seconds: 120)
   );
 
   group('modelToEntity', () {

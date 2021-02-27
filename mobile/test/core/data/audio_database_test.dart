@@ -20,6 +20,7 @@ void main() {
     studentId: tValidStudentPk,
     title: "",
     audioData: audioData,
+    audioDurationInSeconds: 60,
   );
 
   final tClassroomCompanion = ClassroomModelsCompanion(
