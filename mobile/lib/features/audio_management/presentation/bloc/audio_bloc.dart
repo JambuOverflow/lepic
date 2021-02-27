@@ -60,6 +60,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       data: event.audioData,
       studentId: student.id,
       textId: text.localId,
+      audioDuration: event.audioDuration,
     );
 
     final failureOrSucess = await createAudio(AudioParams(audio: audio));
@@ -87,6 +88,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
       localId: event.oldAudio.localId,
       studentId: student.id,
       textId: text.localId,
+      audioDuration: event.audioDuration,
     );
 
     final failureOrAudio = await updateAudio(AudioParams(audio: updatedAudio));

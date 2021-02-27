@@ -10,16 +10,19 @@ abstract class AudioEvent extends Equatable {
 class CreateAudioEvent extends AudioEvent {
   final String title;
   final Uint8List audioData;
+  final Duration audioDuration;
 
   CreateAudioEvent({
     @required this.title,
     @required this.audioData,
+    @required this.audioDuration,
   });
 }
 
 class UpdateAudioEvent extends AudioEvent {
   final String title;
   final Uint8List audioData;
+  final Duration audioDuration;
 
   final AudioEntity oldAudio;
 
@@ -27,6 +30,7 @@ class UpdateAudioEvent extends AudioEvent {
     this.title,
     this.audioData,
     @required this.oldAudio,
+    @required this.audioDuration,
   });
 }
 

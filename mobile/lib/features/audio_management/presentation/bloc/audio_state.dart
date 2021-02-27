@@ -18,6 +18,15 @@ class AudioLoaded extends AudioState {
   List<Object> get props => [audio];
 }
 
+class AudioDurationLoaded extends AudioState {
+  final Duration duration;
+
+  AudioDurationLoaded(this.duration);
+
+  @override
+  List<Object> get props => [duration];
+}
+
 class Error extends AudioState {
   final String message;
 
