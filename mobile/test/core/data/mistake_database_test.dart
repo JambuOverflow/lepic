@@ -37,7 +37,7 @@ void main() {
     title: Value(""),
     tutorId: Value(1),
     studentId: Value(1),
-    dateCreated: Value(DateTime(2020)),
+    creationDate: Value(DateTime(2020)),
   );
 
   final tCorrectionModel = CorrectionModel(studentId: 1, textId: 1);

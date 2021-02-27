@@ -11,7 +11,7 @@ void main() {
     body: "A",
     studentId: 3,
     tutorId: 1,
-    dateCreated: null,
+    creationDate: null,
   );
 
   group("from json", () {
@@ -34,7 +34,7 @@ void main() {
         "body": "A",
         "student_id": 3,
         "tutor_id": 1,
-        "date_created": null
+        "creation_date": null
       };
 
       expect(result, expectedMap);

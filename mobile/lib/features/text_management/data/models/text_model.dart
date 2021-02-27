@@ -7,8 +7,8 @@ class TextModels extends Table {
   TextColumn get body => text()();
   @JsonKey("tutor_id")
   IntColumn get tutorId => integer()();
-  @JsonKey("date_created")
-  DateTimeColumn get dateCreated => dateTime()();
+  @JsonKey("creation_date")
+  DateTimeColumn get creationDate => dateTime()();
   @JsonKey("student_id")
   IntColumn get studentId => integer()
       .customConstraint('NOT NULL REFERENCES student_models(local_id)')();

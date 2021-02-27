@@ -27,7 +27,7 @@ Future<void> main() {
     title: '1',
     body: "A",
     localId: null,
-    dateCreated: DateTime(2020),
+    creationDate: DateTime(2020),
   );
 
   final tTextInputModel2 = TextModel(
@@ -35,7 +35,7 @@ Future<void> main() {
     title: '2',
     body: "B",
     localId: null,
-    dateCreated: DateTime(2020),
+    creationDate: DateTime(2020),
   );
 
   final tTextModel1 = TextModel(
@@ -43,7 +43,7 @@ Future<void> main() {
     title: '1',
     body: "A",
     localId: 1,
-    dateCreated: DateTime(2020),
+    creationDate: DateTime(2020),
   );
 
   final tTextCompanion1 = tTextInputModel1.toCompanion(true);

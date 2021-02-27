@@ -6,13 +6,13 @@ class MyText extends Equatable {
   final String body;
   final int localId;
   final int studentId;
-  final DateTime dateCreated;
+  final DateTime creationDate;
 
   MyText({
     @required this.title,
     @required this.body,
     @required this.studentId,
-    @required this.dateCreated,
+    @required this.creationDate,
     this.localId,
   });
 
@@ -21,5 +21,5 @@ class MyText extends Equatable {
   }
 
   @override
-  List<Object> get props => [title, body, localId, studentId, dateCreated];
+  List<Object> get props => [title, body, localId, studentId, creationDate];
 }
