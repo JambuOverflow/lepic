@@ -199,8 +199,9 @@ class Database extends _$Database {
   }
 
   Future<void> deleteCorrection(int correctionPk) async {
-    var done =
-        await (delete(correctionModels)..where((t) => t.localId.equals(correctionPk))).go();
+    var done = await (delete(correctionModels)
+          ..where((t) => t.localId.equals(correctionPk)))
+        .go();
     if (done != 1) {
       throw SqliteException(787, "The table doesn't have this entry");
     }
@@ -264,10 +265,10 @@ class Database extends _$Database {
     }
   }
 
-  
-
   @override
   int get schemaVersion => 6;
 
-
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudent(int studentId) async {
+    
+  }
 }

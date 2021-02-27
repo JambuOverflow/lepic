@@ -146,8 +146,14 @@ class MistakeLocalDataSourceImpl implements MistakeLocalDataSource {
   }
 
   @override
-  Future<List<CorrectionModel>> getAllCorrectionsOfStudentFromCache(StudentModel studentModel) {
-    // TODO: implement getAllCorrectionsOfStudentFromCache
-    throw UnimplementedError();
+  Future<List<CorrectionModel>> getAllCorrectionsOfStudentFromCache(StudentModel studentModel) async {
+    try {
+      return await this.database
+          .getAllCorrectionsOfStudent(studentModel.localId);
+    } on SqliteException {
+      throw CacheException();
+    } on EmptyDataException {
+      throw EmptyDataException();
+    }
   }
 }
