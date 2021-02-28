@@ -38,7 +38,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   @override
   Widget build(BuildContext context) {
-    double correctness = _getCorrectnessPercentage();
+    int correctness = _getCorrectnessPercentage();
+    String duration = _getFormattedDuration();
 
     return Scaffold(
       appBar: BackgroundAppBar(title: 'Statistics'),
@@ -51,7 +52,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                '${statistic.student.firstName} ${statistic.student.lastName} had his/her fluency assessed in DATE. He/She read the text in ${playerCubit.formattedDuration()} minutes with ${correctness.round()}% of correctness.',
+                '${statistic.student.firstName} ${statistic.student.lastName} had his/her fluency assessed in DATE. He/She read the text in $duration, with $correctness% of correctness.',
                 style: TextStyle(fontSize: 15),
                 textAlign: TextAlign.justify,
               ),
@@ -69,7 +70,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  double _getCorrectnessPercentage() {
-    return (1 - (correction.mistakes.length / widget.text.numberOfWords)) * 100;
+  int _getCorrectnessPercentage() {
+    var normal = 1 - (correction.mistakes.length / widget.text.numberOfWords);
+    return (normal * 100).round();
+  }
+
+  String _getFormattedDuration() {
+    var parts = playerCubit.formattedDuration().split(':');
+    var minutes = parts[0];
+    var seconds = parts[1];
+    return '$minutes minutes and $seconds seconds';
   }
 }
