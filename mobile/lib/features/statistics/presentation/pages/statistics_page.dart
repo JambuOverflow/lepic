@@ -77,8 +77,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   String _getFormattedDuration() {
     var parts = playerCubit.formattedDuration().split(':');
-    var minutes = parts[0];
-    var seconds = parts[1];
-    return '$minutes minutes and $seconds seconds';
+    var mins = parts[0];
+    var secs = parts[1];
+    return mins != '00' ? '$mins minutes and $secs seconds' : '$secs seconds';
   }
 }
