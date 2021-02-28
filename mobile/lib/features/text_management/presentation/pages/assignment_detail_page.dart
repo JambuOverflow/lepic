@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/statistics/domain/entities/statistic.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
 
