@@ -21,7 +21,6 @@ class ResultsPage extends StatelessWidget {
       ),
       body: Scrollbar(
         child: ListView(
-          // padding: EdgeInsets.symmetric(horizontal: 10),
           children: [
             MeasureCard(
                 measure: 'Total Reading Time*',
@@ -30,11 +29,13 @@ class ResultsPage extends StatelessWidget {
                 measure: 'Total Words Misread*',
                 result: correction.mistakes.length.toString()),
             MeasureCard(
-                measure: 'Number of Words Read Per Minute*',
-                result: statistic.numberOfWordsReadPerMinute.toString()),
+                measure: 'Words Read Per Minute*',
+                result:
+                    statistic.numberOfWordsReadPerMinute.toStringAsFixed(2)),
             MeasureCard(
-                measure: 'Number of Correct Words Read Per Minute*',
-                result: statistic.numberOfCorrectWordsReadPerMinute.toString()),
+                measure: 'Correct Words Read Per Minute*',
+                result: statistic.numberOfCorrectWordsReadPerMinute
+                    .toStringAsFixed(2)),
             Footnote(),
           ],
         ),
