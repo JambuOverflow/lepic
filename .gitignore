@@ -234,3 +234,4 @@ media/
 *.db
 *.pid
 lepic_secrets.py
+.migrations/
