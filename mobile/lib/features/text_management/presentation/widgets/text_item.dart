@@ -10,6 +10,8 @@ import 'package:mobile/features/text_correction/presentation/bloc/correction_blo
 import 'package:mobile/features/text_management/domain/entities/text.dart';
 import 'package:mobile/features/text_management/presentation/bloc/assignment_status_cubit.dart';
 import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
+import 'package:mobile/features/text_management/presentation/widgets/text_item_body.dart';
+import 'package:mobile/features/text_management/presentation/widgets/text_item_title.dart';
 
 import '../pages/assignment_detail_page.dart';
 import '../bloc/text_bloc.dart';
@@ -87,13 +89,24 @@ class _TextItemState extends State<TextItem> {
           ),
         ),
       ],
-      child: GestureDetector(
-        child: Card(
-          child: ListTile(
-              title: Text(
-                text.title,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+      child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Card(
+        elevation: 4,
+        child: GestureDetector(
+          child: Column(
+            children: [
+              TextItemTitle(title: text.title, subtitle: text.numberOfWords),
+              TextItemBody(
+                text: text,
+              ),
+            ],
+          ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: bloc,
+                child: AssigmentDetailPage(textIndex: index),
               ),
               subtitle: Hero(
                 tag: 'body_${text.localId}',

@@ -26,9 +26,14 @@ void main() {
   final tAudioData = File('assets/audios/test_sample.mp3').readAsBytesSync();
 
   final tTitle = 'Title';
+  final tAudioDuration = Duration();
 
-  final tAudio =
-      AudioEntity(data: tAudioData, studentId: 1, textId: 1, title: tTitle);
+  final tAudio = AudioEntity(
+      data: tAudioData,
+      studentId: 1,
+      textId: 1,
+      title: tTitle,
+      audioDuration: null);
 
   final tStudent = Student(firstName: 'a', lastName: 'b', classroomId: 1);
 

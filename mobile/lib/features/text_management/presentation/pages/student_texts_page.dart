@@ -35,6 +35,7 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
               );
             else
               return ListView.builder(
+                padding: EdgeInsets.all(6),
                 itemCount: _bloc.texts.length,
                 itemBuilder: (context, index) => TextItem(index: index),
               );
