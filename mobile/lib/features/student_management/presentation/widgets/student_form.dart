@@ -30,15 +30,19 @@ class StudentForm extends StatelessWidget {
             textInputAction: TextInputAction.next,
             controller: _firstNameController,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: UnderlineInputBorder(),
               labelText: 'First name',
             ),
+            validator: (value) {
+              if (value.isEmpty) return 'Please enter a name';
+              return null;
+            },
           ),
           SizedBox(height: 16),
           TextFormField(
             controller: _lastNameController,
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              border: UnderlineInputBorder(),
               labelText: 'Last name',
             ),
           ),
@@ -48,6 +52,8 @@ class StudentForm extends StatelessWidget {
   }
 
   void _setFormTextToStudentIfExists() {
+    _firstNameController.clear();
+    _lastNameController.clear();
     if (_studentToEdit == null) return;
 
     _firstNameController.text = _studentToEdit.firstName;
