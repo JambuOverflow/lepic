@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +79,6 @@ void main() async {
     classroomId: Value(2),
   );
 
-
   Future<String> loadAsset(String name) async {
     return await rootBundle.loadString(name);
   }
@@ -88,7 +88,6 @@ void main() async {
   final String lionShare = await loadAsset('assets/texts/lion_share.txt');
   final String ant = await loadAsset('assets/texts/ant_and_grasshopper.txt');
   final String turtle = await loadAsset('assets/texts/turtle.txt');
-
 
   final String title1 = "The Earthen Pot and The Brass Pot";
   final TextModelsCompanion text1 = TextModelsCompanion(
@@ -191,6 +190,73 @@ void main() async {
   await database.insertText(text8);
   await database.insertText(text9);
   await database.insertText(text10);
+
+  Future<Uint8List> loadAudio(String name) async {
+    ByteData byteData = await rootBundle.load(name);
+    return byteData.buffer.asUint8List();
+  }
+
+  final Uint8List takeshiGrasshopper =
+      await loadAudio("assets/audios/grasshopper.ogg");
+  final Uint8List takeshiFox = await loadAudio("assets/audios/fox.ogg");
+  final Uint8List takeshiLion = await loadAudio("assets/audios/lion_share.ogg");
+  final Uint8List takeshiPot = await loadAudio("assets/audios/pot.ogg");
+  final Uint8List takeshiTurtle = await loadAudio("assets/audios/turtle.ogg");
+
+  final AudioModel takaGrasshopperAudio = AudioModel(
+    audioData: takeshiGrasshopper,
+    localId: 1,
+    title: "Grasshopper",
+    audioDurationInSeconds: 59,
+    studentId: 1, 
+    textId: 7,
+
+  );
+
+  final AudioModel takeshiFoxAudio = AudioModel(
+    audioData: takeshiFox,
+    localId: 2,
+    title: "The Fox and The Grapes",
+    audioDurationInSeconds: 59,
+    studentId: 1, 
+    textId: 3,
+  );
+
+  final AudioModel takeshiLionAudio = AudioModel(
+    audioData: takeshiLion,
+    localId: 3,
+    title: "Lion's Share",
+    audioDurationInSeconds: 59,
+    studentId: 1, 
+    textId: 5,
+  );
+
+  final AudioModel takeshiPotAudio = AudioModel(
+    audioData: takeshiPot,
+    localId: 4,
+    title: "The Earthen Pot and The Brass Pot",
+    audioDurationInSeconds: 87,
+    studentId: 1, 
+    textId: 1,
+  );
+
+  final AudioModel takeshiTurtleAudio = AudioModel(
+    audioData: takeshiTurtle,
+    localId: 5,
+    title: "Tortoise and The Hare",
+    audioDurationInSeconds: 84,
+    studentId: 1, 
+    textId: 9,
+  );
+
+ 
+
+  await database.insertAudio(takeshiTurtleAudio);
+  await database.insertAudio(takeshiPotAudio);
+  await database.insertAudio(takaGrasshopperAudio);
+  await database.insertAudio(takeshiLionAudio);
+  await database.insertAudio(takeshiFoxAudio);
+
 
   final authBloc = await GetIt.instance<AuthBloc>();
   authBloc.add(AppStartedEvent());
