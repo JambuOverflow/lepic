@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/class_management/domain/use_cases/get_classroom_from_id_use_case.dart';
 
 import '../core/data/entity_model_converters/classroom_entity_model_converter.dart';
 import '../features/class_management/data/data_sources/classroom_local_data_source.dart';
@@ -47,4 +48,6 @@ void init() {
   getIt.registerLazySingleton(
     () => ClassroomEntityModelConverter(userLocalDataSource: getIt()),
   );
+
+  getIt.registerLazySingleton(() => GetClassroomFromId(repository: getIt()));
 }

@@ -1,13 +1,16 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+
 import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
+import 'package:mobile/features/statistics/presentation/bloc/wpm_graph_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
-import '../../../text_correction/domain/entities/correction.dart';
+import 'package:mobile/features/statistics/presentation/widgets/wpm_chart_area.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 import '../../../text_management/domain/entities/text.dart';
 import '../widgets/result_card.dart';
 import '../../../../core/presentation/widgets/background_app_bar.dart';
-import '../../../text_management/presentation/widgets/text_area.dart';
 
 class StatisticsPage extends StatefulWidget {
   final MyText text;
@@ -47,6 +50,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         isAlwaysShown: true,
         controller: _scrollController,
         child: ListView(
+          controller: _scrollController,
           padding: EdgeInsets.all(10),
           children: [
             Padding(
@@ -56,6 +60,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 style: TextStyle(fontSize: 15),
                 textAlign: TextAlign.justify,
               ),
+            ),
+            BlocProvider(
+              create: (context) => GetIt.instance.get<WPMGraphCubit>(
+                param1: statistic.student,
+              ),
+              child: WPMChartArea(isOnCorrectionLevel: true),
             ),
             SizedBox(height: 20),
             ResultCard(title: 'Results'),
