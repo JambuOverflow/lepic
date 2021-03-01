@@ -17,7 +17,7 @@ class TextTitleField extends StatelessWidget {
 
     insertTextIfExists();
 
-    return TextField(
+    return TextFormField(
       autofocus: true,
       maxLines: 1,
       controller: _titleController,
@@ -26,6 +26,10 @@ class TextTitleField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
       style: TextStyle(fontSize: textTheme.headline6.fontSize),
+      validator: (value) {
+        if (value.isEmpty) return 'A title is required';
+        return null;
+      },
     );
   }
 
