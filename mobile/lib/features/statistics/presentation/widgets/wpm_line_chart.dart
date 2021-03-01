@@ -151,7 +151,7 @@ class WPMLineChart extends StatelessWidget {
         ),
         reservedSize: 32,
         margin: 8,
-        interval: 30,
+        interval: maxY / 9,
         getTitles: (value) => '${value.toInt()}',
         checkToShowTitle: (_a, _b, _c, _d, value) =>
             value > minY && value < maxY,
