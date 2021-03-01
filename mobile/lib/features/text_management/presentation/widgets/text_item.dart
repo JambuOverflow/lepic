@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_management/presentation/widgets/text_item_body.dart';
+import 'package:mobile/features/text_management/presentation/widgets/text_item_title.dart';
 
 import '../pages/assignment_detail_page.dart';
 import '../bloc/text_bloc.dart';
@@ -17,29 +19,23 @@ class TextItem extends StatelessWidget {
     final bloc = BlocProvider.of<TextBloc>(context);
     final text = bloc.texts[index];
 
-    return GestureDetector(
-      child: Card(
-        child: ListTile(
-            title: Text(
-              text.title,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        child: Column(
+          children: [
+            TextItemTitle(title: text.title, subtitle: text.numberOfWords),
+            TextItemBody(
+              text: text,
             ),
-            subtitle: Hero(
-              tag: 'body_${text.localId}',
-              child: Text(
-                text.body,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 3,
-              ),
+          ],
+        ),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => BlocProvider.value(
+              value: bloc,
+              child: AssigmentDetailPage(textIndex: index),
             ),
-            trailing: Icon(Icons.arrow_forward_ios)),
-      ),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => BlocProvider.value(
-            value: bloc,
-            child: AssigmentDetailPage(textIndex: index),
           ),
         ),
       ),

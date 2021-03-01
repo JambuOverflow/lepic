@@ -27,6 +27,7 @@ class TextArea extends StatelessWidget {
             tag: tag,
             child: Text(
               _textBody,
+              textAlign: TextAlign.justify,
               style: TextStyle(fontSize: 16),
             ),
             flightShuttleBuilder: flightShuttleBuilder,

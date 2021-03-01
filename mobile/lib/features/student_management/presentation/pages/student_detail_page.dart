@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:mobile/features/text_management/presentation/pages/student_detail_overview_tab.dart';
-
+import '../../../text_management/presentation/pages/student_detail_overview_tab.dart';
 import '../../../text_management/presentation/bloc/text_bloc.dart';
 import '../../../text_management/presentation/pages/student_texts_page.dart';
 import '../bloc/student_bloc.dart';
@@ -18,57 +17,55 @@ class StudentDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of<StudentBloc>(context);
 
-    return BlocBuilder<StudentBloc, StudentState>(builder: (context, state) {
-      final student = bloc.students[studentIndex];
+    return BlocBuilder<StudentBloc, StudentState>(
+      builder: (context, state) {
+        final student = bloc.students[studentIndex];
 
-      return Scaffold(
-        body: DefaultTabController(
-          length: 3,
-          child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                SliverAppBar(
-                  title: Hero(
-                    tag: 'firstName_${student.id}',
-                    child: Text('${student.firstName} ${student.lastName}'),
-                    flightShuttleBuilder: flightShuttleBuilder,
-                  ),
-                  actions: <Widget>[
-                    StudentDetailPopupMenuButton(student: student)
-                  ],
-                  pinned: true,
-                  floating: true,
-                  forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                    indicatorPadding: EdgeInsets.only(bottom: 2),
-                    indicatorColor: Colors.white,
-                    tabs: [
-                      Tab(text: 'OVERVIEW'),
-                      Tab(text: 'TEXTS'),
-                      Tab(text: 'STATISTICS'),
+        return Scaffold(
+          body: DefaultTabController(
+            length: 3,
+            child: NestedScrollView(
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    title: Hero(
+                      tag: 'firstName_${student.id}',
+                      child: Text('${student.firstName} ${student.lastName}'),
+                      flightShuttleBuilder: flightShuttleBuilder,
+                    ),
+                    actions: <Widget>[
+                      StudentDetailPopupMenuButton(student: student)
                     ],
+                    pinned: true,
+                    floating: true,
+                    forceElevated: innerBoxIsScrolled,
+                    bottom: TabBar(
+                      indicatorPadding: EdgeInsets.only(bottom: 2),
+                      indicatorColor: Colors.white,
+                      tabs: [
+                        Tab(text: 'OVERVIEW'),
+                        Tab(text: 'TEXTS'),
+                        Tab(text: 'STATISTICS'),
+                      ],
+                    ),
                   ),
+                ];
+              },
+              body: BlocProvider<TextBloc>(
+                create: (context) => GetIt.instance<TextBloc>(param1: student),
+                child: TabBarView(
+                  children: <Widget>[
+                    StudentDetailOverviewTab(),
+                    StudentTextsPage(),
+                    Scaffold(),
+                  ],
                 ),
-              ];
-            },
-            body: BlocProvider<TextBloc>(
-              create: (context) => GetIt.instance<TextBloc>(param1: student),
-              child: TabBarView(
-                children: <Widget>[
-                  StudentDetailOverviewTab(),
-                  StudentTextsPage(),
-                  Scaffold(),
-                ],
               ),
             ),
           ),
-        ),
-        // body: BlocProvider(
-        //   create: (_) => GetIt.instance.get<TextBloc>(param1: student),
-        //   child: StudentTextsPage(),
-        // ),
-      );
-    });
+        );
+      },
+    );
   }
 }

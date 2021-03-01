@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
+import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
+
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 
@@ -35,6 +39,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
   TextBloc textBloc;
   AudioBloc audioBloc;
   CorrectionBloc correctionBloc;
+  StatisticBloc statisticBloc;
   SingleTextCubit textCubit;
 
   Student student;
@@ -77,6 +82,13 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
         ),
         BlocProvider(
           lazy: false,
+          create: (_) => statisticBloc = GetIt.instance.get<StatisticBloc>(
+            param1: student,
+            param2: audioBloc.audio,
+          ),
+        ),
+        BlocProvider(
+          lazy: false,
           create: (_) => AssignmentStatusCubit(
             audioBloc: audioBloc,
             textBloc: textBloc,
@@ -109,7 +121,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
                   SizedBox(height: 8),
                   CorrectionPreviewCard(),
                   SizedBox(height: 8),
-                  Card(child: Container(height: 200)),
+                  StatisticsPreviewCard(text: text),
                   SizedBox(height: 64),
                 ],
               ),

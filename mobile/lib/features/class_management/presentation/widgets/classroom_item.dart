@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/class_management/presentation/widgets/classroom_card_title.dart';
 
 import '../../../student_management/presentation/bloc/student_bloc.dart';
 import '../bloc/classroom_bloc.dart';
@@ -37,7 +38,8 @@ class _ClassroomItemState extends State<ClassroomItem> {
       child: Card(
         child: Column(
           children: [
-            buildTitle(classroom),
+            ClassroomCardTitle(
+                title: classroom.name, subtitle: classroom.grade),
             buildBottom(),
           ],
         ),
@@ -84,37 +86,6 @@ class _ClassroomItemState extends State<ClassroomItem> {
           ),
         );
       },
-    );
-  }
-
-  Container buildTitle(Classroom classroom) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(color: Colors.black87),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              classroom.name,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              'Level ${classroom.grade}',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
