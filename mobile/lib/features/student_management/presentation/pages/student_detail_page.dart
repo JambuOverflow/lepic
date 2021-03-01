@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+
+import 'student_statistics_tab.dart';
 import '../../../text_management/presentation/pages/student_detail_overview_tab.dart';
 import '../../../text_management/presentation/bloc/text_bloc.dart';
 import '../../../text_management/presentation/pages/student_texts_page.dart';
@@ -58,7 +60,7 @@ class StudentDetailPage extends StatelessWidget {
                   children: <Widget>[
                     StudentDetailOverviewTab(),
                     StudentTextsPage(),
-                    Scaffold(),
+                    StudentStatisticsTab(student: student),
                   ],
                 ),
               ),
