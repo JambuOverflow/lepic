@@ -99,6 +99,7 @@ flutter:
       - assets/images/statistics.png
       - assets/images/highlight-disabled.png
       - assets/images/statistics-disabled.png
+      - assets/texts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -28,6 +28,10 @@ LazyDatabase openConnection() {
       db.execute('PRAGMA foreign_keys = ON');
     });
     if (IS_IN_DEVELOPMENT) await file.delete();
+
+    //population database
+
+
     return db;
   });
 }
@@ -68,6 +72,15 @@ class Database extends _$Database {
   Future<List<ClassroomModel>> getClassrooms(int tutorId) async {
     return (select(classroomModels)
           ..where((t) => t.tutorId.equals(tutorId) & t.deleted.equals(false)))
+        .get();
+  }
+
+  /// Returns a list of [ClassroomModel] that weren't deleted
+  ///
+  /// Returns an empty list when the table is empty
+  Future<List<ClassroomModel>> getAllClassrooms() async {
+    return (select(classroomModels)
+          ..where((t) => t.deleted.equals(false)))
         .get();
   }
 
