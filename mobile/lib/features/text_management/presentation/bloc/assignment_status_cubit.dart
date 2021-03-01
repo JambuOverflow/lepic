@@ -38,10 +38,10 @@ class AssignmentStatusCubit extends Cubit<AssignmentStatus> {
   void _emitStatus() async {
     if (!audioBloc.isAudioAttached)
       emit(AssignmentStatus.waiting_audio);
-    else if (audioBloc.isAudioAttached && correctionBloc.mistakes.isEmpty)
+    else if (audioBloc.isAudioAttached && !correctionBloc.hasCorrection)
       emit(AssignmentStatus.waiting_correction);
     else if (correctionBloc.state is CorrectionLoaded &&
-        correctionBloc.mistakes.isNotEmpty)
+        correctionBloc.hasCorrection)
       emit(AssignmentStatus.waiting_report);
     else
       emit(AssignmentStatus.invalid);
