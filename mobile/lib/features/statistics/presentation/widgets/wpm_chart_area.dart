@@ -7,6 +7,11 @@ import '../bloc/wpm_graph_cubit.dart';
 import 'wpm_line_chart.dart';
 
 class WPMChartArea extends StatefulWidget {
+  final bool isOnCorrectionLevel;
+
+  const WPMChartArea({Key key, @required this.isOnCorrectionLevel})
+      : super(key: key);
+
   @override
   _WPMChartAreaState createState() => _WPMChartAreaState();
 }
@@ -29,8 +34,9 @@ class _WPMChartAreaState extends State<WPMChartArea> {
   void initState() {
     cubit = BlocProvider.of<WPMGraphCubit>(context);
     cubit.load();
-    assignmentIndex =
-        BlocProvider.of<CorrectionBloc>(context).textCubit.assignmentIndex;
+    if (widget.isOnCorrectionLevel)
+      assignmentIndex =
+          BlocProvider.of<CorrectionBloc>(context).textCubit.assignmentIndex;
     super.initState();
   }
 
@@ -94,6 +100,21 @@ class _WPMChartAreaState extends State<WPMChartArea> {
                       ),
                     )
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      'Reading Assessment',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ],
             ),

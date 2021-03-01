@@ -41,25 +41,29 @@ class WPMLineChart extends StatelessWidget {
         gridData: buildGridData(),
         titlesData: buildFlTitlesData(),
         lineTouchData: buildTouchData(),
-        axisTitleData: FlAxisTitleData(
-          bottomTitle: AxisTitle(
-            showTitle: true,
-            titleText: 'Readings',
-            margin: 8,
-            textStyle: TextStyle(color: Colors.white),
-          ),
-          leftTitle: AxisTitle(
-            showTitle: true,
-            titleText: 'WPM',
-            margin: -5,
-            textStyle: TextStyle(color: Colors.white),
-          ),
-        ),
+        axisTitleData: buildAxisTitleData(),
         borderData: FlBorderData(
           show: true,
           border: Border.all(color: const Color(0xff37434d), width: 1),
         ),
         lineBarsData: buildLineBarsData(),
+      ),
+    );
+  }
+
+  FlAxisTitleData buildAxisTitleData() {
+    return FlAxisTitleData(
+      bottomTitle: AxisTitle(
+        showTitle: true,
+        titleText: 'Readings',
+        margin: 8,
+        textStyle: TextStyle(color: Colors.white),
+      ),
+      leftTitle: AxisTitle(
+        showTitle: true,
+        titleText: 'Words Read Per Minute',
+        margin: -5,
+        textStyle: TextStyle(color: Colors.white),
       ),
     );
   }
@@ -104,8 +108,9 @@ class WPMLineChart extends StatelessWidget {
   List<LineTooltipItem> getCustomTooltipItem(List<LineBarSpot> touchedSpots) {
     List<LineTooltipItem> tooltipItems = [];
     touchedSpots.forEach((element) {
+      final value = element.y;
       tooltipItems.add(LineTooltipItem(
-        '${element.y.toInt()} WPM',
+        '${value.toInt()} WPM\n ${getReadingStatusTextFromValue(value)}',
         TextStyle(fontSize: 14, color: Colors.black),
       ));
     });
@@ -174,8 +179,9 @@ class WPMLineChart extends StatelessWidget {
                 ? 8.5
                 : 5.5,
             color: getReadingStatusColorFromValue(spot.y),
-            strokeWidth: 0,
-            strokeColor: Colors.black,
+            strokeWidth:
+                indexToHighlight != null && index == indexToHighlight ? 2.5 : 0,
+            strokeColor: Colors.white,
           ),
         ),
         isCurved: true,
@@ -207,5 +213,27 @@ class WPMLineChart extends StatelessWidget {
     });
 
     return colors[index];
+  }
+
+  String getReadingStatusTextFromValue(double value) {
+    ReadingStatus status;
+    for (int i = 0; i < readingStatusMap.keys.length; i++) {
+      if (value <= readingStatusMap.values.elementAt(i)) {
+        status = readingStatusMap.keys.elementAt(i);
+        break;
+      }
+    }
+    switch (status) {
+      case ReadingStatus.majorDeficit:
+        return 'Major Deficit';
+      case ReadingStatus.moderateDeficit:
+        return 'Moderate Deficit';
+      case ReadingStatus.deficit:
+        return 'Deficit';
+      case ReadingStatus.deficitAlert:
+        return 'Deficit Alert';
+      default:
+        return 'No Deficit';
+    }
   }
 }
