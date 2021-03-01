@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
+import 'package:mobile/features/text_management/presentation/widgets/assignment_popup_menu_button.dart';
 import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
 
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
@@ -104,6 +105,7 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
             appBar: AppBar(
               title: Text('${student.firstName} ${student.lastName}'),
               bottom: AppBarBottomTextTitle(title: text.title),
+              actions: [AssignmentPopupMenuButton()],
             ),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
