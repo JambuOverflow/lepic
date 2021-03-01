@@ -10,7 +10,7 @@ import '../features/statistics/domain/use_cases/get_class_list_of_number_of_word
 import '../features/statistics/domain/use_cases/get_number_of_correct_words_read_per_minute_use_case.dart';
 import '../features/statistics/domain/use_cases/get_number_of_words_read_per_minute_use_case.dart';
 import '../features/statistics/domain/use_cases/get_zscore_intervals_of_number_of_words_read_per_minute_use_case.dart';
-import '../features/statistics/presentation/bloc/line_graph_cubit.dart';
+import '../features/statistics/presentation/bloc/wpm_graph_cubit.dart';
 import '../features/statistics/presentation/bloc/statistic_bloc.dart';
 import '../features/student_management/domain/entities/student.dart';
 import '../features/text_correction/domain/use_cases/get_all_corrections_of_student_use_case.dart';
@@ -29,8 +29,8 @@ void init() {
     ),
   );
 
-  getIt.registerFactoryParam<LineGraphCubit, Student, void>(
-    (student, _) => LineGraphCubit(
+  getIt.registerFactoryParam<WPMGraphCubit, Student, void>(
+    (student, _) => WPMGraphCubit(
       student: student,
       getClassroomFromId: getIt(),
       getTextUseCase: getIt(),
