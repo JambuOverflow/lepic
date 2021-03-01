@@ -47,15 +47,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
-MAILER_EMAIL_BACKEND = EMAIL_BACKEND  
-EMAIL_HOST = 'smtp.office365.com'  
-EMAIL_HOST_PASSWORD = 'Production#lepic123'
-EMAIL_HOST_USER = 'productionlepic@outlook.com'  
-EMAIL_PORT = 587  
-EMAIL_USE_TLS = True  
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 AUTH_USER_MODEL = 'api.User'
 
 MEDIA_URL = '/media/'
