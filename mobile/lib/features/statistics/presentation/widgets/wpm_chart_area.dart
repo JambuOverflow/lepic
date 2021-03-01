@@ -75,18 +75,30 @@ class _WPMChartAreaState extends State<WPMChartArea> {
                             top: 46,
                             bottom: 12,
                           ),
-                          child: WPMLineChart(
-                            data: correctOnly
-                                ? state.correctWordsReadPerMinuteResults
-                                : state.wordsReadPerMinuteResults,
-                            readingStatusMap: correctOnly
-                                ? state.correctWpmToReadingStatus
-                                : state.wpmToReadingStatus,
-                            gradientColors: gradientColors,
-                            minY: minY,
-                            maxY: maxY,
-                            indexToHighlight: assignmentIndex,
-                          ),
+                          child: state.wordsReadPerMinuteResults.length > 1
+                              ? WPMLineChart(
+                                  data: correctOnly
+                                      ? state.correctWordsReadPerMinuteResults
+                                      : state.wordsReadPerMinuteResults,
+                                  readingStatusMap: correctOnly
+                                      ? state.correctWpmToReadingStatus
+                                      : state.wpmToReadingStatus,
+                                  gradientColors: gradientColors,
+                                  minY: minY,
+                                  maxY: maxY,
+                                  indexToHighlight: assignmentIndex,
+                                )
+                              : Center(
+                                  child: Text(
+                                    'No data yet\nAt least two readings are required',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      letterSpacing: 1,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
