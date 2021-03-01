@@ -24,11 +24,11 @@ class WPMLineChart extends StatelessWidget {
   final List<Color> gradientColors;
   final Map<ReadingStatus, double> readingStatusMap;
 
-  final noDeficitColor = Color(0xff00BF63);
-  final alertColor = Color(0xff0099FF);
-  final deficitColor = Color(0xffFFF545);
-  final moderateColor = Color(0xffFFA300);
-  final majorColor = Color(0xffF91600);
+  final noDeficitColor = Color(0xff67DB66);
+  final alertColor = Color(0xffFADF53);
+  final deficitColor = Color(0xffFDC55B);
+  final moderateColor = Color(0xffFA7C2B);
+  final majorColor = Color(0xffD80000);
 
   @override
   Widget build(BuildContext context) {
@@ -170,11 +170,11 @@ class WPMLineChart extends StatelessWidget {
         dotData: FlDotData(
           show: true,
           getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-            radius:
-                indexToHighlight != null && index == indexToHighlight ? 9 : 6,
+            radius: indexToHighlight != null && index == indexToHighlight
+                ? 8.5
+                : 5.5,
             color: getReadingStatusColorFromValue(spot.y),
-            strokeWidth:
-                indexToHighlight != null && index == indexToHighlight ? 2 : 1,
+            strokeWidth: 0,
             strokeColor: Colors.black,
           ),
         ),
@@ -185,7 +185,7 @@ class WPMLineChart extends StatelessWidget {
         belowBarData: BarAreaData(
           show: true,
           colors:
-              gradientColors.map((color) => color.withOpacity(0.1)).toList(),
+              gradientColors.map((color) => color.withOpacity(0.15)).toList(),
         ),
       ),
     ];

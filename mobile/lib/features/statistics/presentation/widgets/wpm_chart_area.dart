@@ -15,8 +15,9 @@ class _WPMChartAreaState extends State<WPMChartArea> {
   WPMGraphCubit cubit;
 
   List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
+    const Color(0xff5F63B4),
+    const Color(0xff5D3FA2),
+    const Color(0xffA32876),
   ];
 
   double maxY = 0;
