@@ -70,7 +70,7 @@ class WPMLineChart extends StatelessWidget {
 
   LineTouchData buildTouchData() {
     return LineTouchData(
-      touchSpotThreshold: 8,
+      touchSpotThreshold: 16,
       getTouchedSpotIndicator: (barData, spotIndexes) =>
           getCustomTouchedSpotIndicator(spotIndexes),
       touchTooltipData: LineTouchTooltipData(
