@@ -24,7 +24,7 @@ from datetime import datetime
 import pytz
 
 
-class EmailVerification(generics.GenericAPIView):
+'''class EmailVerification(generics.GenericAPIView):
     """
     Verifies the verification token and user id, if are valid, set user state to active, if not, returns an error
     message. If the user state is already active, it returns a message to alert about it. EX: GET
@@ -47,11 +47,11 @@ class EmailVerification(generics.GenericAPIView):
         else:
             return Response(
                 {'detail': 'Your email was not successfully verified, please check your verification link.'},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST)'''
 
 
 
-class ForgotMyPassword(generics.GenericAPIView):
+'''class ForgotMyPassword(generics.GenericAPIView):
     """
     Sends a valid email for password reset, to the email given inside the request body. If there is no user
     with that email in the database, then returns a Bad Request status with an error message.
@@ -111,7 +111,7 @@ class ResetPassword(generics.GenericAPIView):
         else:
             return Response(
                 {'error_message': 'Your password was not successfully reset, please check your reset link.'},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_400_BAD_REQUEST)'''
 
 
 class UserCreate(generics.CreateAPIView,
@@ -128,21 +128,7 @@ class UserCreate(generics.CreateAPIView,
 
     def perform_create(self, serializer):
         try:
-            user = serializer.save()
-            current_domain = get_current_site(self.request).domain
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-            link = reverse('email-verification', kwargs={'uidb64': uidb64, 'token': token})
-            activate_url = 'http://' + current_domain + link
-
-            email_subject = 'Activate your account.'
-            email_body = f'Hi {user.first_name},\nPlease use this link to verify your account:\n{activate_url}'
-            email = EmailMessage(
-                email_subject,
-                email_body,
-                to=[user.email],
-            )
-            EmailThread(email).start()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except IntegrityError as exception:
             return Response({"email": ["user with this email address already exists."],

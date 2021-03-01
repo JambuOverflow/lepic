@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         try:
-            return User.objects.create_user(**validated_data, is_active=False)
+            return User.objects.create_user(**validated_data)
         except IntegrityError as exception:
             raise exception
 
