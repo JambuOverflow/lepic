@@ -15,13 +15,18 @@ class TextBodyField extends StatelessWidget {
   Widget build(BuildContext context) {
     insertTextIfExists();
 
-    return TextField(
+    return TextFormField(
       controller: _textController,
       decoration: InputDecoration(
-        hintText: 'Text',
+        hintText: 'Click here to start adding the text body or hold to paste',
+        hintMaxLines: 2,
         border: InputBorder.none,
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
+      validator: (value) {
+        if (value.isEmpty) return 'A text body is required';
+        return null;
+      },
       maxLines: null,
       maxLength: 2000,
     );
