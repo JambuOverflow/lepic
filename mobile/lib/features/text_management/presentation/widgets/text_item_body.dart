@@ -14,29 +14,27 @@ class _TextItemBodyState extends State<TextItemBody> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              SizedBox(width: 6),
-              Expanded(
-                child: SingleChildScrollView(
-                  // controller: _scrollControler,
-                  child: Text(
-                    widget.text.body,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-              )
-            ],
+          Text(
+            widget.text.body,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.justify,
+            style: TextStyle(fontSize: 15),
           ),
-          FlatButton(
-            child: Text('View'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FlatButton(
+                visualDensity: VisualDensity(horizontal: -3, vertical: -3),
+                textColor: Colors.black,
+                child: Text('View'),
+                onPressed: () {},
+              ),
+            ],
           ),
         ],
       ),

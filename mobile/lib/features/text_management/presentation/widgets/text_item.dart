@@ -20,21 +20,24 @@ class TextItem extends StatelessWidget {
     final text = bloc.texts[index];
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        child: Column(
-          children: [
-            TextItemTitle(title: text.title, subtitle: text.numberOfWords),
-            TextItemBody(
-              text: text,
-            ),
-          ],
-        ),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => BlocProvider.value(
-              value: bloc,
-              child: AssigmentDetailPage(textIndex: index),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Card(
+        elevation: 4,
+        child: GestureDetector(
+          child: Column(
+            children: [
+              TextItemTitle(title: text.title, subtitle: text.numberOfWords),
+              TextItemBody(
+                text: text,
+              ),
+            ],
+          ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: bloc,
+                child: AssigmentDetailPage(textIndex: index),
+              ),
             ),
           ),
         ),
