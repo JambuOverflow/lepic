@@ -117,7 +117,7 @@ class ClassroomRepositoryImpl implements ClassroomRepository {
   Future<Either<Failure, Classroom>> getClassroomFromId(int id) async {
     try {
       final ClassroomModel classroomModel =
-          await localDataSource.getClassroomFromCacheWithId(1);
+          await localDataSource.getClassroomFromCacheWithId(id);
       final Classroom classroom =
           clasrooomEntityModelConverter.classroomModelToEntity(classroomModel);
       return Right(classroom);
