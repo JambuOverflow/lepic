@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
 import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
-
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
 import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
-
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
-import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 import '../widgets/assignment_contextual_floating_action_button.dart';
 import '../widgets/audio_preview_card.dart';
 import '../widgets/correction_preview_cards.dart';
