@@ -24,7 +24,8 @@ class TextBodyField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.never,
       ),
       validator: (value) {
-        if (!value.contains('.*[a-zA-Z].*')) return 'Please enter a valid text';
+        if (value.contains(new RegExp('.*[a-zA-Z].*')) == false)
+          return 'Please enter a valid text';
         if (value.isEmpty) return 'A text body is required';
         return null;
       },
