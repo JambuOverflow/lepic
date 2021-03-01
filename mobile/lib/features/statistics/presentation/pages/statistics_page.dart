@@ -6,7 +6,6 @@ import 'package:get_it/get_it.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/wpm_graph_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
-import 'package:mobile/features/statistics/presentation/widgets/correcteness_pie_chart.dart';
 import 'package:mobile/features/statistics/presentation/widgets/wpm_chart_area.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 import '../../../text_management/domain/entities/text.dart';
@@ -66,7 +65,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               create: (context) => GetIt.instance.get<WPMGraphCubit>(
                 param1: statistic.student,
               ),
-              child: WPMChartArea(),
+              child: WPMChartArea(isOnCorrectionLevel: true),
             ),
             SizedBox(height: 20),
             ResultCard(title: 'Results'),
