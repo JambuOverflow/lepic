@@ -62,6 +62,4 @@ We thank our SCORE clients, who had this idea and helped us throughout the entir
 * [Letícia Celeste](http://www.pesquisar.unb.br/professores/view/5663)
 * [Luciana Mendonça Alves](http://somos.ufmg.br/professor/luciana-mendonca-alves)
 
-Click [here](LINK AQUI) to see the report about the project.
-
 [![UFPA](docs/logo_ufpa_github_footer.png)](https://portal.ufpa.br/ "Visite o site da UFPA")
