@@ -16,9 +16,12 @@ class MyText extends Equatable {
     this.localId,
   });
 
-  int get numberOfWords {
-    return body.split(" ").length;
-  }
+  int get numberOfWords => splitted.length;
+
+  List<String> get splitted => body
+      .split(RegExp("\\s|\"\\n\"", multiLine: true))
+      .where((element) => element != '')
+      .toList();
 
   @override
   List<Object> get props => [title, body, localId, studentId, creationDate];
