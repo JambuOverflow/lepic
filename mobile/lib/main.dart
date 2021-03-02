@@ -1,14 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:moor/moor.dart';
 
 import 'core/presentation/bloc/bottom_navigation_bloc.dart';
-import 'core/data/database_populate_demo.dart';
 import 'core/presentation/pages/route_generator.dart';
-import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
 import 'injection_containers/injection_container.dart';
@@ -20,7 +16,6 @@ void main() async {
   moorRuntimeOptions.defaultSerializer = UserSerializer();
   WidgetsFlutterBinding.ensureInitialized();
   setUpServiceLocator();
-  populateDatabaseWithExample();
 
   final authBloc = await GetIt.instance<AuthBloc>();
   authBloc.add(AppStartedEvent());

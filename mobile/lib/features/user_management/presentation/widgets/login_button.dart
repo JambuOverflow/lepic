@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:mobile/core/data/database_populate_demo.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/login_form_bloc.dart';
@@ -52,9 +53,10 @@ class LoginButton extends StatelessWidget {
   }
 
   void _reactToLoginFormState(LoginFormState state, BuildContext context) {
-    if (state.status == FormzStatus.submissionSuccess)
+    if (state.status == FormzStatus.submissionSuccess) {
       BlocProvider.of<AuthBloc>(context).add(UserLoggedInEvent());
-    else if (state.status == FormzStatus.submissionFailure)
+      populateDatabaseWithExample();
+    } else if (state.status == FormzStatus.submissionFailure)
       Scaffold.of(context).showServerFailureSnackBar(context);
   }
 

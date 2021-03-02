@@ -22,27 +22,18 @@ void populateDatabaseWithExample() async {
 
   final ClassroomModelsCompanion classroom1 = ClassroomModelsCompanion(
       grade: Value(1),
-      name: Value("A"),
+      name: Value("Example"),
       tutorId: Value(user.localId),
       deleted: Value(false),
       clientLastUpdated: Value(DateTime(2020)),
       lastUpdated: Value(DateTime(2020)));
 
-  final ClassroomModelsCompanion classroom2 = ClassroomModelsCompanion(
-      grade: Value(1),
-      name: Value("B"),
-      deleted: Value(false),
-      tutorId: Value(user.localId),
-      clientLastUpdated: Value(DateTime(2020)),
-      lastUpdated: Value(DateTime(2020)));
+  ClassroomModel classroom;
+  try {
+    classroom = await database.getClassroom(1);
+  } on Exception {}
 
-  final ClassroomModelsCompanion classroom3 = ClassroomModelsCompanion(
-      grade: Value(2),
-      name: Value("A"),
-      deleted: Value(false),
-      tutorId: Value(user.localId),
-      clientLastUpdated: Value(DateTime(2020)),
-      lastUpdated: Value(DateTime(2020)));
+  if (classroom != null) return;
 
   final StudentModelsCompanion student1 = StudentModelsCompanion(
     firstName: Value("Paul"),
@@ -54,12 +45,6 @@ void populateDatabaseWithExample() async {
     firstName: Value("Vanessa"),
     lastName: Value("Isabel"),
     classroomId: Value(1),
-  );
-
-  final StudentModelsCompanion student3 = StudentModelsCompanion(
-    firstName: Value("Victor"),
-    lastName: Value("Singer"),
-    classroomId: Value(2),
   );
 
   Future<String> loadAsset(String name) async {
@@ -158,11 +143,8 @@ void populateDatabaseWithExample() async {
   );
 
   await database.insertClassroom(classroom1);
-  await database.insertClassroom(classroom3);
-  await database.insertClassroom(classroom2);
   await database.insertStudent(student1);
   await database.insertStudent(student2);
-  await database.insertStudent(student3);
   await database.insertText(text1);
   await database.insertText(text2);
   await database.insertText(text3);
