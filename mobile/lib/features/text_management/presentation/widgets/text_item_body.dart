@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/text_management/domain/entities/text.dart';
-import 'package:mobile/features/text_management/presentation/pages/assignment_detail_page.dart';
+
+import '../../domain/entities/text.dart';
 
 class TextItemBody extends StatefulWidget {
   final int index;
   final MyText text;
+  final Function onTap;
 
-  const TextItemBody({Key key, @required this.text, @required this.index})
-      : super(key: key);
+  const TextItemBody({
+    Key key,
+    @required this.text,
+    @required this.index,
+    @required this.onTap,
+  }) : super(key: key);
   @override
   _TextItemBodyState createState() => _TextItemBodyState();
 }
@@ -22,7 +27,7 @@ class _TextItemBodyState extends State<TextItemBody> {
         children: [
           Text(
             widget.text.body,
-            maxLines: 4,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.justify,
             style: TextStyle(fontSize: 15),
@@ -31,10 +36,8 @@ class _TextItemBodyState extends State<TextItemBody> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FlatButton(
-                visualDensity: VisualDensity(horizontal: -3, vertical: -3),
-                textColor: Colors.black,
-                child: Text('View'),
-                onPressed: () {},
+                child: Text('VIEW'),
+                onPressed: widget.onTap,
               ),
             ],
           ),
