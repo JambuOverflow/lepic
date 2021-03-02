@@ -27,7 +27,7 @@ class _TextItemTitleState extends State<TextItemTitle> {
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: Colors.blueGrey[900]),
+      decoration: BoxDecoration(color: Colors.black87),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
