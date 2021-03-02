@@ -163,9 +163,9 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   }
 
   void _buildIndexToWordMap(MyText text) {
-    final splittedText = text.body.split(" ");
+    final splittedText = text.splitted;
 
-    for (int i = 0; i < splittedText.length; i++)
+    for (int i = 0; i < text.numberOfWords; i++)
       indexToWord[i] = splittedText[i];
   }
 }
