@@ -1129,7 +1129,8 @@ class $StudentModelsTable extends StudentModels
       _classroomId ??= _constructClassroomId();
   GeneratedIntColumn _constructClassroomId() {
     return GeneratedIntColumn('classroom_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES classroom_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES classroom_models(local_id) ON DELETE CASCADE');
   }
 
   @override
@@ -1509,7 +1510,8 @@ class $TextModelsTable extends TextModels
   GeneratedIntColumn get studentId => _studentId ??= _constructStudentId();
   GeneratedIntColumn _constructStudentId() {
     return GeneratedIntColumn('student_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES student_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES student_models(local_id) ON DELETE CASCADE');
   }
 
   @override
@@ -1817,7 +1819,8 @@ class $MistakeModelsTable extends MistakeModels
       _correctionId ??= _constructCorrectionId();
   GeneratedIntColumn _constructCorrectionId() {
     return GeneratedIntColumn('correction_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES correction_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES correction_models(local_id) ON DELETE CASCADE');
   }
 
   @override
@@ -2195,7 +2198,8 @@ class $AudioModelsTable extends AudioModels
   GeneratedIntColumn get textId => _textId ??= _constructTextId();
   GeneratedIntColumn _constructTextId() {
     return GeneratedIntColumn('text_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES text_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES text_models(local_id) ON DELETE CASCADE');
   }
 
   final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
@@ -2204,7 +2208,8 @@ class $AudioModelsTable extends AudioModels
   GeneratedIntColumn get studentId => _studentId ??= _constructStudentId();
   GeneratedIntColumn _constructStudentId() {
     return GeneratedIntColumn('student_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES student_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES student_models(local_id) ON DELETE CASCADE');
   }
 
   @override
@@ -2453,7 +2458,8 @@ class $CorrectionModelsTable extends CorrectionModels
   GeneratedIntColumn get textId => _textId ??= _constructTextId();
   GeneratedIntColumn _constructTextId() {
     return GeneratedIntColumn('text_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES text_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES text_models(local_id) ON DELETE CASCADE');
   }
 
   final VerificationMeta _studentIdMeta = const VerificationMeta('studentId');
@@ -2462,7 +2468,8 @@ class $CorrectionModelsTable extends CorrectionModels
   GeneratedIntColumn get studentId => _studentId ??= _constructStudentId();
   GeneratedIntColumn _constructStudentId() {
     return GeneratedIntColumn('student_id', $tableName, false,
-        $customConstraints: 'NOT NULL REFERENCES student_models(local_id)');
+        $customConstraints:
+            'NOT NULL REFERENCES student_models(local_id) ON DELETE CASCADE');
   }
 
   @override

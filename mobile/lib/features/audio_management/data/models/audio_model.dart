@@ -10,8 +10,8 @@ class AudioModels extends Table {
   IntColumn get audioDurationInSeconds => integer()();
   @JsonKey('text_id')
   IntColumn get textId =>
-      integer().customConstraint('NOT NULL REFERENCES text_models(local_id)')();
+      integer().customConstraint('NOT NULL REFERENCES text_models(local_id) ON DELETE CASCADE')();
   @JsonKey('student_id')
   IntColumn get studentId => integer()
-      .customConstraint('NOT NULL REFERENCES student_models(local_id)')();
+      .customConstraint('NOT NULL REFERENCES student_models(local_id) ON DELETE CASCADE')();
 }

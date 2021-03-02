@@ -8,6 +8,6 @@ class MistakeModels extends Table {
   TextColumn get commentary => text()();
   @JsonKey('correction_id')
   IntColumn get correctionId => integer()
-      .customConstraint('NOT NULL REFERENCES correction_models(local_id)')();
+      .customConstraint('NOT NULL REFERENCES correction_models(local_id) ON DELETE CASCADE')();
   
 }
