@@ -9,8 +9,10 @@ import 'package:mobile/core/use_cases/use_case.dart';
 import 'package:mobile/features/user_management/domain/use_cases/get_logged_in_user_use_case.dart';
 import 'package:moor/moor.dart';
 
+import 'dart:math';
 import 'core/presentation/pages/route_generator.dart';
 import 'features/class_management/presentation/bloc/classroom_bloc.dart';
+import 'features/text_correction/domain/entities/correction.dart';
 import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/domain/entities/user.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
@@ -203,22 +205,30 @@ void main() async {
   final Uint8List takeshiPot = await loadAudio("assets/audios/pot.ogg");
   final Uint8List takeshiTurtle = await loadAudio("assets/audios/turtle.ogg");
 
+  final Uint8List isabelaGrasshopper =
+      await loadAudio("assets/audios/ant_isabela.ogg");
+  final Uint8List isabelaFox = await loadAudio("assets/audios/fox_isabela.ogg");
+  final Uint8List isabelaLion =
+      await loadAudio("assets/audios/lion_isabela.ogg");
+  final Uint8List isabelaPot = await loadAudio("assets/audios/pot_isabela.ogg");
+  final Uint8List isabelaTurtle =
+      await loadAudio("assets/audios/turtle_isabela.ogg");
+
   final AudioModel takaGrasshopperAudio = AudioModel(
     audioData: takeshiGrasshopper,
     localId: 1,
     title: "Grasshopper",
     audioDurationInSeconds: 59,
-    studentId: 1, 
+    studentId: 1,
     textId: 7,
-
   );
 
   final AudioModel takeshiFoxAudio = AudioModel(
     audioData: takeshiFox,
     localId: 2,
     title: "The Fox and The Grapes",
-    audioDurationInSeconds: 59,
-    studentId: 1, 
+    audioDurationInSeconds: 84,
+    studentId: 1,
     textId: 3,
   );
 
@@ -226,8 +236,8 @@ void main() async {
     audioData: takeshiLion,
     localId: 3,
     title: "Lion's Share",
-    audioDurationInSeconds: 59,
-    studentId: 1, 
+    audioDurationInSeconds: 87,
+    studentId: 1,
     textId: 5,
   );
 
@@ -235,8 +245,8 @@ void main() async {
     audioData: takeshiPot,
     localId: 4,
     title: "The Earthen Pot and The Brass Pot",
-    audioDurationInSeconds: 87,
-    studentId: 1, 
+    audioDurationInSeconds: 63,
+    studentId: 1,
     textId: 1,
   );
 
@@ -244,12 +254,55 @@ void main() async {
     audioData: takeshiTurtle,
     localId: 5,
     title: "Tortoise and The Hare",
-    audioDurationInSeconds: 84,
-    studentId: 1, 
+    audioDurationInSeconds: 59,
+    studentId: 1,
     textId: 9,
   );
 
- 
+  final AudioModel isabelaGrasshopperAudio = AudioModel(
+    audioData: isabelaGrasshopper,
+    localId: 6,
+    title: "Grasshopper",
+    audioDurationInSeconds: 95,
+    studentId: 2,
+    textId: 8,
+  );
+
+  final AudioModel isabelaFoxAudio = AudioModel(
+    audioData: isabelaFox,
+    localId: 7,
+    title: "The Fox and The Grapes",
+    audioDurationInSeconds: 118,
+    studentId: 2,
+    textId: 4,
+  );
+
+  final AudioModel isabelaLionAudio = AudioModel(
+    audioData: isabelaLion,
+    localId: 8,
+    title: "Lion's Share",
+    audioDurationInSeconds: 131,
+    studentId: 2,
+    textId: 6,
+  );
+
+  final AudioModel isabelaPotAudio = AudioModel(
+    audioData: isabelaPot,
+    localId: 9,
+    title: "The Earthen Pot and The Brass Pot",
+    audioDurationInSeconds: 98,
+    studentId: 2,
+    textId: 2,
+  );
+
+  final AudioModel isabelaTurtleAudio = AudioModel(
+    audioData: isabelaTurtle,
+    localId: 10,
+    title: "Tortoise and The Hare",
+    audioDurationInSeconds: 136,
+    studentId: 2,
+    textId: 10,
+  );
 
   await database.insertAudio(takeshiTurtleAudio);
   await database.insertAudio(takeshiPotAudio);
@@ -257,7 +310,85 @@ void main() async {
   await database.insertAudio(takeshiLionAudio);
   await database.insertAudio(takeshiFoxAudio);
 
+  await database.insertAudio(isabelaTurtleAudio);
+  await database.insertAudio(isabelaPotAudio);
+  await database.insertAudio(isabelaGrasshopperAudio);
+  await database.insertAudio(isabelaLionAudio);
+  await database.insertAudio(isabelaFoxAudio);
 
+  //takeshi corrections
+  final CorrectionModel correction1 =
+      CorrectionModel(localId: 1, textId: 1, studentId: 1);
+  final CorrectionModel correction2 =
+      CorrectionModel(localId: 2, textId: 3, studentId: 1);
+  final CorrectionModel correction3 =
+      CorrectionModel(localId: 3, textId: 5, studentId: 1);
+  final CorrectionModel correction4 =
+      CorrectionModel(localId: 4, textId: 7, studentId: 1);
+  final CorrectionModel correction5 =
+      CorrectionModel(localId: 5, textId: 9, studentId: 1);
+
+  await database.insertCorrection(correction1);
+  await database.insertCorrection(correction2);
+  await database.insertCorrection(correction3);
+  await database.insertCorrection(correction4);
+  await database.insertCorrection(correction5);
+
+  final List<int> mistakeErrorList = [130, 220, 75, 1];
+
+  var mistakeLocalId = 0;
+  for (var i = 1; i < 5; i++) {
+    final int numErrors = mistakeErrorList[i - 1];
+    var list = new List<int>.generate(numErrors, (int index) => index);
+    list.shuffle();
+    for (var j = 0;j < numErrors; j++) {
+      final MistakeModel mistakeModel = MistakeModel(
+        commentary: "",
+        localId: mistakeLocalId,
+        wordIndex: list[j],
+        correctionId: i,
+      );
+      await database.insertMistake(mistakeModel);
+      mistakeLocalId += 1;
+    }
+  }
+
+  final CorrectionModel correction6 =
+      CorrectionModel(localId: 6, textId: 2, studentId: 2);
+  final CorrectionModel correction7 =
+      CorrectionModel(localId: 7, textId: 4, studentId: 2);
+  final CorrectionModel correction8 =
+      CorrectionModel(localId: 8, textId: 6, studentId: 2);
+  final CorrectionModel correction9 =
+      CorrectionModel(localId: 9, textId: 8, studentId: 2);
+  final CorrectionModel correction10 =
+      CorrectionModel(localId: 10, textId: 10, studentId: 2);
+
+    await database.insertCorrection(correction6);
+  await database.insertCorrection(correction7);
+  await database.insertCorrection(correction8);
+  await database.insertCorrection(correction9);
+  await database.insertCorrection(correction10);
+
+  final List<int> mistakeErrorList2 = [3, 1, 2, 1, 2];
+
+  for (var i = 6; i < 11; i++) {
+    final int numErrors = mistakeErrorList2[i - 6];
+    var list = new List<int>.generate(130, (int index) => index);
+    list.shuffle();
+    for (var j = 0;j < numErrors; j++) {
+      final MistakeModel mistakeModel = MistakeModel(
+        commentary: "",
+        localId: mistakeLocalId,
+        wordIndex: list[j],
+        correctionId: i,
+      );
+      await database.insertMistake(mistakeModel);
+      mistakeLocalId += 1;
+    }
+  }
+
+  
   final authBloc = await GetIt.instance<AuthBloc>();
   authBloc.add(AppStartedEvent());
 
