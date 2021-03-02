@@ -46,7 +46,27 @@ class _WPMChartAreaState extends State<WPMChartArea> {
   Widget build(BuildContext context) {
     return BlocBuilder<WPMGraphCubit, LineGraphState>(
       builder: (context, state) {
-        if (state is LineGraphLoaded) {
+        if (state is LineGraphError) {
+          return AspectRatio(
+            aspectRatio: 1.4,
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color: Colors.black87,
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'At least two readings are required for the comparative graph',
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else if (state is LineGraphLoaded) {
           if (correctOnly) {
             maxY = state.correctWordsReadPerMinuteResults.reduce(max);
             minY = state.correctWordsReadPerMinuteResults.reduce(min);
