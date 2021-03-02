@@ -27,7 +27,7 @@ LazyDatabase openConnection() {
     final db = VmDatabase(file, setup: (db) {
       db.execute('PRAGMA foreign_keys = ON');
     });
-    if (IS_IN_DEVELOPMENT) await file.delete();
+    if (RESET_DB_ON_START) await file.delete();
 
     //population database
 
