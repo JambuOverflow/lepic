@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/features/text_correction/presentation/widgets/text_mistake.dart';
+import 'package:get_it/get_it.dart';
 
+import '../../../features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'account_page.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 import '../widgets/home_preview.dart';
 import '../../../features/class_management/presentation/pages/classrooms_page.dart';
-import '../../../features/text_management/presentation/pages/student_texts_page.dart';
 import '../bloc/bottom_navigation_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,7 +27,10 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
               case 0:
                 return HomePreview();
               case 1:
-                return ClassroomsPage();
+                return BlocProvider<ClassroomBloc>(
+                  create: (_) => GetIt.instance<ClassroomBloc>(),
+                  child: ClassroomsPage(),
+                );
               case 2:
                 return AccountPage();
               default:
