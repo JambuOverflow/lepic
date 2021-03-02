@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_management/presentation/bloc/assignment_status_cubit.dart';
 
 import '../../../audio_management/presentation/bloc/player_cubit.dart';
 import '../../../audio_management/presentation/pages/audio_page.dart';
@@ -24,10 +25,19 @@ class AudioPreviewCard extends StatelessWidget {
   }
 }
 
-class _AvailableAudioCard extends StatelessWidget {
-  const _AvailableAudioCard({
-    Key key,
-  }) : super(key: key);
+class _AvailableAudioCard extends StatefulWidget {
+  @override
+  __AvailableAudioCardState createState() => __AvailableAudioCardState();
+}
+
+class __AvailableAudioCardState extends State<_AvailableAudioCard> {
+  AssignmentStatusCubit statusCubit;
+
+  @override
+  void initState() {
+    statusCubit = BlocProvider.of<AssignmentStatusCubit>(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,40 +47,49 @@ class _AvailableAudioCard extends StatelessWidget {
       titleColor: Colors.white,
       title: 'AUDIO',
       content: [
-        InkWell(
-          onTap: () => openBottomSheet(context),
-          child: BlocBuilder<PlayerCubit, PlayerState>(
-            builder: (context, state) {
-              final playerBloc = BlocProvider.of<PlayerCubit>(context);
-              return Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(color: Colors.black87),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16,
-                        right: 16,
-                        bottom: 8,
-                      ),
-                      child: AudioPreviewPlayer(playerBloc: playerBloc),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FlatButton(
-                          child: Text('EDIT'),
-                          onPressed: () => openBottomSheet(context),
+        BlocBuilder<AssignmentStatusCubit, AssignmentStatus>(
+          builder: (context, state) {
+            final bool editable =
+                state.index <= AssignmentStatus.waiting_correction.index;
+
+            return InkWell(
+              onTap: editable ? () => openBottomSheet(context) : null,
+              child: BlocBuilder<PlayerCubit, PlayerState>(
+                builder: (context, state) {
+                  final playerBloc = BlocProvider.of<PlayerCubit>(context);
+                  return Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(color: Colors.black87),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 16,
+                            right: 16,
+                            bottom: 8,
+                          ),
+                          child: AudioPreviewPlayer(playerBloc: playerBloc),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            FlatButton(
+                              child: Text('EDIT'),
+                              onPressed: editable
+                                  ? () => openBottomSheet(context)
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            );
+          },
         ),
       ],
     );
