@@ -25,25 +25,26 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
           if (bottomNavigationBloc.state is CurrentPageIndexChanged) {
             switch (bottomNavigationBloc.currentPageIndex) {
               case 0:
-                return BlocProvider<ClassroomBloc>(
-                  create: (_) => GetIt.instance<ClassroomBloc>(),
-                  child: ClassroomsPage(),
-                );
+                return instantiateClassroomPage();
               case 1:
                 return AccountPage();
               default:
-                return BlocProvider<ClassroomBloc>(
-                  create: (_) => GetIt.instance<ClassroomBloc>(),
-                  child: ClassroomsPage(),
-                );
+                return instantiateClassroomPage();
             }
           } else {
-            return HomePreview();
+            return instantiateClassroomPage();
           }
         },
       ),
       bottomNavigationBar: CustomBottomNavigationBar(),
       // drawer: DrawerOverlay(),
+    );
+  }
+
+  BlocProvider<ClassroomBloc> instantiateClassroomPage() {
+    return BlocProvider<ClassroomBloc>(
+      create: (_) => GetIt.instance<ClassroomBloc>(),
+      child: ClassroomsPage(),
     );
   }
 }
