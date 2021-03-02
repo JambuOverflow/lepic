@@ -25,11 +25,6 @@ class _CorrectionViewPageState extends State<CorrectionViewPage> {
       appBar: BackgroundAppBar(
         title: 'Correction',
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Update'),
-        icon: Icon(Icons.edit),
-        onPressed: null,
-      ),
       body: BlocBuilder<CorrectionBloc, CorrectionState>(
         builder: (_, state) {
           return Scrollbar(
@@ -66,9 +61,9 @@ class _CorrectionViewPageState extends State<CorrectionViewPage> {
   }
 
   RichText _buildTextSpanWithSplittedText(BuildContext context) {
-    final text = bloc.text.body;
+    final text = bloc.text;
 
-    final splittedText = text.split(" ");
+    final splittedText = text.splitted;
     final spans = List<TextSpan>();
 
     for (int i = 0; i <= splittedText.length - 1; i++) {

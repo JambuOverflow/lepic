@@ -32,7 +32,7 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   final Map<int, Mistake> indexToMistakes = {};
   final Map<int, String> indexToWord = {};
 
-  bool get hasCorrection => state is CorrectionLoaded && mistakes.isNotEmpty;
+  bool get hasCorrection => state is CorrectionLoaded;
 
   List<Mistake> get mistakes => indexToMistakes.values.toList();
   Correction get _currentCorrection => Correction(
@@ -163,9 +163,9 @@ class CorrectionBloc extends Bloc<CorrectionEvent, CorrectionState> {
   }
 
   void _buildIndexToWordMap(MyText text) {
-    final splittedText = text.body.split(" ");
+    final splittedText = text.splitted;
 
-    for (int i = 0; i < splittedText.length; i++)
+    for (int i = 0; i < text.numberOfWords; i++)
       indexToWord[i] = splittedText[i];
   }
 }

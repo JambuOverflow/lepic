@@ -18,6 +18,8 @@ class TextEditingPage extends StatelessWidget {
 
   TextEditingPage({Key key, this.textToEdit}) : super(key: key);
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom == 0;
@@ -28,8 +30,10 @@ class TextEditingPage extends StatelessWidget {
       ),
       floatingActionButton: DoneFloatingActionButton(
         onPressed: () {
-          _addOrUpdateText(context);
-          Navigator.of(context).pop();
+          if (formKey.currentState.validate()) {
+            _addOrUpdateText(context);
+            Navigator.of(context).pop();
+          }
         },
       ),
       body: Scrollbar(
@@ -39,24 +43,27 @@ class TextEditingPage extends StatelessWidget {
           padding: isKeyboardOpen
               ? const EdgeInsets.fromLTRB(0, 8, 0, 80)
               : const EdgeInsets.fromLTRB(0, 8, 0, 0),
-          child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 32, right: 32),
-                child: TextTitleField(
-                  titleController: _titleController,
-                  title: textToEdit?.title,
+          child: Form(
+            key: formKey,
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 32, right: 32),
+                  child: TextTitleField(
+                    titleController: _titleController,
+                    title: textToEdit?.title,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(left: 32, right: 32),
-                child: TextBodyField(
-                  textController: _textController,
-                  body: textToEdit?.body,
+                SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.only(left: 32, right: 32),
+                  child: TextBodyField(
+                    textController: _textController,
+                    body: textToEdit?.body,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

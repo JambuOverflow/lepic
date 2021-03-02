@@ -11,7 +11,7 @@ class StudentModels extends Table {
   TextColumn get lastName => text()();
   @JsonKey('classroom_id')
   IntColumn get classroomId => integer()
-      .customConstraint('NOT NULL REFERENCES classroom_models(local_id)')();
+      .customConstraint('NOT NULL REFERENCES classroom_models(local_id) ON DELETE CASCADE')();
 }
 
 Student studentModelToEntity(StudentModel model) {

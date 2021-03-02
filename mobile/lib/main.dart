@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -27,10 +29,9 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<BottomNavigationBloc>(
-            create: (_) => GetIt.instance<BottomNavigationBloc>()),
+          create: (_) => GetIt.instance<BottomNavigationBloc>(),
+        ),
         BlocProvider<AuthBloc>(create: (_) => authBloc),
-        BlocProvider<ClassroomBloc>(
-            create: (_) => GetIt.instance<ClassroomBloc>()),
       ],
       child: MyApp(),
     ),

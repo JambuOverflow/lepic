@@ -5,31 +5,44 @@ import 'package:mobile/features/class_management/presentation/bloc/classroom_blo
 
 import 'classroom_form.dart';
 
-class CreateClassroomDialog extends StatelessWidget {
+class CreateClassroomDialog extends StatefulWidget {
+  CreateClassroomDialog({Key key}) : super(key: key);
+
+  @override
+  _CreateClassroomDialogState createState() => _CreateClassroomDialogState();
+}
+
+class _CreateClassroomDialogState extends State<CreateClassroomDialog> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _gradeController = TextEditingController();
 
-  CreateClassroomDialog({Key key}) : super(key: key);
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: ClassroomForm(
-        nameController: _nameController,
-        gradeController: _gradeController,
+      content: Form(
+        key: formKey,
+        child: ClassroomForm(
+          shouldClear: true,
+          nameController: _nameController,
+          gradeController: _gradeController,
+        ),
       ),
       actionsPadding: EdgeInsets.only(right: 8),
       actions: <Widget>[
         CancelButton(),
         FlatButton(
           onPressed: () {
-            BlocProvider.of<ClassroomBloc>(context).add(
-              CreateClassroomEvent(
-                name: _nameController.text,
-                grade: _gradeController.text,
-              ),
-            );
-            Navigator.pop(context);
+            if (formKey.currentState.validate()) {
+              BlocProvider.of<ClassroomBloc>(context).add(
+                CreateClassroomEvent(
+                  name: _nameController.text,
+                  grade: _gradeController.text,
+                ),
+              );
+              Navigator.pop(context);
+            }
           },
           child: Text('CREATE'),
         ),

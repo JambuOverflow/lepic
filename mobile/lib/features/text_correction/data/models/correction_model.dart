@@ -5,8 +5,8 @@ class CorrectionModels extends Table {
   IntColumn get localId => integer().autoIncrement()();
   @JsonKey('text_id')
   IntColumn get textId => integer()
-      .customConstraint('NOT NULL REFERENCES text_models(local_id)')();
+      .customConstraint('NOT NULL REFERENCES text_models(local_id) ON DELETE CASCADE')();
   @JsonKey('student_id')
   IntColumn get studentId => integer()
-      .customConstraint('NOT NULL REFERENCES student_models(local_id)')();
+      .customConstraint('NOT NULL REFERENCES student_models(local_id) ON DELETE CASCADE')();
 }
