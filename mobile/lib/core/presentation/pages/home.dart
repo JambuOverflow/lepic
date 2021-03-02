@@ -25,16 +25,17 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
           if (bottomNavigationBloc.state is CurrentPageIndexChanged) {
             switch (bottomNavigationBloc.currentPageIndex) {
               case 0:
-                return HomePreview();
-              case 1:
                 return BlocProvider<ClassroomBloc>(
                   create: (_) => GetIt.instance<ClassroomBloc>(),
                   child: ClassroomsPage(),
                 );
-              case 2:
+              case 1:
                 return AccountPage();
               default:
-                return HomePreview();
+                return BlocProvider<ClassroomBloc>(
+                  create: (_) => GetIt.instance<ClassroomBloc>(),
+                  child: ClassroomsPage(),
+                );
             }
           } else {
             return HomePreview();

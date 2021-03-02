@@ -25,7 +25,7 @@ class StudentDetailPage extends StatelessWidget {
 
         return Scaffold(
           body: DefaultTabController(
-            length: 3,
+            length: 2,
             child: NestedScrollView(
               headerSliverBuilder:
                   (BuildContext context, bool innerBoxIsScrolled) {
@@ -46,7 +46,6 @@ class StudentDetailPage extends StatelessWidget {
                       indicatorPadding: EdgeInsets.only(bottom: 2),
                       indicatorColor: Colors.white,
                       tabs: [
-                        Tab(text: 'OVERVIEW'),
                         Tab(text: 'TEXTS'),
                         Tab(text: 'STATISTICS'),
                       ],
@@ -58,7 +57,6 @@ class StudentDetailPage extends StatelessWidget {
                 create: (context) => GetIt.instance<TextBloc>(param1: student),
                 child: TabBarView(
                   children: <Widget>[
-                    StudentDetailOverviewTab(),
                     StudentTextsPage(),
                     StudentStatisticsTab(student: student),
                   ],

@@ -16,11 +16,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
           currentIndex: bottomNavigationBloc.currentPageIndex,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              activeIcon: Icon(Icons.home_rounded),
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
               activeIcon: Icon(Icons.group_rounded),
               icon: Icon(Icons.group_outlined),
               label: 'Classrooms',
