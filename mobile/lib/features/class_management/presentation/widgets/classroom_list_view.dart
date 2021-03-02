@@ -16,18 +16,23 @@ class ClassroomListView extends StatelessWidget {
     return Column(
       children: <Widget>[
         Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: bloc.classrooms.length,
-            itemBuilder: (_, index) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: BlocProvider(
-                create: (context) => GetIt.instance<StudentBloc>(
-                  param1: bloc.classrooms[index],
+          child: BlocBuilder<ClassroomBloc, ClassroomState>(
+            builder: (context, state) {
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: bloc.classrooms.length,
+                itemBuilder: (_, index) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: BlocProvider(
+                    create: (context) => GetIt.instance<StudentBloc>(
+                      param1: bloc.classrooms[index],
+                    ),
+                    child: ClassroomItem(index: index),
+                  ),
                 ),
-                child: ClassroomItem(index: index),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ],
