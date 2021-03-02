@@ -5,7 +5,6 @@ import 'package:mobile/core/presentation/bloc/bottom_navigation_bloc.dart';
 import 'package:moor/moor.dart';
 
 import 'core/presentation/pages/route_generator.dart';
-import 'features/class_management/presentation/bloc/classroom_bloc.dart';
 import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
 import 'injection_containers/injection_container.dart';
@@ -25,10 +24,9 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<BottomNavigationBloc>(
-            create: (_) => GetIt.instance<BottomNavigationBloc>()),
+          create: (_) => GetIt.instance<BottomNavigationBloc>(),
+        ),
         BlocProvider<AuthBloc>(create: (_) => authBloc),
-        BlocProvider<ClassroomBloc>(
-            create: (_) => GetIt.instance<ClassroomBloc>()),
       ],
       child: MyApp(),
     ),
