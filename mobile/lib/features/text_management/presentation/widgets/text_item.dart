@@ -93,7 +93,7 @@ class _TextItemState extends State<TextItem> {
         ),
       ],
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Card(
           elevation: 4,
           child: InkWell(
