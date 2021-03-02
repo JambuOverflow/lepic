@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
-import 'package:mobile/features/text_management/presentation/bloc/single_text_cubit.dart';
 import '../../../audio_management/presentation/bloc/audio_bloc.dart';
 import '../widgets/assignment_contextual_floating_action_button.dart';
 import '../widgets/audio_preview_card.dart';
@@ -30,13 +30,13 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
 
   TextBloc textBloc;
   AudioBloc audioBloc;
-  SingleTextCubit textCubit;
 
   Student student;
 
   @override
   void initState() {
     textBloc = BlocProvider.of<TextBloc>(context);
+    audioBloc = BlocProvider.of<AudioBloc>(context);
 
     student = textBloc.student;
     super.initState();

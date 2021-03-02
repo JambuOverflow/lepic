@@ -34,6 +34,8 @@ class _TextItemState extends State<TextItem> {
   CorrectionBloc correctionBloc;
   StatisticBloc statisticBloc;
   SingleTextCubit textCubit;
+  AssignmentStatusCubit assignment;
+  PlayerCubit player;
 
   Student student;
 
@@ -71,7 +73,8 @@ class _TextItemState extends State<TextItem> {
           ),
         ),
         BlocProvider(
-          create: (_) => PlayerCubit(audioBloc),
+          lazy: false,
+          create: (_) => player = PlayerCubit(audioBloc),
         ),
         BlocProvider(
           lazy: false,
@@ -82,7 +85,7 @@ class _TextItemState extends State<TextItem> {
         ),
         BlocProvider(
           lazy: false,
-          create: (_) => AssignmentStatusCubit(
+          create: (_) => assignment = AssignmentStatusCubit(
             audioBloc: audioBloc,
             textBloc: textBloc,
             correctionBloc: correctionBloc,
@@ -90,39 +93,32 @@ class _TextItemState extends State<TextItem> {
         ),
       ],
       child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Card(
-        elevation: 4,
-        child: GestureDetector(
-          child: Column(
-            children: [
-              TextItemTitle(title: text.title, subtitle: text.numberOfWords),
-              TextItemBody(
-                text: text,
-              ),
-            ],
-          ),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => BlocProvider.value(
-                value: bloc,
-                child: AssigmentDetailPage(textIndex: index),
-              ),
-              subtitle: Hero(
-                tag: 'body_${text.localId}',
-                child: Text(
-                  text.body,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Card(
+          elevation: 4,
+          child: GestureDetector(
+            child: Column(
+              children: [
+                TextItemTitle(index: widget.textIndex),
+                TextItemBody(text: text, index: widget.textIndex),
+              ],
+            ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: textBloc),
+                    BlocProvider.value(value: audioBloc),
+                    BlocProvider.value(value: audioBloc),
+                    BlocProvider.value(value: correctionBloc),
+                    BlocProvider.value(value: statisticBloc),
+                    BlocProvider.value(value: textCubit),
+                    BlocProvider.value(value: assignment),
+                    BlocProvider.value(value: player),
+                  ],
+                  child: AssigmentDetailPage(textIndex: widget.textIndex),
                 ),
               ),
-              trailing: Icon(Icons.arrow_forward_ios)),
-        ),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => BlocProvider.value(
-              value: textBloc,
-              child: AssigmentDetailPage(textIndex: widget.textIndex),
             ),
           ),
         ),
