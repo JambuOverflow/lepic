@@ -38,8 +38,7 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
                 padding: EdgeInsets.all(6),
                 itemCount: _bloc.texts.length,
                 itemBuilder: (context, index) {
-                  final reverseIndex = _bloc.texts.length - 1 - index;
-                  return TextItem(textIndex: reverseIndex);
+                  return TextItem(textIndex: index);
                 },
               );
           } else
