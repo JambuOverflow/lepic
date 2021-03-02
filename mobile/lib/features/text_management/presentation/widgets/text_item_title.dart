@@ -1,84 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/text_management/domain/entities/text.dart';
+import 'package:mobile/features/text_management/presentation/bloc/assignment_status_cubit.dart';
+import 'package:intl/intl.dart';
+import 'package:mobile/features/text_management/presentation/bloc/text_bloc.dart';
 
-class TextItemTitle extends StatelessWidget {
-  final String title;
-  final int subtitle;
+import 'audio_status_text.dart';
+import 'correction_status_text.dart';
+
+class TextItemTitle extends StatefulWidget {
+  final int index;
   const TextItemTitle({
     Key key,
-    @required this.title,
-    @required this.subtitle,
+    @required this.index,
   }) : super(key: key);
 
   @override
+  _TextItemTitleState createState() => _TextItemTitleState();
+}
+
+class _TextItemTitleState extends State<TextItemTitle> {
+  @override
   Widget build(BuildContext context) {
+    final text = BlocProvider.of<TextBloc>(context).texts[widget.index];
+    final date = _getFormattedDate(text);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(color: Colors.blueGrey[900]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            visualDensity: VisualDensity(vertical: -1.5),
-            dense: true,
-            title: Text(
-              '10/08/1999',
-              style: TextStyle(color: Colors.white70, fontSize: 12),
-            ),
-            subtitle: Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            trailing: Icon(Icons.timelapse, size: 28, color: Colors.white),
+          BlocBuilder<AssignmentStatusCubit, AssignmentStatus>(
+            builder: (_, state) {
+              return ListTile(
+                visualDensity: VisualDensity(vertical: -1.5),
+                dense: true,
+                title: Text(
+                  date,
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+                subtitle: Text(
+                  text.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                trailing: Icon(
+                    (state != AssignmentStatus.waiting_audio &&
+                            state != AssignmentStatus.waiting_correction)
+                        ? Icons.check_circle_outline
+                        : Icons.timelapse,
+                    size: 28,
+                    color: Colors.white),
+              );
+            },
           ),
-          AudioStatusText(title: 'Audio Status'),
-          CorrectionStatusText(title: 'Correction Status'),
+          AudioStatusText(),
+          CorrectionStatusText(),
           SizedBox(height: 10),
         ],
       ),
     );
   }
-}
 
-class AudioStatusText extends StatelessWidget {
-  final String title;
-  const AudioStatusText({
-    @required this.title,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(width: 15),
-        Icon(Icons.mic_none, size: 16, color: Colors.white70),
-        SizedBox(width: 6),
-        Text(title, style: TextStyle(color: Colors.white70)),
-      ],
-    );
-  }
-}
-
-class CorrectionStatusText extends StatelessWidget {
-  final String title;
-  const CorrectionStatusText({
-    @required this.title,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(width: 15),
-        Icon(Icons.rate_review_outlined, size: 16, color: Colors.white70),
-        SizedBox(width: 6),
-        Text(title, style: TextStyle(color: Colors.white70)),
-      ],
-    );
+  _getFormattedDate(MyText text) {
+    return DateFormat('dd/MM/yyyy').format(text.creationDate);
   }
 }
