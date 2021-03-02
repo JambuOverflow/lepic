@@ -36,12 +36,11 @@ With this information, the teachers will know which students need the most atten
 
 ## Getting Started
 
-// run locally
+Use your favorite IDE and follow these [instructions](https://flutter.dev/docs/get-started/test-drive?tab=vscode).
 
 ## Usage
 
-// apk
-// docker
+You can also use the apk by going into [actions](https://github.com/JambuOverflow/lepic/actions), choosing the latest build and downloading the `release.apk`.
 
 ## Contributing
 
@@ -61,7 +60,5 @@ We thank our SCORE clients, who had this idea and helped us throughout the entir
 * [Fabiana Mendes](http://fga.unb.br/fabiana.mendes)
 * [Letícia Celeste](http://www.pesquisar.unb.br/professores/view/5663)
 * [Luciana Mendonça Alves](http://somos.ufmg.br/professor/luciana-mendonca-alves)
-
-Click [here](LINK AQUI) to see the report about the project.
 
 [![UFPA](docs/logo_ufpa_github_footer.png)](https://portal.ufpa.br/ "Visite o site da UFPA")

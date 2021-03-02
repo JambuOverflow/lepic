@@ -11,6 +11,10 @@ import '../../../audio_management/presentation/bloc/player_cubit.dart';
 import '../bloc/assignment_status_cubit.dart';
 import '../../../text_correction/domain/use_cases/get_correction_use_case.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
+import 'package:mobile/features/text_management/presentation/widgets/statistics_preview_card.dart';
+import 'package:mobile/features/audio_management/presentation/bloc/audio_bloc.dart';
+import '../../../audio_management/presentation/bloc/audio_bloc.dart';
 import '../widgets/assignment_contextual_floating_action_button.dart';
 import '../widgets/audio_preview_card.dart';
 import '../widgets/correction_preview_cards.dart';
@@ -47,6 +51,8 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
   @override
   void initState() {
     textBloc = BlocProvider.of<TextBloc>(context);
+    audioBloc = BlocProvider.of<AudioBloc>(context);
+
     student = textBloc.student;
     super.initState();
   }
@@ -55,20 +61,13 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          lazy: false,
-          create: (_) => textCubit = SingleTextCubit(
-            textBloc: textBloc,
-            assignmentIndex: widget.textIndex,
-          ),
-        ),
-        BlocProvider(
-          lazy: false,
-          create: (_) => correctionBloc = GetIt.instance.get<CorrectionBloc>(
-            param1: textCubit,
-            param2: student,
+    return BlocBuilder<TextBloc, TextState>(
+      builder: (context, state) {
+        audioBloc.add(LoadAudioEvent());
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('${student.firstName} ${student.lastName}'),
+            bottom: AppBarBottomTextTitle(title: text.title),
           ),
         ),
         BlocProvider(
@@ -122,9 +121,9 @@ class _AssigmentDetailPageState extends State<AssigmentDetailPage> {
                 },
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

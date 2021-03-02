@@ -6,17 +6,21 @@ class ClassroomForm extends StatelessWidget {
     Key key,
     @required TextEditingController nameController,
     @required TextEditingController gradeController,
+    @required this.shouldClear,
   })  : _nameController = nameController,
         _gradeController = gradeController,
         super(key: key);
 
   final TextEditingController _nameController;
   final TextEditingController _gradeController;
+  final bool shouldClear;
 
   @override
   Widget build(BuildContext context) {
-    _nameController.clear();
-    _gradeController.clear();
+    if (shouldClear) {
+      _nameController.clear();
+      _gradeController.clear();
+    }
 
     return SingleChildScrollView(
       child: Column(
@@ -29,6 +33,10 @@ class ClassroomForm extends StatelessWidget {
               icon: Icon(Icons.group_rounded),
               labelText: 'Name',
             ),
+            validator: (value) {
+              if (value.isEmpty) return 'Please enter a name';
+              return null;
+            },
           ),
           SizedBox(height: 8),
           TextFormField(
@@ -43,6 +51,10 @@ class ClassroomForm extends StatelessWidget {
               icon: Icon(Icons.format_list_numbered),
               labelText: 'Grade',
             ),
+            validator: (value) {
+              if (value.isEmpty) return 'Please enter a grade';
+              return null;
+            },
           ),
         ],
       ),
