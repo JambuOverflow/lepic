@@ -49,12 +49,12 @@ class _TextItemTitleState extends State<TextItemTitle> {
                   ),
                 ),
                 trailing: Icon(
-                    (state != AssignmentStatus.waiting_audio &&
-                            state != AssignmentStatus.waiting_correction)
-                        ? Icons.check_circle_outline
-                        : Icons.timelapse,
-                    size: 28,
-                    color: Colors.white),
+                  (state.index >= AssignmentStatus.waiting_report.index)
+                      ? Icons.check_circle
+                      : Icons.timelapse,
+                  size: 28,
+                  color: Colors.white,
+                ),
               );
             },
           ),
