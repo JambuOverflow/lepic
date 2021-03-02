@@ -92,11 +92,12 @@ class _ClassroomItemState extends State<ClassroomItem> {
   Future _navigateToDetails() {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => BlocProvider.value(
-          value: studentBloc,
-          child: ClassroomDetailPage(
-            classroom: classroomBloc.classrooms[widget.index],
-          ),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: studentBloc),
+            BlocProvider.value(value: classroomBloc),
+          ],
+          child: ClassroomDetailPage(classroomIndex: widget.index),
         ),
       ),
     );
