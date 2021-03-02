@@ -2,8 +2,6 @@
 
 Supporting the assessment and management of reading fluency.
 
-[![Coverage Status](https://coveralls.io/repos/github/JambuOverflow/lepic/badge.svg?branch=develop)](https://coveralls.io/github/JambuOverflow/lepic?branch=develop)
-
 [![Build Status](https://travis-ci.com/JambuOverflow/lepic.svg?branch=develop)](https://travis-ci.com/JambuOverflow/lepic)
 
 ## About the Project
@@ -27,7 +25,10 @@ Then, the app automatically calculates these statistics:
 
 With this information, the teachers will know which students need the most attention in their reading.
 
-// some screenshots here
+![Imgur](https://i.imgur.com/N149vqXl.png)
+![Imgur](https://i.imgur.com/ZyQcBPNl.png)
+![Imgur](https://i.imgur.com/KB5ifZIl.png)
+![Imgur](https://i.imgur.com/3YK9xm2l.png)
 
 ### Built With
 
