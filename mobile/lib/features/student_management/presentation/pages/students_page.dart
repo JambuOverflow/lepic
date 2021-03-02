@@ -49,7 +49,7 @@ class _StudentsPageState extends State<StudentsPage> {
   StatelessWidget _buildStudentsList(StudentsLoaded state, StudentBloc _bloc) {
     if (state.students.isEmpty) {
       return EmptyListText(
-        'Nothing here 😢 Try creating students for your class!',
+        'No one is around 😢 Try creating students for your class!',
         fontSize: 16,
       );
     } else {

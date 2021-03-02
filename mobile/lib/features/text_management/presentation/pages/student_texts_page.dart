@@ -30,7 +30,7 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
           if (state is TextsLoaded) {
             if (state.texts.isEmpty)
               return EmptyListText(
-                'Nothing here 😢 Try creating texts for your class to read!',
+                'Nothing here 😢 Try creating texts for ${_bloc.student.firstName} to read!',
                 fontSize: 16,
               );
             else
