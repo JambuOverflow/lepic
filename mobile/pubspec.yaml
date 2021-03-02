@@ -66,6 +66,9 @@ dependencies:
   # Tests
   bloc_test: ^7.1.0
 
+  # Date Formatter  
+  intl: ^0.16.1
+
   # Database
   moor: ^3.4.0
   sqlite3_flutter_libs:

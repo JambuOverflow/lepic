@@ -25,7 +25,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, Response>> createUser(User user) async {
     if (await networkInfo.isConnected) {
-      return await _tryCreateUserAndCacheIt(user);
+      return await _tryCreateUser(user);
     } else {
       return Left(ServerFailure());
     }
@@ -115,10 +115,9 @@ class UserRepositoryImpl implements UserRepository {
     }
   }
 
-  Future<Either<Failure, Response>> _tryCreateUserAndCacheIt(User user) async {
+  Future<Either<Failure, Response>> _tryCreateUser(User user) async {
     try {
       final response = await remoteDataSource.createUser(_toModel(user));
-      await localDataSource.cacheUser(_toModel(user));
 
       return Right(response);
     } on ServerException {

@@ -11,5 +11,5 @@ class TextModels extends Table {
   DateTimeColumn get creationDate => dateTime()();
   @JsonKey("student_id")
   IntColumn get studentId => integer()
-      .customConstraint('NOT NULL REFERENCES student_models(local_id)')();
+      .customConstraint('NOT NULL REFERENCES student_models(local_id) ON DELETE CASCADE')();
 }

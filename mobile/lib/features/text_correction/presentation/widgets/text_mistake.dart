@@ -34,12 +34,10 @@ class _TextMistakeState extends State<TextMistake> {
   }
 
   RichText _buildTextSpanWithSplittedText(BuildContext context) {
-    final text = bloc.text.body;
-
-    final splittedText = text.split(" ");
+    final splittedText = bloc.text.splitted;
     final spans = List<TextSpan>();
 
-    for (int i = 0; i <= splittedText.length - 1; i++) {
+    for (int i = 0; i < bloc.text.numberOfWords; i++) {
       spans.add(_buildClickableWord(index: i));
       spans.add(_nonClickableSpace());
     }

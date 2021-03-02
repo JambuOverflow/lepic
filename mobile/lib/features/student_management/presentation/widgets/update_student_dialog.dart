@@ -6,37 +6,56 @@ import 'package:mobile/features/student_management/presentation/bloc/student_blo
 
 import 'student_form.dart';
 
-class UpdateStudentDialog extends StatelessWidget {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-
+class UpdateStudentDialog extends StatefulWidget {
   final Student student;
 
   UpdateStudentDialog({Key key, @required this.student}) : super(key: key);
 
   @override
+  _UpdateStudentDialogState createState() => _UpdateStudentDialogState();
+}
+
+class _UpdateStudentDialogState extends State<UpdateStudentDialog> {
+  final TextEditingController _firstNameController = TextEditingController();
+
+  final TextEditingController _lastNameController = TextEditingController();
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Update student'),
-      content: StudentForm(
-        studentToEdit: student,
-        firstNameController: _firstNameController,
-        lastNameController: _lastNameController,
+      title: Row(
+        children: [
+          Icon(Icons.face),
+          SizedBox(width: 8),
+          Text('Updating ${widget.student.firstName}'),
+        ],
+      ),
+      content: Form(
+        key: formKey,
+        child: StudentForm(
+          studentToEdit: widget.student,
+          firstNameController: _firstNameController,
+          lastNameController: _lastNameController,
+        ),
       ),
       actions: <Widget>[
         CancelButton(),
         FlatButton(
           onPressed: () {
-            BlocProvider.of<StudentBloc>(context).add(
-              UpdateStudentEvent(
-                student: student,
-                firstName: _firstNameController.text,
-                lastName: _lastNameController.text,
-              ),
-            );
-            Navigator.pop(context);
+            if (formKey.currentState.validate()) {
+              BlocProvider.of<StudentBloc>(context).add(
+                UpdateStudentEvent(
+                  student: widget.student,
+                  firstName: _firstNameController.text,
+                  lastName: _lastNameController.text,
+                ),
+              );
+              Navigator.pop(context);
+            }
           },
-          child: Text('Update'),
+          child: Text('UPDATE'),
         ),
       ],
     );

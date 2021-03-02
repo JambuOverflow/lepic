@@ -119,16 +119,6 @@ void main() {
         expect(result, Right(response));
       });
 
-      test('should cache user when call is successful', () async {
-        when(mockRemoteDataSource.createUser(tUserModel))
-            .thenAnswer((_) async => response);
-
-        await repository.createUser(tUser);
-
-        verify(mockRemoteDataSource.createUser(tUserModel));
-        verify(mockLocalDataSource.cacheUser(tUserModel));
-      });
-
       test('should return server failure when call is unsuccessful', () async {
         when(mockRemoteDataSource.createUser(tUserModel))
             .thenThrow(ServerException());
