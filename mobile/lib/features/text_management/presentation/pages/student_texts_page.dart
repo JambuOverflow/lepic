@@ -37,7 +37,10 @@ class _StudentTextsPageState extends State<StudentTextsPage> {
               return ListView.builder(
                 padding: EdgeInsets.all(6),
                 itemCount: _bloc.texts.length,
-                itemBuilder: (context, index) => TextItem(textIndex: index),
+                itemBuilder: (context, index) {
+                  final reverseIndex = _bloc.texts.length - 1 - index;
+                  return TextItem(textIndex: reverseIndex);
+                },
               );
           } else
             return Center(child: CircularProgressIndicator());
