@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:mobile/features/audio_management/presentation/bloc/player_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/wpm_graph_cubit.dart';
 import 'package:mobile/features/statistics/presentation/bloc/statistic_bloc.dart';
+import 'package:mobile/features/statistics/presentation/pages/results_page.dart';
 import 'package:mobile/features/statistics/presentation/widgets/wpm_chart_area.dart';
 import '../../../text_correction/presentation/bloc/correction_bloc.dart';
 import '../../../text_management/domain/entities/text.dart';
@@ -68,12 +69,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
               child: WPMChartArea(isOnCorrectionLevel: true),
             ),
             SizedBox(height: 20),
-            ResultCard(title: 'Results'),
-            SizedBox(height: 8),
-            ResultCard(title: 'Comparative Table'),
-            SizedBox(height: 8),
-            ResultCard(title: 'Comparative Graph'),
-            SizedBox(height: 64),
+            BlocBuilder<StatisticBloc, StatisticState>(
+              builder: (context, state) {
+                if (state is StatisticsLoaded) return ResultsPage();
+                return Container();
+              },
+            ),
           ],
         ),
       ),
