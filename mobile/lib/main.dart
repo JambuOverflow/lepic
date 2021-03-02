@@ -11,7 +11,7 @@ import 'features/user_management/data/models/user_model.dart';
 import 'features/user_management/presentation/bloc/auth_bloc.dart';
 import 'injection_containers/injection_container.dart';
 
-const IS_IN_DEVELOPMENT = true;
+const RESET_DB_ON_START = false;
 
 void main() async {
   // This setting overrides the default serializer to our custom one
