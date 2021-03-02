@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/features/text_management/domain/entities/text.dart';
-import 'package:mobile/features/text_management/presentation/widgets/text_area.dart';
+import 'package:mobile/features/text_management/presentation/pages/assignment_detail_page.dart';
 
 class TextItemBody extends StatefulWidget {
+  final int index;
   final MyText text;
 
-  const TextItemBody({Key key, @required this.text}) : super(key: key);
+  const TextItemBody({Key key, @required this.text, @required this.index})
+      : super(key: key);
   @override
   _TextItemBodyState createState() => _TextItemBodyState();
 }
@@ -20,7 +22,7 @@ class _TextItemBodyState extends State<TextItemBody> {
         children: [
           Text(
             widget.text.body,
-            maxLines: 5,
+            maxLines: 4,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.justify,
             style: TextStyle(fontSize: 15),
