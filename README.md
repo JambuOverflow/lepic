@@ -36,12 +36,11 @@ With this information, the teachers will know which students need the most atten
 
 ## Getting Started
 
-// run locally
+Use your favorite IDE and follow these [instructions](https://flutter.dev/docs/get-started/test-drive?tab=vscode).
 
 ## Usage
 
-// apk
-// docker
+You can also use the apk by going into [actions](https://github.com/JambuOverflow/lepic/actions), choosing the latest build and downloading the `release.apk`.
 
 ## Contributing
 
