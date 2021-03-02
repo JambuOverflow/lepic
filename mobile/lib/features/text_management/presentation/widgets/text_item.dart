@@ -96,31 +96,39 @@ class _TextItemState extends State<TextItem> {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Card(
           elevation: 4,
-          child: GestureDetector(
+          child: InkWell(
             child: Column(
               children: [
                 TextItemTitle(index: widget.textIndex),
-                TextItemBody(text: text, index: widget.textIndex),
+                TextItemBody(
+                  text: text,
+                  index: widget.textIndex,
+                  onTap: () => goToAssignmentDetails(context),
+                ),
               ],
             ),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: textBloc),
-                    BlocProvider.value(value: audioBloc),
-                    BlocProvider.value(value: audioBloc),
-                    BlocProvider.value(value: correctionBloc),
-                    BlocProvider.value(value: statisticBloc),
-                    BlocProvider.value(value: textCubit),
-                    BlocProvider.value(value: assignment),
-                    BlocProvider.value(value: player),
-                  ],
-                  child: AssigmentDetailPage(textIndex: widget.textIndex),
-                ),
-              ),
-            ),
+            onTap: () => goToAssignmentDetails(context),
           ),
+        ),
+      ),
+    );
+  }
+
+  Future goToAssignmentDetails(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: textBloc),
+            BlocProvider.value(value: audioBloc),
+            BlocProvider.value(value: audioBloc),
+            BlocProvider.value(value: correctionBloc),
+            BlocProvider.value(value: statisticBloc),
+            BlocProvider.value(value: textCubit),
+            BlocProvider.value(value: assignment),
+            BlocProvider.value(value: player),
+          ],
+          child: AssigmentDetailPage(textIndex: widget.textIndex),
         ),
       ),
     );
