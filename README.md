@@ -6,7 +6,7 @@ Supporting the assessment and management of reading fluency.
 
 ## About the Project
 
-This project was done during the Student Contest on Software Engineering (SCORE), that was part of the [43rd International Conference on Software Engineering (ICSE 2021)](https://conf.researchr.org/home/icse-2021/score-2021#About). It consists of a mobile app for Android and iOS, and its main goal is to help teachers and other professionals that work with students' literacy and kid's relatives.
+This project won the Student Contest on Software Engineering (SCORE) :), that was part of the [43rd International Conference on Software Engineering (ICSE 2021)](https://conf.researchr.org/home/icse-2021/score-2021#About). It consists of a mobile app for Android and iOS, and its main goal is to help teachers and other professionals that work with students' literacy and kid's relatives.
 
 ### Features
 
